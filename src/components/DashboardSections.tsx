@@ -215,7 +215,7 @@ const DashboardSections = () => {
             {t('nav.dashboard')}
           </span>
           <h2 className="mt-4 font-serif text-3xl font-bold text-foreground md:text-4xl lg:text-5xl">
-            Deine Bereiche
+            {t('dashboard.yourSections')}
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
             {t('disclaimer.short')}
@@ -248,10 +248,10 @@ const DashboardSections = () => {
           className="mb-10 mt-20 text-center"
         >
           <span className="inline-block rounded-full bg-muted px-4 py-1.5 text-sm font-medium text-muted-foreground">
-            Hilfreiche Werkzeuge
+            {t('dashboard.helpfulTools')}
           </span>
           <h3 className="mt-4 font-serif text-2xl font-bold text-foreground md:text-3xl">
-            Orientierung & Unterstützung
+            {t('dashboard.orientationSupport')}
           </h3>
         </motion.div>
 

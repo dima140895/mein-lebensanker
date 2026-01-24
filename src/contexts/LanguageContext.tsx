@@ -56,6 +56,11 @@ const translations = {
     'section.summary': 'Zusammenfassung',
     'section.summaryDesc': 'Übersicht und PDF-Export',
     
+    // Dashboard Section Headers
+    'dashboard.yourSections': 'Deine Bereiche',
+    'dashboard.helpfulTools': 'Hilfreiche Werkzeuge',
+    'dashboard.orientationSupport': 'Orientierung & Unterstützung',
+    
     // Encouragement
     'encourage.title': 'Ein verantwortungsvoller Schritt',
     'encourage.text': 'Viele Menschen schieben dieses Thema vor sich her. Du gehst gerade einen wichtigen Schritt.',
@@ -114,8 +119,8 @@ const translations = {
     'section.documentsDesc': 'Where are important documents?',
     'section.contacts': 'Important Contacts',
     'section.contactsDesc': 'Doctors, lawyers, and trusted persons',
-    'section.about': 'What is this?',
-    'section.aboutDesc': 'Learn more about this tool',
+    'section.about': 'What is this about?',
+    'section.aboutDesc': 'Purpose and limitations of this tool',
     'section.guidance': 'Guidance',
     'section.guidanceDesc': 'Time-based guide for relatives',
     'section.decision': 'Decisions',
@@ -124,6 +129,11 @@ const translations = {
     'section.shareDesc': 'Access links for your loved ones',
     'section.summary': 'Summary',
     'section.summaryDesc': 'Overview and PDF export',
+    
+    // Dashboard Section Headers
+    'dashboard.yourSections': 'Your Sections',
+    'dashboard.helpfulTools': 'Helpful Tools',
+    'dashboard.orientationSupport': 'Orientation & Support',
     
     // Encouragement
     'encourage.title': 'A Responsible Step',

@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Heart, Shield, User, Wallet, Globe, FileText, Phone, Users } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
-import { LanguageProvider, useLanguage } from '@/contexts/LanguageContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import Header from '@/components/Header';
 import RelativesSummary from '@/components/relatives/RelativesSummary';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -203,14 +203,12 @@ const RelativesViewContent = () => {
 
 const RelativesView = () => {
   return (
-    <LanguageProvider>
-      <div className="flex min-h-screen flex-col bg-background">
-        <Header />
-        <main className="flex-1">
-          <RelativesViewContent />
-        </main>
-      </div>
-    </LanguageProvider>
+    <div className="flex min-h-screen flex-col bg-background">
+      <Header />
+      <main className="flex-1">
+        <RelativesViewContent />
+      </main>
+    </div>
   );
 };
 
