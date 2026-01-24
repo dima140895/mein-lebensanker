@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { User, Wallet, Globe, Heart, FileText, ArrowLeft, Users, Phone } from 'lucide-react';
+import { User, Wallet, Globe, Heart, FileText, ArrowLeft, Users, Phone, Info, Compass, MessageCircle } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage, LanguageProvider } from '@/contexts/LanguageContext';
 import { FormProvider } from '@/contexts/FormContext';
@@ -15,16 +15,22 @@ import DigitalForm from '@/components/forms/DigitalForm';
 import WishesForm from '@/components/forms/WishesForm';
 import DocumentsForm from '@/components/forms/DocumentsForm';
 import ContactsForm from '@/components/forms/ContactsForm';
+import AboutSection from '@/components/sections/AboutSection';
+import GuidanceSection from '@/components/sections/GuidanceSection';
+import DecisionAssistant from '@/components/sections/DecisionAssistant';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const sections = [
+  { key: 'about', icon: Info, color: 'bg-sage-light text-sage-dark', isInfo: true },
   { key: 'personal', icon: User, color: 'bg-sage-light text-sage-dark' },
   { key: 'assets', icon: Wallet, color: 'bg-amber-light text-amber' },
   { key: 'digital', icon: Globe, color: 'bg-sage-light text-sage-dark' },
   { key: 'wishes', icon: Heart, color: 'bg-amber-light text-amber' },
   { key: 'documents', icon: FileText, color: 'bg-sage-light text-sage-dark' },
   { key: 'contacts', icon: Phone, color: 'bg-amber-light text-amber' },
+  { key: 'guidance', icon: Compass, color: 'bg-sage-light text-sage-dark', isInfo: true },
+  { key: 'decision', icon: MessageCircle, color: 'bg-amber-light text-amber', isInfo: true },
 ];
 
 const DashboardContent = () => {
@@ -56,26 +62,32 @@ const DashboardContent = () => {
       title: 'Dein Vorsorge-Dashboard',
       subtitle: 'Wähle einen Bereich zum Ausfüllen',
       back: 'Zurück zur Übersicht',
+      about: 'Was ist das?',
       personal: 'Persönliche Daten',
       assets: 'Vermögen',
       digital: 'Digital',
       wishes: 'Wünsche',
       documents: 'Dokumente',
       contacts: 'Kontakte',
+      guidance: 'Orientierung',
+      decision: 'Entscheidungen',
       you: 'Für mich',
       partner: 'Für Partner',
-      notPaid: 'Um deine Daten zu speichern, wähle ein Paket:',
+      notPaid: 'Um Deine Daten zu speichern, wähle ein Paket:',
     },
     en: {
       title: 'Your Estate Planning Dashboard',
       subtitle: 'Select a section to fill out',
       back: 'Back to Overview',
+      about: 'What is this?',
       personal: 'Personal',
       assets: 'Assets',
       digital: 'Digital',
       wishes: 'Wishes',
       documents: 'Documents',
       contacts: 'Contacts',
+      guidance: 'Guidance',
+      decision: 'Decisions',
       you: 'For Me',
       partner: 'For Partner',
       notPaid: 'To save your data, choose a package:',
@@ -105,8 +117,11 @@ const DashboardContent = () => {
     );
   }
 
-  const renderForm = () => {
+  const renderContent = () => {
     switch (activeSection) {
+      case 'about': return <AboutSection />;
+      case 'guidance': return <GuidanceSection />;
+      case 'decision': return <DecisionAssistant />;
       case 'personal': return <PersonalForm isPartner={isPartnerView} />;
       case 'assets': return <AssetsForm isPartner={isPartnerView} />;
       case 'digital': return <DigitalForm isPartner={isPartnerView} />;
@@ -117,6 +132,9 @@ const DashboardContent = () => {
     }
   };
 
+  const currentSection = sections.find(s => s.key === activeSection);
+  const isInfoSection = currentSection?.isInfo;
+
   if (activeSection) {
     return (
       <div className="container mx-auto px-4 py-8">
@@ -124,7 +142,7 @@ const DashboardContent = () => {
           <ArrowLeft className="mr-2 h-4 w-4" /> {texts.back}
         </Button>
 
-        {profile.payment_type === 'partner' && (
+        {!isInfoSection && profile.payment_type === 'partner' && (
           <Tabs value={isPartnerView ? 'partner' : 'me'} onValueChange={(v) => setIsPartnerView(v === 'partner')} className="mb-6">
             <TabsList>
               <TabsTrigger value="me"><User className="mr-2 h-4 w-4" />{texts.you}</TabsTrigger>
@@ -133,7 +151,7 @@ const DashboardContent = () => {
           </Tabs>
         )}
 
-        {renderForm()}
+        {renderContent()}
       </div>
     );
   }
