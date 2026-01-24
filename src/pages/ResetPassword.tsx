@@ -29,7 +29,7 @@ const ResetPassword = () => {
       confirmPassword: 'Passwort bestätigen',
       submit: 'Passwort ändern',
       success: 'Passwort erfolgreich geändert!',
-      successMessage: 'Du kannst dich jetzt mit deinem neuen Passwort anmelden.',
+      successMessage: 'Du kannst Dich jetzt mit Deinem neuen Passwort anmelden.',
       goToLogin: 'Zur Anmeldung',
       error: 'Fehler',
       passwordMismatch: 'Passwörter stimmen nicht überein',

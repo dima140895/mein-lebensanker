@@ -30,8 +30,8 @@ const PaymentSuccessContent = () => {
   const t = {
     de: {
       title: 'Zahlung erfolgreich!',
-      subtitle: 'Vielen Dank für dein Vertrauen.',
-      description: 'Du kannst jetzt alle Bereiche ausfüllen und deine Daten sicher speichern.',
+      subtitle: 'Vielen Dank für Dein Vertrauen.',
+      description: 'Du kannst jetzt alle Bereiche ausfüllen und Deine Daten sicher speichern.',
       cta: 'Zum Dashboard',
     },
     en: {

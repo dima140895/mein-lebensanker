@@ -18,7 +18,7 @@ const translations = {
     // Hero Section
     'hero.tagline': 'Ordnung für den Fall der Fälle',
     'hero.subtitle': 'Damit Angehörige nicht im Chaos stehen.',
-    'hero.description': 'Strukturiere deine persönlichen, finanziellen und organisatorischen Informationen – damit deine Liebsten im Ernstfall entlastet werden.',
+    'hero.description': 'Strukturiere Deine persönlichen, finanziellen und organisatorischen Informationen – damit Deine Liebsten im Ernstfall entlastet werden.',
     'hero.cta': 'Jetzt starten',
     'hero.learnMore': 'Mehr erfahren',
     
@@ -26,11 +26,11 @@ const translations = {
     'value.structure': 'Struktur',
     'value.structureDesc': 'Alle wichtigen Informationen an einem Ort',
     'value.overview': 'Übersicht',
-    'value.overviewDesc': 'Klare Dokumentation deiner Wünsche',
+    'value.overviewDesc': 'Klare Dokumentation Deiner Wünsche',
     'value.preparation': 'Vorbereitung',
     'value.preparationDesc': 'Verantwortungsvolle Vorsorge',
     'value.communication': 'Kommunikation',
-    'value.communicationDesc': 'Transparenz für deine Angehörigen',
+    'value.communicationDesc': 'Transparenz für Deine Angehörigen',
     
     // Sections
     'section.personal': 'Persönliche Basisdaten',
@@ -52,7 +52,7 @@ const translations = {
     'section.decision': 'Entscheidungen',
     'section.decisionDesc': 'Persönliche Präferenzen klären',
     'section.share': 'Für Angehörige',
-    'section.shareDesc': 'Zugangslinks für deine Liebsten',
+    'section.shareDesc': 'Zugangslinks für Deine Liebsten',
     'section.summary': 'Zusammenfassung',
     'section.summaryDesc': 'Übersicht und PDF-Export',
     
