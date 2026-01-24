@@ -102,6 +102,48 @@ const infoSections = [
   },
 ];
 
+// Slide-in animation variants
+const containerVariants = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.1,
+    },
+  },
+};
+
+const slideInVariants = {
+  hidden: { 
+    opacity: 0, 
+    x: -60,
+  },
+  visible: { 
+    opacity: 1, 
+    x: 0,
+    transition: {
+      type: "spring" as const,
+      stiffness: 100,
+      damping: 15,
+    },
+  },
+};
+
+const slideInFromRightVariants = {
+  hidden: { 
+    opacity: 0, 
+    x: 60,
+  },
+  visible: { 
+    opacity: 1, 
+    x: 0,
+    transition: {
+      type: "spring" as const,
+      stiffness: 100,
+      damping: 15,
+    },
+  },
+};
+
 const DashboardSections = () => {
   const { t } = useLanguage();
   const navigate = useNavigate();
@@ -110,23 +152,15 @@ const DashboardSections = () => {
     navigate(`/dashboard?section=${sectionKey}`);
   };
 
-  const SectionCard = ({ section, index, isInfo = false }: { 
+  const SectionCard = ({ section, index, slideFromRight = false }: { 
     section: typeof sections[0], 
     index: number,
-    isInfo?: boolean 
+    slideFromRight?: boolean 
   }) => {
     const Icon = section.icon;
     return (
       <motion.div
-        key={section.key}
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-50px" }}
-        transition={{ 
-          duration: 0.5, 
-          delay: index * 0.08,
-          ease: [0.21, 0.47, 0.32, 0.98]
-        }}
+        variants={slideFromRight ? slideInFromRightVariants : slideInVariants}
         whileHover={{ y: -8, transition: { duration: 0.2 } }}
         onClick={() => handleSectionClick(section.key)}
         className={`group relative cursor-pointer overflow-hidden rounded-2xl border border-border/50 bg-gradient-to-br ${section.gradient} p-6 shadow-sm transition-all duration-300 hover:shadow-xl ${section.accent}`}
@@ -167,12 +201,12 @@ const DashboardSections = () => {
   };
 
   return (
-    <section id="sections" className="py-20 md:py-28">
+    <section id="sections" className="py-20 md:py-28 overflow-hidden">
       <div className="container mx-auto px-4">
         {/* Main Sections */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, x: -30 }}
+          whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
           className="mb-14 text-center"
@@ -188,16 +222,27 @@ const DashboardSections = () => {
           </p>
         </motion.div>
 
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <motion.div 
+          className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3"
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+        >
           {sections.map((section, index) => (
-            <SectionCard key={section.key} section={section} index={index} />
+            <SectionCard 
+              key={section.key} 
+              section={section} 
+              index={index} 
+              slideFromRight={index % 2 === 1}
+            />
           ))}
-        </div>
+        </motion.div>
 
         {/* Info & Tools Sections */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, x: 30 }}
+          whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
           className="mb-10 mt-20 text-center"
@@ -210,11 +255,22 @@ const DashboardSections = () => {
           </h3>
         </motion.div>
 
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <motion.div 
+          className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4"
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+        >
           {infoSections.map((section, index) => (
-            <SectionCard key={section.key} section={section} index={index} isInfo />
+            <SectionCard 
+              key={section.key} 
+              section={section} 
+              index={index}
+              slideFromRight={index % 2 === 1}
+            />
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );
