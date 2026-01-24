@@ -50,6 +50,39 @@ export type Database = {
         }
         Relationships: []
       }
+      share_tokens: {
+        Row: {
+          created_at: string
+          expires_at: string | null
+          id: string
+          is_active: boolean
+          label: string | null
+          token: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          label?: string | null
+          token?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          label?: string | null
+          token?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -106,12 +139,34 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_profile_by_token: {
+        Args: { _token: string }
+        Returns: {
+          full_name: string
+          partner_name: string
+        }[]
+      }
+      get_vorsorge_data_by_token: {
+        Args: { _token: string }
+        Returns: {
+          data: Json
+          is_for_partner: boolean
+          section_key: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
           _user_id: string
         }
         Returns: boolean
+      }
+      validate_share_token: {
+        Args: { _token: string }
+        Returns: {
+          is_valid: boolean
+          user_id: string
+        }[]
       }
     }
     Enums: {

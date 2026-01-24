@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { User, Wallet, Globe, Heart, FileText, ArrowLeft, Users, Phone, Info, Compass, MessageCircle } from 'lucide-react';
+import { User, Wallet, Globe, Heart, FileText, ArrowLeft, Users, Phone, Info, Compass, MessageCircle, Link2 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage, LanguageProvider } from '@/contexts/LanguageContext';
 import { FormProvider } from '@/contexts/FormContext';
@@ -18,6 +18,7 @@ import ContactsForm from '@/components/forms/ContactsForm';
 import AboutSection from '@/components/sections/AboutSection';
 import GuidanceSection from '@/components/sections/GuidanceSection';
 import DecisionAssistant from '@/components/sections/DecisionAssistant';
+import ShareLinkManager from '@/components/ShareLinkManager';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
@@ -31,6 +32,7 @@ const sections = [
   { key: 'contacts', icon: Phone, color: 'bg-amber-light text-amber' },
   { key: 'guidance', icon: Compass, color: 'bg-sage-light text-sage-dark', isInfo: true },
   { key: 'decision', icon: MessageCircle, color: 'bg-amber-light text-amber', isInfo: true },
+  { key: 'share', icon: Link2, color: 'bg-primary/20 text-primary', isInfo: true },
 ];
 
 const DashboardContent = () => {
@@ -71,6 +73,7 @@ const DashboardContent = () => {
       contacts: 'Kontakte',
       guidance: 'Orientierung',
       decision: 'Entscheidungen',
+      share: 'Für Angehörige',
       you: 'Für mich',
       partner: 'Für Partner',
       notPaid: 'Um Deine Daten zu speichern, wähle ein Paket:',
@@ -88,6 +91,7 @@ const DashboardContent = () => {
       contacts: 'Contacts',
       guidance: 'Guidance',
       decision: 'Decisions',
+      share: 'For Relatives',
       you: 'For Me',
       partner: 'For Partner',
       notPaid: 'To save your data, choose a package:',
@@ -122,6 +126,7 @@ const DashboardContent = () => {
       case 'about': return <AboutSection />;
       case 'guidance': return <GuidanceSection />;
       case 'decision': return <DecisionAssistant />;
+      case 'share': return <ShareLinkManager />;
       case 'personal': return <PersonalForm isPartner={isPartnerView} />;
       case 'assets': return <AssetsForm isPartner={isPartnerView} />;
       case 'digital': return <DigitalForm isPartner={isPartnerView} />;
