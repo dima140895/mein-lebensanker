@@ -181,24 +181,28 @@ const DashboardSections = () => {
   };
 
   return (
-    <section id="sections" className="py-20 md:py-28 overflow-hidden">
+    <section id="sections" className="py-20 md:py-28 overflow-hidden bg-gradient-to-b from-background via-sage-light/10 to-background">
       <div className="container mx-auto px-4">
-        {/* Main Sections */}
+        {/* Main Sections Header */}
         <motion.div
-          initial={{ opacity: 0, x: -30 }}
-          whileInView={{ opacity: 1, x: 0 }}
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="mb-14 text-center"
+          transition={{ duration: 0.6 }}
+          className="mb-16 text-center"
         >
-          <span className="inline-block rounded-full bg-primary/10 px-4 py-1.5 text-sm font-medium text-primary">
-            {t('nav.dashboard')}
-          </span>
-          <h2 className="mt-4 font-serif text-3xl font-bold text-foreground md:text-4xl lg:text-5xl">
+          <div className="inline-flex items-center gap-2 rounded-full border border-sage/20 bg-white/80 backdrop-blur-sm px-4 py-2 text-sm font-medium text-sage-dark shadow-sm mb-6">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sage opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-sage"></span>
+            </span>
+            Sechs Bereiche für Deine Vorsorge
+          </div>
+          <h2 className="font-serif text-3xl font-bold text-foreground md:text-4xl lg:text-5xl">
             Alles an einem Ort
           </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
-            Strukturiere Deine persönlichen, finanziellen und organisatorischen Informationen
+          <p className="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-muted-foreground">
+            Halte Deine wichtigsten Informationen strukturiert fest – damit Deine Liebsten im Ernstfall nicht im Ungewissen stehen.
           </p>
         </motion.div>
 
