@@ -9,6 +9,7 @@ import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import RelativesView from "./pages/RelativesView";
+import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -25,6 +26,7 @@ const App = () => (
               <Route path="/" element={<Index />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/payment-success" element={<PaymentSuccess />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/fuer-angehoerige/:token" element={<RelativesView />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
