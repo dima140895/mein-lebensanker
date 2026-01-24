@@ -17,7 +17,7 @@ interface AuthFormProps {
 const AuthForm = ({ onSuccess, defaultMode = 'login' }: AuthFormProps) => {
   const { signUp, signIn } = useAuth();
   const { language } = useLanguage();
-  const [mode, setMode] = useState<'login' | 'register' | 'forgot'>(defaultMode);
+  const [mode, setMode] = useState<'login' | 'register' | 'forgot' | 'verify'>(defaultMode);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -44,6 +44,13 @@ const AuthForm = ({ onSuccess, defaultMode = 'login' }: AuthFormProps) => {
       resetLinkSent: 'Link gesendet!',
       resetLinkSentDesc: 'Überprüfe Dein E-Mail-Postfach für den Reset-Link.',
       backToLogin: 'Zurück zur Anmeldung',
+      verifyTitle: 'Bestätige Deine E-Mail',
+      verifyDesc: 'Wir haben Dir eine E-Mail an',
+      verifyDesc2: 'gesendet. Klicke auf den Link in der E-Mail, um Dein Konto zu aktivieren.',
+      checkSpam: 'Nicht erhalten? Prüfe auch Deinen Spam-Ordner.',
+      resendEmail: 'Erneut senden',
+      emailResent: 'E-Mail erneut gesendet!',
+      emailNotConfirmed: 'Bitte bestätige zuerst Deine E-Mail-Adresse.',
     },
     en: {
       login: 'Sign In',
@@ -65,6 +72,13 @@ const AuthForm = ({ onSuccess, defaultMode = 'login' }: AuthFormProps) => {
       resetLinkSent: 'Link sent!',
       resetLinkSentDesc: 'Check your email inbox for the reset link.',
       backToLogin: 'Back to login',
+      verifyTitle: 'Verify Your Email',
+      verifyDesc: 'We sent an email to',
+      verifyDesc2: 'Click the link in the email to activate your account.',
+      checkSpam: "Didn't receive it? Check your spam folder.",
+      resendEmail: 'Resend Email',
+      emailResent: 'Email resent!',
+      emailNotConfirmed: 'Please confirm your email address first.',
     },
   };
 
@@ -84,7 +98,7 @@ const AuthForm = ({ onSuccess, defaultMode = 'login' }: AuthFormProps) => {
         const { error } = await signUp(email, password);
         if (error) throw error;
         toast.success(texts.accountCreated);
-        onSuccess?.();
+        setMode('verify'); // Show verification screen instead of calling onSuccess
       }
     } catch (error) {
       toast.error(texts.error, { 
@@ -120,6 +134,83 @@ const AuthForm = ({ onSuccess, defaultMode = 'login' }: AuthFormProps) => {
       setLoading(false);
     }
   };
+
+  const handleResendEmail = async () => {
+    setLoading(true);
+    try {
+      const { error } = await supabase.auth.resend({
+        type: 'signup',
+        email,
+        options: {
+          emailRedirectTo: window.location.origin,
+        },
+      });
+      
+      if (error) throw error;
+      toast.success(texts.emailResent);
+    } catch (error) {
+      toast.error(texts.error, {
+        description: error instanceof Error ? error.message : 'Unknown error',
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Email verification view
+  if (mode === 'verify') {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="w-full max-w-md mx-auto"
+      >
+        <div className="rounded-xl border border-border bg-card p-8 shadow-elevated text-center">
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
+            <Mail className="h-8 w-8 text-primary" />
+          </div>
+          
+          <h2 className="font-serif text-2xl font-bold text-foreground mb-2">
+            {texts.verifyTitle}
+          </h2>
+          
+          <p className="text-muted-foreground mb-1">
+            {texts.verifyDesc}
+          </p>
+          <p className="font-medium text-foreground mb-1">
+            {email}
+          </p>
+          <p className="text-muted-foreground mb-6">
+            {texts.verifyDesc2}
+          </p>
+          
+          <p className="text-sm text-muted-foreground mb-4">
+            {texts.checkSpam}
+          </p>
+          
+          <div className="space-y-3">
+            <Button
+              variant="outline"
+              onClick={handleResendEmail}
+              disabled={loading}
+              className="w-full"
+            >
+              {loading ? '...' : texts.resendEmail}
+            </Button>
+            
+            <button
+              type="button"
+              onClick={() => setMode('login')}
+              className="flex items-center justify-center text-sm text-muted-foreground hover:text-foreground mx-auto"
+            >
+              <ArrowLeft className="h-4 w-4 mr-1" />
+              {texts.backToLogin}
+            </button>
+          </div>
+        </div>
+      </motion.div>
+    );
+  }
 
   // Forgot password view
   if (mode === 'forgot') {
