@@ -22,6 +22,9 @@ const ValuePropositions = () => {
           transition={{ duration: 0.5 }}
           className="mb-12 text-center"
         >
+          <span className="inline-block rounded-full bg-amber-light px-4 py-1.5 text-sm font-medium text-amber mb-4">
+            Warum Vorsorge?
+          </span>
           <h2 className="font-serif text-3xl font-bold text-foreground md:text-4xl">
             {t('encourage.title')}
           </h2>
