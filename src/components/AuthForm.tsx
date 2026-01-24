@@ -39,10 +39,10 @@ const AuthForm = ({ onSuccess, defaultMode = 'login' }: AuthFormProps) => {
       accountCreated: 'Konto wurde erstellt!',
       forgotPassword: 'Passwort vergessen?',
       forgotTitle: 'Passwort zurücksetzen',
-      forgotDesc: 'Gib deine E-Mail-Adresse ein und wir senden dir einen Link zum Zurücksetzen.',
+      forgotDesc: 'Gib Deine E-Mail-Adresse ein und wir senden Dir einen Link zum Zurücksetzen.',
       sendResetLink: 'Link senden',
       resetLinkSent: 'Link gesendet!',
-      resetLinkSentDesc: 'Überprüfe dein E-Mail-Postfach für den Reset-Link.',
+      resetLinkSentDesc: 'Überprüfe Dein E-Mail-Postfach für den Reset-Link.',
       backToLogin: 'Zurück zur Anmeldung',
     },
     en: {
