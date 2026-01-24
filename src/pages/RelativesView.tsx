@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Heart, Shield, User, Wallet, Globe, FileText, Phone, Users } from 'lucide-react';
+import { Heart, Shield } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/browserClient';
 import { useLanguage } from '@/contexts/LanguageContext';
 import Header from '@/components/Header';
 import RelativesSummary from '@/components/relatives/RelativesSummary';
 import { Skeleton } from '@/components/ui/skeleton';
+import { logger } from '@/lib/logger';
 
 interface VorsorgeData {
   section_key: string;
@@ -91,7 +92,7 @@ const RelativesViewContent = () => {
           .rpc('get_vorsorge_data_by_token', { _token: token });
 
         if (vError) {
-          console.error('Error loading data:', vError);
+          logger.error('Error loading data:', vError);
           setError(texts.invalidLink);
         } else {
           // Transform data to match expected interface
@@ -103,7 +104,7 @@ const RelativesViewContent = () => {
           setVorsorgeData(transformedData);
         }
       } catch (err) {
-        console.error('Error:', err);
+        logger.error('Error:', err);
         setError(texts.invalidLink);
       } finally {
         setLoading(false);

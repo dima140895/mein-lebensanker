@@ -5,6 +5,7 @@ import { LanguageProvider, useLanguage } from '@/contexts/LanguageContext';
 import { supabase } from '@/integrations/supabase/browserClient';
 import { CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { logger } from '@/lib/logger';
 
 const PaymentSuccessContent = () => {
   const { user, refreshProfile } = useAuth();
@@ -52,7 +53,7 @@ const PaymentSuccessContent = () => {
             : 'Payment could not be verified. Please contact support.');
         }
       } catch (error) {
-        console.error('Payment verification failed:', error);
+        logger.error('Payment verification failed:', error);
         setVerificationStatus('error');
         setErrorMessage(language === 'de' 
           ? 'Fehler bei der Zahlungsverifizierung. Bitte kontaktiere den Support.' 

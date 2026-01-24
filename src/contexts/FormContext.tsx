@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { supabase } from '@/integrations/supabase/browserClient';
 import { useAuth } from './AuthContext';
 import { Json } from '@/integrations/supabase/types';
+import { logger } from '@/lib/logger';
 
 export interface PersonalData {
   fullName: string;
@@ -184,7 +185,7 @@ export const FormProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
       if (error) throw error;
     } catch (error) {
-      console.error('Error saving section:', error);
+      logger.error('Error saving section:', error);
     } finally {
       setSaving(false);
     }
@@ -222,7 +223,7 @@ export const FormProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         setPartnerFormData(newPartnerFormData);
       }
     } catch (error) {
-      console.error('Error loading data:', error);
+      logger.error('Error loading data:', error);
     }
   };
 

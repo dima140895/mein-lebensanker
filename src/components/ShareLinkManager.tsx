@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
+import { logger } from '@/lib/logger';
 import {
   Dialog,
   DialogContent,
@@ -106,7 +107,7 @@ const ShareLinkManager = () => {
       .single();
 
     if (error) {
-      console.error('Error creating token:', error);
+      logger.error('Error creating token:', error);
       toast.error('Fehler beim Erstellen');
     } else if (data) {
       setTokens(prev => [data, ...prev]);
