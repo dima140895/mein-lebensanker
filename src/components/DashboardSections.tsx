@@ -7,17 +7,99 @@ import {
   Heart, 
   FileText, 
   Phone,
-  ChevronRight
+  Info,
+  Compass,
+  MessageCircle,
+  Link2,
+  ChevronRight,
+  Sparkles
 } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 const sections = [
-  { icon: User, key: 'personal', color: 'bg-sage-light text-sage-dark' },
-  { icon: Wallet, key: 'assets', color: 'bg-amber-light text-amber' },
-  { icon: Globe, key: 'digital', color: 'bg-sage-light text-sage-dark' },
-  { icon: Heart, key: 'wishes', color: 'bg-amber-light text-amber' },
-  { icon: FileText, key: 'documents', color: 'bg-sage-light text-sage-dark' },
-  { icon: Phone, key: 'contacts', color: 'bg-amber-light text-amber' },
+  { 
+    icon: User, 
+    key: 'personal', 
+    gradient: 'from-sage-light to-sage-light/60',
+    iconBg: 'bg-sage-dark/10',
+    iconColor: 'text-sage-dark',
+    accent: 'group-hover:shadow-sage-dark/20'
+  },
+  { 
+    icon: Wallet, 
+    key: 'assets', 
+    gradient: 'from-amber-light to-amber-light/60',
+    iconBg: 'bg-amber/10',
+    iconColor: 'text-amber',
+    accent: 'group-hover:shadow-amber/20'
+  },
+  { 
+    icon: Globe, 
+    key: 'digital', 
+    gradient: 'from-primary/10 to-primary/5',
+    iconBg: 'bg-primary/10',
+    iconColor: 'text-primary',
+    accent: 'group-hover:shadow-primary/20'
+  },
+  { 
+    icon: Heart, 
+    key: 'wishes', 
+    gradient: 'from-rose-100 to-rose-50',
+    iconBg: 'bg-rose-500/10',
+    iconColor: 'text-rose-600',
+    accent: 'group-hover:shadow-rose-500/20'
+  },
+  { 
+    icon: FileText, 
+    key: 'documents', 
+    gradient: 'from-slate-100 to-slate-50',
+    iconBg: 'bg-slate-500/10',
+    iconColor: 'text-slate-600',
+    accent: 'group-hover:shadow-slate-500/20'
+  },
+  { 
+    icon: Phone, 
+    key: 'contacts', 
+    gradient: 'from-cyan-100 to-cyan-50',
+    iconBg: 'bg-cyan-600/10',
+    iconColor: 'text-cyan-700',
+    accent: 'group-hover:shadow-cyan-500/20'
+  },
+];
+
+const infoSections = [
+  { 
+    icon: Info, 
+    key: 'about', 
+    gradient: 'from-violet-100 to-violet-50',
+    iconBg: 'bg-violet-500/10',
+    iconColor: 'text-violet-600',
+    accent: 'group-hover:shadow-violet-500/20'
+  },
+  { 
+    icon: Compass, 
+    key: 'guidance', 
+    gradient: 'from-emerald-100 to-emerald-50',
+    iconBg: 'bg-emerald-600/10',
+    iconColor: 'text-emerald-700',
+    accent: 'group-hover:shadow-emerald-500/20'
+  },
+  { 
+    icon: MessageCircle, 
+    key: 'decision', 
+    gradient: 'from-orange-100 to-orange-50',
+    iconBg: 'bg-orange-500/10',
+    iconColor: 'text-orange-600',
+    accent: 'group-hover:shadow-orange-500/20'
+  },
+  { 
+    icon: Link2, 
+    key: 'share', 
+    gradient: 'from-indigo-100 to-indigo-50',
+    iconBg: 'bg-indigo-500/10',
+    iconColor: 'text-indigo-600',
+    accent: 'group-hover:shadow-indigo-500/20'
+  },
 ];
 
 const DashboardSections = () => {
@@ -28,58 +110,110 @@ const DashboardSections = () => {
     navigate(`/dashboard?section=${sectionKey}`);
   };
 
+  const SectionCard = ({ section, index, isInfo = false }: { 
+    section: typeof sections[0], 
+    index: number,
+    isInfo?: boolean 
+  }) => {
+    const Icon = section.icon;
+    return (
+      <motion.div
+        key={section.key}
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-50px" }}
+        transition={{ 
+          duration: 0.5, 
+          delay: index * 0.08,
+          ease: [0.21, 0.47, 0.32, 0.98]
+        }}
+        whileHover={{ y: -8, transition: { duration: 0.2 } }}
+        onClick={() => handleSectionClick(section.key)}
+        className={`group relative cursor-pointer overflow-hidden rounded-2xl border border-border/50 bg-gradient-to-br ${section.gradient} p-6 shadow-sm transition-all duration-300 hover:shadow-xl ${section.accent}`}
+      >
+        {/* Decorative background element */}
+        <div className="absolute -right-8 -top-8 h-24 w-24 rounded-full bg-white/20 blur-2xl transition-all duration-500 group-hover:scale-150 group-hover:bg-white/30" />
+        
+        <div className="relative z-10">
+          <div className="flex items-start justify-between">
+            <div className={`inline-flex h-14 w-14 items-center justify-center rounded-xl ${section.iconBg} transition-all duration-300 group-hover:scale-110`}>
+              <Icon className={`h-7 w-7 ${section.iconColor}`} />
+            </div>
+            <motion.div
+              initial={{ x: -5, opacity: 0.5 }}
+              whileHover={{ x: 0, opacity: 1 }}
+              className="flex h-8 w-8 items-center justify-center rounded-full bg-white/60 backdrop-blur-sm"
+            >
+              <ChevronRight className="h-4 w-4 text-foreground/70 transition-transform group-hover:translate-x-0.5" />
+            </motion.div>
+          </div>
+          
+          <h3 className="mt-5 font-serif text-xl font-semibold text-foreground">
+            {t(`section.${section.key}`)}
+          </h3>
+          <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+            {t(`section.${section.key}Desc`)}
+          </p>
+          
+          <div className="mt-5 flex items-center gap-2">
+            <span className="text-sm font-medium text-foreground/80 transition-colors group-hover:text-foreground">
+              {t('action.start')}
+            </span>
+            <Sparkles className="h-3.5 w-3.5 text-foreground/40 opacity-0 transition-opacity group-hover:opacity-100" />
+          </div>
+        </div>
+      </motion.div>
+    );
+  };
+
   return (
-    <section id="sections" className="py-16 md:py-20">
+    <section id="sections" className="py-20 md:py-28">
       <div className="container mx-auto px-4">
+        {/* Main Sections */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="mb-12 text-center"
+          className="mb-14 text-center"
         >
-          <h2 className="font-serif text-3xl font-bold text-foreground md:text-4xl">
+          <span className="inline-block rounded-full bg-primary/10 px-4 py-1.5 text-sm font-medium text-primary">
             {t('nav.dashboard')}
+          </span>
+          <h2 className="mt-4 font-serif text-3xl font-bold text-foreground md:text-4xl lg:text-5xl">
+            Deine Bereiche
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
             {t('disclaimer.short')}
           </p>
         </motion.div>
 
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {sections.map((section, index) => {
-            const Icon = section.icon;
-            return (
-              <motion.div
-                key={section.key}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.08 }}
-                onClick={() => handleSectionClick(section.key)}
-                className="group cursor-pointer rounded-xl border border-border bg-card p-6 shadow-card transition-all hover:-translate-y-1 hover:shadow-elevated"
-              >
-                <div className="flex items-start justify-between">
-                  <div className={`inline-flex h-12 w-12 items-center justify-center rounded-lg ${section.color} transition-colors`}>
-                    <Icon className="h-6 w-6" />
-                  </div>
-                  <ChevronRight className="h-5 w-5 text-muted-foreground transition-transform group-hover:translate-x-1 group-hover:text-foreground" />
-                </div>
-                
-                <h3 className="mt-4 font-serif text-xl font-semibold text-foreground">
-                  {t(`section.${section.key}`)}
-                </h3>
-                <p className="mt-2 text-muted-foreground">
-                  {t(`section.${section.key}Desc`)}
-                </p>
-                
-                <div className="mt-4 flex items-center gap-2 text-sm font-medium text-primary transition-colors group-hover:text-sage-dark">
-                  {t('action.start')}
-                  <ChevronRight className="h-4 w-4" />
-                </div>
-              </motion.div>
-            );
-          })}
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {sections.map((section, index) => (
+            <SectionCard key={section.key} section={section} index={index} />
+          ))}
+        </div>
+
+        {/* Info & Tools Sections */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="mb-10 mt-20 text-center"
+        >
+          <span className="inline-block rounded-full bg-muted px-4 py-1.5 text-sm font-medium text-muted-foreground">
+            Hilfreiche Werkzeuge
+          </span>
+          <h3 className="mt-4 font-serif text-2xl font-bold text-foreground md:text-3xl">
+            Orientierung & Unterstützung
+          </h3>
+        </motion.div>
+
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          {infoSections.map((section, index) => (
+            <SectionCard key={section.key} section={section} index={index} isInfo />
+          ))}
         </div>
       </div>
     </section>
