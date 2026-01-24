@@ -6,6 +6,7 @@ import { supabase } from '@/integrations/supabase/browserClient';
 import { useLanguage } from '@/contexts/LanguageContext';
 import Header from '@/components/Header';
 import RelativesSummary from '@/components/relatives/RelativesSummary';
+import PINEntry from '@/components/relatives/PINEntry';
 import { Skeleton } from '@/components/ui/skeleton';
 import { logger } from '@/lib/logger';
 
@@ -27,6 +28,8 @@ const RelativesViewContent = () => {
   const [error, setError] = useState<string | null>(null);
   const [vorsorgeData, setVorsorgeData] = useState<VorsorgeData[]>([]);
   const [profileInfo, setProfileInfo] = useState<ProfileInfo | null>(null);
+  const [requiresPIN, setRequiresPIN] = useState(false);
+  const [pinVerified, setPINVerified] = useState(false);
 
   const t = {
     de: {
@@ -57,8 +60,9 @@ const RelativesViewContent = () => {
 
   const texts = t[language];
 
+  // Check if PIN is required on initial load
   useEffect(() => {
-    const loadData = async () => {
+    const checkPINRequirement = async () => {
       if (!token) {
         setError(texts.invalidLink);
         setLoading(false);
@@ -66,53 +70,109 @@ const RelativesViewContent = () => {
       }
 
       try {
-        // Validate token and get data
+        // First check with no PIN to see if PIN is required
         const { data: tokenValidation, error: tokenError } = await supabase
-          .rpc('validate_share_token', { _token: token });
+          .rpc('validate_share_token_with_pin', { _token: token, _pin: null });
 
-        if (tokenError || !tokenValidation?.length || !tokenValidation[0].is_valid) {
+        if (tokenError || !tokenValidation?.length) {
           setError(texts.invalidLink);
           setLoading(false);
           return;
         }
 
-        // Get profile info
-        const { data: profileData } = await supabase
-          .rpc('get_profile_by_token', { _token: token });
-
-        if (profileData?.length) {
-          setProfileInfo({
-            full_name: profileData[0].full_name,
-            partner_name: profileData[0].partner_name,
-          });
-        }
-
-        // Get vorsorge data
-        const { data: vData, error: vError } = await supabase
-          .rpc('get_vorsorge_data_by_token', { _token: token });
-
-        if (vError) {
-          logger.error('Error loading data:', vError);
+        const validation = tokenValidation[0];
+        
+        if (!validation.is_valid) {
           setError(texts.invalidLink);
-        } else {
-          // Transform data to match expected interface
-          const transformedData: VorsorgeData[] = (vData || []).map((item: { section_key: string; data: unknown; is_for_partner: boolean | null }) => ({
-            section_key: item.section_key,
-            data: (typeof item.data === 'object' && item.data !== null ? item.data : {}) as Record<string, unknown>,
-            is_for_partner: item.is_for_partner ?? false,
-          }));
-          setVorsorgeData(transformedData);
+          setLoading(false);
+          return;
         }
+
+        if (validation.requires_pin && !validation.pin_valid) {
+          // PIN is required, show PIN entry
+          setRequiresPIN(true);
+          setLoading(false);
+          return;
+        }
+
+        // No PIN required or PIN not set, load data directly
+        await loadFullData();
       } catch (err) {
         logger.error('Error:', err);
         setError(texts.invalidLink);
-      } finally {
         setLoading(false);
       }
     };
 
-    loadData();
-  }, [token, texts.invalidLink]);
+    checkPINRequirement();
+  }, [token]);
+
+  const loadFullData = async () => {
+    if (!token) return;
+
+    try {
+      // Get profile info
+      const { data: profileData } = await supabase
+        .rpc('get_profile_by_token', { _token: token });
+
+      if (profileData?.length) {
+        setProfileInfo({
+          full_name: profileData[0].full_name,
+          partner_name: profileData[0].partner_name,
+        });
+      }
+
+      // Get vorsorge data
+      const { data: vData, error: vError } = await supabase
+        .rpc('get_vorsorge_data_by_token', { _token: token });
+
+      if (vError) {
+        logger.error('Error loading data:', vError);
+        setError(texts.invalidLink);
+      } else {
+        // Transform data to match expected interface
+        const transformedData: VorsorgeData[] = (vData || []).map((item: { section_key: string; data: unknown; is_for_partner: boolean | null }) => ({
+          section_key: item.section_key,
+          data: (typeof item.data === 'object' && item.data !== null ? item.data : {}) as Record<string, unknown>,
+          is_for_partner: item.is_for_partner ?? false,
+        }));
+        setVorsorgeData(transformedData);
+      }
+    } catch (err) {
+      logger.error('Error:', err);
+      setError(texts.invalidLink);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handlePINSubmit = async (enteredPIN: string): Promise<boolean> => {
+    if (!token) return false;
+
+    try {
+      const { data: tokenValidation, error: tokenError } = await supabase
+        .rpc('validate_share_token_with_pin', { _token: token, _pin: enteredPIN });
+
+      if (tokenError || !tokenValidation?.length) {
+        return false;
+      }
+
+      const validation = tokenValidation[0];
+      
+      if (validation.is_valid && validation.pin_valid) {
+        setPINVerified(true);
+        setRequiresPIN(false);
+        setLoading(true);
+        await loadFullData();
+        return true;
+      }
+
+      return false;
+    } catch (err) {
+      logger.error('Error validating PIN:', err);
+      return false;
+    }
+  };
 
   if (loading) {
     return (
@@ -123,6 +183,14 @@ const RelativesViewContent = () => {
           <Skeleton className="h-48 w-full" />
           <Skeleton className="h-48 w-full" />
         </div>
+      </div>
+    );
+  }
+
+  if (requiresPIN && !pinVerified) {
+    return (
+      <div className="container mx-auto px-4 py-12">
+        <PINEntry onSubmit={handlePINSubmit} language={language} />
       </div>
     );
   }
