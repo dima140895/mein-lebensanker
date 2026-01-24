@@ -14,14 +14,14 @@ const PaymentOptions = () => {
 
   const t = {
     de: {
-      title: 'Wähle dein Paket',
+      title: 'Wähle Dein Paket',
       subtitle: 'Einmalige Zahlung – lebenslanger Zugang',
       single: 'Einzelperson',
       singlePrice: '24,99 €',
-      singleDesc: 'Für deine persönliche Vorsorge-Dokumentation',
+      singleDesc: 'Für Deine persönliche Vorsorge-Dokumentation',
       partner: 'Partnerpaket',
       partnerPrice: '39,99 €',
-      partnerDesc: 'Für dich und deinen Lebenspartner',
+      partnerDesc: 'Für Dich und Deinen Lebenspartner',
       features: [
         'Alle 6 Bereiche ausfüllen',
         'Daten sicher speichern',
@@ -112,7 +112,7 @@ const PaymentOptions = () => {
           </div>
 
           <div className="mb-6">
-            <span className="font-serif text-4xl font-bold text-foreground">
+            <span className="font-mono text-4xl font-bold text-primary">
               {texts.singlePrice}
             </span>
             <span className="text-sm text-muted-foreground ml-2">{texts.inclVat}</span>
@@ -162,7 +162,7 @@ const PaymentOptions = () => {
           </div>
 
           <div className="mb-6">
-            <span className="font-serif text-4xl font-bold text-foreground">
+            <span className="font-mono text-4xl font-bold text-primary">
               {texts.partnerPrice}
             </span>
             <span className="text-sm text-muted-foreground ml-2">{texts.inclVat}</span>
