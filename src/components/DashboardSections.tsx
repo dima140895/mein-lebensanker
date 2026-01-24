@@ -102,12 +102,14 @@ const infoSections = [
   },
 ];
 
-// Simple fade animation variants
+// Simple fade animation - starts visible to prevent flicker
 const containerVariants = {
-  hidden: {},
+  hidden: { opacity: 0 },
   visible: {
+    opacity: 1,
     transition: {
-      staggerChildren: 0.08,
+      duration: 0.3,
+      staggerChildren: 0.05,
     },
   },
 };
@@ -115,13 +117,13 @@ const containerVariants = {
 const fadeInVariants = {
   hidden: { 
     opacity: 0, 
-    y: 20,
+    y: 15,
   },
   visible: { 
     opacity: 1, 
     y: 0,
     transition: {
-      duration: 0.4,
+      duration: 0.3,
       ease: "easeOut" as const,
     },
   },
@@ -152,16 +154,12 @@ const DashboardSections = () => {
         
         <div className="relative z-10">
           <div className="flex items-start justify-between">
-            <div className={`inline-flex h-14 w-14 items-center justify-center rounded-xl ${section.iconBg} transition-all duration-300 group-hover:scale-110`}>
+            <div className={`inline-flex h-14 w-14 items-center justify-center rounded-xl ${section.iconBg} transition-transform duration-300 group-hover:scale-110`}>
               <Icon className={`h-7 w-7 ${section.iconColor}`} />
             </div>
-            <motion.div
-              initial={{ x: -5, opacity: 0.5 }}
-              whileHover={{ x: 0, opacity: 1 }}
-              className="flex h-8 w-8 items-center justify-center rounded-full bg-white/60 backdrop-blur-sm"
-            >
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/60 backdrop-blur-sm opacity-50 group-hover:opacity-100 transition-opacity">
               <ChevronRight className="h-4 w-4 text-foreground/70 transition-transform group-hover:translate-x-0.5" />
-            </motion.div>
+            </div>
           </div>
           
           <h3 className="mt-5 font-serif text-xl font-semibold text-foreground">
