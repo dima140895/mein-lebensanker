@@ -7,6 +7,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
+import LearnMore from "./pages/LearnMore";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import RelativesView from "./pages/RelativesView";
 import ResetPassword from "./pages/ResetPassword";
@@ -24,6 +25,7 @@ const App = () => (
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<Index />} />
+              <Route path="/mehr-erfahren" element={<LearnMore />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/payment-success" element={<PaymentSuccess />} />
               <Route path="/reset-password" element={<ResetPassword />} />

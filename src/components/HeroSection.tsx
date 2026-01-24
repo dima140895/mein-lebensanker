@@ -129,17 +129,7 @@ const HeroSection = () => {
               </button>
               
               <button
-                onClick={() => {
-                  const element = document.getElementById('sections');
-                  if (element) {
-                    element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    // Add highlight effect
-                    element.classList.add('ring-4', 'ring-sage/30', 'ring-offset-4');
-                    setTimeout(() => {
-                      element.classList.remove('ring-4', 'ring-sage/30', 'ring-offset-4');
-                    }, 2000);
-                  }
-                }}
+                onClick={() => navigate('/mehr-erfahren')}
                 className="inline-flex items-center gap-2 rounded-full border border-border bg-white/70 backdrop-blur-sm px-7 py-3.5 font-medium text-foreground transition-all hover:bg-white hover:shadow-md"
               >
                 {t('hero.learnMore')}
