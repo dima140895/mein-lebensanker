@@ -195,10 +195,10 @@ const DashboardSections = () => {
             {t('nav.dashboard')}
           </span>
           <h2 className="mt-4 font-serif text-3xl font-bold text-foreground md:text-4xl lg:text-5xl">
-            {t('dashboard.yourSections')}
+            {t('encourage.title')}
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
-            {t('disclaimer.short')}
+            {t('encourage.text')}
           </p>
         </motion.div>
 
