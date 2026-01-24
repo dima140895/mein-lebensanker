@@ -195,10 +195,10 @@ const DashboardSections = () => {
             {t('nav.dashboard')}
           </span>
           <h2 className="mt-4 font-serif text-3xl font-bold text-foreground md:text-4xl lg:text-5xl">
-            {t('encourage.title')}
+            Alles an einem Ort
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
-            {t('encourage.text')}
+            Strukturiere Deine persönlichen, finanziellen und organisatorischen Informationen
           </p>
         </motion.div>
 
