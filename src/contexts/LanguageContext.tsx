@@ -53,8 +53,8 @@ const translations = {
     'encourage.text': 'Viele Menschen schieben dieses Thema vor sich her. Du gehst gerade einen wichtigen Schritt.',
     
     // Disclaimer
-    'disclaimer.title': 'Rechtlicher Hinweis',
-    'disclaimer.text': 'Diese Anwendung ersetzt keine Rechts- oder Steuerberatung und erstellt keine rechtlich bindenden Dokumente. Alle Angaben dienen ausschließlich der persönlichen Übersicht und Vorbereitung.',
+    'disclaimer.title': 'Wichtiger Hinweis',
+    'disclaimer.text': 'Diese Anwendung ersetzt keine rechtliche, notarielle, steuerliche oder medizinische Beratung und erstellt keine rechtlich bindenden Dokumente. Alle Angaben dienen ausschließlich der persönlichen Übersicht, Vorbereitung und als Gesprächsgrundlage für Deine Angehörigen.',
     'disclaimer.short': 'Zur persönlichen Orientierung – ohne rechtliche Verbindlichkeit',
     
     // Actions
@@ -114,8 +114,8 @@ const translations = {
     'encourage.text': 'Many people postpone this topic. You are taking an important step right now.',
     
     // Disclaimer
-    'disclaimer.title': 'Legal Notice',
-    'disclaimer.text': 'This tool does not provide legal or tax advice and does not create legally binding documents. All information is for personal organization and preparation only.',
+    'disclaimer.title': 'Important Notice',
+    'disclaimer.text': 'This tool does not provide legal, notarial, tax, or medical advice and does not create legally binding documents. All information is for personal organization, preparation, and as a basis for discussion with your loved ones.',
     'disclaimer.short': 'For personal orientation – without legal validity',
     
     // Actions
