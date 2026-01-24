@@ -130,8 +130,23 @@ const fadeInVariants = {
 };
 
 const DashboardSections = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const navigate = useNavigate();
+
+  const texts = {
+    de: {
+      badge: 'Deine Vorsorge',
+      title: 'Alles an einem Ort',
+      description: 'Halte Deine wichtigsten Informationen strukturiert fest – damit Deine Liebsten im Ernstfall nicht im Ungewissen stehen.',
+    },
+    en: {
+      badge: 'Your Planning',
+      title: 'Everything in One Place',
+      description: 'Keep your most important information organized – so your loved ones are not left in the dark in case of emergency.',
+    },
+  };
+
+  const tx = texts[language];
 
   const handleSectionClick = (sectionKey: string) => {
     navigate(`/dashboard?section=${sectionKey}`);
@@ -192,13 +207,13 @@ const DashboardSections = () => {
           className="mb-16 text-center"
         >
           <span className="inline-block rounded-full bg-sage-light px-4 py-1.5 text-sm font-medium text-sage-dark mb-4">
-            Deine Vorsorge
+            {tx.badge}
           </span>
           <h2 className="font-serif text-3xl font-bold text-foreground md:text-4xl lg:text-5xl">
-            Alles an einem Ort
+            {tx.title}
           </h2>
           <p className="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-muted-foreground">
-            Halte Deine wichtigsten Informationen strukturiert fest – damit Deine Liebsten im Ernstfall nicht im Ungewissen stehen.
+            {tx.description}
           </p>
         </motion.div>
 
