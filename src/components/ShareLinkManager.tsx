@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Link2, Plus, Trash2, Copy, Check, ExternalLink, Shield } from 'lucide-react';
+import { Link2, Plus, Trash2, Copy, Check, ExternalLink, Shield, Lock } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/browserClient';
@@ -17,6 +17,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from '@/components/ui/input-otp';
+import { Switch } from '@/components/ui/switch';
 
 interface ShareToken {
   id: string;
@@ -25,6 +31,7 @@ interface ShareToken {
   is_active: boolean;
   expires_at: string | null;
   created_at: string;
+  pin_hash: string | null;
 }
 
 const ShareLinkManager = () => {
@@ -36,6 +43,8 @@ const ShareLinkManager = () => {
   const [newLabel, setNewLabel] = useState('');
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [usePIN, setUsePIN] = useState(false);
+  const [pin, setPIN] = useState('');
 
   const t = {
     de: {
@@ -53,6 +62,11 @@ const ShareLinkManager = () => {
       created: 'Zugangslink erstellt',
       securityNote: 'Jeder mit diesem Link kann Deine Übersicht einsehen. Teile ihn nur mit Personen, denen Du vertraust.',
       createdAt: 'Erstellt am',
+      pinProtection: 'PIN-Schutz aktivieren',
+      pinDescription: 'Angehörige müssen einen 4-stelligen PIN eingeben',
+      enterPIN: 'PIN festlegen',
+      pinRequired: 'Bitte gib einen 4-stelligen PIN ein',
+      protected: 'Geschützt',
     },
     en: {
       title: 'Relatives Access',
@@ -69,6 +83,11 @@ const ShareLinkManager = () => {
       created: 'Access link created',
       securityNote: 'Anyone with this link can view your overview. Only share it with people you trust.',
       createdAt: 'Created on',
+      pinProtection: 'Enable PIN protection',
+      pinDescription: 'Relatives must enter a 4-digit PIN',
+      enterPIN: 'Set PIN',
+      pinRequired: 'Please enter a 4-digit PIN',
+      protected: 'Protected',
     },
   };
 
@@ -84,7 +103,7 @@ const ShareLinkManager = () => {
       .order('created_at', { ascending: false });
 
     if (!error && data) {
-      setTokens(data);
+      setTokens(data as ShareToken[]);
     }
     setLoading(false);
   };
@@ -95,8 +114,16 @@ const ShareLinkManager = () => {
 
   const createToken = async () => {
     if (!user) return;
+    
+    // Validate PIN if enabled
+    if (usePIN && pin.length !== 4) {
+      toast.error(texts.pinRequired);
+      return;
+    }
+    
     setCreating(true);
 
+    // First create the token
     const { data, error } = await supabase
       .from('share_tokens')
       .insert({
@@ -109,10 +136,31 @@ const ShareLinkManager = () => {
     if (error) {
       logger.error('Error creating token:', error);
       toast.error('Fehler beim Erstellen');
-    } else if (data) {
-      setTokens(prev => [data, ...prev]);
+      setCreating(false);
+      return;
+    }
+    
+    // If PIN is enabled, hash and update
+    if (usePIN && pin.length === 4 && data) {
+      const { data: hashData } = await supabase
+        .rpc('hash_pin', { _pin: pin });
+      
+      if (hashData) {
+        await supabase
+          .from('share_tokens')
+          .update({ pin_hash: hashData })
+          .eq('id', data.id);
+        
+        data.pin_hash = hashData;
+      }
+    }
+    
+    if (data) {
+      setTokens(prev => [data as ShareToken, ...prev]);
       toast.success(texts.created);
       setNewLabel('');
+      setPIN('');
+      setUsePIN(false);
       setDialogOpen(false);
     }
     setCreating(false);
@@ -181,7 +229,43 @@ const ShareLinkManager = () => {
                   placeholder={texts.labelPlaceholder}
                 />
               </div>
-              <Button onClick={createToken} disabled={creating} className="w-full">
+              
+              {/* PIN Protection Toggle */}
+              <div className="rounded-lg border border-border p-4 space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="space-y-0.5">
+                    <Label className="flex items-center gap-2">
+                      <Lock className="h-4 w-4" />
+                      {texts.pinProtection}
+                    </Label>
+                    <p className="text-sm text-muted-foreground">{texts.pinDescription}</p>
+                  </div>
+                  <Switch
+                    checked={usePIN}
+                    onCheckedChange={setUsePIN}
+                  />
+                </div>
+                
+                {usePIN && (
+                  <div className="space-y-2">
+                    <Label>{texts.enterPIN}</Label>
+                    <InputOTP
+                      maxLength={4}
+                      value={pin}
+                      onChange={setPIN}
+                    >
+                      <InputOTPGroup>
+                        <InputOTPSlot index={0} />
+                        <InputOTPSlot index={1} />
+                        <InputOTPSlot index={2} />
+                        <InputOTPSlot index={3} />
+                      </InputOTPGroup>
+                    </InputOTP>
+                  </div>
+                )}
+              </div>
+              
+              <Button onClick={createToken} disabled={creating || (usePIN && pin.length !== 4)} className="w-full">
                 {creating ? '...' : texts.create}
               </Button>
             </div>
@@ -209,9 +293,17 @@ const ShareLinkManager = () => {
               className="flex items-center justify-between gap-4 rounded-xl border border-border bg-card p-4"
             >
               <div className="flex-1 min-w-0">
-                <p className="font-medium text-foreground truncate">
-                  {token.label || `Link ${token.token.slice(0, 8)}...`}
-                </p>
+                <div className="flex items-center gap-2">
+                  <p className="font-medium text-foreground truncate">
+                    {token.label || `Link ${token.token.slice(0, 8)}...`}
+                  </p>
+                  {token.pin_hash && (
+                    <span className="inline-flex items-center gap-1 rounded-full bg-sage-light px-2 py-0.5 text-xs font-medium text-sage-dark">
+                      <Lock className="h-3 w-3" />
+                      {texts.protected}
+                    </span>
+                  )}
+                </div>
                 <p className="text-sm text-muted-foreground">
                   {texts.createdAt} {formatDate(token.created_at)}
                 </p>
