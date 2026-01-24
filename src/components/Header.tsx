@@ -107,37 +107,37 @@ const Header = () => {
     { 
       label: tx.myProfile, 
       icon: <User className="h-4 w-4" />,
-      onClick: () => navigateTo('/dashboard?tab=personal'), 
+      onClick: () => navigateTo('/dashboard?section=personal'), 
       showWhen: 'authenticated' 
     },
     { 
       label: tx.assets, 
       icon: <Wallet className="h-4 w-4" />,
-      onClick: () => navigateTo('/dashboard?tab=assets'), 
+      onClick: () => navigateTo('/dashboard?section=assets'), 
       showWhen: 'authenticated' 
     },
     { 
       label: tx.digital, 
       icon: <Globe className="h-4 w-4" />,
-      onClick: () => navigateTo('/dashboard?tab=digital'), 
+      onClick: () => navigateTo('/dashboard?section=digital'), 
       showWhen: 'authenticated' 
     },
     { 
       label: tx.wishes, 
       icon: <ScrollText className="h-4 w-4" />,
-      onClick: () => navigateTo('/dashboard?tab=wishes'), 
+      onClick: () => navigateTo('/dashboard?section=wishes'), 
       showWhen: 'authenticated' 
     },
     { 
       label: tx.documents, 
       icon: <FolderOpen className="h-4 w-4" />,
-      onClick: () => navigateTo('/dashboard?tab=documents'), 
+      onClick: () => navigateTo('/dashboard?section=documents'), 
       showWhen: 'authenticated' 
     },
     { 
       label: tx.contacts, 
       icon: <Phone className="h-4 w-4" />,
-      onClick: () => navigateTo('/dashboard?tab=contacts'), 
+      onClick: () => navigateTo('/dashboard?section=contacts'), 
       showWhen: 'authenticated' 
     },
   ];
@@ -263,7 +263,7 @@ const Header = () => {
               <Button 
                 variant="ghost" 
                 size="sm" 
-                onClick={() => navigateTo('/dashboard?tab=personal')}
+                onClick={() => navigateTo('/dashboard?section=personal')}
                 className="text-muted-foreground hover:text-foreground"
               >
                 <User className="h-4 w-4" />
@@ -271,7 +271,7 @@ const Header = () => {
               <Button 
                 variant="ghost" 
                 size="sm" 
-                onClick={() => navigateTo('/dashboard?tab=assets')}
+                onClick={() => navigateTo('/dashboard?section=assets')}
                 className="text-muted-foreground hover:text-foreground"
               >
                 <Wallet className="h-4 w-4" />
@@ -279,7 +279,7 @@ const Header = () => {
               <Button 
                 variant="ghost" 
                 size="sm" 
-                onClick={() => navigateTo('/dashboard?tab=digital')}
+                onClick={() => navigateTo('/dashboard?section=digital')}
                 className="text-muted-foreground hover:text-foreground"
               >
                 <Globe className="h-4 w-4" />
@@ -287,7 +287,7 @@ const Header = () => {
               <Button 
                 variant="ghost" 
                 size="sm" 
-                onClick={() => navigateTo('/dashboard?tab=wishes')}
+                onClick={() => navigateTo('/dashboard?section=wishes')}
                 className="text-muted-foreground hover:text-foreground"
               >
                 <ScrollText className="h-4 w-4" />
@@ -295,7 +295,7 @@ const Header = () => {
               <Button 
                 variant="ghost" 
                 size="sm" 
-                onClick={() => navigateTo('/dashboard?tab=documents')}
+                onClick={() => navigateTo('/dashboard?section=documents')}
                 className="text-muted-foreground hover:text-foreground"
               >
                 <FolderOpen className="h-4 w-4" />
@@ -303,7 +303,7 @@ const Header = () => {
               <Button 
                 variant="ghost" 
                 size="sm" 
-                onClick={() => navigateTo('/dashboard?tab=contacts')}
+                onClick={() => navigateTo('/dashboard?section=contacts')}
                 className="text-muted-foreground hover:text-foreground"
               >
                 <Phone className="h-4 w-4" />
