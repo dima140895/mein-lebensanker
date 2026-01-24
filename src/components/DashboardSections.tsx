@@ -191,6 +191,9 @@ const DashboardSections = () => {
           transition={{ duration: 0.6 }}
           className="mb-16 text-center"
         >
+          <span className="inline-block rounded-full bg-sage-light px-4 py-1.5 text-sm font-medium text-sage-dark mb-4">
+            Deine Vorsorge
+          </span>
           <h2 className="font-serif text-3xl font-bold text-foreground md:text-4xl lg:text-5xl">
             Alles an einem Ort
           </h2>
