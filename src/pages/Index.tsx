@@ -1,5 +1,3 @@
-import { LanguageProvider } from '@/contexts/LanguageContext';
-import { AuthProvider } from '@/contexts/AuthContext';
 import Header from '@/components/Header';
 import HeroSection from '@/components/HeroSection';
 import ValuePropositions from '@/components/ValuePropositions';
@@ -8,19 +6,15 @@ import Disclaimer from '@/components/Disclaimer';
 
 const Index = () => {
   return (
-    <AuthProvider>
-      <LanguageProvider>
-        <div className="flex min-h-screen flex-col bg-background">
-          <Header />
-          <main className="flex-1">
-            <HeroSection />
-            <ValuePropositions />
-            <DashboardSections />
-          </main>
-          <Disclaimer />
-        </div>
-      </LanguageProvider>
-    </AuthProvider>
+    <div className="flex min-h-screen flex-col bg-background">
+      <Header />
+      <main className="flex-1">
+        <HeroSection />
+        <ValuePropositions />
+        <DashboardSections />
+      </main>
+      <Disclaimer />
+    </div>
   );
 };
 
