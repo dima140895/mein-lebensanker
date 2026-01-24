@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/integrations/supabase/browserClient';
 import { useAuth } from './AuthContext';
 import { Json } from '@/integrations/supabase/types';
 
