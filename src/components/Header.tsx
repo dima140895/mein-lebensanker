@@ -65,7 +65,6 @@ const Header = () => {
 
   const menuItems = [
     { label: tx.home, onClick: () => { setMobileMenuOpen(false); navigate('/'); } },
-    { label: tx.dashboard, onClick: handleDashboardClick },
   ];
 
   return (
@@ -167,10 +166,6 @@ const Header = () => {
         
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center gap-4">
-          <Button variant="ghost" size="sm" onClick={handleDashboardClick}>
-            <LayoutDashboard className="mr-2 h-4 w-4" />
-            {tx.dashboard}
-          </Button>
           
           {user ? (
             <Button variant="outline" size="sm" onClick={handleLogout}>
@@ -205,12 +200,6 @@ const Header = () => {
           <LanguageToggle />
         </nav>
 
-        {/* Mobile: Only show Dashboard + minimal actions */}
-        <div className="flex md:hidden items-center gap-2">
-          <Button variant="ghost" size="icon" onClick={handleDashboardClick}>
-            <LayoutDashboard className="h-5 w-5" />
-          </Button>
-        </div>
       </div>
 
       {/* Auth Dialog for mobile (triggered from menu) */}
