@@ -114,20 +114,11 @@ const HeroSection = () => {
               {t('hero.description')}
             </motion.p>
 
-            {/* CTA Buttons */}
+            {/* CTA Button */}
             <motion.div 
               variants={itemVariants} 
-              className="mt-8 flex flex-col sm:flex-row items-start gap-4"
+              className="mt-8"
             >
-              <button
-                onClick={() => navigate('/dashboard')}
-                className="group relative inline-flex items-center gap-2 rounded-full bg-primary px-7 py-3.5 font-medium text-primary-foreground shadow-lg transition-all hover:shadow-xl hover:scale-[1.02] active:scale-[0.98]"
-              >
-                <span className="absolute inset-0 rounded-full bg-gradient-to-r from-primary to-sage-dark opacity-0 transition-opacity group-hover:opacity-100" />
-                <span className="relative">{t('hero.cta')}</span>
-                <ArrowRight className="relative h-5 w-5 transition-transform group-hover:translate-x-1" />
-              </button>
-              
               <button
                 onClick={() => navigate('/mehr-erfahren')}
                 className="inline-flex items-center gap-2 rounded-full border border-border bg-white/70 backdrop-blur-sm px-7 py-3.5 font-medium text-foreground transition-all hover:bg-white hover:shadow-md"
