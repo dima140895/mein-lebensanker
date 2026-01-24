@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Link2, Plus, Trash2, Copy, Check, ExternalLink, Shield, Lock } from 'lucide-react';
+import { Link2, Plus, Trash2, Copy, Check, ExternalLink, Shield, Lock, Share2, Eye, Info } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/browserClient';
@@ -67,6 +67,17 @@ const ShareLinkManager = () => {
       enterPIN: 'PIN festlegen',
       pinRequired: 'Bitte gib einen 4-stelligen PIN ein',
       protected: 'Geschützt',
+      howItWorksTitle: 'So funktioniert der Angehörigen-Zugang',
+      howItWorksStep1Title: 'Link erstellen',
+      howItWorksStep1Desc: 'Erstelle einen persönlichen Zugangslink – optional mit PIN-Schutz für mehr Sicherheit.',
+      howItWorksStep2Title: 'Link teilen',
+      howItWorksStep2Desc: 'Sende den Link per E-Mail, Messenger oder gib ihn persönlich weiter. Bei PIN-Schutz teile den PIN separat mit.',
+      howItWorksStep3Title: 'Übersicht einsehen',
+      howItWorksStep3Desc: 'Deine Angehörigen können alle Informationen lesen, aber nichts ändern. Sie sehen eine ruhige, übersichtliche Darstellung.',
+      whatTheySeeTile: 'Was Deine Angehörigen sehen',
+      whatTheySeeDesc: 'Eine beruhigende Übersicht aller von Dir hinterlegten Informationen – persönliche Daten, Vermögenswerte, digitale Konten, persönliche Wünsche, Dokumentenstandorte und wichtige Kontakte. Die Darstellung ist einfühlsam gestaltet mit dem Hinweis: "Du musst jetzt nicht alles entscheiden."',
+      importantNote: 'Wichtiger Hinweis',
+      importantNoteDesc: 'Die Übersicht dient nur der Orientierung und hat keine rechtliche Wirkung. Sie ersetzt keine notarielle, rechtliche oder steuerliche Beratung.',
     },
     en: {
       title: 'Relatives Access',
@@ -88,6 +99,17 @@ const ShareLinkManager = () => {
       enterPIN: 'Set PIN',
       pinRequired: 'Please enter a 4-digit PIN',
       protected: 'Protected',
+      howItWorksTitle: 'How Relatives Access Works',
+      howItWorksStep1Title: 'Create a Link',
+      howItWorksStep1Desc: 'Create a personal access link – optionally with PIN protection for added security.',
+      howItWorksStep2Title: 'Share the Link',
+      howItWorksStep2Desc: 'Send the link via email, messenger, or share it in person. If PIN-protected, share the PIN separately.',
+      howItWorksStep3Title: 'View Overview',
+      howItWorksStep3Desc: 'Your loved ones can read all information but cannot make changes. They see a calm, clear presentation.',
+      whatTheySeeTile: 'What Your Loved Ones See',
+      whatTheySeeDesc: 'A reassuring overview of all your recorded information – personal data, assets, digital accounts, personal wishes, document locations, and important contacts. The presentation is designed with empathy, with the message: "You don\'t have to decide everything now."',
+      importantNote: 'Important Note',
+      importantNoteDesc: 'This overview is for orientation only and has no legal effect. It does not replace notarial, legal, or tax advice.',
     },
   };
 
@@ -271,6 +293,58 @@ const ShareLinkManager = () => {
             </div>
           </DialogContent>
         </Dialog>
+      </div>
+
+      {/* How it works section */}
+      <div className="rounded-xl border border-border bg-card p-6 space-y-6">
+        <h3 className="font-serif text-lg font-semibold text-foreground flex items-center gap-2">
+          <Info className="h-5 w-5 text-primary" />
+          {texts.howItWorksTitle}
+        </h3>
+        
+        <div className="grid gap-4 md:grid-cols-3">
+          {/* Step 1 */}
+          <div className="flex flex-col items-center text-center p-4 rounded-lg bg-sage-light/30">
+            <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center mb-3">
+              <Plus className="h-5 w-5 text-primary" />
+            </div>
+            <h4 className="font-medium text-foreground mb-1">{texts.howItWorksStep1Title}</h4>
+            <p className="text-sm text-muted-foreground">{texts.howItWorksStep1Desc}</p>
+          </div>
+          
+          {/* Step 2 */}
+          <div className="flex flex-col items-center text-center p-4 rounded-lg bg-sage-light/30">
+            <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center mb-3">
+              <Share2 className="h-5 w-5 text-primary" />
+            </div>
+            <h4 className="font-medium text-foreground mb-1">{texts.howItWorksStep2Title}</h4>
+            <p className="text-sm text-muted-foreground">{texts.howItWorksStep2Desc}</p>
+          </div>
+          
+          {/* Step 3 */}
+          <div className="flex flex-col items-center text-center p-4 rounded-lg bg-sage-light/30">
+            <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center mb-3">
+              <Eye className="h-5 w-5 text-primary" />
+            </div>
+            <h4 className="font-medium text-foreground mb-1">{texts.howItWorksStep3Title}</h4>
+            <p className="text-sm text-muted-foreground">{texts.howItWorksStep3Desc}</p>
+          </div>
+        </div>
+        
+        {/* What they see */}
+        <div className="rounded-lg bg-cream-dark/50 p-4 space-y-2">
+          <h4 className="font-medium text-foreground">{texts.whatTheySeeTile}</h4>
+          <p className="text-sm text-muted-foreground">{texts.whatTheySeeDesc}</p>
+        </div>
+        
+        {/* Important note */}
+        <div className="rounded-lg bg-amber-light/30 border border-amber/20 p-4 flex items-start gap-3">
+          <Shield className="h-5 w-5 text-amber flex-shrink-0 mt-0.5" />
+          <div>
+            <h4 className="font-medium text-amber">{texts.importantNote}</h4>
+            <p className="text-sm text-amber/80">{texts.importantNoteDesc}</p>
+          </div>
+        </div>
       </div>
 
       <div className="rounded-xl bg-amber-light/30 border border-amber/20 p-4 flex items-start gap-3">
