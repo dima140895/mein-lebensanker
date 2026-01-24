@@ -181,9 +181,7 @@ const DashboardSections = () => {
   };
 
   return (
-    <section id="sections" className="relative pt-8 pb-20 md:pt-12 md:pb-28 overflow-hidden">
-      {/* Gradient overlay connecting to hero */}
-      <div className="absolute inset-0 bg-gradient-to-b from-background via-sage-light/15 via-40% to-cream-dark/20 pointer-events-none" />
+    <section id="sections" className="relative pt-8 pb-20 md:pt-12 md:pb-28 overflow-hidden bg-background">
       <div className="container mx-auto px-4">
         {/* Main Sections Header */}
         <motion.div
@@ -193,13 +191,6 @@ const DashboardSections = () => {
           transition={{ duration: 0.6 }}
           className="mb-16 text-center"
         >
-          <div className="inline-flex items-center gap-2 rounded-full border border-sage/20 bg-white/80 backdrop-blur-sm px-4 py-2 text-sm font-medium text-sage-dark shadow-sm mb-6">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sage opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-sage"></span>
-            </span>
-            Sechs Bereiche für Deine Vorsorge
-          </div>
           <h2 className="font-serif text-3xl font-bold text-foreground md:text-4xl lg:text-5xl">
             Alles an einem Ort
           </h2>
