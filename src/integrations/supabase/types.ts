@@ -161,6 +161,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      user_has_access: { Args: { _user_id: string }; Returns: boolean }
       validate_share_token: {
         Args: { _token: string }
         Returns: {
