@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { User, Wallet, Globe, Heart, FileText, ArrowLeft, Users } from 'lucide-react';
+import { User, Wallet, Globe, Heart, FileText, ArrowLeft, Users, Phone } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage, LanguageProvider } from '@/contexts/LanguageContext';
 import { FormProvider } from '@/contexts/FormContext';
@@ -13,6 +13,7 @@ import AssetsForm from '@/components/forms/AssetsForm';
 import DigitalForm from '@/components/forms/DigitalForm';
 import WishesForm from '@/components/forms/WishesForm';
 import DocumentsForm from '@/components/forms/DocumentsForm';
+import ContactsForm from '@/components/forms/ContactsForm';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
@@ -22,6 +23,7 @@ const sections = [
   { key: 'digital', icon: Globe, color: 'bg-sage-light text-sage-dark' },
   { key: 'wishes', icon: Heart, color: 'bg-amber-light text-amber' },
   { key: 'documents', icon: FileText, color: 'bg-sage-light text-sage-dark' },
+  { key: 'contacts', icon: Phone, color: 'bg-amber-light text-amber' },
 ];
 
 const DashboardContent = () => {
@@ -40,6 +42,7 @@ const DashboardContent = () => {
       digital: 'Digital',
       wishes: 'Wünsche',
       documents: 'Dokumente',
+      contacts: 'Kontakte',
       you: 'Für mich',
       partner: 'Für Partner',
       notPaid: 'Um deine Daten zu speichern, wähle ein Paket:',
@@ -53,6 +56,7 @@ const DashboardContent = () => {
       digital: 'Digital',
       wishes: 'Wishes',
       documents: 'Documents',
+      contacts: 'Contacts',
       you: 'For Me',
       partner: 'For Partner',
       notPaid: 'To save your data, choose a package:',
@@ -89,6 +93,7 @@ const DashboardContent = () => {
       case 'digital': return <DigitalForm isPartner={isPartnerView} />;
       case 'wishes': return <WishesForm isPartner={isPartnerView} />;
       case 'documents': return <DocumentsForm isPartner={isPartnerView} />;
+      case 'contacts': return <ContactsForm isPartner={isPartnerView} />;
       default: return null;
     }
   };
