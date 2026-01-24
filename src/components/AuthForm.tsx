@@ -10,12 +10,13 @@ import { toast } from 'sonner';
 
 interface AuthFormProps {
   onSuccess?: () => void;
+  defaultMode?: 'login' | 'register';
 }
 
-const AuthForm = ({ onSuccess }: AuthFormProps) => {
+const AuthForm = ({ onSuccess, defaultMode = 'login' }: AuthFormProps) => {
   const { signUp, signIn } = useAuth();
   const { language } = useLanguage();
-  const [isLogin, setIsLogin] = useState(true);
+  const [isLogin, setIsLogin] = useState(defaultMode === 'login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
