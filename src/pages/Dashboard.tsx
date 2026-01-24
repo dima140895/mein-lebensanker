@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { User, Wallet, Globe, Heart, FileText, ArrowLeft, Users, Phone } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
@@ -15,7 +16,7 @@ import WishesForm from '@/components/forms/WishesForm';
 import DocumentsForm from '@/components/forms/DocumentsForm';
 import ContactsForm from '@/components/forms/ContactsForm';
 import { Button } from '@/components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const sections = [
   { key: 'personal', icon: User, color: 'bg-sage-light text-sage-dark' },
@@ -29,8 +30,26 @@ const sections = [
 const DashboardContent = () => {
   const { user, profile, loading } = useAuth();
   const { language } = useLanguage();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [activeSection, setActiveSection] = useState<string | null>(null);
   const [isPartnerView, setIsPartnerView] = useState(false);
+
+  // Read section from URL on mount
+  useEffect(() => {
+    const sectionFromUrl = searchParams.get('section');
+    if (sectionFromUrl && sections.some(s => s.key === sectionFromUrl)) {
+      setActiveSection(sectionFromUrl);
+    }
+  }, [searchParams]);
+
+  const handleSectionChange = (section: string | null) => {
+    setActiveSection(section);
+    if (section) {
+      setSearchParams({ section });
+    } else {
+      setSearchParams({});
+    }
+  };
 
   const t = {
     de: {
@@ -101,7 +120,7 @@ const DashboardContent = () => {
   if (activeSection) {
     return (
       <div className="container mx-auto px-4 py-8">
-        <Button variant="ghost" onClick={() => setActiveSection(null)} className="mb-6">
+        <Button variant="ghost" onClick={() => handleSectionChange(null)} className="mb-6">
           <ArrowLeft className="mr-2 h-4 w-4" /> {texts.back}
         </Button>
 
@@ -135,7 +154,7 @@ const DashboardContent = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.1 }}
-              onClick={() => setActiveSection(section.key)}
+              onClick={() => handleSectionChange(section.key)}
               className="flex items-center gap-4 p-6 rounded-xl border border-border bg-card shadow-card hover:shadow-elevated transition-all text-left"
             >
               <div className={`h-12 w-12 rounded-lg flex items-center justify-center ${section.color}`}>

@@ -43,6 +43,8 @@ const translations = {
     'section.wishesDesc': 'Medizinische, Pflege- und Beerdigungswünsche',
     'section.documents': 'Dokumenten-Übersicht',
     'section.documentsDesc': 'Wo liegen wichtige Dokumente?',
+    'section.contacts': 'Wichtige Kontakte',
+    'section.contactsDesc': 'Ärzte, Anwälte und Vertrauenspersonen',
     'section.summary': 'Zusammenfassung',
     'section.summaryDesc': 'Übersicht und PDF-Export',
     
@@ -102,6 +104,8 @@ const translations = {
     'section.wishesDesc': 'Medical, care, and funeral wishes',
     'section.documents': 'Document Overview',
     'section.documentsDesc': 'Where are important documents?',
+    'section.contacts': 'Important Contacts',
+    'section.contactsDesc': 'Doctors, lawyers, and trusted persons',
     'section.summary': 'Summary',
     'section.summaryDesc': 'Overview and PDF export',
     
