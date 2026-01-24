@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Heart, LogIn, UserPlus, Menu, Home, User, Info, ClipboardList, Wallet, Globe, ScrollText, FolderOpen, Phone, ChevronDown } from 'lucide-react';
+import { Heart, LogIn, UserPlus, Menu, Home, User, Info, ClipboardList, Wallet, Globe, ScrollText, FolderOpen, Phone, ChevronDown, Link2 } from 'lucide-react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import LanguageToggle from './LanguageToggle';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -49,6 +49,7 @@ const Header = () => {
     { key: 'wishes', label: { de: 'Wünsche', en: 'Wishes' }, icon: ScrollText },
     { key: 'documents', label: { de: 'Dokumente', en: 'Documents' }, icon: FolderOpen },
     { key: 'contacts', label: { de: 'Kontakte', en: 'Contacts' }, icon: Phone },
+    { key: 'share', label: { de: 'Für Angehörige', en: 'For Relatives' }, icon: Link2 },
   ];
 
   const texts = {
