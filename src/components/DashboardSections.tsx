@@ -1,11 +1,12 @@
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import { 
   User, 
   Wallet, 
   Globe, 
   Heart, 
   FileText, 
-  Download,
+  Phone,
   ChevronRight
 } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -16,11 +17,16 @@ const sections = [
   { icon: Globe, key: 'digital', color: 'bg-sage-light text-sage-dark' },
   { icon: Heart, key: 'wishes', color: 'bg-amber-light text-amber' },
   { icon: FileText, key: 'documents', color: 'bg-sage-light text-sage-dark' },
-  { icon: Download, key: 'summary', color: 'bg-amber-light text-amber' },
+  { icon: Phone, key: 'contacts', color: 'bg-amber-light text-amber' },
 ];
 
 const DashboardSections = () => {
   const { t } = useLanguage();
+  const navigate = useNavigate();
+
+  const handleSectionClick = (sectionKey: string) => {
+    navigate(`/dashboard?section=${sectionKey}`);
+  };
 
   return (
     <section id="sections" className="py-16 md:py-20">
@@ -50,6 +56,7 @@ const DashboardSections = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: index * 0.08 }}
+                onClick={() => handleSectionClick(section.key)}
                 className="group cursor-pointer rounded-xl border border-border bg-card p-6 shadow-card transition-all hover:-translate-y-1 hover:shadow-elevated"
               >
                 <div className="flex items-start justify-between">
