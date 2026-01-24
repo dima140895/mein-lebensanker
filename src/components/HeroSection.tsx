@@ -153,7 +153,7 @@ const HeroSection = () => {
               </button>
               
               <a
-                href="#sections"
+                href="#learn-more"
                 className="inline-flex items-center gap-2 rounded-full border border-border bg-white/70 backdrop-blur-sm px-7 py-3.5 font-medium text-foreground transition-all hover:bg-white hover:shadow-md"
               >
                 {t('hero.learnMore')}

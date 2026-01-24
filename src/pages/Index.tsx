@@ -1,5 +1,6 @@
 import Header from '@/components/Header';
 import HeroSection from '@/components/HeroSection';
+import LearnMoreSection from '@/components/LearnMoreSection';
 import ValuePropositions from '@/components/ValuePropositions';
 import DashboardSections from '@/components/DashboardSections';
 import Disclaimer from '@/components/Disclaimer';
@@ -10,6 +11,7 @@ const Index = () => {
       <Header />
       <main className="flex-1">
         <HeroSection />
+        <LearnMoreSection />
         <DashboardSections />
         <ValuePropositions />
       </main>
