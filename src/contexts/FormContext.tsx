@@ -52,12 +52,19 @@ export interface DocumentsData {
   notes: string;
 }
 
+export interface ContactsData {
+  contacts: Array<{ name: string; relationship: string; phone: string; email: string; address: string }>;
+  professionals: Array<{ type: string; name: string; phone: string; email: string; address: string }>;
+  notes: string;
+}
+
 export interface VorsorgeFormData {
   personal: PersonalData;
   assets: AssetsData;
   digital: DigitalData;
   wishes: WishesData;
   documents: DocumentsData;
+  contacts: ContactsData;
 }
 
 const defaultPersonalData: PersonalData = {
@@ -109,12 +116,19 @@ const defaultDocumentsData: DocumentsData = {
   notes: '',
 };
 
+const defaultContactsData: ContactsData = {
+  contacts: [{ name: '', relationship: '', phone: '', email: '', address: '' }],
+  professionals: [],
+  notes: '',
+};
+
 const defaultFormData: VorsorgeFormData = {
   personal: defaultPersonalData,
   assets: defaultAssetsData,
   digital: defaultDigitalData,
   wishes: defaultWishesData,
   documents: defaultDocumentsData,
+  contacts: defaultContactsData,
 };
 
 interface FormContextType {
