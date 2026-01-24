@@ -42,7 +42,7 @@ const ValuePropositions = () => {
                 transition={{ duration: 0.5, delay: index * 0.1 }}
                 className="group rounded-xl border border-border bg-card p-6 shadow-card transition-all hover:shadow-elevated"
               >
-                <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-lg bg-sage-light text-sage-dark transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
+                <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-lg bg-sage-light text-sage-dark">
                   <Icon className="h-6 w-6" />
                 </div>
                 <h3 className="mb-2 font-serif text-xl font-semibold text-foreground">
