@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Heart, LogIn, UserPlus, Menu, Home, User, Info, ClipboardList, Wallet, Globe, ScrollText, Users, FolderOpen, Phone } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Heart, LogIn, UserPlus, Menu, Home, User, Info, ClipboardList, Wallet, Globe, ScrollText, FolderOpen, Phone, ChevronDown } from 'lucide-react';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import LanguageToggle from './LanguageToggle';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
@@ -16,6 +16,12 @@ import {
   SheetContent,
   SheetTrigger,
 } from '@/components/ui/sheet';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import AuthForm from './AuthForm';
 
 interface MenuItem {
@@ -29,9 +35,21 @@ const Header = () => {
   const { language } = useLanguage();
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [authOpen, setAuthOpen] = useState(false);
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const currentSection = searchParams.get('section');
+
+  const sectionItems = [
+    { key: 'personal', label: { de: 'Persönliche Daten', en: 'Personal Data' }, icon: User },
+    { key: 'assets', label: { de: 'Vermögen', en: 'Assets' }, icon: Wallet },
+    { key: 'digital', label: { de: 'Digitales', en: 'Digital' }, icon: Globe },
+    { key: 'wishes', label: { de: 'Wünsche', en: 'Wishes' }, icon: ScrollText },
+    { key: 'documents', label: { de: 'Dokumente', en: 'Documents' }, icon: FolderOpen },
+    { key: 'contacts', label: { de: 'Kontakte', en: 'Contacts' }, icon: Phone },
+  ];
 
   const texts = {
     de: {
@@ -247,69 +265,41 @@ const Header = () => {
         </div>
         
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-1">
-          {/* Quick Links for authenticated users */}
+        <nav className="hidden md:flex items-center gap-2">
+          {/* Quick Links Dropdown for authenticated users */}
           {user && (
-            <div className="flex items-center gap-1 mr-2">
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                onClick={() => navigateTo('/dashboard')}
-                className="text-muted-foreground hover:text-foreground"
-              >
-                <ClipboardList className="mr-1.5 h-4 w-4" />
-                {tx.myVorsorge}
-              </Button>
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                onClick={() => navigateTo('/dashboard?section=personal')}
-                className="text-muted-foreground hover:text-foreground"
-              >
-                <User className="h-4 w-4" />
-              </Button>
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                onClick={() => navigateTo('/dashboard?section=assets')}
-                className="text-muted-foreground hover:text-foreground"
-              >
-                <Wallet className="h-4 w-4" />
-              </Button>
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                onClick={() => navigateTo('/dashboard?section=digital')}
-                className="text-muted-foreground hover:text-foreground"
-              >
-                <Globe className="h-4 w-4" />
-              </Button>
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                onClick={() => navigateTo('/dashboard?section=wishes')}
-                className="text-muted-foreground hover:text-foreground"
-              >
-                <ScrollText className="h-4 w-4" />
-              </Button>
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                onClick={() => navigateTo('/dashboard?section=documents')}
-                className="text-muted-foreground hover:text-foreground"
-              >
-                <FolderOpen className="h-4 w-4" />
-              </Button>
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                onClick={() => navigateTo('/dashboard?section=contacts')}
-                className="text-muted-foreground hover:text-foreground"
-              >
-                <Phone className="h-4 w-4" />
-              </Button>
-              <div className="w-px h-6 bg-border mx-2" />
-            </div>
+            <>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="text-muted-foreground hover:text-foreground"
+                  >
+                    <ClipboardList className="mr-1.5 h-4 w-4" />
+                    {tx.myVorsorge}
+                    <ChevronDown className="ml-1 h-3 w-3" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48">
+                  {sectionItems.map((item) => {
+                    const Icon = item.icon;
+                    const isActive = currentSection === item.key;
+                    return (
+                      <DropdownMenuItem
+                        key={item.key}
+                        onClick={() => navigateTo(`/dashboard?section=${item.key}`)}
+                        className={isActive ? 'bg-muted font-medium' : ''}
+                      >
+                        <Icon className="mr-2 h-4 w-4" />
+                        {item.label[language]}
+                      </DropdownMenuItem>
+                    );
+                  })}
+                </DropdownMenuContent>
+              </DropdownMenu>
+              <div className="w-px h-6 bg-border" />
+            </>
           )}
           
           {user ? (
