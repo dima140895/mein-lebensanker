@@ -30,14 +30,38 @@ const HeroSection = () => {
 
   const features = language === 'de' 
     ? [
-        { icon: Shield, text: 'Sicher & privat' },
-        { icon: Heart, text: 'Für Deine Liebsten' },
-        { icon: FileCheck, text: 'Strukturiert & klar' },
+        { 
+          icon: Shield, 
+          text: 'Sicher & privat', 
+          description: 'Deine Daten bleiben bei Dir. Verschlüsselte Speicherung, kein Zugriff durch Dritte.'
+        },
+        { 
+          icon: Heart, 
+          text: 'Für Deine Liebsten', 
+          description: 'Teile wichtige Informationen gezielt mit Angehörigen – wenn Du es möchtest.'
+        },
+        { 
+          icon: FileCheck, 
+          text: 'Strukturiert & klar', 
+          description: 'Übersichtliche Bereiche helfen Dir, nichts Wichtiges zu vergessen.'
+        },
       ]
     : [
-        { icon: Shield, text: 'Secure & private' },
-        { icon: Heart, text: 'For your loved ones' },
-        { icon: FileCheck, text: 'Structured & clear' },
+        { 
+          icon: Shield, 
+          text: 'Secure & private', 
+          description: 'Your data stays with you. Encrypted storage, no third-party access.'
+        },
+        { 
+          icon: Heart, 
+          text: 'For your loved ones', 
+          description: 'Share important information selectively with family – when you choose to.'
+        },
+        { 
+          icon: FileCheck, 
+          text: 'Structured & clear', 
+          description: 'Clear sections help you not forget anything important.'
+        },
       ];
 
   return (
@@ -136,10 +160,10 @@ const HeroSection = () => {
               </a>
             </motion.div>
 
-            {/* Feature badges */}
+            {/* Feature cards with descriptions */}
             <motion.div 
               variants={itemVariants}
-              className="mt-10 flex flex-wrap items-center gap-5"
+              className="mt-10 grid gap-4 sm:grid-cols-3"
             >
               {features.map((feature, index) => {
                 const Icon = feature.icon;
@@ -149,12 +173,17 @@ const HeroSection = () => {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.8 + index * 0.1 }}
-                    className="flex items-center gap-2 text-sm text-muted-foreground"
+                    className="group rounded-xl border border-border/50 bg-white/60 backdrop-blur-sm p-4 transition-all hover:bg-white hover:shadow-md"
                   >
-                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-sage-light/80 backdrop-blur-sm">
-                      <Icon className="h-4 w-4 text-sage-dark" />
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className="flex h-9 w-9 items-center justify-center rounded-full bg-sage-light">
+                        <Icon className="h-4 w-4 text-sage-dark" />
+                      </div>
+                      <span className="font-medium text-foreground">{feature.text}</span>
                     </div>
-                    <span>{feature.text}</span>
+                    <p className="text-sm text-muted-foreground leading-relaxed pl-12">
+                      {feature.description}
+                    </p>
                   </motion.div>
                 );
               })}
