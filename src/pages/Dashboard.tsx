@@ -3,7 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { User, Wallet, Globe, Heart, FileText, ArrowLeft, Users, Phone, Info, Compass, MessageCircle, Link2 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
-import { useLanguage, LanguageProvider } from '@/contexts/LanguageContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { FormProvider } from '@/contexts/FormContext';
 import Header from '@/components/Header';
 import Disclaimer from '@/components/Disclaimer';
@@ -196,15 +196,13 @@ const DashboardContent = () => {
 
 const Dashboard = () => {
   return (
-    <LanguageProvider>
-      <FormProvider>
-        <div className="flex min-h-screen flex-col bg-background">
-          <Header />
-          <main className="flex-1"><DashboardContent /></main>
-          <Disclaimer />
-        </div>
-      </FormProvider>
-    </LanguageProvider>
+    <FormProvider>
+      <div className="flex min-h-screen flex-col bg-background">
+        <Header />
+        <main className="flex-1"><DashboardContent /></main>
+        <Disclaimer />
+      </div>
+    </FormProvider>
   );
 };
 
