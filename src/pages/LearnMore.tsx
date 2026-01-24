@@ -172,7 +172,7 @@ const LearnMore = () => {
                 {language === 'de' ? 'Über uns' : 'About Us'}
               </span>
               <h1 className="font-serif text-4xl font-bold text-foreground md:text-5xl lg:text-6xl">
-                {language === 'de' ? 'Was ist dieses Tool?' : 'What is this tool?'}
+                {language === 'de' ? 'Vorsorge mit Herz und Verstand' : 'Planning with Heart and Mind'}
               </h1>
               <p className="mt-6 text-xl leading-relaxed text-muted-foreground">
                 {language === 'de' 
