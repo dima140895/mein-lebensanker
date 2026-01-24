@@ -10,8 +10,8 @@ const Index = () => {
       <Header />
       <main className="flex-1">
         <HeroSection />
-        <ValuePropositions />
         <DashboardSections />
+        <ValuePropositions />
       </main>
       <Disclaimer />
     </div>
