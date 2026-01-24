@@ -50,6 +50,30 @@ export type Database = {
         }
         Relationships: []
       }
+      share_token_access_log: {
+        Row: {
+          accessed_at: string
+          id: string
+          token_hash: string
+          was_rate_limited: boolean
+          was_valid: boolean
+        }
+        Insert: {
+          accessed_at?: string
+          id?: string
+          token_hash: string
+          was_rate_limited?: boolean
+          was_valid: boolean
+        }
+        Update: {
+          accessed_at?: string
+          id?: string
+          token_hash?: string
+          was_rate_limited?: boolean
+          was_valid?: boolean
+        }
+        Relationships: []
+      }
       share_tokens: {
         Row: {
           created_at: string
@@ -139,6 +163,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      cleanup_token_access_logs: { Args: never; Returns: undefined }
       get_profile_by_token: {
         Args: { _token: string }
         Returns: {
