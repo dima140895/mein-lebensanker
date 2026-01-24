@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Heart, LogIn, UserPlus, Menu, Home, User, FileText, Info, ClipboardList } from 'lucide-react';
+import { Heart, LogIn, UserPlus, Menu, Home, User, Info, ClipboardList, Wallet, Globe, ScrollText, Users, FolderOpen, Phone } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import LanguageToggle from './LanguageToggle';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -40,9 +40,14 @@ const Header = () => {
       logout: 'Abmelden',
       home: 'Startseite',
       myVorsorge: 'Meine Vorsorge',
-      myProfile: 'Mein Profil',
+      myProfile: 'Persönliche Daten',
       learnMore: 'Mehr erfahren',
       openMenu: 'Menü öffnen',
+      assets: 'Vermögen',
+      digital: 'Digitales',
+      wishes: 'Wünsche',
+      documents: 'Dokumente',
+      contacts: 'Kontakte',
     },
     en: {
       login: 'Sign In',
@@ -50,9 +55,14 @@ const Header = () => {
       logout: 'Sign Out',
       home: 'Home',
       myVorsorge: 'My Planning',
-      myProfile: 'My Profile',
+      myProfile: 'Personal Data',
       learnMore: 'Learn More',
       openMenu: 'Open menu',
+      assets: 'Assets',
+      digital: 'Digital',
+      wishes: 'Wishes',
+      documents: 'Documents',
+      contacts: 'Contacts',
     },
   };
 
@@ -98,6 +108,36 @@ const Header = () => {
       label: tx.myProfile, 
       icon: <User className="h-4 w-4" />,
       onClick: () => navigateTo('/dashboard?tab=personal'), 
+      showWhen: 'authenticated' 
+    },
+    { 
+      label: tx.assets, 
+      icon: <Wallet className="h-4 w-4" />,
+      onClick: () => navigateTo('/dashboard?tab=assets'), 
+      showWhen: 'authenticated' 
+    },
+    { 
+      label: tx.digital, 
+      icon: <Globe className="h-4 w-4" />,
+      onClick: () => navigateTo('/dashboard?tab=digital'), 
+      showWhen: 'authenticated' 
+    },
+    { 
+      label: tx.wishes, 
+      icon: <ScrollText className="h-4 w-4" />,
+      onClick: () => navigateTo('/dashboard?tab=wishes'), 
+      showWhen: 'authenticated' 
+    },
+    { 
+      label: tx.documents, 
+      icon: <FolderOpen className="h-4 w-4" />,
+      onClick: () => navigateTo('/dashboard?tab=documents'), 
+      showWhen: 'authenticated' 
+    },
+    { 
+      label: tx.contacts, 
+      icon: <Phone className="h-4 w-4" />,
+      onClick: () => navigateTo('/dashboard?tab=contacts'), 
       showWhen: 'authenticated' 
     },
   ];
@@ -207,7 +247,70 @@ const Header = () => {
         </div>
         
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-4">
+        <nav className="hidden md:flex items-center gap-1">
+          {/* Quick Links for authenticated users */}
+          {user && (
+            <div className="flex items-center gap-1 mr-2">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => navigateTo('/dashboard')}
+                className="text-muted-foreground hover:text-foreground"
+              >
+                <ClipboardList className="mr-1.5 h-4 w-4" />
+                {tx.myVorsorge}
+              </Button>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => navigateTo('/dashboard?tab=personal')}
+                className="text-muted-foreground hover:text-foreground"
+              >
+                <User className="h-4 w-4" />
+              </Button>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => navigateTo('/dashboard?tab=assets')}
+                className="text-muted-foreground hover:text-foreground"
+              >
+                <Wallet className="h-4 w-4" />
+              </Button>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => navigateTo('/dashboard?tab=digital')}
+                className="text-muted-foreground hover:text-foreground"
+              >
+                <Globe className="h-4 w-4" />
+              </Button>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => navigateTo('/dashboard?tab=wishes')}
+                className="text-muted-foreground hover:text-foreground"
+              >
+                <ScrollText className="h-4 w-4" />
+              </Button>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => navigateTo('/dashboard?tab=documents')}
+                className="text-muted-foreground hover:text-foreground"
+              >
+                <FolderOpen className="h-4 w-4" />
+              </Button>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => navigateTo('/dashboard?tab=contacts')}
+                className="text-muted-foreground hover:text-foreground"
+              >
+                <Phone className="h-4 w-4" />
+              </Button>
+              <div className="w-px h-6 bg-border mx-2" />
+            </div>
+          )}
           
           {user ? (
             <Button variant="outline" size="sm" onClick={handleLogout}>
