@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Heart, LogIn, UserPlus, Menu, X, LayoutDashboard } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Heart, LogIn, UserPlus, Menu, Home, User, FileText, Info, ClipboardList } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import LanguageToggle from './LanguageToggle';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -15,9 +15,15 @@ import {
   Sheet,
   SheetContent,
   SheetTrigger,
-  SheetClose,
 } from '@/components/ui/sheet';
 import AuthForm from './AuthForm';
+
+interface MenuItem {
+  label: string;
+  icon: React.ReactNode;
+  onClick: () => void;
+  showWhen: 'always' | 'authenticated' | 'unauthenticated';
+}
 
 const Header = () => {
   const { language } = useLanguage();
@@ -31,16 +37,20 @@ const Header = () => {
     de: {
       login: 'Anmelden',
       register: 'Registrieren',
-      dashboard: 'Dashboard',
       logout: 'Abmelden',
       home: 'Startseite',
+      myVorsorge: 'Meine Vorsorge',
+      myProfile: 'Mein Profil',
+      learnMore: 'Mehr erfahren',
     },
     en: {
       login: 'Sign In',
       register: 'Sign Up',
-      dashboard: 'Dashboard',
       logout: 'Sign Out',
       home: 'Home',
+      myVorsorge: 'My Planning',
+      myProfile: 'My Profile',
+      learnMore: 'Learn More',
     },
   };
 
@@ -58,14 +68,43 @@ const Header = () => {
     navigate('/');
   };
 
-  const handleDashboardClick = () => {
+  const navigateTo = (path: string) => {
     setMobileMenuOpen(false);
-    navigate('/dashboard');
+    navigate(path);
   };
 
-  const menuItems = [
-    { label: tx.home, onClick: () => { setMobileMenuOpen(false); navigate('/'); } },
+  const menuItems: MenuItem[] = [
+    { 
+      label: tx.home, 
+      icon: <Home className="h-4 w-4" />,
+      onClick: () => navigateTo('/'), 
+      showWhen: 'always' 
+    },
+    { 
+      label: tx.learnMore, 
+      icon: <Info className="h-4 w-4" />,
+      onClick: () => navigateTo('/mehr-erfahren'), 
+      showWhen: 'always' 
+    },
+    { 
+      label: tx.myVorsorge, 
+      icon: <ClipboardList className="h-4 w-4" />,
+      onClick: () => navigateTo('/dashboard'), 
+      showWhen: 'authenticated' 
+    },
+    { 
+      label: tx.myProfile, 
+      icon: <User className="h-4 w-4" />,
+      onClick: () => navigateTo('/dashboard?tab=personal'), 
+      showWhen: 'authenticated' 
+    },
   ];
+
+  const visibleMenuItems = menuItems.filter(item => 
+    item.showWhen === 'always' || 
+    (item.showWhen === 'authenticated' && user) ||
+    (item.showWhen === 'unauthenticated' && !user)
+  );
 
   return (
     <motion.header
@@ -98,13 +137,14 @@ const Header = () => {
 
                 {/* Mobile Menu Items */}
                 <nav className="flex-1 p-4">
-                  <ul className="space-y-2">
-                    {menuItems.map((item) => (
+                  <ul className="space-y-1">
+                    {visibleMenuItems.map((item) => (
                       <li key={item.label}>
                         <button
                           onClick={item.onClick}
-                          className="w-full rounded-lg px-4 py-3 text-left text-foreground transition-colors hover:bg-muted"
+                          className="w-full flex items-center gap-3 rounded-lg px-4 py-3 text-left text-foreground transition-colors hover:bg-muted"
                         >
+                          {item.icon}
                           {item.label}
                         </button>
                       </li>
