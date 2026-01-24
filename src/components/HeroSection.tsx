@@ -41,7 +41,7 @@ const HeroSection = () => {
       ];
 
   return (
-    <section className="relative min-h-[90vh] flex items-center overflow-hidden">
+    <section className="relative min-h-[85vh] flex items-center overflow-hidden">
       {/* Background image with overlay */}
       <div className="absolute inset-0">
         <img 

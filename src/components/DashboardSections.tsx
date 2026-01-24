@@ -181,7 +181,9 @@ const DashboardSections = () => {
   };
 
   return (
-    <section id="sections" className="py-20 md:py-28 overflow-hidden bg-gradient-to-b from-background via-sage-light/10 to-background">
+    <section id="sections" className="relative pt-8 pb-20 md:pt-12 md:pb-28 overflow-hidden">
+      {/* Gradient overlay connecting to hero */}
+      <div className="absolute inset-0 bg-gradient-to-b from-background via-sage-light/15 via-40% to-cream-dark/20 pointer-events-none" />
       <div className="container mx-auto px-4">
         {/* Main Sections Header */}
         <motion.div
