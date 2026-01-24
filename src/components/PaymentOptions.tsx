@@ -6,6 +6,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { supabase } from '@/integrations/supabase/browserClient';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
+import { logger } from '@/lib/logger';
 
 const PaymentOptions = () => {
   const { user, refreshProfile } = useAuth();
@@ -75,7 +76,7 @@ const PaymentOptions = () => {
         window.open(data.url, '_blank');
       }
     } catch (error) {
-      console.error('Payment error:', error);
+      logger.error('Payment error:', error);
       toast.error('Payment error', {
         description: error instanceof Error ? error.message : 'Unknown error',
       });
