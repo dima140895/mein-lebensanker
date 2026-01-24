@@ -42,6 +42,7 @@ const Header = () => {
       myVorsorge: 'Meine Vorsorge',
       myProfile: 'Mein Profil',
       learnMore: 'Mehr erfahren',
+      openMenu: 'Menü öffnen',
     },
     en: {
       login: 'Sign In',
@@ -51,6 +52,7 @@ const Header = () => {
       myVorsorge: 'My Planning',
       myProfile: 'My Profile',
       learnMore: 'Learn More',
+      openMenu: 'Open menu',
     },
   };
 
@@ -120,7 +122,7 @@ const Header = () => {
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon" className="md:hidden">
                 <Menu className="h-5 w-5" />
-                <span className="sr-only">Menü öffnen</span>
+                <span className="sr-only">{tx.openMenu}</span>
               </Button>
             </SheetTrigger>
             <SheetContent side="left" className="w-72 bg-background p-0">
