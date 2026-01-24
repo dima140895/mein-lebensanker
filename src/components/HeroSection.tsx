@@ -128,12 +128,22 @@ const HeroSection = () => {
                 <ArrowRight className="relative h-5 w-5 transition-transform group-hover:translate-x-1" />
               </button>
               
-              <a
-                href="#sections"
+              <button
+                onClick={() => {
+                  const element = document.getElementById('sections');
+                  if (element) {
+                    element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    // Add highlight effect
+                    element.classList.add('ring-4', 'ring-sage/30', 'ring-offset-4');
+                    setTimeout(() => {
+                      element.classList.remove('ring-4', 'ring-sage/30', 'ring-offset-4');
+                    }, 2000);
+                  }
+                }}
                 className="inline-flex items-center gap-2 rounded-full border border-border bg-white/70 backdrop-blur-sm px-7 py-3.5 font-medium text-foreground transition-all hover:bg-white hover:shadow-md"
               >
                 {t('hero.learnMore')}
-              </a>
+              </button>
             </motion.div>
 
             {/* Feature badges */}
