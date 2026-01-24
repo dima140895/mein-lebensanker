@@ -102,44 +102,27 @@ const infoSections = [
   },
 ];
 
-// Slide-in animation variants
+// Simple fade animation variants
 const containerVariants = {
   hidden: {},
   visible: {
     transition: {
-      staggerChildren: 0.1,
+      staggerChildren: 0.08,
     },
   },
 };
 
-const slideInVariants = {
+const fadeInVariants = {
   hidden: { 
     opacity: 0, 
-    x: -60,
+    y: 20,
   },
   visible: { 
     opacity: 1, 
-    x: 0,
+    y: 0,
     transition: {
-      type: "spring" as const,
-      stiffness: 100,
-      damping: 15,
-    },
-  },
-};
-
-const slideInFromRightVariants = {
-  hidden: { 
-    opacity: 0, 
-    x: 60,
-  },
-  visible: { 
-    opacity: 1, 
-    x: 0,
-    transition: {
-      type: "spring" as const,
-      stiffness: 100,
-      damping: 15,
+      duration: 0.4,
+      ease: "easeOut" as const,
     },
   },
 };
@@ -152,16 +135,15 @@ const DashboardSections = () => {
     navigate(`/dashboard?section=${sectionKey}`);
   };
 
-  const SectionCard = ({ section, index, slideFromRight = false }: { 
+  const SectionCard = ({ section, index }: { 
     section: typeof sections[0], 
-    index: number,
-    slideFromRight?: boolean 
+    index: number
   }) => {
     const Icon = section.icon;
     return (
       <motion.div
-        variants={slideFromRight ? slideInFromRightVariants : slideInVariants}
-        whileHover={{ y: -8, transition: { duration: 0.2 } }}
+        variants={fadeInVariants}
+        whileHover={{ y: -4, transition: { duration: 0.2 } }}
         onClick={() => handleSectionClick(section.key)}
         className={`group relative cursor-pointer overflow-hidden rounded-2xl border border-border/50 bg-gradient-to-br ${section.gradient} p-6 shadow-sm transition-all duration-300 hover:shadow-xl ${section.accent}`}
       >
@@ -233,8 +215,7 @@ const DashboardSections = () => {
             <SectionCard 
               key={section.key} 
               section={section} 
-              index={index} 
-              slideFromRight={index % 2 === 1}
+              index={index}
             />
           ))}
         </motion.div>
@@ -267,7 +248,6 @@ const DashboardSections = () => {
               key={section.key} 
               section={section} 
               index={index}
-              slideFromRight={index % 2 === 1}
             />
           ))}
         </motion.div>
