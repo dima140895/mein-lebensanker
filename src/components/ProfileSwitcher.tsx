@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { User, Plus, ChevronDown, Check, Pencil, Trash2 } from 'lucide-react';
 import { useProfiles } from '@/contexts/ProfileContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { supabase } from '@/integrations/supabase/browserClient';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -21,6 +22,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
+import { Json } from '@/integrations/supabase/types';
 
 const ProfileSwitcher = () => {
   const { language } = useLanguage();
@@ -90,6 +92,33 @@ const ProfileSwitcher = () => {
     
     const result = await createProfile(newProfileName.trim(), newProfileBirthDate || undefined);
     if (result) {
+      // Also save personal data with the name and birth date
+      const personalData = {
+        fullName: newProfileName.trim(),
+        birthDate: newProfileBirthDate || '',
+        address: '',
+        phone: '',
+        trustedPerson1: '',
+        trustedPerson1Phone: '',
+        trustedPerson2: '',
+        trustedPerson2Phone: '',
+        emergencyContact: '',
+        emergencyPhone: '',
+        notes: '',
+      };
+      
+      await supabase
+        .from('vorsorge_data')
+        .upsert({
+          user_id: result.user_id,
+          section_key: 'personal',
+          data: personalData as unknown as Json,
+          person_profile_id: result.id,
+          is_for_partner: false,
+        }, {
+          onConflict: 'user_id,section_key,person_profile_id'
+        });
+      
       toast.success(t.profileCreated);
       setDialogOpen(false);
       setNewProfileName('');
