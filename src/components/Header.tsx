@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Heart, LogIn, UserPlus, Menu, Home, User, Info, ClipboardList, Wallet, Globe, ScrollText, FolderOpen, Phone, ChevronDown, Link2, CreditCard, Package, Key, LogOut } from 'lucide-react';
+import { Heart, LogIn, UserPlus, Menu, Home, User, Info, ClipboardList, Wallet, Globe, ScrollText, FolderOpen, Phone, ChevronDown, Link2, CreditCard, Package, Key, LogOut, Shield } from 'lucide-react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import LanguageToggle from './LanguageToggle';
 import ProfileSwitcher from './ProfileSwitcher';
 import { EncryptionStatus } from './EncryptionStatus';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
+import { useEncryption } from '@/contexts/EncryptionContext';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -28,6 +29,7 @@ import {
 import AuthForm from './AuthForm';
 import PricingDialog from './PricingDialog';
 import ChangePasswordDialog from './ChangePasswordDialog';
+import { EncryptionPasswordDialog } from './EncryptionPasswordDialog';
 
 interface MenuItem {
   label: string;
@@ -39,6 +41,7 @@ interface MenuItem {
 const Header = () => {
   const { language } = useLanguage();
   const { user, profile, signOut } = useAuth();
+  const { isEncryptionEnabled: encryptionEnabled } = useEncryption();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [authOpen, setAuthOpen] = useState(false);
@@ -46,6 +49,7 @@ const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [pricingOpen, setPricingOpen] = useState(false);
   const [changePasswordOpen, setChangePasswordOpen] = useState(false);
+  const [encryptionSetupOpen, setEncryptionSetupOpen] = useState(false);
 
   const currentSection = searchParams.get('section');
 
@@ -92,6 +96,8 @@ const Header = () => {
       managePackage: 'Paket verwalten',
       changePassword: 'Passwort ändern',
       account: 'Konto',
+      encryption: 'Verschlüsselung',
+      encryptionEnabled: 'Verschlüsselung aktiv',
     },
     en: {
       login: 'Sign In',
@@ -119,6 +125,8 @@ const Header = () => {
       managePackage: 'Manage package',
       changePassword: 'Change Password',
       account: 'Account',
+      encryption: 'Encryption',
+      encryptionEnabled: 'Encryption active',
     },
   };
 
@@ -290,6 +298,25 @@ const Header = () => {
                         <Key className="mr-2 h-4 w-4" />
                         {tx.changePassword}
                       </Button>
+                      {!encryptionEnabled && (
+                        <Button 
+                          variant="ghost" 
+                          className="w-full justify-start" 
+                          onClick={() => {
+                            setMobileMenuOpen(false);
+                            setEncryptionSetupOpen(true);
+                          }}
+                        >
+                          <Shield className="mr-2 h-4 w-4" />
+                          {tx.encryption}
+                        </Button>
+                      )}
+                      {encryptionEnabled && (
+                        <div className="flex items-center gap-2 px-4 py-2 text-sm text-muted-foreground">
+                          <Shield className="h-4 w-4 text-primary" />
+                          {tx.encryptionEnabled}
+                        </div>
+                      )}
                       <Button variant="outline" className="w-full" onClick={handleLogout}>
                         <LogOut className="mr-2 h-4 w-4" />
                         {tx.logout}
@@ -455,11 +482,22 @@ const Header = () => {
                   <ChevronDown className="ml-1 h-3 w-3" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48 bg-popover">
+              <DropdownMenuContent align="end" className="w-56 bg-popover">
                 <DropdownMenuItem onClick={() => setChangePasswordOpen(true)}>
                   <Key className="mr-2 h-4 w-4" />
                   {tx.changePassword}
                 </DropdownMenuItem>
+                {!encryptionEnabled ? (
+                  <DropdownMenuItem onClick={() => setEncryptionSetupOpen(true)}>
+                    <Shield className="mr-2 h-4 w-4" />
+                    {tx.encryption}
+                  </DropdownMenuItem>
+                ) : (
+                  <div className="flex items-center gap-2 px-2 py-1.5 text-sm text-muted-foreground">
+                    <Shield className="h-4 w-4 text-primary" />
+                    {tx.encryptionEnabled}
+                  </div>
+                )}
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleLogout} className="text-destructive focus:text-destructive">
                   <LogOut className="mr-2 h-4 w-4" />
@@ -530,6 +568,13 @@ const Header = () => {
 
       {/* Change Password Dialog */}
       <ChangePasswordDialog open={changePasswordOpen} onOpenChange={setChangePasswordOpen} />
+
+      {/* Encryption Setup Dialog */}
+      <EncryptionPasswordDialog 
+        open={encryptionSetupOpen} 
+        onOpenChange={setEncryptionSetupOpen}
+        mode="setup"
+      />
     </motion.header>
   );
 };
