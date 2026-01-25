@@ -6,6 +6,7 @@ import { supabase } from '@/integrations/supabase/browserClient';
 import { CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { logger } from '@/lib/logger';
+import ProfileSetupWizard from '@/components/ProfileSetupWizard';
 
 const PaymentSuccessContent = () => {
   const { user, loading: authLoading, refreshProfile } = useAuth();
@@ -14,10 +15,15 @@ const PaymentSuccessContent = () => {
   const [searchParams] = useSearchParams();
   const sessionId = searchParams.get('session_id');
   const paymentType = searchParams.get('type') || 'single';
+  const profilesParam = searchParams.get('profiles');
+  const isUpgrade = searchParams.get('upgrade') === 'true';
+  const isAddingProfiles = searchParams.get('add_profiles') === 'true';
   
   const [verificationStatus, setVerificationStatus] = useState<'loading' | 'success' | 'error'>('loading');
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [hasVerified, setHasVerified] = useState(false);
+  const [maxProfiles, setMaxProfiles] = useState(1);
+  const [showProfileSetup, setShowProfileSetup] = useState(false);
 
   useEffect(() => {
     const verifyPayment = async () => {
@@ -66,6 +72,22 @@ const PaymentSuccessContent = () => {
         if (data?.success && data?.paymentStatus === 'paid') {
           setVerificationStatus('success');
           await refreshProfile();
+          
+          // Determine max profiles from URL param or payment type
+          let profiles = 1;
+          if (profilesParam) {
+            profiles = parseInt(profilesParam, 10);
+          } else if (paymentType === 'couple') {
+            profiles = 2;
+          } else if (paymentType === 'family') {
+            profiles = 4;
+          }
+          setMaxProfiles(profiles);
+          
+          // Show profile setup for new purchases (not upgrades or adding profiles)
+          if (!isUpgrade && !isAddingProfiles) {
+            setShowProfileSetup(true);
+          }
         } else {
           setVerificationStatus('error');
           setErrorMessage(language === 'de' 
@@ -82,7 +104,7 @@ const PaymentSuccessContent = () => {
     };
 
     verifyPayment();
-  }, [user, authLoading, sessionId, paymentType, language, refreshProfile, hasVerified]);
+  }, [user, authLoading, sessionId, paymentType, language, refreshProfile, hasVerified, profilesParam, isUpgrade, isAddingProfiles]);
 
   const t = {
     de: {
@@ -93,6 +115,10 @@ const PaymentSuccessContent = () => {
       verifying: 'Zahlung wird verifiziert...',
       errorTitle: 'Verifizierung fehlgeschlagen',
       retry: 'Erneut versuchen',
+      upgradeSuccess: 'Upgrade erfolgreich!',
+      upgradeDesc: 'Dein Paket wurde erweitert.',
+      addProfilesSuccess: 'Profile hinzugefügt!',
+      addProfilesDesc: 'Du kannst jetzt weitere Profile anlegen.',
     },
     en: {
       title: 'Payment Successful!',
@@ -102,6 +128,10 @@ const PaymentSuccessContent = () => {
       verifying: 'Verifying payment...',
       errorTitle: 'Verification Failed',
       retry: 'Try Again',
+      upgradeSuccess: 'Upgrade Successful!',
+      upgradeDesc: 'Your package has been upgraded.',
+      addProfilesSuccess: 'Profiles Added!',
+      addProfilesDesc: 'You can now create additional profiles.',
     },
   };
 
@@ -141,16 +171,29 @@ const PaymentSuccessContent = () => {
     );
   }
 
-  // Success state
+  // Profile setup wizard for new purchases
+  if (showProfileSetup) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background p-4">
+        <ProfileSetupWizard maxProfiles={maxProfiles} packageType={paymentType} />
+      </div>
+    );
+  }
+
+  // Success state for upgrades/adding profiles
   return (
     <div className="flex min-h-screen items-center justify-center bg-background p-4">
       <div className="text-center max-w-md">
         <div className="mx-auto mb-6 h-20 w-20 rounded-full bg-sage-light flex items-center justify-center">
           <CheckCircle className="h-10 w-10 text-sage-dark" />
         </div>
-        <h1 className="font-serif text-3xl font-bold text-foreground mb-2">{texts.title}</h1>
+        <h1 className="font-serif text-3xl font-bold text-foreground mb-2">
+          {isAddingProfiles ? texts.addProfilesSuccess : isUpgrade ? texts.upgradeSuccess : texts.title}
+        </h1>
         <p className="text-xl text-sage-dark mb-4">{texts.subtitle}</p>
-        <p className="text-muted-foreground mb-8">{texts.description}</p>
+        <p className="text-muted-foreground mb-8">
+          {isAddingProfiles ? texts.addProfilesDesc : isUpgrade ? texts.upgradeDesc : texts.description}
+        </p>
         <Button onClick={() => navigate('/dashboard')} size="lg">
           {texts.cta}
         </Button>
