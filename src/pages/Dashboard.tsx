@@ -170,11 +170,17 @@ const DashboardContent = () => {
   const isInfoSection = currentSection?.isInfo;
 
   if (activeSection) {
+    const sectionTitle = texts[activeSection as keyof typeof texts] || activeSection;
     return (
       <div className="container mx-auto px-4 py-8">
-        <Button variant="ghost" onClick={() => handleSectionChange(null)} className="mb-6">
-          <ArrowLeft className="mr-2 h-4 w-4" /> {texts.back}
-        </Button>
+        <div className="flex items-center justify-between mb-6">
+          <Button variant="ghost" onClick={() => handleSectionChange(null)}>
+            <ArrowLeft className="mr-2 h-4 w-4" /> {texts.back}
+          </Button>
+          <h2 className="font-serif text-xl font-semibold text-foreground">
+            {sectionTitle}
+          </h2>
+        </div>
 
         {renderContent()}
       </div>
