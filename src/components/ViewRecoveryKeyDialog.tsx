@@ -14,13 +14,14 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Key, Copy, Check, Download, Eye, EyeOff, Loader2, AlertTriangle, ShieldAlert } from 'lucide-react';
+import { Key, Copy, Check, Download, Eye, EyeOff, Loader2, AlertTriangle, ShieldAlert, Printer } from 'lucide-react';
 import { toast } from 'sonner';
 import { generateRecoveryKey, encryptPasswordWithRecoveryKey, formatRecoveryKey } from '@/lib/recoveryKey';
 import { supabase } from '@/integrations/supabase/browserClient';
 import { useAuth } from '@/contexts/AuthContext';
 import { EncryptionPasswordDialog } from './EncryptionPasswordDialog';
 import { logger } from '@/lib/logger';
+
 interface ViewRecoveryKeyDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -46,50 +47,70 @@ export const ViewRecoveryKeyDialog: React.FC<ViewRecoveryKeyDialogProps> = ({
 
   const translations = {
     de: {
-      title: 'Recovery-Schlüssel neu generieren',
-      description: 'Erstelle einen neuen Recovery-Schlüssel. Der alte Schlüssel wird dadurch ungültig und kann nicht mehr verwendet werden!',
-      password: 'Verschlüsselungspasswort',
-      generate: 'Neuen Schlüssel generieren',
+      title: 'Neuen Ersatzschlüssel erstellen',
+      description: 'Du kannst jederzeit einen neuen Ersatzschlüssel erstellen. Der alte Schlüssel funktioniert dann nicht mehr.',
+      
+      password: 'Dein Passwort zur Bestätigung',
+      generate: 'Neuen Schlüssel erstellen',
       activate: 'Neuen Schlüssel aktivieren',
       cancel: 'Abbrechen',
       close: 'Schließen',
-      wrongPassword: 'Falsches Passwort',
-      success: 'Neuer Recovery-Schlüssel aktiviert',
-      activateError: 'Aktivierung fehlgeschlagen',
-      newKeyTitle: 'Dein neuer Recovery-Schlüssel',
-      newKeyDescription: 'Speichere diesen Schlüssel sicher ab. Erst nach Bestätigung wird der alte Schlüssel ungültig.',
+      
+      wrongPassword: 'Das Passwort ist nicht korrekt.',
+      success: 'Neuer Ersatzschlüssel ist jetzt aktiv!',
+      activateError: 'Es ist ein Fehler aufgetreten. Bitte versuche es erneut.',
+      
+      newKeyTitle: 'Dein neuer Ersatzschlüssel',
+      newKeyDescription: 'Sichere diesen neuen Schlüssel, bevor Du ihn aktivierst.',
+      
       copy: 'Kopieren',
       copied: 'Kopiert!',
       download: 'Als Datei speichern',
-      warning: 'Dieser Schlüssel wird nur einmal angezeigt. Wenn Du ihn verlierst und Dein Passwort vergisst, können Deine Daten nicht wiederhergestellt werden!',
-      notUnlocked: 'Deine Daten sind gesperrt. Entsperre sie, um einen neuen Recovery-Schlüssel zu generieren.',
+      print: 'Drucken',
+      
+      warning: 'Dieser Schlüssel wird nur jetzt angezeigt! Speichere ihn sicher ab.',
+      
+      notUnlocked: 'Deine Daten sind gesperrt. Entsperre sie zuerst, um einen neuen Schlüssel zu erstellen.',
       unlockNow: 'Jetzt entsperren',
-      oldKeyWarning: 'Achtung: Der alte Recovery-Schlüssel wird ungültig! Stelle sicher, dass Du den neuen Schlüssel sicher speicherst, bevor Du fortfährst.',
-      confirmLabel: 'Ich habe den neuen Schlüssel sicher gespeichert',
-      activationHint: 'Nach dem Aktivieren funktionieren alle alten Recovery-Schlüssel nicht mehr.',
+      
+      oldKeyWarning: 'Hinweis: Sobald Du den neuen Schlüssel aktivierst, funktioniert der alte nicht mehr.',
+      confirmLabel: 'Ich habe den neuen Schlüssel sicher aufbewahrt',
+      activationHint: 'Nach der Aktivierung ist nur noch der neue Schlüssel gültig.',
+      
+      yourNewKey: 'Dein neuer Ersatzschlüssel:',
     },
     en: {
-      title: 'Regenerate Recovery Key',
-      description: 'Create a new recovery key. The old key will become invalid and can no longer be used!',
-      password: 'Encryption Password',
-      generate: 'Generate New Key',
-      activate: 'Activate New Key',
+      title: 'Create New Backup Key',
+      description: 'You can create a new backup key at any time. The old key will no longer work.',
+      
+      password: 'Your password for confirmation',
+      generate: 'Create new key',
+      activate: 'Activate new key',
       cancel: 'Cancel',
       close: 'Close',
-      wrongPassword: 'Wrong password',
-      success: 'New recovery key activated',
-      activateError: 'Activation failed',
-      newKeyTitle: 'Your New Recovery Key',
-      newKeyDescription: 'Save this key securely. The old key won\'t become invalid until you confirm.',
+      
+      wrongPassword: 'The password is not correct.',
+      success: 'New backup key is now active!',
+      activateError: 'An error occurred. Please try again.',
+      
+      newKeyTitle: 'Your New Backup Key',
+      newKeyDescription: 'Save this new key before activating it.',
+      
       copy: 'Copy',
       copied: 'Copied!',
       download: 'Save as file',
-      warning: 'This key will only be shown once. If you lose it and forget your password, your data cannot be recovered!',
-      notUnlocked: 'Your data is locked. Unlock it to generate a new recovery key.',
-      unlockNow: 'Unlock Now',
-      oldKeyWarning: 'Warning: The old recovery key will become invalid! Make sure to save the new key securely before proceeding.',
-      confirmLabel: 'I have saved the new key securely',
-      activationHint: 'After activation, all old recovery keys will no longer work.',
+      print: 'Print',
+      
+      warning: 'This key is only shown now! Save it securely.',
+      
+      notUnlocked: 'Your data is locked. Unlock it first to create a new key.',
+      unlockNow: 'Unlock now',
+      
+      oldKeyWarning: 'Note: Once you activate the new key, the old one will no longer work.',
+      confirmLabel: 'I have stored the new key safely',
+      activationHint: 'After activation, only the new key will be valid.',
+      
+      yourNewKey: 'Your new backup key:',
     },
   };
 
@@ -172,26 +193,140 @@ export const ViewRecoveryKeyDialog: React.FC<ViewRecoveryKeyDialogProps> = ({
   const handleDownload = () => {
     if (!newRecoveryKey) return;
     const formattedKey = formatRecoveryKey(newRecoveryKey);
-    const content = `Vorsorge Recovery Key
-====================
+    const content = language === 'de'
+      ? `═══════════════════════════════════════
+    NEUER ERSATZSCHLÜSSEL FÜR VORSORGE
+═══════════════════════════════════════
+
+Dein neuer Ersatzschlüssel:
 
 ${formattedKey}
 
-WICHTIG / IMPORTANT:
-Speichere diesen Schlüssel sicher!
-Keep this key safe!
+═══════════════════════════════════════
 
-Datum / Date: ${new Date().toLocaleDateString()}
+WICHTIGE HINWEISE:
+
+• Der alte Ersatzschlüssel ist nicht mehr gültig!
+
+• Bewahre diesen neuen Schlüssel an einem sicheren 
+  Ort auf (z.B. bei Deinen wichtigen Dokumenten)
+
+• Mit diesem Schlüssel kannst Du Deine Daten 
+  wiederherstellen, falls Du Dein Passwort vergisst
+
+• Erstellt am: ${new Date().toLocaleDateString('de-DE')}
+
+═══════════════════════════════════════
+`
+      : `═══════════════════════════════════════
+    NEW BACKUP KEY FOR VORSORGE
+═══════════════════════════════════════
+
+Your new backup key:
+
+${formattedKey}
+
+═══════════════════════════════════════
+
+IMPORTANT NOTES:
+
+• The old backup key is no longer valid!
+
+• Store this new key in a safe place
+  (e.g., with your important documents)
+
+• You can use this key to recover your data
+  if you forget your password
+
+• Created on: ${new Date().toLocaleDateString('en-US')}
+
+═══════════════════════════════════════
 `;
+    
     const blob = new Blob([content], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'vorsorge-recovery-key.txt';
+    a.download = language === 'de' ? 'Vorsorge-Neuer-Ersatzschluessel.txt' : 'Vorsorge-New-Backup-Key.txt';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+  };
+
+  const handlePrint = () => {
+    if (!newRecoveryKey) return;
+    const formattedKey = formatRecoveryKey(newRecoveryKey);
+    const printContent = language === 'de'
+      ? `
+        <html>
+          <head>
+            <title>Neuer Ersatzschlüssel - Vorsorge</title>
+            <style>
+              body { font-family: Arial, sans-serif; padding: 40px; }
+              h1 { color: #333; border-bottom: 2px solid #333; padding-bottom: 10px; }
+              .key-box { background: #f5f5f5; padding: 20px; margin: 20px 0; border: 2px dashed #666; font-family: monospace; font-size: 18px; text-align: center; word-break: break-all; }
+              .note { background: #fff3cd; padding: 15px; border-left: 4px solid #ffc107; margin: 20px 0; }
+              .warning { background: #f8d7da; padding: 15px; border-left: 4px solid #dc3545; margin: 20px 0; }
+              ul { line-height: 1.8; }
+              .date { color: #666; font-size: 12px; margin-top: 30px; }
+            </style>
+          </head>
+          <body>
+            <h1>🔐 Neuer Ersatzschlüssel für Vorsorge</h1>
+            <div class="warning">
+              <strong>Wichtig:</strong> Der alte Ersatzschlüssel ist nicht mehr gültig!
+            </div>
+            <p><strong>Dein neuer Ersatzschlüssel:</strong></p>
+            <div class="key-box">${formattedKey}</div>
+            <p><strong>Aufbewahrungstipps:</strong></p>
+            <ul>
+              <li>Vernichte den alten Ersatzschlüssel</li>
+              <li>Bewahre diesen neuen Ausdruck bei Deinen wichtigen Dokumenten auf</li>
+              <li>Lege eine Kopie an einem zweiten sicheren Ort ab</li>
+            </ul>
+            <p class="date">Erstellt am: ${new Date().toLocaleDateString('de-DE')}</p>
+          </body>
+        </html>
+      `
+      : `
+        <html>
+          <head>
+            <title>New Backup Key - Vorsorge</title>
+            <style>
+              body { font-family: Arial, sans-serif; padding: 40px; }
+              h1 { color: #333; border-bottom: 2px solid #333; padding-bottom: 10px; }
+              .key-box { background: #f5f5f5; padding: 20px; margin: 20px 0; border: 2px dashed #666; font-family: monospace; font-size: 18px; text-align: center; word-break: break-all; }
+              .note { background: #fff3cd; padding: 15px; border-left: 4px solid #ffc107; margin: 20px 0; }
+              .warning { background: #f8d7da; padding: 15px; border-left: 4px solid #dc3545; margin: 20px 0; }
+              ul { line-height: 1.8; }
+              .date { color: #666; font-size: 12px; margin-top: 30px; }
+            </style>
+          </head>
+          <body>
+            <h1>🔐 New Backup Key for Vorsorge</h1>
+            <div class="warning">
+              <strong>Important:</strong> The old backup key is no longer valid!
+            </div>
+            <p><strong>Your new backup key:</strong></p>
+            <div class="key-box">${formattedKey}</div>
+            <p><strong>Storage tips:</strong></p>
+            <ul>
+              <li>Destroy the old backup key</li>
+              <li>Store this new printout with your important documents</li>
+              <li>Keep a copy in a second safe location</li>
+            </ul>
+            <p class="date">Created on: ${new Date().toLocaleDateString('en-US')}</p>
+          </body>
+        </html>
+      `;
+
+    const printWindow = window.open('', '_blank');
+    if (printWindow) {
+      printWindow.document.write(printContent);
+      printWindow.document.close();
+      printWindow.print();
+    }
   };
 
   const handleClose = () => {
@@ -225,18 +360,18 @@ Datum / Date: ${new Date().toLocaleDateString()}
         <Dialog open={open} onOpenChange={handleClose}>
           <DialogContent className="sm:max-w-md">
             <DialogHeader>
-              <DialogTitle className="flex items-center gap-2">
-                <Key className="h-5 w-5 text-primary" />
+              <DialogTitle className="flex items-center gap-2 text-xl">
+                <Key className="h-6 w-6 text-primary" />
                 {t.title}
               </DialogTitle>
             </DialogHeader>
             <Alert>
               <ShieldAlert className="h-4 w-4" />
-              <AlertDescription>{t.notUnlocked}</AlertDescription>
+              <AlertDescription className="text-sm">{t.notUnlocked}</AlertDescription>
             </Alert>
             <DialogFooter className="gap-2 sm:gap-0">
-              <Button variant="outline" onClick={handleClose}>{t.close}</Button>
-              <Button onClick={() => setShowUnlockDialog(true)}>
+              <Button variant="outline" onClick={handleClose} className="h-11">{t.close}</Button>
+              <Button onClick={() => setShowUnlockDialog(true)} className="h-11">
                 {t.unlockNow}
               </Button>
             </DialogFooter>
@@ -263,59 +398,74 @@ Datum / Date: ${new Date().toLocaleDateString()}
           onEscapeKeyDown={isActivated ? undefined : (e) => e.preventDefault()}
         >
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Key className="h-5 w-5 text-primary" />
+            <DialogTitle className="flex items-center gap-2 text-xl">
+              <Key className="h-6 w-6 text-primary" />
               {t.newKeyTitle}
             </DialogTitle>
-            <DialogDescription>{t.newKeyDescription}</DialogDescription>
+            <DialogDescription className="text-base">{t.newKeyDescription}</DialogDescription>
           </DialogHeader>
 
           <div className="space-y-4">
-            <Alert>
+            {/* Warning */}
+            <Alert className="border-amber-500 bg-amber-50 text-amber-900">
               <AlertTriangle className="h-4 w-4" />
-              <AlertDescription>{t.warning}</AlertDescription>
+              <AlertDescription className="text-sm">{t.warning}</AlertDescription>
             </Alert>
 
             {!isActivated && (
               <Alert>
                 <AlertTriangle className="h-4 w-4" />
-                <AlertDescription>{t.activationHint}</AlertDescription>
+                <AlertDescription className="text-sm">{t.activationHint}</AlertDescription>
               </Alert>
             )}
 
-            <div className="p-4 bg-muted rounded-lg font-mono text-center text-lg break-all select-all">
-              {formattedKey}
+            {/* Key display */}
+            <div className="space-y-2">
+              <p className="text-sm font-medium">{t.yourNewKey}</p>
+              <div className="p-4 bg-muted rounded-lg font-mono text-center text-base sm:text-lg break-all select-all border-2 border-dashed border-primary/30">
+                {formattedKey}
+              </div>
             </div>
 
-            <div className="flex gap-2">
+            {/* Action buttons */}
+            <div className="grid grid-cols-3 gap-2">
               <Button
                 variant="outline"
-                className="flex-1"
                 onClick={handleCopy}
+                className="h-auto py-3 flex-col gap-1"
               >
                 {copied ? (
-                  <Check className="h-4 w-4 mr-2" />
+                  <Check className="h-5 w-5 text-green-600" />
                 ) : (
-                  <Copy className="h-4 w-4 mr-2" />
+                  <Copy className="h-5 w-5" />
                 )}
-                {copied ? t.copied : t.copy}
+                <span className="text-xs">{copied ? t.copied : t.copy}</span>
               </Button>
               <Button
                 variant="outline"
-                className="flex-1"
                 onClick={handleDownload}
+                className="h-auto py-3 flex-col gap-1"
               >
-                <Download className="h-4 w-4 mr-2" />
-                {t.download}
+                <Download className="h-5 w-5" />
+                <span className="text-xs">{t.download}</span>
+              </Button>
+              <Button
+                variant="outline"
+                onClick={handlePrint}
+                className="h-auto py-3 flex-col gap-1"
+              >
+                <Printer className="h-5 w-5" />
+                <span className="text-xs">{t.print}</span>
               </Button>
             </div>
 
             {!isActivated && (
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-3 p-3 rounded-lg bg-muted/50">
                 <Checkbox
                   id="confirm-saved-new-key"
                   checked={confirmed}
                   onCheckedChange={(checked) => setConfirmed(checked === true)}
+                  className="h-5 w-5"
                 />
                 <label
                   htmlFor="confirm-saved-new-key"
@@ -330,15 +480,15 @@ Datum / Date: ${new Date().toLocaleDateString()}
           <DialogFooter>
             {!isActivated ? (
               <>
-                <Button variant="outline" onClick={handleCancelGeneration} disabled={isLoading}>
+                <Button variant="outline" onClick={handleCancelGeneration} disabled={isLoading} className="h-11">
                   {t.cancel}
                 </Button>
-                <Button onClick={handleActivateNewKey} disabled={isLoading || !confirmed}>
+                <Button onClick={handleActivateNewKey} disabled={isLoading || !confirmed} className="h-11 px-6">
                   {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : t.activate}
                 </Button>
               </>
             ) : (
-              <Button onClick={handleClose}>{t.close}</Button>
+              <Button onClick={handleClose} className="h-11 px-8">{t.close}</Button>
             )}
           </DialogFooter>
         </DialogContent>
@@ -351,21 +501,21 @@ Datum / Date: ${new Date().toLocaleDateString()}
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <Key className="h-5 w-5 text-primary" />
+          <DialogTitle className="flex items-center gap-2 text-xl">
+            <Key className="h-6 w-6 text-primary" />
             {t.title}
           </DialogTitle>
-          <DialogDescription>{t.description}</DialogDescription>
+          <DialogDescription className="text-base">{t.description}</DialogDescription>
         </DialogHeader>
 
         <form onSubmit={(e) => { e.preventDefault(); handleGenerateNewKey(); }} className="space-y-4">
           <Alert>
             <AlertTriangle className="h-4 w-4" />
-            <AlertDescription>{t.oldKeyWarning}</AlertDescription>
+            <AlertDescription className="text-sm">{t.oldKeyWarning}</AlertDescription>
           </Alert>
 
           <div className="space-y-2">
-            <Label htmlFor="recovery-password">{t.password}</Label>
+            <Label htmlFor="recovery-password" className="text-base">{t.password}</Label>
             <div className="relative">
               <Input
                 id="recovery-password"
@@ -374,29 +524,29 @@ Datum / Date: ${new Date().toLocaleDateString()}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
                 autoComplete="current-password"
-                className="pr-10"
+                className="pr-10 h-12 text-base"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground p-1"
               >
-                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
               </button>
             </div>
           </div>
 
           {error && (
             <Alert variant="destructive">
-              <AlertDescription>{error}</AlertDescription>
+              <AlertDescription className="text-sm">{error}</AlertDescription>
             </Alert>
           )}
 
-          <div className="flex gap-2 justify-end">
-            <Button type="button" variant="outline" onClick={handleClose}>
+          <div className="flex gap-3 justify-end">
+            <Button type="button" variant="outline" onClick={handleClose} className="h-11">
               {t.cancel}
             </Button>
-            <Button type="submit" disabled={isLoading || !password}>
+            <Button type="submit" disabled={isLoading || !password} className="h-11 px-6">
               {isLoading ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
               ) : (

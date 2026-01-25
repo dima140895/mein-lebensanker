@@ -13,7 +13,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Progress } from '@/components/ui/progress';
-import { Lock, Shield, AlertTriangle, Eye, EyeOff, Loader2, Key, Trash2 } from 'lucide-react';
+import { Lock, Shield, AlertTriangle, Eye, EyeOff, Loader2, Key, Trash2, CheckCircle2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { RecoveryKeyDialog } from './RecoveryKeyDialog';
 import { RecoveryKeyRecoveryDialog } from './RecoveryKeyRecoveryDialog';
@@ -45,54 +45,74 @@ export const EncryptionPasswordDialog: React.FC<EncryptionPasswordDialogProps> =
 
   const translations = {
     de: {
-      unlockTitle: 'Daten entsperren',
-      unlockDescription: 'Gib Dein Verschlüsselungspasswort ein, um auf Deine Daten zuzugreifen.',
-      setupTitle: 'Ende-zu-Ende-Verschlüsselung einrichten',
-      setupDescription: 'Schütze Deine sensiblen Daten mit einer zusätzlichen Sicherheitsebene.',
-      password: 'Passwort',
-      confirmPassword: 'Passwort bestätigen',
-      unlock: 'Entsperren',
-      enable: 'Verschlüsselung aktivieren',
-      wrongPassword: 'Falsches Passwort',
-      passwordMismatch: 'Passwörter stimmen nicht überein',
-      passwordTooShort: 'Passwort muss mindestens 8 Zeichen haben',
-      warning: 'Achtung: Wenn Du dieses Passwort vergisst, können Deine Daten nicht wiederhergestellt werden!',
+      unlockTitle: 'Deine Daten sind geschützt',
+      unlockDescription: 'Bitte gib Dein persönliches Passwort ein, um Deine Daten zu öffnen.',
+      setupTitle: 'Schütze Deine Daten mit einem Passwort',
+      setupDescription: 'In 2 einfachen Schritten sind Deine Informationen sicher verschlüsselt.',
+      password: 'Dein Passwort',
+      confirmPassword: 'Passwort nochmal eingeben',
+      unlock: 'Öffnen',
+      enable: 'Weiter',
+      wrongPassword: 'Das Passwort ist leider falsch. Bitte versuche es erneut.',
+      passwordMismatch: 'Die Passwörter stimmen nicht überein. Bitte prüfe beide Eingaben.',
+      passwordTooShort: 'Bitte wähle ein Passwort mit mindestens 8 Zeichen.',
+      warning: 'Wichtig: Merke Dir dieses Passwort gut! Es ist der Schlüssel zu Deinen Daten.',
       cancel: 'Abbrechen',
-      success: 'Verschlüsselung erfolgreich aktiviert',
-      unlockSuccess: 'Daten erfolgreich entsperrt',
-      migrating: 'Bestehende Daten werden verschlüsselt...',
-      migratingProgress: 'Verschlüssele Datensatz',
-      howItWorks: 'So funktioniert es',
-      howItWorksText: 'Deine Daten werden mit AES-256-GCM verschlüsselt – einem militärischen Verschlüsselungsstandard. Das Passwort verlässt niemals Dein Gerät und wird nicht auf unseren Servern gespeichert. Selbst wir können Deine verschlüsselten Daten nicht lesen.',
-      recoveryNote: 'Nach der Einrichtung erhältst Du einen Recovery-Schlüssel, den Du sicher aufbewahren solltest.',
+      success: 'Perfekt! Deine Daten sind jetzt geschützt.',
+      unlockSuccess: 'Deine Daten sind jetzt verfügbar.',
+      migrating: 'Deine Daten werden geschützt...',
+      migratingProgress: 'Verarbeite Eintrag',
+      
+      // Simplified explanation - step by step
+      step1Title: 'Schritt 1: Passwort wählen',
+      step1Text: 'Wähle ein Passwort, das Du Dir gut merken kannst. Dieses Passwort schützt alle Deine Informationen.',
+      
+      whatHappens: 'Was passiert?',
+      whatHappensText: 'Deine Daten werden wie in einem Tresor verschlossen. Nur mit Deinem Passwort kannst Du den Tresor öffnen – selbst wir haben keinen Zugang.',
+      
+      tipTitle: 'Tipp für ein gutes Passwort:',
+      tipText: 'Denke an einen Satz, den Du Dir leicht merkst, z.B. "Mein Hund Max ist 7 Jahre alt!" → MHMi7Ja!',
+      
+      afterSetup: 'Im nächsten Schritt erhältst Du einen Ersatzschlüssel zum Aufschreiben.',
+      
       forgotPassword: 'Passwort vergessen?',
-      resetEncryption: 'Verschlüsselung zurücksetzen',
-      resetHint: 'Passwort und Recovery-Key vergessen?',
+      resetEncryption: 'Alles zurücksetzen',
+      resetHint: 'Kein Zugriff mehr möglich?',
     },
     en: {
-      unlockTitle: 'Unlock Data',
-      unlockDescription: 'Enter your encryption password to access your data.',
-      setupTitle: 'Set Up End-to-End Encryption',
-      setupDescription: 'Protect your sensitive data with an additional layer of security.',
-      password: 'Password',
-      confirmPassword: 'Confirm Password',
-      unlock: 'Unlock',
-      enable: 'Enable Encryption',
-      wrongPassword: 'Wrong password',
-      passwordMismatch: 'Passwords do not match',
-      passwordTooShort: 'Password must be at least 8 characters',
-      warning: 'Warning: If you forget this password, your data cannot be recovered!',
+      unlockTitle: 'Your Data is Protected',
+      unlockDescription: 'Please enter your personal password to access your data.',
+      setupTitle: 'Protect Your Data with a Password',
+      setupDescription: 'In 2 simple steps, your information will be securely encrypted.',
+      password: 'Your Password',
+      confirmPassword: 'Enter password again',
+      unlock: 'Open',
+      enable: 'Continue',
+      wrongPassword: 'The password is incorrect. Please try again.',
+      passwordMismatch: 'The passwords do not match. Please check both entries.',
+      passwordTooShort: 'Please choose a password with at least 8 characters.',
+      warning: 'Important: Remember this password well! It is the key to your data.',
       cancel: 'Cancel',
-      success: 'Encryption enabled successfully',
-      unlockSuccess: 'Data unlocked successfully',
-      migrating: 'Encrypting existing data...',
-      migratingProgress: 'Encrypting record',
-      howItWorks: 'How it works',
-      howItWorksText: 'Your data is encrypted with AES-256-GCM – a military-grade encryption standard. The password never leaves your device and is not stored on our servers. Even we cannot read your encrypted data.',
-      recoveryNote: 'After setup, you will receive a recovery key that you should store safely.',
+      success: 'Perfect! Your data is now protected.',
+      unlockSuccess: 'Your data is now available.',
+      migrating: 'Your data is being protected...',
+      migratingProgress: 'Processing entry',
+      
+      // Simplified explanation - step by step
+      step1Title: 'Step 1: Choose a Password',
+      step1Text: 'Choose a password you can remember well. This password protects all your information.',
+      
+      whatHappens: 'What happens?',
+      whatHappensText: 'Your data is locked like in a safe. Only with your password can you open the safe – even we have no access.',
+      
+      tipTitle: 'Tip for a good password:',
+      tipText: 'Think of a sentence you can easily remember, e.g., "My dog Max is 7 years old!" → MdMi7yo!',
+      
+      afterSetup: 'In the next step, you will receive a backup key to write down.',
+      
       forgotPassword: 'Forgot password?',
-      resetEncryption: 'Reset Encryption',
-      resetHint: 'Forgot password and recovery key?',
+      resetEncryption: 'Reset everything',
+      resetHint: 'No access possible anymore?',
     },
   };
 
@@ -191,41 +211,57 @@ export const EncryptionPasswordDialog: React.FC<EncryptionPasswordDialogProps> =
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-md" hideCloseButton={preventClose} onPointerDownOutside={preventClose ? (e) => e.preventDefault() : undefined} onEscapeKeyDown={preventClose ? (e) => e.preventDefault() : undefined}>
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
+          <DialogTitle className="flex items-center gap-2 text-xl">
             {mode === 'setup' ? (
-              <Shield className="h-5 w-5 text-primary" />
+              <Shield className="h-6 w-6 text-primary" />
             ) : (
-              <Lock className="h-5 w-5 text-primary" />
+              <Lock className="h-6 w-6 text-primary" />
             )}
             {mode === 'setup' ? t.setupTitle : t.unlockTitle}
           </DialogTitle>
-          <DialogDescription>
+          <DialogDescription className="text-base">
             {mode === 'setup' ? t.setupDescription : t.unlockDescription}
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-5">
           {mode === 'setup' && (
-            <>
-              {/* How it works explanation */}
-              <div className="rounded-lg border border-primary/20 bg-primary/5 p-4 space-y-2">
-                <h4 className="font-medium text-sm flex items-center gap-2">
-                  <Shield className="h-4 w-4 text-primary" />
-                  {t.howItWorks}
-                </h4>
-                <p className="text-sm text-muted-foreground">{t.howItWorksText}</p>
-                <p className="text-xs text-muted-foreground italic">{t.recoveryNote}</p>
+            <div className="space-y-4">
+              {/* Step indicator */}
+              <div className="flex items-center gap-2 text-sm font-medium text-primary">
+                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs">
+                  1
+                </div>
+                {t.step1Title}
               </div>
               
-              <Alert variant="destructive" className="border-amber-500 bg-amber-50 text-amber-900">
+              {/* Simple explanation with safe analogy */}
+              <div className="rounded-lg border border-border bg-muted/50 p-4 space-y-3">
+                <div className="flex items-start gap-3">
+                  <Shield className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                  <div>
+                    <p className="font-medium text-sm">{t.whatHappens}</p>
+                    <p className="text-sm text-muted-foreground mt-1">{t.whatHappensText}</p>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Password tip */}
+              <div className="rounded-lg border border-primary/20 bg-primary/5 p-4">
+                <p className="font-medium text-sm text-primary">{t.tipTitle}</p>
+                <p className="text-sm text-muted-foreground mt-1">{t.tipText}</p>
+              </div>
+              
+              {/* Important warning - more friendly */}
+              <Alert className="border-amber-500 bg-amber-50 text-amber-900">
                 <AlertTriangle className="h-4 w-4" />
-                <AlertDescription>{t.warning}</AlertDescription>
+                <AlertDescription className="text-sm">{t.warning}</AlertDescription>
               </Alert>
-            </>
+            </div>
           )}
 
           <div className="space-y-2">
-            <Label htmlFor="encryption-password">{t.password}</Label>
+            <Label htmlFor="encryption-password" className="text-base">{t.password}</Label>
             <div className="relative">
               <Input
                 id="encryption-password"
@@ -234,21 +270,22 @@ export const EncryptionPasswordDialog: React.FC<EncryptionPasswordDialogProps> =
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
                 autoComplete={mode === 'setup' ? 'new-password' : 'current-password'}
-                className="pr-10"
+                className="pr-10 h-12 text-base"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground p-1"
+                aria-label={showPassword ? 'Passwort verbergen' : 'Passwort anzeigen'}
               >
-                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
               </button>
             </div>
           </div>
 
           {mode === 'setup' && (
             <div className="space-y-2">
-              <Label htmlFor="confirm-encryption-password">{t.confirmPassword}</Label>
+              <Label htmlFor="confirm-encryption-password" className="text-base">{t.confirmPassword}</Label>
               <Input
                 id="confirm-encryption-password"
                 type={showPassword ? 'text' : 'password'}
@@ -256,13 +293,21 @@ export const EncryptionPasswordDialog: React.FC<EncryptionPasswordDialogProps> =
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder="••••••••"
                 autoComplete="new-password"
+                className="h-12 text-base"
               />
+            </div>
+          )}
+
+          {mode === 'setup' && (
+            <div className="flex items-center gap-2 text-sm text-muted-foreground bg-muted/30 rounded-lg p-3">
+              <CheckCircle2 className="h-4 w-4 text-primary flex-shrink-0" />
+              <span>{t.afterSetup}</span>
             </div>
           )}
 
           {error && (
             <Alert variant="destructive">
-              <AlertDescription>{error}</AlertDescription>
+              <AlertDescription className="text-sm">{error}</AlertDescription>
             </Alert>
           )}
 
@@ -281,34 +326,34 @@ export const EncryptionPasswordDialog: React.FC<EncryptionPasswordDialogProps> =
           )}
 
           {mode === 'unlock' && (
-            <div className="space-y-2">
+            <div className="space-y-3 pt-2 border-t border-border">
               <button
                 type="button"
                 onClick={() => setShowRecoveryDialog(true)}
-                className="text-sm text-primary hover:underline flex items-center gap-1"
+                className="text-sm text-primary hover:underline flex items-center gap-2"
               >
-                <Key className="h-3 w-3" />
+                <Key className="h-4 w-4" />
                 {t.forgotPassword}
               </button>
               
               <button
                 type="button"
                 onClick={() => setShowResetDialog(true)}
-                className="text-sm text-destructive hover:underline flex items-center gap-1"
+                className="text-sm text-destructive hover:underline flex items-center gap-2"
               >
-                <Trash2 className="h-3 w-3" />
+                <Trash2 className="h-4 w-4" />
                 {t.resetHint}
               </button>
             </div>
           )}
 
-          <div className="flex gap-2 justify-end">
+          <div className="flex gap-3 justify-end pt-2">
             {!preventClose && (
-              <Button type="button" variant="outline" onClick={handleClose} disabled={isMigrating}>
+              <Button type="button" variant="outline" onClick={handleClose} disabled={isMigrating} className="h-11">
                 {t.cancel}
               </Button>
             )}
-            <Button type="submit" disabled={isLoading || isMigrating || !password}>
+            <Button type="submit" disabled={isLoading || isMigrating || !password} className="h-11 px-6">
               {isLoading || isMigrating ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
               ) : mode === 'setup' ? t.enable : t.unlock}
