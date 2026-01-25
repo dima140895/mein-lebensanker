@@ -371,6 +371,15 @@ const Header = () => {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-48 bg-popover">
+                  {/* Direct link to Dashboard Overview */}
+                  <DropdownMenuItem
+                    onClick={() => navigateTo('/dashboard')}
+                    className={!currentSection ? 'bg-muted font-medium' : ''}
+                  >
+                    <ClipboardList className="mr-2 h-4 w-4" />
+                    {language === 'de' ? 'Dashboard' : 'Dashboard'}
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
                   {sectionItems.map((item) => {
                     const Icon = item.icon;
                     const isActive = currentSection === item.key;
