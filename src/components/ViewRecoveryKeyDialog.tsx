@@ -138,6 +138,18 @@ export const ViewRecoveryKeyDialog: React.FC<ViewRecoveryKeyDialogProps> = ({
 
       if (updateError) throw updateError;
 
+      // Verify the backend really stores the value we just wrote.
+      const { data: verifyData, error: verifyError } = await supabase
+        .from('profiles')
+        .select('encrypted_password_recovery')
+        .eq('user_id', user.id)
+        .maybeSingle();
+
+      if (verifyError) throw verifyError;
+      if (verifyData?.encrypted_password_recovery !== pendingEncryptedPassword) {
+        throw new Error('Recovery key activation verification failed');
+      }
+
       setIsActivated(true);
       toast.success(t.success);
     } catch (err) {
