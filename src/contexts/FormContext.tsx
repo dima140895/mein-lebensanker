@@ -194,7 +194,7 @@ export const FormProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
-  const loadAllData = async () => {
+  const loadAllData = React.useCallback(async () => {
     if (!user || !activeProfileId) return;
 
     try {
@@ -226,7 +226,7 @@ export const FormProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     } catch (error) {
       logger.error('Error loading data:', error);
     }
-  };
+  }, [user, activeProfileId]);
 
   // Reload data when active profile changes
   useEffect(() => {
@@ -235,7 +235,7 @@ export const FormProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     } else {
       setFormData(defaultFormData);
     }
-  }, [user, profile?.has_paid, activeProfileId]);
+  }, [user, profile?.has_paid, activeProfileId, loadAllData]);
 
   return (
     <FormContext.Provider value={{ 
