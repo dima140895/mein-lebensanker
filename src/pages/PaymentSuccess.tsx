@@ -84,8 +84,9 @@ const PaymentSuccessContent = () => {
           }
           setMaxProfiles(profiles);
           
-          // Show profile setup for new purchases (not upgrades or adding profiles)
-          if (!isUpgrade && !isAddingProfiles) {
+          // Show profile setup for new purchases AND when adding profiles
+          // Only skip for pure upgrades (changing package tier without adding new profiles)
+          if (!isUpgrade || isAddingProfiles) {
             setShowProfileSetup(true);
           }
         } else {
