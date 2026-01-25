@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Heart, LogIn, UserPlus, Menu, Home, User, Info, ClipboardList, Wallet, Globe, ScrollText, FolderOpen, Phone, ChevronDown, Link2, CreditCard, Package, Key, LogOut, Shield } from 'lucide-react';
+import { Heart, LogIn, UserPlus, Menu, Home, User, Info, ClipboardList, Wallet, Globe, ScrollText, FolderOpen, Phone, ChevronDown, Link2, CreditCard, Package, Key, LogOut, Shield, KeyRound } from 'lucide-react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import LanguageToggle from './LanguageToggle';
 import ProfileSwitcher from './ProfileSwitcher';
@@ -30,6 +30,7 @@ import AuthForm from './AuthForm';
 import PricingDialog from './PricingDialog';
 import ChangePasswordDialog from './ChangePasswordDialog';
 import { EncryptionPasswordDialog } from './EncryptionPasswordDialog';
+import { ViewRecoveryKeyDialog } from './ViewRecoveryKeyDialog';
 
 interface MenuItem {
   label: string;
@@ -50,6 +51,7 @@ const Header = () => {
   const [pricingOpen, setPricingOpen] = useState(false);
   const [changePasswordOpen, setChangePasswordOpen] = useState(false);
   const [encryptionSetupOpen, setEncryptionSetupOpen] = useState(false);
+  const [recoveryKeyDialogOpen, setRecoveryKeyDialogOpen] = useState(false);
 
   const currentSection = searchParams.get('section');
 
@@ -98,6 +100,7 @@ const Header = () => {
       account: 'Konto',
       encryption: 'Verschlüsselung',
       encryptionEnabled: 'Verschlüsselung aktiv',
+      recoveryKey: 'Neuen Recovery-Schlüssel',
     },
     en: {
       login: 'Sign In',
@@ -127,6 +130,7 @@ const Header = () => {
       account: 'Account',
       encryption: 'Encryption',
       encryptionEnabled: 'Encryption active',
+      recoveryKey: 'New Recovery Key',
     },
   };
 
@@ -312,10 +316,23 @@ const Header = () => {
                         </Button>
                       )}
                       {encryptionEnabled && (
-                        <div className="flex items-center gap-2 px-4 py-2 text-sm text-muted-foreground">
-                          <Shield className="h-4 w-4 text-primary" />
-                          {tx.encryptionEnabled}
-                        </div>
+                        <>
+                          <div className="flex items-center gap-2 px-4 py-2 text-sm text-muted-foreground">
+                            <Shield className="h-4 w-4 text-primary" />
+                            {tx.encryptionEnabled}
+                          </div>
+                          <Button 
+                            variant="ghost" 
+                            className="w-full justify-start" 
+                            onClick={() => {
+                              setMobileMenuOpen(false);
+                              setRecoveryKeyDialogOpen(true);
+                            }}
+                          >
+                            <KeyRound className="mr-2 h-4 w-4" />
+                            {tx.recoveryKey}
+                          </Button>
+                        </>
                       )}
                       <Button variant="outline" className="w-full" onClick={handleLogout}>
                         <LogOut className="mr-2 h-4 w-4" />
@@ -490,10 +507,22 @@ const Header = () => {
                     {tx.encryption}
                   </DropdownMenuItem>
                 ) : (
-                  <div className="flex items-center gap-2 px-2 py-1.5 text-sm text-muted-foreground">
-                    <Shield className="h-4 w-4 text-primary" />
-                    {tx.encryptionEnabled}
-                  </div>
+                  <>
+                    <DropdownMenuItem 
+                      onClick={() => setRecoveryKeyDialogOpen(true)}
+                      className="cursor-pointer"
+                    >
+                      <Shield className="mr-2 h-4 w-4 text-primary" />
+                      {tx.encryptionEnabled}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem 
+                      onClick={() => setRecoveryKeyDialogOpen(true)}
+                      className="cursor-pointer"
+                    >
+                      <KeyRound className="mr-2 h-4 w-4" />
+                      {tx.recoveryKey}
+                    </DropdownMenuItem>
+                  </>
                 )}
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleLogout} className="text-destructive focus:text-destructive">
@@ -571,6 +600,12 @@ const Header = () => {
         open={encryptionSetupOpen} 
         onOpenChange={setEncryptionSetupOpen}
         mode="setup"
+      />
+
+      {/* View/Generate Recovery Key Dialog */}
+      <ViewRecoveryKeyDialog 
+        open={recoveryKeyDialogOpen} 
+        onOpenChange={setRecoveryKeyDialogOpen}
       />
     </motion.header>
   );
