@@ -22,9 +22,11 @@ import AboutSection from '@/components/sections/AboutSection';
 import GuidanceSection from '@/components/sections/GuidanceSection';
 import DecisionAssistant from '@/components/sections/DecisionAssistant';
 import ShareLinkManager from '@/components/ShareLinkManager';
+import ProfileSwitcher from '@/components/ProfileSwitcher';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { EncryptionPasswordDialog } from '@/components/EncryptionPasswordDialog';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const sections = [
   { key: 'about', icon: Info, color: 'bg-sage-light text-sage-dark', isInfo: true },
@@ -47,6 +49,7 @@ const DashboardContent = () => {
   const [activeSection, setActiveSection] = useState<string | null>(null);
   const [isPartnerView, setIsPartnerView] = useState(false);
   const [showUnlockDialog, setShowUnlockDialog] = useState(false);
+  const isMobile = useIsMobile();
 
   // Show unlock dialog automatically when encryption is enabled but locked
   useEffect(() => {
@@ -186,14 +189,26 @@ const DashboardContent = () => {
     return (
       <>
         <div className="container mx-auto px-4 py-8">
-          <div className="flex items-center justify-between mb-6">
-            <Button variant="ghost" onClick={() => handleSectionChange(null)}>
-              <ArrowLeft className="mr-2 h-4 w-4" /> {texts.back}
-            </Button>
-            <h2 className="font-serif text-xl font-semibold text-foreground absolute left-1/2 -translate-x-1/2">
+          {/* Mobile: Stack vertically with proper spacing */}
+          <div className="flex flex-col gap-4 mb-6 md:flex-row md:items-center md:justify-between md:gap-0">
+            <div className="flex items-center justify-between">
+              <Button variant="ghost" onClick={() => handleSectionChange(null)} className="flex-shrink-0">
+                <ArrowLeft className="mr-2 h-4 w-4" /> 
+                <span className="hidden sm:inline">{texts.back}</span>
+                <span className="sm:hidden">{language === 'de' ? 'Zurück' : 'Back'}</span>
+              </Button>
+              {/* Mobile: Show ProfileSwitcher next to back button */}
+              {isMobile && <ProfileSwitcher />}
+            </div>
+            
+            <h2 className="font-serif text-xl font-semibold text-foreground text-center md:absolute md:left-1/2 md:-translate-x-1/2">
               {texts[activeSection as keyof typeof texts]}
             </h2>
-            <div className="w-[140px]" />
+            
+            {/* Desktop: ProfileSwitcher on the right */}
+            <div className="hidden md:flex md:w-[140px] md:justify-end">
+              <ProfileSwitcher />
+            </div>
           </div>
 
           {renderContent()}
