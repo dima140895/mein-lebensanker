@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { User, ArrowRight, ArrowLeft, Check, Calendar, Loader2 } from 'lucide-react';
@@ -12,6 +12,7 @@ import { toast } from 'sonner';
 import { logger } from '@/lib/logger';
 
 interface ProfileData {
+  id?: string; // existing profile id
   name: string;
   birthDate: string;
 }
@@ -32,6 +33,8 @@ const ProfileSetupWizard = ({ maxProfiles, packageType }: ProfileSetupWizardProp
   );
   const [saving, setSaving] = useState(false);
   const [completed, setCompleted] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [existingProfileCount, setExistingProfileCount] = useState(0);
 
   const t = {
     de: {
@@ -54,6 +57,7 @@ const ProfileSetupWizard = ({ maxProfiles, packageType }: ProfileSetupWizardProp
       couple: 'Ehepaar-Paket',
       family: 'Familien-Paket',
       required: 'Name ist erforderlich',
+      loading: 'Lade bestehende Profile...',
     },
     en: {
       title: 'Set Up Profiles',
@@ -75,6 +79,7 @@ const ProfileSetupWizard = ({ maxProfiles, packageType }: ProfileSetupWizardProp
       couple: 'Couple Package',
       family: 'Family Package',
       required: 'Name is required',
+      loading: 'Loading existing profiles...',
     },
   };
 
@@ -85,6 +90,64 @@ const ProfileSetupWizard = ({ maxProfiles, packageType }: ProfileSetupWizardProp
     couple: texts.couple,
     family: texts.family,
   };
+
+  // Load existing profiles on mount
+  useEffect(() => {
+    const loadExistingProfiles = async () => {
+      if (!user) {
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const { data: existingProfiles, error } = await supabase
+          .from('person_profiles')
+          .select('id, name, birth_date')
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: true });
+
+        if (error) throw error;
+
+        const existingCount = existingProfiles?.length || 0;
+        setExistingProfileCount(existingCount);
+
+        // Calculate how many new profiles to create
+        const profilesToCreate = Math.max(0, maxProfiles - existingCount);
+
+        if (profilesToCreate === 0) {
+          // All profiles already exist, go to dashboard
+          setCompleted(true);
+        } else {
+          // Pre-fill with existing profiles and add empty slots for new ones
+          const profileData: ProfileData[] = [];
+          
+          // Add existing profiles
+          existingProfiles?.forEach(p => {
+            profileData.push({
+              id: p.id,
+              name: p.name,
+              birthDate: p.birth_date || '',
+            });
+          });
+
+          // Add empty slots for new profiles
+          for (let i = 0; i < profilesToCreate; i++) {
+            profileData.push({ name: '', birthDate: '' });
+          }
+
+          setProfiles(profileData);
+          // Start at the first empty profile
+          setCurrentStep(existingCount);
+        }
+      } catch (error) {
+        logger.error('Error loading existing profiles:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadExistingProfiles();
+  }, [user, maxProfiles]);
 
   const handleProfileChange = (index: number, field: keyof ProfileData, value: string) => {
     const updated = [...profiles];
@@ -101,13 +164,13 @@ const ProfileSetupWizard = ({ maxProfiles, packageType }: ProfileSetupWizardProp
       toast.error(texts.required);
       return;
     }
-    if (currentStep < maxProfiles - 1) {
+    if (currentStep < profiles.length - 1) {
       setCurrentStep(currentStep + 1);
     }
   };
 
   const handleBack = () => {
-    if (currentStep > 0) {
+    if (currentStep > existingProfileCount) {
       setCurrentStep(currentStep - 1);
     }
   };
@@ -123,35 +186,55 @@ const ProfileSetupWizard = ({ maxProfiles, packageType }: ProfileSetupWizardProp
     setSaving(true);
 
     try {
-      // Create all profiles
+      // Process each profile
       for (let i = 0; i < profiles.length; i++) {
         const profile = profiles[i];
         if (!profile.name.trim()) continue;
 
-        // Insert person profile
-        const { data: personProfile, error: profileError } = await supabase
-          .from('person_profiles')
-          .insert({
-            user_id: user.id,
-            name: profile.name.trim(),
-            birth_date: profile.birthDate || null,
-          })
-          .select()
-          .single();
+        let personProfileId = profile.id;
 
-        if (profileError) {
-          logger.error('Error creating profile:', profileError);
-          throw profileError;
+        if (profile.id) {
+          // Update existing profile
+          const { error: updateError } = await supabase
+            .from('person_profiles')
+            .update({
+              name: profile.name.trim(),
+              birth_date: profile.birthDate || null,
+            })
+            .eq('id', profile.id);
+
+          if (updateError) {
+            logger.error('Error updating profile:', updateError);
+            throw updateError;
+          }
+        } else {
+          // Insert new person profile
+          const { data: personProfile, error: profileError } = await supabase
+            .from('person_profiles')
+            .insert({
+              user_id: user.id,
+              name: profile.name.trim(),
+              birth_date: profile.birthDate || null,
+            })
+            .select()
+            .single();
+
+          if (profileError) {
+            logger.error('Error creating profile:', profileError);
+            throw profileError;
+          }
+
+          personProfileId = personProfile?.id;
         }
 
-        // Also save to vorsorge_data for the personal section
-        if (personProfile) {
-          await supabase
+        // Save/update vorsorge_data for the personal section
+        if (personProfileId) {
+          const { error: dataError } = await supabase
             .from('vorsorge_data')
             .upsert({
               user_id: user.id,
               section_key: 'personal',
-              person_profile_id: personProfile.id,
+              person_profile_id: personProfileId,
               data: {
                 fullName: profile.name.trim(),
                 birthDate: profile.birthDate || '',
@@ -159,11 +242,17 @@ const ProfileSetupWizard = ({ maxProfiles, packageType }: ProfileSetupWizardProp
             }, {
               onConflict: 'user_id,section_key,person_profile_id',
             });
+
+          if (dataError) {
+            logger.error('Error saving vorsorge_data:', dataError);
+            // Don't throw here, profile was created successfully
+          }
         }
       }
 
       await refreshProfile();
       setCompleted(true);
+      toast.success(language === 'de' ? 'Profile erfolgreich gespeichert!' : 'Profiles saved successfully!');
     } catch (error: any) {
       logger.error('Error saving profiles:', error);
       toast.error(language === 'de' 
@@ -177,6 +266,16 @@ const ProfileSetupWizard = ({ maxProfiles, packageType }: ProfileSetupWizardProp
   const handleSkip = () => {
     navigate('/dashboard');
   };
+
+  // Loading state
+  if (loading) {
+    return (
+      <div className="text-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mb-4" />
+        <p className="text-muted-foreground">{texts.loading}</p>
+      </div>
+    );
+  }
 
   // Completion screen
   if (completed) {
@@ -200,6 +299,9 @@ const ProfileSetupWizard = ({ maxProfiles, packageType }: ProfileSetupWizardProp
     );
   }
 
+  const totalProfiles = profiles.length;
+  const isExistingProfile = profiles[currentStep]?.id !== undefined;
+
   return (
     <div className="w-full max-w-md mx-auto">
       {/* Header */}
@@ -222,11 +324,11 @@ const ProfileSetupWizard = ({ maxProfiles, packageType }: ProfileSetupWizardProp
 
       {/* Progress dots */}
       <div className="flex justify-center gap-2 mb-8">
-        {Array.from({ length: maxProfiles }).map((_, i) => (
+        {Array.from({ length: totalProfiles }).map((_, i) => (
           <button
             key={i}
             onClick={() => {
-              if (i < currentStep || (i === currentStep)) {
+              if (i <= currentStep) {
                 setCurrentStep(i);
               }
             }}
@@ -257,7 +359,12 @@ const ProfileSetupWizard = ({ maxProfiles, packageType }: ProfileSetupWizardProp
             </div>
             <div>
               <p className="text-sm text-muted-foreground">
-                {texts.profileLabel} {currentStep + 1} {texts.of} {maxProfiles}
+                {texts.profileLabel} {currentStep + 1} {texts.of} {totalProfiles}
+                {isExistingProfile && (
+                  <span className="ml-2 text-xs text-primary">
+                    ({language === 'de' ? 'vorhanden' : 'existing'})
+                  </span>
+                )}
               </p>
               <p className="font-medium text-foreground">
                 {profiles[currentStep]?.name || `${texts.profileLabel} ${currentStep + 1}`}
@@ -304,14 +411,14 @@ const ProfileSetupWizard = ({ maxProfiles, packageType }: ProfileSetupWizardProp
         <Button
           variant="ghost"
           onClick={handleBack}
-          disabled={currentStep === 0}
-          className={currentStep === 0 ? 'invisible' : ''}
+          disabled={currentStep <= existingProfileCount || currentStep === 0}
+          className={currentStep <= existingProfileCount || currentStep === 0 ? 'invisible' : ''}
         >
           <ArrowLeft className="h-4 w-4 mr-2" />
           {texts.back}
         </Button>
 
-        {currentStep < maxProfiles - 1 ? (
+        {currentStep < totalProfiles - 1 ? (
           <Button onClick={handleNext} disabled={!isCurrentProfileValid()}>
             {texts.next}
             <ArrowRight className="h-4 w-4 ml-2" />
