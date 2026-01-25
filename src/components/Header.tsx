@@ -223,8 +223,49 @@ const Header = () => {
                         </button>
                       </li>
                     ))}
-                  </ul>
-                </nav>
+                    </ul>
+
+                    {/* Pricing Section for non-authenticated users */}
+                    {!user && (
+                      <div className="mt-6 pt-4 border-t border-border">
+                        <p className="px-4 text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2">
+                          {tx.pricing}
+                        </p>
+                        <ul className="space-y-1">
+                          {pricingItems.map((item) => (
+                            <li key={item.key}>
+                              <button
+                                onClick={() => {
+                                  setMobileMenuOpen(false);
+                                  setAuthMode('register');
+                                  setAuthOpen(true);
+                                }}
+                                className="w-full flex items-center justify-between rounded-lg px-4 py-3 text-left text-foreground transition-colors hover:bg-muted"
+                              >
+                                <div className="flex items-center gap-3">
+                                  {item.profiles === 1 ? (
+                                    <User className="h-4 w-4 text-muted-foreground" />
+                                  ) : (
+                                    <Users className="h-4 w-4 text-muted-foreground" />
+                                  )}
+                                  <span>{item.label[language]}</span>
+                                </div>
+                                <div className="text-right flex flex-col">
+                                  <span className="font-mono font-semibold text-primary">{item.price}</span>
+                                  <span className="text-xs text-muted-foreground">{tx.oneTime}</span>
+                                </div>
+                              </button>
+                            </li>
+                          ))}
+                        </ul>
+                        <p className="px-4 pt-2 text-xs text-muted-foreground text-center">
+                          {language === 'de' 
+                            ? 'Einmalige Zahlung • Lebenslanger Zugang' 
+                            : 'One-time payment • Lifetime access'}
+                        </p>
+                      </div>
+                    )}
+                  </nav>
 
                 {/* Mobile Menu Footer */}
                 <div className="border-t border-border p-4 space-y-3">
