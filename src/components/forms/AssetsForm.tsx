@@ -191,17 +191,19 @@ const AssetsForm = ({ isPartner = false }: AssetsFormProps) => {
                 <Select
                   value={property.ownership || ''}
                   onValueChange={(value) => {
-                    updateItem('properties', i, 'ownership', value);
-                    // Reset usage type if ownership is not "owned"
-                    if (value !== 'owned') {
-                      updateItem('properties', i, 'usageType', '');
-                    }
+                    const newArray = [...data.properties];
+                    newArray[i] = { 
+                      ...newArray[i], 
+                      ownership: value,
+                      usageType: value === 'owned' ? newArray[i].usageType : ''
+                    };
+                    updateSection('assets', { ...data, properties: newArray }, isPartner);
                   }}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder={texts.selectOwnership} />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-background border border-border shadow-lg z-50">
                     <SelectItem value="owned">{texts.ownershipOwned}</SelectItem>
                     <SelectItem value="rented">{texts.ownershipRented}</SelectItem>
                     <SelectItem value="other">{texts.ownershipOther}</SelectItem>
@@ -212,10 +214,10 @@ const AssetsForm = ({ isPartner = false }: AssetsFormProps) => {
                     value={property.usageType || ''}
                     onValueChange={(value) => updateItem('properties', i, 'usageType', value)}
                   >
-                    <SelectTrigger>
+                  <SelectTrigger>
                       <SelectValue placeholder={texts.selectUsage} />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="bg-background border border-border shadow-lg z-50">
                       <SelectItem value="self-occupied">{texts.usageSelfOccupied}</SelectItem>
                       <SelectItem value="rented-out">{texts.usageRentedOut}</SelectItem>
                     </SelectContent>
