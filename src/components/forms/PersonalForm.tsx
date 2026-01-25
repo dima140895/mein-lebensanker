@@ -4,6 +4,7 @@ import { Save, Plus, Trash2, Info } from 'lucide-react';
 import { useFormData, PersonalData } from '@/contexts/FormContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
+import { useProfiles } from '@/contexts/ProfileContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -14,6 +15,7 @@ const PersonalForm = () => {
   const { formData, updateSection, saveSection, saving } = useFormData();
   const { profile } = useAuth();
   const { language } = useLanguage();
+  const { activeProfileId, updateProfile } = useProfiles();
   
   const data = formData.personal;
 
@@ -60,6 +62,13 @@ const PersonalForm = () => {
 
   const handleSave = async () => {
     await saveSection('personal');
+    
+    // Sync full name and birth date to the person profile
+    if (activeProfileId && (data.fullName || data.birthDate)) {
+      const profileName = data.fullName?.trim() || 'Unbenannt';
+      await updateProfile(activeProfileId, profileName, data.birthDate || undefined);
+    }
+    
     toast.success(texts.saved);
   };
 
