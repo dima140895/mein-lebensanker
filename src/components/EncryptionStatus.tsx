@@ -139,7 +139,7 @@ export const EncryptionStatus: React.FC = () => {
   if (!isUnlocked) {
     return (
       <>
-        <div className="flex items-center gap-1">
+      <div className="flex items-center gap-1">
           <Button
             variant="outline"
             size="sm"
@@ -147,7 +147,7 @@ export const EncryptionStatus: React.FC = () => {
               setDialogMode('unlock');
               setShowPasswordDialog(true);
             }}
-            className="gap-2 border-amber-500 text-amber-600 hover:bg-amber-50"
+            className="gap-2 border-primary text-primary hover:bg-primary/10"
           >
             <ShieldAlert className="h-4 w-4" />
             <span className="hidden sm:inline">{t.unlock}</span>
