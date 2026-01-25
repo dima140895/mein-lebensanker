@@ -18,6 +18,7 @@ import Datenschutz from "./pages/Datenschutz";
 import Impressum from "./pages/Impressum";
 import NotFound from "./pages/NotFound";
 import CookieConsent from "./components/CookieConsent";
+import { EncryptionReminder } from "./components/EncryptionReminder";
 
 const queryClient = new QueryClient();
 
@@ -44,6 +45,7 @@ const App = () => (
                     <Route path="*" element={<NotFound />} />
                   </Routes>
                   <CookieConsent />
+                  <EncryptionReminder />
                 </BrowserRouter>
               </TooltipProvider>
             </FormProvider>
