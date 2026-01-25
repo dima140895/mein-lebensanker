@@ -41,8 +41,8 @@ export const ViewRecoveryKeyDialog: React.FC<ViewRecoveryKeyDialogProps> = ({
 
   const translations = {
     de: {
-      title: 'Neuen Recovery-Schlüssel generieren',
-      description: 'Gib Dein Verschlüsselungspasswort ein, um einen neuen Recovery-Schlüssel zu erstellen. Der alte Schlüssel wird dadurch ungültig.',
+      title: 'Recovery-Schlüssel neu generieren',
+      description: 'Erstelle einen neuen Recovery-Schlüssel. Der alte Schlüssel wird dadurch ungültig und kann nicht mehr verwendet werden!',
       password: 'Verschlüsselungspasswort',
       generate: 'Neuen Schlüssel generieren',
       cancel: 'Abbrechen',
@@ -57,10 +57,11 @@ export const ViewRecoveryKeyDialog: React.FC<ViewRecoveryKeyDialogProps> = ({
       warning: 'Dieser Schlüssel wird nur einmal angezeigt. Wenn Du ihn verlierst und Dein Passwort vergisst, können Deine Daten nicht wiederhergestellt werden!',
       notUnlocked: 'Deine Daten sind gesperrt. Entsperre sie, um einen neuen Recovery-Schlüssel zu generieren.',
       unlockNow: 'Jetzt entsperren',
+      oldKeyWarning: 'Achtung: Der alte Recovery-Schlüssel wird ungültig! Stelle sicher, dass Du den neuen Schlüssel sicher speicherst, bevor Du fortfährst.',
     },
     en: {
-      title: 'Generate New Recovery Key',
-      description: 'Enter your encryption password to create a new recovery key. The old key will become invalid.',
+      title: 'Regenerate Recovery Key',
+      description: 'Create a new recovery key. The old key will become invalid and can no longer be used!',
       password: 'Encryption Password',
       generate: 'Generate New Key',
       cancel: 'Cancel',
@@ -75,6 +76,7 @@ export const ViewRecoveryKeyDialog: React.FC<ViewRecoveryKeyDialogProps> = ({
       warning: 'This key will only be shown once. If you lose it and forget your password, your data cannot be recovered!',
       notUnlocked: 'Your data is locked. Unlock it to generate a new recovery key.',
       unlockNow: 'Unlock Now',
+      oldKeyWarning: 'Warning: The old recovery key will become invalid! Make sure to save the new key securely before proceeding.',
     },
   };
 
@@ -254,6 +256,11 @@ Datum / Date: ${new Date().toLocaleDateString()}
         </DialogHeader>
 
         <form onSubmit={(e) => { e.preventDefault(); handleGenerateNewKey(); }} className="space-y-4">
+          <Alert className="border-amber-500 bg-amber-50 text-amber-900">
+            <AlertTriangle className="h-4 w-4" />
+            <AlertDescription>{t.oldKeyWarning}</AlertDescription>
+          </Alert>
+
           <div className="space-y-2">
             <Label htmlFor="recovery-password">{t.password}</Label>
             <div className="relative">
