@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/browserClient';
 import { toast } from 'sonner';
 import { PRICING, getUpgradePrice, canUpgrade, type PackageType } from '@/lib/pricing';
+import { logger } from '@/lib/logger';
 
 const UpgradeOptions = () => {
   const { user, profile } = useAuth();
@@ -78,7 +79,7 @@ const UpgradeOptions = () => {
         window.location.href = data.url;
       }
     } catch (error: any) {
-      console.error('Upgrade error:', error);
+      logger.error('Upgrade error:', error);
       toast.error(error.message || 'Fehler beim Upgrade');
     } finally {
       setLoading(null);
