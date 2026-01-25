@@ -1,25 +1,33 @@
+import { useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Save, Info, FileText } from 'lucide-react';
+import { Info, FileText } from 'lucide-react';
 import { useFormData, DocumentsData } from '@/contexts/FormContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
-import { Button } from '@/components/ui/button';
+import { useProfiles } from '@/contexts/ProfileContext';
+import { useAutoSave } from '@/hooks/useAutoSave';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
-import { toast } from 'sonner';
 
 const DocumentsForm = () => {
-  const { formData, updateSection, saveSection, saving } = useFormData();
+  const { formData, updateSection } = useFormData();
   const { profile } = useAuth();
   const { language } = useLanguage();
+  const { activeProfileId } = useProfiles();
+  const { handleBlur, resetSaveState } = useAutoSave({ section: 'documents' });
   
   const data = formData.documents;
+
+  // Reset save state when profile changes
+  useEffect(() => {
+    resetSaveState();
+  }, [activeProfileId, resetSaveState]);
 
   const t = {
     de: {
       title: 'Dokumenten-Übersicht',
-      disclaimer: 'Notiere hier, WO wichtige Dokumente aufbewahrt werden. Diese Übersicht ersetzt keine rechtlichen Dokumente.',
+      disclaimer: 'Notiere hier, WO wichtige Dokumente aufbewahrt werden. Diese Übersicht ersetzt keine rechtlichen Dokumente. Änderungen werden automatisch gespeichert.',
       documentNote: 'Für Testament, Vorsorgevollmacht und Patientenverfügung wende dich an einen Notar.',
       testament: 'Testament',
       testamentPlaceholder: 'Wo befindet sich das Testament? (z.B. Notar, Schließfach, zu Hause)',
@@ -34,12 +42,10 @@ const DocumentsForm = () => {
       otherDocs: 'Sonstige wichtige Dokumente',
       otherPlaceholder: 'Wo befinden sich weitere wichtige Dokumente?',
       notes: 'Zusätzliche Hinweise',
-      save: 'Speichern',
-      saved: 'Gespeichert!',
     },
     en: {
       title: 'Document Overview',
-      disclaimer: 'Note here WHERE important documents are stored. This overview does not replace legal documents.',
+      disclaimer: 'Note here WHERE important documents are stored. This overview does not replace legal documents. Changes are saved automatically.',
       documentNote: 'For wills, power of attorney, and living wills, please consult a notary.',
       testament: 'Last Will & Testament',
       testamentPlaceholder: 'Where is the will located? (e.g., notary, safe deposit box, at home)',
@@ -54,8 +60,6 @@ const DocumentsForm = () => {
       otherDocs: 'Other Important Documents',
       otherPlaceholder: 'Where are other important documents located?',
       notes: 'Additional Notes',
-      save: 'Save',
-      saved: 'Saved!',
     },
   };
 
@@ -63,11 +67,6 @@ const DocumentsForm = () => {
 
   const handleChange = (field: keyof DocumentsData, value: string) => {
     updateSection('documents', { ...data, [field]: value });
-  };
-
-  const handleSave = async () => {
-    await saveSection('documents');
-    toast.success(texts.saved);
   };
 
   const documentFields: Array<{ key: keyof DocumentsData; label: string; placeholder: string }> = [
@@ -78,6 +77,10 @@ const DocumentsForm = () => {
     { key: 'propertyDocsLocation', label: texts.propertyDocs, placeholder: texts.propertyPlaceholder },
     { key: 'otherDocsLocation', label: texts.otherDocs, placeholder: texts.otherPlaceholder },
   ];
+
+  if (!profile?.has_paid) {
+    return null;
+  }
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
@@ -98,6 +101,7 @@ const DocumentsForm = () => {
             <Input
               value={data[field.key]}
               onChange={(e) => handleChange(field.key, e.target.value)}
+              onBlur={handleBlur}
               placeholder={field.placeholder}
             />
           </div>
@@ -109,17 +113,11 @@ const DocumentsForm = () => {
         <Textarea
           value={data.notes}
           onChange={(e) => handleChange('notes', e.target.value)}
+          onBlur={handleBlur}
           placeholder={texts.notes}
           rows={3}
         />
       </div>
-
-      {profile?.has_paid && (
-        <Button onClick={handleSave} disabled={saving}>
-          <Save className="mr-2 h-4 w-4" />
-          {saving ? '...' : texts.save}
-        </Button>
-      )}
     </motion.div>
   );
 };

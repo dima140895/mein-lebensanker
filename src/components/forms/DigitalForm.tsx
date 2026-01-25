@@ -1,25 +1,34 @@
+import { useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Save, Plus, Trash2, Info, AlertTriangle } from 'lucide-react';
+import { Plus, Trash2, Info, AlertTriangle } from 'lucide-react';
 import { useFormData, DigitalData } from '@/contexts/FormContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
+import { useProfiles } from '@/contexts/ProfileContext';
+import { useAutoSave } from '@/hooks/useAutoSave';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { toast } from 'sonner';
 
 const DigitalForm = () => {
-  const { formData, updateSection, saveSection, saving } = useFormData();
+  const { formData, updateSection } = useFormData();
   const { profile } = useAuth();
   const { language } = useLanguage();
+  const { activeProfileId } = useProfiles();
+  const { handleBlur, resetSaveState } = useAutoSave({ section: 'digital' });
   
   const data = formData.digital;
+
+  // Reset save state when profile changes
+  useEffect(() => {
+    resetSaveState();
+  }, [activeProfileId, resetSaveState]);
 
   const t = {
     de: {
       title: 'Digitale Ordnung',
-      disclaimer: 'Dokumentiere hier Deine digitale Präsenz – ohne sicherheitskritische Daten. Notiere nur, WO Zugangsdaten hinterlegt sind.',
+      disclaimer: 'Dokumentiere hier Deine digitale Präsenz – ohne sicherheitskritische Daten. Notiere nur, WO Zugangsdaten hinterlegt sind. Änderungen werden automatisch gespeichert.',
       warning: 'Warum wir keine Passwörter abfragen: Deine Sicherheit steht an erster Stelle. Passwörter, Zugangscodes und Sicherheitsfragen werden bewusst nicht erfasst. Nutze stattdessen einen Passwort-Manager und notiere hier nur, wo dieser zu finden ist.',
       emailAccounts: 'E-Mail-Konten',
       provider: 'Anbieter',
@@ -42,12 +51,10 @@ const DigitalForm = () => {
       passwordManagerPlaceholder: 'Wo ist der Passwort-Manager hinterlegt? (z.B. Familienordner, Tresor)',
       addItem: 'Hinzufügen',
       notes: 'Zusätzliche Hinweise',
-      save: 'Speichern',
-      saved: 'Gespeichert!',
     },
     en: {
       title: 'Digital Organization',
-      disclaimer: 'Document your digital presence here – without security-critical data. Only note WHERE access credentials are stored.',
+      disclaimer: 'Document your digital presence here – without security-critical data. Only note WHERE access credentials are stored. Changes are saved automatically.',
       warning: "Why we don't ask for passwords: Your security comes first. Passwords, access codes, and security questions are intentionally not collected. Use a password manager instead and only note here where it can be found.",
       emailAccounts: 'Email Accounts',
       provider: 'Provider',
@@ -70,8 +77,6 @@ const DigitalForm = () => {
       passwordManagerPlaceholder: 'Where is the password manager stored? (e.g., family folder, safe)',
       addItem: 'Add',
       notes: 'Additional Notes',
-      save: 'Save',
-      saved: 'Saved!',
     },
   };
 
@@ -103,10 +108,9 @@ const DigitalForm = () => {
     updateSection('digital', { ...data, [field]: newArray });
   };
 
-  const handleSave = async () => {
-    await saveSection('digital');
-    toast.success(texts.saved);
-  };
+  if (!profile?.has_paid) {
+    return null;
+  }
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-8">
@@ -129,17 +133,20 @@ const DigitalForm = () => {
               <Input
                 value={account.provider}
                 onChange={(e) => updateItem('emailAccounts', i, 'provider', e.target.value)}
+                onBlur={handleBlur}
                 placeholder={texts.provider}
               />
               <Input
                 type="email"
                 value={account.email}
                 onChange={(e) => updateItem('emailAccounts', i, 'email', e.target.value)}
+                onBlur={handleBlur}
                 placeholder={texts.email}
               />
               <Input
                 value={account.accessInfo}
                 onChange={(e) => updateItem('emailAccounts', i, 'accessInfo', e.target.value)}
+                onBlur={handleBlur}
                 placeholder={texts.accessInfo}
               />
             </div>
@@ -164,16 +171,19 @@ const DigitalForm = () => {
               <Input
                 value={social.platform}
                 onChange={(e) => updateItem('socialMedia', i, 'platform', e.target.value)}
+                onBlur={handleBlur}
                 placeholder={texts.platform}
               />
               <Input
                 value={social.username}
                 onChange={(e) => updateItem('socialMedia', i, 'username', e.target.value)}
+                onBlur={handleBlur}
                 placeholder={texts.username}
               />
               <Input
                 value={social.accessInfo}
                 onChange={(e) => updateItem('socialMedia', i, 'accessInfo', e.target.value)}
+                onBlur={handleBlur}
                 placeholder={texts.accessInfo}
               />
             </div>
@@ -196,11 +206,13 @@ const DigitalForm = () => {
               <Input
                 value={sub.service}
                 onChange={(e) => updateItem('subscriptions', i, 'service', e.target.value)}
+                onBlur={handleBlur}
                 placeholder={texts.service}
               />
               <Input
                 value={sub.accessInfo}
                 onChange={(e) => updateItem('subscriptions', i, 'accessInfo', e.target.value)}
+                onBlur={handleBlur}
                 placeholder={texts.accessInfo}
               />
             </div>
@@ -220,6 +232,7 @@ const DigitalForm = () => {
         <Textarea
           value={data.passwordManagerInfo}
           onChange={(e) => updateSection('digital', { ...data, passwordManagerInfo: e.target.value })}
+          onBlur={handleBlur}
           placeholder={texts.passwordManagerPlaceholder}
           rows={3}
         />
@@ -230,17 +243,11 @@ const DigitalForm = () => {
         <Textarea
           value={data.notes}
           onChange={(e) => updateSection('digital', { ...data, notes: e.target.value })}
+          onBlur={handleBlur}
           placeholder={texts.notes}
           rows={3}
         />
       </div>
-
-      {profile?.has_paid && (
-        <Button onClick={handleSave} disabled={saving}>
-          <Save className="mr-2 h-4 w-4" />
-          {saving ? '...' : texts.save}
-        </Button>
-      )}
     </motion.div>
   );
 };
