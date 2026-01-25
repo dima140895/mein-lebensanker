@@ -75,10 +75,10 @@ export const EncryptionReminder: React.FC = () => {
       return;
     }
 
-    // Show reminder after a short delay
+    // Show reminder after a longer delay to let users orient themselves first
     const timer = setTimeout(() => {
       setShowReminder(true);
-    }, 2000);
+    }, 5000);
 
     return () => clearTimeout(timer);
   }, [user, isLoading, isEncryptionEnabled]);
