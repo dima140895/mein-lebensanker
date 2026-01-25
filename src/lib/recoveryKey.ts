@@ -28,9 +28,29 @@ export function formatRecoveryKey(key: string): string {
 
 /**
  * Parse a formatted recovery key back to its original form
+ * Handles various input formats (with/without dashes, spaces, etc.)
  */
 export function parseRecoveryKey(formattedKey: string): string {
-  return formattedKey.replace(/-/g, '');
+  // Remove all dashes, spaces, and other common separators
+  return formattedKey.replace(/[-\s]/g, '');
+}
+
+/**
+ * Validate that a recovery key is in the correct format
+ */
+export function isValidRecoveryKey(key: string): boolean {
+  const cleanKey = parseRecoveryKey(key);
+  // Base64 encoded 32 bytes should be 44 characters (with padding) or 43 without
+  if (cleanKey.length < 42 || cleanKey.length > 44) {
+    return false;
+  }
+  // Check if it's valid base64
+  try {
+    atob(cleanKey);
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 /**
@@ -38,6 +58,12 @@ export function parseRecoveryKey(formattedKey: string): string {
  */
 async function deriveKeyFromRecoveryKey(recoveryKey: string): Promise<CryptoKey> {
   const keyBytes = base64ToUint8Array(recoveryKey);
+  
+  // Verify we have the expected key length (32 bytes)
+  if (keyBytes.length !== RECOVERY_KEY_LENGTH) {
+    throw new Error(`Invalid recovery key length: expected ${RECOVERY_KEY_LENGTH} bytes, got ${keyBytes.length}`);
+  }
+  
   // Create a new ArrayBuffer to avoid SharedArrayBuffer issues
   const keyBuffer = new ArrayBuffer(keyBytes.length);
   new Uint8Array(keyBuffer).set(keyBytes);
