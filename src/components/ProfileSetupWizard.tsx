@@ -57,6 +57,7 @@ const ProfileSetupWizard = ({ maxProfiles, packageType }: ProfileSetupWizardProp
       couple: 'Ehepaar-Paket',
       family: 'Familien-Paket',
       required: 'Name ist erforderlich',
+      duplicate: 'Dieser Name existiert bereits',
       loading: 'Lade bestehende Profile...',
     },
     en: {
@@ -79,6 +80,7 @@ const ProfileSetupWizard = ({ maxProfiles, packageType }: ProfileSetupWizardProp
       couple: 'Couple Package',
       family: 'Family Package',
       required: 'Name is required',
+      duplicate: 'This name already exists',
       loading: 'Loading existing profiles...',
     },
   };
@@ -159,9 +161,23 @@ const ProfileSetupWizard = ({ maxProfiles, packageType }: ProfileSetupWizardProp
     return profiles[currentStep]?.name.trim().length > 0;
   };
 
+  const isDuplicateName = (name: string, currentIndex: number) => {
+    const trimmedName = name.trim().toLowerCase();
+    if (!trimmedName) return false;
+    
+    return profiles.some((profile, index) => 
+      index !== currentIndex && 
+      profile.name.trim().toLowerCase() === trimmedName
+    );
+  };
+
   const handleNext = () => {
     if (!isCurrentProfileValid()) {
       toast.error(texts.required);
+      return;
+    }
+    if (isDuplicateName(profiles[currentStep]?.name || '', currentStep)) {
+      toast.error(texts.duplicate);
       return;
     }
     if (currentStep < profiles.length - 1) {
@@ -178,6 +194,10 @@ const ProfileSetupWizard = ({ maxProfiles, packageType }: ProfileSetupWizardProp
   const handleFinish = async () => {
     if (!isCurrentProfileValid()) {
       toast.error(texts.required);
+      return;
+    }
+    if (isDuplicateName(profiles[currentStep]?.name || '', currentStep)) {
+      toast.error(texts.duplicate);
       return;
     }
 
