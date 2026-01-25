@@ -28,8 +28,8 @@ const PricingDialog = ({ open, onOpenChange, onSelectPackage }: PricingDialogPro
       couplePrice: '49 €',
       coupleDesc: '2 getrennte Personenprofile',
       family: 'Familien-Paket',
-      familyPrice: '99 €',
-      familyDesc: 'Bis zu 4 Personenprofile',
+      familyPrice: 'ab 59 €',
+      familyDesc: '4–10 Personenprofile',
       features: [
         'Strukturierte Nachlassübersicht',
         'Dokumenten-Upload (PDF, Bilder)',
@@ -54,8 +54,8 @@ const PricingDialog = ({ open, onOpenChange, onSelectPackage }: PricingDialogPro
       couplePrice: '€49',
       coupleDesc: '2 separate person profiles',
       family: 'Family Package',
-      familyPrice: '€99',
-      familyDesc: 'Up to 4 person profiles',
+      familyPrice: 'from €59',
+      familyDesc: '4–10 person profiles',
       features: [
         'Structured estate overview',
         'Document upload (PDF, images)',
