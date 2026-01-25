@@ -10,6 +10,9 @@ interface Profile {
   has_paid: boolean;
   payment_type: string | null;
   partner_name: string | null;
+  max_profiles: number;
+  purchased_tier: string | null;
+  has_update_subscription: boolean;
 }
 
 interface AuthContextType {

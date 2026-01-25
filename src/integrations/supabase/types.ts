@@ -14,15 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
+      person_profiles: {
+        Row: {
+          birth_date: string | null
+          created_at: string
+          id: string
+          name: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          birth_date?: string | null
+          created_at?: string
+          id?: string
+          name: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          birth_date?: string | null
+          created_at?: string
+          id?: string
+          name?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
           email: string | null
           full_name: string | null
           has_paid: boolean | null
+          has_update_subscription: boolean | null
           id: string
+          max_profiles: number | null
           partner_name: string | null
           payment_type: string | null
+          purchased_tier: string | null
           updated_at: string
           user_id: string
         }
@@ -31,9 +61,12 @@ export type Database = {
           email?: string | null
           full_name?: string | null
           has_paid?: boolean | null
+          has_update_subscription?: boolean | null
           id?: string
+          max_profiles?: number | null
           partner_name?: string | null
           payment_type?: string | null
+          purchased_tier?: string | null
           updated_at?: string
           user_id: string
         }
@@ -42,9 +75,12 @@ export type Database = {
           email?: string | null
           full_name?: string | null
           has_paid?: boolean | null
+          has_update_subscription?: boolean | null
           id?: string
+          max_profiles?: number | null
           partner_name?: string | null
           payment_type?: string | null
+          purchased_tier?: string | null
           updated_at?: string
           user_id?: string
         }
@@ -140,6 +176,7 @@ export type Database = {
           data: Json
           id: string
           is_for_partner: boolean | null
+          person_profile_id: string | null
           section_key: string
           updated_at: string
           user_id: string
@@ -149,6 +186,7 @@ export type Database = {
           data?: Json
           id?: string
           is_for_partner?: boolean | null
+          person_profile_id?: string | null
           section_key: string
           updated_at?: string
           user_id: string
@@ -158,11 +196,20 @@ export type Database = {
           data?: Json
           id?: string
           is_for_partner?: boolean | null
+          person_profile_id?: string | null
           section_key?: string
           updated_at?: string
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "vorsorge_data_person_profile_id_fkey"
+            columns: ["person_profile_id"]
+            isOneToOne: false
+            referencedRelation: "person_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {

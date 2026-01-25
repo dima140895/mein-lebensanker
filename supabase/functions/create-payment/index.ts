@@ -7,8 +7,27 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-const PRICE_SINGLE = "price_1StEj9ICzkfBNYhywuD68hDC";
-const PRICE_PARTNER = "price_1StEjNICzkfBNYhyTXnJJ2bv";
+// Stripe Price IDs
+const PRICES = {
+  single: "price_1StQxpICzkfBNYhyfkFifG39",
+  couple: "price_1StQy5ICzkfBNYhyGqh7RUsk",
+  family: "price_1StQyTICzkfBNYhyNTAl4QrA",
+  update_service: "price_1StQyfICzkfBNYhyTXftLV1j",
+};
+
+const PACKAGE_PRICES = {
+  single: 3900,
+  couple: 4900,
+  family: 9900,
+};
+
+const MAX_PROFILES = {
+  single: 1,
+  couple: 2,
+  family: 4,
+};
+
+type PackageType = "single" | "couple" | "family";
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -30,10 +49,11 @@ serve(async (req) => {
       throw new Error("User not authenticated or email not available");
     }
 
-    const { paymentType } = await req.json();
+    const { paymentType, isUpgrade, currentTier, includeUpdateService } = await req.json();
     
-    if (!paymentType || !["single", "partner"].includes(paymentType)) {
-      throw new Error("Invalid payment type. Must be 'single' or 'partner'");
+    const validTypes = ["single", "couple", "family"];
+    if (!paymentType || !validTypes.includes(paymentType)) {
+      throw new Error("Invalid payment type. Must be 'single', 'couple', or 'family'");
     }
 
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
@@ -47,25 +67,76 @@ serve(async (req) => {
       customerId = customers.data[0].id;
     }
 
-    const priceId = paymentType === "partner" ? PRICE_PARTNER : PRICE_SINGLE;
+    const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = [];
 
-    const session = await stripe.checkout.sessions.create({
+    if (isUpgrade && currentTier && validTypes.includes(currentTier)) {
+      // Calculate upgrade price
+      const currentPrice = PACKAGE_PRICES[currentTier as PackageType];
+      const newPrice = PACKAGE_PRICES[paymentType as PackageType];
+      const upgradeAmount = newPrice - currentPrice;
+
+      if (upgradeAmount <= 0) {
+        throw new Error("Invalid upgrade: new package must be more expensive");
+      }
+
+      // Create a price for the upgrade amount
+      const upgradePrice = await stripe.prices.create({
+        unit_amount: upgradeAmount,
+        currency: "eur",
+        product_data: {
+          name: `Upgrade von ${currentTier} zu ${paymentType}`,
+        },
+      });
+
+      lineItems.push({
+        price: upgradePrice.id,
+        quantity: 1,
+      });
+    } else {
+      // Regular purchase
+      lineItems.push({
+        price: PRICES[paymentType as PackageType],
+        quantity: 1,
+      });
+    }
+
+    // Add update service subscription if requested
+    if (includeUpdateService) {
+      lineItems.push({
+        price: PRICES.update_service,
+        quantity: 1,
+      });
+    }
+
+    const sessionParams: Stripe.Checkout.SessionCreateParams = {
       customer: customerId,
       customer_email: customerId ? undefined : user.email,
-      line_items: [
-        {
-          price: priceId,
-          quantity: 1,
-        },
-      ],
-      mode: "payment",
-      success_url: `${req.headers.get("origin")}/payment-success?session_id={CHECKOUT_SESSION_ID}&type=${paymentType}`,
+      line_items: lineItems,
+      mode: includeUpdateService ? "subscription" : "payment",
+      success_url: `${req.headers.get("origin")}/payment-success?session_id={CHECKOUT_SESSION_ID}&type=${paymentType}${isUpgrade ? "&upgrade=true" : ""}`,
       cancel_url: `${req.headers.get("origin")}/dashboard`,
       metadata: {
         user_id: user.id,
         payment_type: paymentType,
+        is_upgrade: isUpgrade ? "true" : "false",
+        max_profiles: String(MAX_PROFILES[paymentType as PackageType]),
+        include_update_service: includeUpdateService ? "true" : "false",
       },
-    });
+    };
+
+    // For mixed mode (one-time + subscription), use subscription mode
+    if (includeUpdateService && !isUpgrade) {
+      // Add the one-time package as an invoice item
+      sessionParams.subscription_data = {
+        metadata: {
+          user_id: user.id,
+          payment_type: paymentType,
+          max_profiles: String(MAX_PROFILES[paymentType as PackageType]),
+        },
+      };
+    }
+
+    const session = await stripe.checkout.sessions.create(sessionParams);
 
     return new Response(JSON.stringify({ url: session.url }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
