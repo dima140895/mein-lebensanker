@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useEncryption } from '@/contexts/EncryptionContext';
 import {
@@ -15,6 +15,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Progress } from '@/components/ui/progress';
 import { Lock, Shield, AlertTriangle, Eye, EyeOff, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
+import { RecoveryKeyDialog } from './RecoveryKeyDialog';
 
 interface EncryptionPasswordDialogProps {
   open: boolean;
@@ -28,12 +29,13 @@ export const EncryptionPasswordDialog: React.FC<EncryptionPasswordDialogProps> =
   mode,
 }) => {
   const { language } = useLanguage();
-  const { unlock, enableEncryption, migrationProgress } = useEncryption();
+  const { unlock, enableEncryption, migrationProgress, generatedRecoveryKey, clearGeneratedRecoveryKey } = useEncryption();
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showRecoveryKeyDialog, setShowRecoveryKeyDialog] = useState(false);
 
   const translations = {
     de: {
@@ -94,10 +96,10 @@ export const EncryptionPasswordDialog: React.FC<EncryptionPasswordDialogProps> =
           return;
         }
 
-        const success = await enableEncryption(password);
-        if (success) {
-          toast.success(t.success);
-          onOpenChange(false);
+        const result = await enableEncryption(password);
+        if (result.success) {
+          // Show recovery key dialog instead of closing
+          setShowRecoveryKeyDialog(true);
           setPassword('');
           setConfirmPassword('');
         } else {
@@ -118,6 +120,12 @@ export const EncryptionPasswordDialog: React.FC<EncryptionPasswordDialogProps> =
     }
   };
 
+  const handleRecoveryKeyConfirmed = () => {
+    toast.success(t.success);
+    clearGeneratedRecoveryKey();
+    onOpenChange(false);
+  };
+
   const handleClose = () => {
     // Don't allow closing during migration
     if (migrationProgress?.isRunning) return;
@@ -132,6 +140,18 @@ export const EncryptionPasswordDialog: React.FC<EncryptionPasswordDialogProps> =
   const migrationPercent = migrationProgress 
     ? Math.round((migrationProgress.current / migrationProgress.total) * 100) 
     : 0;
+
+  // Show recovery key dialog if we have a generated key
+  if (showRecoveryKeyDialog && generatedRecoveryKey) {
+    return (
+      <RecoveryKeyDialog
+        open={true}
+        onOpenChange={setShowRecoveryKeyDialog}
+        recoveryKey={generatedRecoveryKey}
+        onConfirm={handleRecoveryKeyConfirmed}
+      />
+    );
+  }
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>

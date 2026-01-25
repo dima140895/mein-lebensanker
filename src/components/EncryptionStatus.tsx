@@ -8,10 +8,11 @@ import {
   ShieldCheck, 
   ShieldAlert, 
   Lock, 
-  LockOpen,
+  Key,
   Settings
 } from 'lucide-react';
 import { EncryptionPasswordDialog } from './EncryptionPasswordDialog';
+import { RecoveryKeyRecoveryDialog } from './RecoveryKeyRecoveryDialog';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -38,12 +39,14 @@ export const EncryptionStatus: React.FC = () => {
     isUnlocked, 
     isLoading,
     lock,
-    disableEncryption
+    disableEncryption,
+    encryptedPasswordRecovery
   } = useEncryption();
   
   const [dialogMode, setDialogMode] = useState<'unlock' | 'setup'>('unlock');
   const [showPasswordDialog, setShowPasswordDialog] = useState(false);
   const [showDisableDialog, setShowDisableDialog] = useState(false);
+  const [showRecoveryDialog, setShowRecoveryDialog] = useState(false);
   const [disablePassword, setDisablePassword] = useState('');
   const [isDisabling, setIsDisabling] = useState(false);
 
@@ -64,6 +67,7 @@ export const EncryptionStatus: React.FC = () => {
       confirm: 'Deaktivieren',
       disableSuccess: 'Verschlüsselung deaktiviert',
       disableError: 'Falsches Passwort',
+      forgotPassword: 'Passwort vergessen?',
     },
     en: {
       encrypted: 'Encrypted',
@@ -81,6 +85,7 @@ export const EncryptionStatus: React.FC = () => {
       confirm: 'Disable',
       disableSuccess: 'Encryption disabled',
       disableError: 'Wrong password',
+      forgotPassword: 'Forgot password?',
     },
   };
 
@@ -134,23 +139,42 @@ export const EncryptionStatus: React.FC = () => {
   if (!isUnlocked) {
     return (
       <>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => {
-            setDialogMode('unlock');
-            setShowPasswordDialog(true);
-          }}
-          className="gap-2 border-amber-500 text-amber-600 hover:bg-amber-50"
-        >
-          <ShieldAlert className="h-4 w-4" />
-          <span className="hidden sm:inline">{t.unlock}</span>
-        </Button>
+        <div className="flex items-center gap-1">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              setDialogMode('unlock');
+              setShowPasswordDialog(true);
+            }}
+            className="gap-2 border-amber-500 text-amber-600 hover:bg-amber-50"
+          >
+            <ShieldAlert className="h-4 w-4" />
+            <span className="hidden sm:inline">{t.unlock}</span>
+          </Button>
+          
+          {encryptedPasswordRecovery && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowRecoveryDialog(true)}
+              className="gap-1 text-xs text-muted-foreground hover:text-foreground"
+            >
+              <Key className="h-3 w-3" />
+              <span className="hidden md:inline">{t.forgotPassword}</span>
+            </Button>
+          )}
+        </div>
 
         <EncryptionPasswordDialog
           open={showPasswordDialog}
           onOpenChange={setShowPasswordDialog}
           mode={dialogMode}
+        />
+        
+        <RecoveryKeyRecoveryDialog
+          open={showRecoveryDialog}
+          onOpenChange={setShowRecoveryDialog}
         />
       </>
     );

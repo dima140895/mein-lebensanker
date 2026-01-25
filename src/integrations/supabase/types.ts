@@ -45,6 +45,7 @@ export type Database = {
         Row: {
           created_at: string
           email: string | null
+          encrypted_password_recovery: string | null
           encryption_salt: string | null
           full_name: string | null
           has_paid: boolean | null
@@ -61,6 +62,7 @@ export type Database = {
         Insert: {
           created_at?: string
           email?: string | null
+          encrypted_password_recovery?: string | null
           encryption_salt?: string | null
           full_name?: string | null
           has_paid?: boolean | null
@@ -77,6 +79,7 @@ export type Database = {
         Update: {
           created_at?: string
           email?: string | null
+          encrypted_password_recovery?: string | null
           encryption_salt?: string | null
           full_name?: string | null
           has_paid?: boolean | null
