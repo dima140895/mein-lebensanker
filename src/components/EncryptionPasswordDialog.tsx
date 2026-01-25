@@ -13,10 +13,11 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Progress } from '@/components/ui/progress';
-import { Lock, Shield, AlertTriangle, Eye, EyeOff, Loader2, Key } from 'lucide-react';
+import { Lock, Shield, AlertTriangle, Eye, EyeOff, Loader2, Key, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { RecoveryKeyDialog } from './RecoveryKeyDialog';
 import { RecoveryKeyRecoveryDialog } from './RecoveryKeyRecoveryDialog';
+import { ResetEncryptionDialog } from './ResetEncryptionDialog';
 
 interface EncryptionPasswordDialogProps {
   open: boolean;
@@ -40,6 +41,7 @@ export const EncryptionPasswordDialog: React.FC<EncryptionPasswordDialogProps> =
   const [error, setError] = useState<string | null>(null);
   const [showRecoveryKeyDialog, setShowRecoveryKeyDialog] = useState(false);
   const [showRecoveryDialog, setShowRecoveryDialog] = useState(false);
+  const [showResetDialog, setShowResetDialog] = useState(false);
 
   const translations = {
     de: {
@@ -64,6 +66,8 @@ export const EncryptionPasswordDialog: React.FC<EncryptionPasswordDialogProps> =
       howItWorksText: 'Deine Daten werden mit AES-256-GCM verschlüsselt – einem militärischen Verschlüsselungsstandard. Das Passwort verlässt niemals Dein Gerät und wird nicht auf unseren Servern gespeichert. Selbst wir können Deine verschlüsselten Daten nicht lesen.',
       recoveryNote: 'Nach der Einrichtung erhältst Du einen Recovery-Schlüssel, den Du sicher aufbewahren solltest.',
       forgotPassword: 'Passwort vergessen?',
+      resetEncryption: 'Verschlüsselung zurücksetzen',
+      resetHint: 'Passwort und Recovery-Key vergessen?',
     },
     en: {
       unlockTitle: 'Unlock Data',
@@ -87,6 +91,8 @@ export const EncryptionPasswordDialog: React.FC<EncryptionPasswordDialogProps> =
       howItWorksText: 'Your data is encrypted with AES-256-GCM – a military-grade encryption standard. The password never leaves your device and is not stored on our servers. Even we cannot read your encrypted data.',
       recoveryNote: 'After setup, you will receive a recovery key that you should store safely.',
       forgotPassword: 'Forgot password?',
+      resetEncryption: 'Reset Encryption',
+      resetHint: 'Forgot password and recovery key?',
     },
   };
 
@@ -275,14 +281,25 @@ export const EncryptionPasswordDialog: React.FC<EncryptionPasswordDialogProps> =
           )}
 
           {mode === 'unlock' && (
-            <button
-              type="button"
-              onClick={() => setShowRecoveryDialog(true)}
-              className="text-sm text-primary hover:underline flex items-center gap-1"
-            >
-              <Key className="h-3 w-3" />
-              {t.forgotPassword}
-            </button>
+            <div className="space-y-2">
+              <button
+                type="button"
+                onClick={() => setShowRecoveryDialog(true)}
+                className="text-sm text-primary hover:underline flex items-center gap-1"
+              >
+                <Key className="h-3 w-3" />
+                {t.forgotPassword}
+              </button>
+              
+              <button
+                type="button"
+                onClick={() => setShowResetDialog(true)}
+                className="text-sm text-destructive hover:underline flex items-center gap-1"
+              >
+                <Trash2 className="h-3 w-3" />
+                {t.resetHint}
+              </button>
+            </div>
           )}
 
           <div className="flex gap-2 justify-end">
@@ -304,11 +321,17 @@ export const EncryptionPasswordDialog: React.FC<EncryptionPasswordDialogProps> =
           open={showRecoveryDialog}
           onOpenChange={(open) => {
             setShowRecoveryDialog(open);
-            // If recovery was successful (dialog closed), also close this dialog
-            if (!open) {
-              // Check if unlock succeeded by checking the encryption state
-              // The recovery dialog handles its own success state
-            }
+          }}
+        />
+
+        {/* Reset Encryption Dialog */}
+        <ResetEncryptionDialog
+          open={showResetDialog}
+          onOpenChange={setShowResetDialog}
+          onResetComplete={() => {
+            // Close this dialog and reload the page to reset all state
+            onOpenChange(false);
+            window.location.reload();
           }}
         />
       </DialogContent>
