@@ -11,11 +11,18 @@ import {
 } from '@/lib/encryption';
 import { logger } from '@/lib/logger';
 
+interface MigrationProgress {
+  total: number;
+  current: number;
+  isRunning: boolean;
+}
+
 interface EncryptionContextType {
   isEncryptionEnabled: boolean;
   isUnlocked: boolean;
   isLoading: boolean;
   encryptionSalt: string | null;
+  migrationProgress: MigrationProgress | null;
   enableEncryption: (password: string) => Promise<boolean>;
   unlock: (password: string) => Promise<boolean>;
   lock: () => void;
@@ -37,6 +44,7 @@ export const EncryptionProvider: React.FC<{ children: ReactNode }> = ({ children
   const [encryptionSalt, setEncryptionSalt] = useState<string | null>(null);
   const [passwordVerifier, setPasswordVerifier] = useState<string | null>(null);
   const [currentPassword, setCurrentPassword] = useState<string | null>(null);
+  const [migrationProgress, setMigrationProgress] = useState<MigrationProgress | null>(null);
 
   // Load encryption settings from profile
   useEffect(() => {
@@ -117,6 +125,47 @@ export const EncryptionProvider: React.FC<{ children: ReactNode }> = ({ children
       // Create password verifier
       const verifier = await createPasswordVerifier(password, salt);
       
+      // Fetch all existing unencrypted data for migration
+      const { data: existingData, error: fetchError } = await supabase
+        .from('vorsorge_data')
+        .select('*')
+        .eq('user_id', user.id)
+        .neq('section_key', '_encryption_verifier');
+      
+      if (fetchError) throw fetchError;
+      
+      // Migrate existing data by encrypting it
+      if (existingData && existingData.length > 0) {
+        setMigrationProgress({ total: existingData.length, current: 0, isRunning: true });
+        
+        for (let i = 0; i < existingData.length; i++) {
+          const item = existingData[i];
+          
+          // Skip already encrypted data
+          if (isEncryptedData(item.data)) {
+            setMigrationProgress(prev => prev ? { ...prev, current: i + 1 } : null);
+            continue;
+          }
+          
+          // Encrypt the data
+          const encryptedData = await encryptData(item.data, password, salt);
+          
+          // Update the record with encrypted data
+          const { error: updateError } = await supabase
+            .from('vorsorge_data')
+            .update({ data: encryptedData })
+            .eq('id', item.id);
+          
+          if (updateError) {
+            logger.error('Error encrypting data item:', updateError);
+          }
+          
+          setMigrationProgress(prev => prev ? { ...prev, current: i + 1 } : null);
+        }
+        
+        setMigrationProgress(null);
+      }
+      
       // Update profile with encryption settings
       const { error: profileError } = await supabase
         .from('profiles')
@@ -155,6 +204,7 @@ export const EncryptionProvider: React.FC<{ children: ReactNode }> = ({ children
       return true;
     } catch (error) {
       logger.error('Error enabling encryption:', error);
+      setMigrationProgress(null);
       return false;
     }
   }, [user]);
@@ -264,6 +314,7 @@ export const EncryptionProvider: React.FC<{ children: ReactNode }> = ({ children
       isUnlocked,
       isLoading,
       encryptionSalt,
+      migrationProgress,
       enableEncryption,
       unlock,
       lock,

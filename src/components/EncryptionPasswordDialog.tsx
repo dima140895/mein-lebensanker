@@ -12,7 +12,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Lock, Shield, AlertTriangle, Eye, EyeOff } from 'lucide-react';
+import { Progress } from '@/components/ui/progress';
+import { Lock, Shield, AlertTriangle, Eye, EyeOff, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface EncryptionPasswordDialogProps {
@@ -27,7 +28,7 @@ export const EncryptionPasswordDialog: React.FC<EncryptionPasswordDialogProps> =
   mode,
 }) => {
   const { language } = useLanguage();
-  const { unlock, enableEncryption } = useEncryption();
+  const { unlock, enableEncryption, migrationProgress } = useEncryption();
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -51,6 +52,8 @@ export const EncryptionPasswordDialog: React.FC<EncryptionPasswordDialogProps> =
       cancel: 'Abbrechen',
       success: 'Verschlüsselung erfolgreich aktiviert',
       unlockSuccess: 'Daten erfolgreich entsperrt',
+      migrating: 'Bestehende Daten werden verschlüsselt...',
+      migratingProgress: 'Verschlüssele Datensatz',
     },
     en: {
       unlockTitle: 'Unlock Data',
@@ -68,6 +71,8 @@ export const EncryptionPasswordDialog: React.FC<EncryptionPasswordDialogProps> =
       cancel: 'Cancel',
       success: 'Encryption enabled successfully',
       unlockSuccess: 'Data unlocked successfully',
+      migrating: 'Encrypting existing data...',
+      migratingProgress: 'Encrypting record',
     },
   };
 
@@ -114,11 +119,19 @@ export const EncryptionPasswordDialog: React.FC<EncryptionPasswordDialogProps> =
   };
 
   const handleClose = () => {
+    // Don't allow closing during migration
+    if (migrationProgress?.isRunning) return;
+    
     setPassword('');
     setConfirmPassword('');
     setError(null);
     onOpenChange(false);
   };
+  
+  const isMigrating = migrationProgress?.isRunning || false;
+  const migrationPercent = migrationProgress 
+    ? Math.round((migrationProgress.current / migrationProgress.total) * 100) 
+    : 0;
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
@@ -187,12 +200,28 @@ export const EncryptionPasswordDialog: React.FC<EncryptionPasswordDialogProps> =
             </Alert>
           )}
 
+          {/* Migration Progress */}
+          {isMigrating && (
+            <div className="space-y-2">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Loader2 className="h-4 w-4 animate-spin" />
+                <span>{t.migrating}</span>
+              </div>
+              <Progress value={migrationPercent} className="h-2" />
+              <p className="text-xs text-muted-foreground text-center">
+                {t.migratingProgress} {migrationProgress?.current} / {migrationProgress?.total}
+              </p>
+            </div>
+          )}
+
           <div className="flex gap-2 justify-end">
-            <Button type="button" variant="outline" onClick={handleClose}>
+            <Button type="button" variant="outline" onClick={handleClose} disabled={isMigrating}>
               {t.cancel}
             </Button>
-            <Button type="submit" disabled={isLoading || !password}>
-              {isLoading ? '...' : mode === 'setup' ? t.enable : t.unlock}
+            <Button type="submit" disabled={isLoading || isMigrating || !password}>
+              {isLoading || isMigrating ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : mode === 'setup' ? t.enable : t.unlock}
             </Button>
           </div>
         </form>
