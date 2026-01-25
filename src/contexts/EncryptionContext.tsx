@@ -9,6 +9,10 @@ import {
   verifyPassword,
   isEncryptedData 
 } from '@/lib/encryption';
+import { 
+  generateRecoveryKey, 
+  encryptPasswordWithRecoveryKey 
+} from '@/lib/recoveryKey';
 import { logger } from '@/lib/logger';
 
 interface MigrationProgress {
@@ -23,12 +27,16 @@ interface EncryptionContextType {
   isLoading: boolean;
   encryptionSalt: string | null;
   migrationProgress: MigrationProgress | null;
-  enableEncryption: (password: string) => Promise<boolean>;
+  encryptedPasswordRecovery: string | null;
+  generatedRecoveryKey: string | null;
+  enableEncryption: (password: string) => Promise<{ success: boolean; recoveryKey?: string }>;
   unlock: (password: string) => Promise<boolean>;
   lock: () => void;
   encrypt: <T>(data: T) => Promise<string | T>;
   decrypt: <T>(data: unknown) => Promise<T>;
   disableEncryption: (password: string) => Promise<boolean>;
+  recoverWithKey: (password: string) => Promise<boolean>;
+  clearGeneratedRecoveryKey: () => void;
 }
 
 const EncryptionContext = createContext<EncryptionContextType | undefined>(undefined);
@@ -45,6 +53,8 @@ export const EncryptionProvider: React.FC<{ children: ReactNode }> = ({ children
   const [passwordVerifier, setPasswordVerifier] = useState<string | null>(null);
   const [currentPassword, setCurrentPassword] = useState<string | null>(null);
   const [migrationProgress, setMigrationProgress] = useState<MigrationProgress | null>(null);
+  const [encryptedPasswordRecovery, setEncryptedPasswordRecovery] = useState<string | null>(null);
+  const [generatedRecoveryKey, setGeneratedRecoveryKey] = useState<string | null>(null);
 
   // Load encryption settings from profile
   useEffect(() => {
@@ -60,7 +70,7 @@ export const EncryptionProvider: React.FC<{ children: ReactNode }> = ({ children
       try {
         const { data, error } = await supabase
           .from('profiles')
-          .select('is_encrypted, encryption_salt')
+          .select('is_encrypted, encryption_salt, encrypted_password_recovery')
           .eq('user_id', user.id)
           .maybeSingle();
 
@@ -69,6 +79,7 @@ export const EncryptionProvider: React.FC<{ children: ReactNode }> = ({ children
         if (data) {
           setIsEncryptionEnabled(data.is_encrypted || false);
           setEncryptionSalt(data.encryption_salt || null);
+          setEncryptedPasswordRecovery(data.encrypted_password_recovery || null);
           
           // Load password verifier from vorsorge_data if encryption is enabled
           if (data.is_encrypted && data.encryption_salt) {
@@ -115,12 +126,16 @@ export const EncryptionProvider: React.FC<{ children: ReactNode }> = ({ children
     }
   }, [isEncryptionEnabled, encryptionSalt, passwordVerifier]);
 
-  const enableEncryption = useCallback(async (password: string): Promise<boolean> => {
-    if (!user) return false;
+  const enableEncryption = useCallback(async (password: string): Promise<{ success: boolean; recoveryKey?: string }> => {
+    if (!user) return { success: false };
 
     try {
       // Generate a new salt
       const salt = generateSalt();
+      
+      // Generate recovery key and encrypt password with it
+      const recoveryKey = generateRecoveryKey();
+      const encryptedPassword = await encryptPasswordWithRecoveryKey(password, recoveryKey);
       
       // Create password verifier
       const verifier = await createPasswordVerifier(password, salt);
@@ -166,12 +181,13 @@ export const EncryptionProvider: React.FC<{ children: ReactNode }> = ({ children
         setMigrationProgress(null);
       }
       
-      // Update profile with encryption settings
+      // Update profile with encryption settings and recovery info
       const { error: profileError } = await supabase
         .from('profiles')
         .update({
           is_encrypted: true,
           encryption_salt: salt,
+          encrypted_password_recovery: encryptedPassword,
         })
         .eq('user_id', user.id);
 
@@ -197,15 +213,17 @@ export const EncryptionProvider: React.FC<{ children: ReactNode }> = ({ children
       setIsEncryptionEnabled(true);
       setCurrentPassword(password);
       setIsUnlocked(true);
+      setEncryptedPasswordRecovery(encryptedPassword);
+      setGeneratedRecoveryKey(recoveryKey);
       
       // Store password in session
       sessionStorage.setItem(SESSION_PASSWORD_KEY, password);
 
-      return true;
+      return { success: true, recoveryKey };
     } catch (error) {
       logger.error('Error enabling encryption:', error);
       setMigrationProgress(null);
-      return false;
+      return { success: false };
     }
   }, [user]);
 
@@ -308,6 +326,31 @@ export const EncryptionProvider: React.FC<{ children: ReactNode }> = ({ children
     }
   }, [user, encryptionSalt, passwordVerifier]);
 
+  // Recover with recovery key - the password is passed in already decrypted
+  const recoverWithKey = useCallback(async (password: string): Promise<boolean> => {
+    if (!encryptionSalt || !passwordVerifier) return false;
+
+    try {
+      const isValid = await verifyPassword(passwordVerifier, password, encryptionSalt);
+      
+      if (isValid) {
+        setCurrentPassword(password);
+        setIsUnlocked(true);
+        sessionStorage.setItem(SESSION_PASSWORD_KEY, password);
+        return true;
+      }
+      
+      return false;
+    } catch (error) {
+      logger.error('Error recovering with key:', error);
+      return false;
+    }
+  }, [encryptionSalt, passwordVerifier]);
+
+  const clearGeneratedRecoveryKey = useCallback(() => {
+    setGeneratedRecoveryKey(null);
+  }, []);
+
   return (
     <EncryptionContext.Provider value={{
       isEncryptionEnabled,
@@ -315,12 +358,16 @@ export const EncryptionProvider: React.FC<{ children: ReactNode }> = ({ children
       isLoading,
       encryptionSalt,
       migrationProgress,
+      encryptedPasswordRecovery,
+      generatedRecoveryKey,
       enableEncryption,
       unlock,
       lock,
       encrypt,
       decrypt,
       disableEncryption,
+      recoverWithKey,
+      clearGeneratedRecoveryKey,
     }}>
       {children}
     </EncryptionContext.Provider>
