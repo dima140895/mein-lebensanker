@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Heart, LogIn, UserPlus, Menu, Home, User, Info, ClipboardList, Wallet, Globe, ScrollText, FolderOpen, Phone, ChevronDown, Link2, CreditCard, Package, Key, LogOut, Shield, KeyRound } from 'lucide-react';
+import { Heart, LogIn, UserPlus, Menu, Home, User, Info, ClipboardList, Wallet, Globe, ScrollText, FolderOpen, Phone, ChevronDown, Link2, CreditCard, Package, Key, LogOut, Shield, KeyRound, Lock } from 'lucide-react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import LanguageToggle from './LanguageToggle';
 import ProfileSwitcher from './ProfileSwitcher';
@@ -42,7 +42,7 @@ interface MenuItem {
 const Header = () => {
   const { language } = useLanguage();
   const { user, profile, signOut } = useAuth();
-  const { isEncryptionEnabled: encryptionEnabled } = useEncryption();
+  const { isEncryptionEnabled: encryptionEnabled, isUnlocked, lock } = useEncryption();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [authOpen, setAuthOpen] = useState(false);
@@ -100,6 +100,8 @@ const Header = () => {
       account: 'Konto',
       encryption: 'Verschlüsselung',
       encryptionEnabled: 'Verschlüsselung aktiv',
+      encryptionLocked: 'Daten gesperrt',
+      lockData: 'Daten sperren',
       recoveryKey: 'Neuen Recovery-Schlüssel',
     },
     en: {
@@ -130,6 +132,8 @@ const Header = () => {
       account: 'Account',
       encryption: 'Encryption',
       encryptionEnabled: 'Encryption active',
+      encryptionLocked: 'Data locked',
+      lockData: 'Lock Data',
       recoveryKey: 'New Recovery Key',
     },
   };
@@ -319,19 +323,34 @@ const Header = () => {
                         <>
                           <div className="flex items-center gap-2 px-4 py-2 text-sm text-muted-foreground">
                             <Shield className="h-4 w-4 text-primary" />
-                            {tx.encryptionEnabled}
+                            {isUnlocked ? tx.encryptionEnabled : tx.encryptionLocked}
                           </div>
-                          <Button 
-                            variant="ghost" 
-                            className="w-full justify-start" 
-                            onClick={() => {
-                              setMobileMenuOpen(false);
-                              setRecoveryKeyDialogOpen(true);
-                            }}
-                          >
-                            <KeyRound className="mr-2 h-4 w-4" />
-                            {tx.recoveryKey}
-                          </Button>
+                          {isUnlocked && (
+                            <>
+                              <Button 
+                                variant="ghost" 
+                                className="w-full justify-start" 
+                                onClick={() => {
+                                  lock();
+                                  setMobileMenuOpen(false);
+                                }}
+                              >
+                                <Lock className="mr-2 h-4 w-4" />
+                                {tx.lockData}
+                              </Button>
+                              <Button 
+                                variant="ghost" 
+                                className="w-full justify-start" 
+                                onClick={() => {
+                                  setMobileMenuOpen(false);
+                                  setRecoveryKeyDialogOpen(true);
+                                }}
+                              >
+                                <KeyRound className="mr-2 h-4 w-4" />
+                                {tx.recoveryKey}
+                              </Button>
+                            </>
+                          )}
                         </>
                       )}
                       <Button variant="outline" className="w-full" onClick={handleLogout}>
@@ -508,20 +527,28 @@ const Header = () => {
                   </DropdownMenuItem>
                 ) : (
                   <>
-                    <DropdownMenuItem 
-                      onClick={() => setRecoveryKeyDialogOpen(true)}
-                      className="cursor-pointer"
-                    >
+                    <DropdownMenuItem disabled className="opacity-70">
                       <Shield className="mr-2 h-4 w-4 text-primary" />
-                      {tx.encryptionEnabled}
+                      {isUnlocked ? tx.encryptionEnabled : tx.encryptionLocked}
                     </DropdownMenuItem>
-                    <DropdownMenuItem 
-                      onClick={() => setRecoveryKeyDialogOpen(true)}
-                      className="cursor-pointer"
-                    >
-                      <KeyRound className="mr-2 h-4 w-4" />
-                      {tx.recoveryKey}
-                    </DropdownMenuItem>
+                    {isUnlocked && (
+                      <>
+                        <DropdownMenuItem 
+                          onClick={() => lock()}
+                          className="cursor-pointer"
+                        >
+                          <Lock className="mr-2 h-4 w-4" />
+                          {tx.lockData}
+                        </DropdownMenuItem>
+                        <DropdownMenuItem 
+                          onClick={() => setRecoveryKeyDialogOpen(true)}
+                          className="cursor-pointer"
+                        >
+                          <KeyRound className="mr-2 h-4 w-4" />
+                          {tx.recoveryKey}
+                        </DropdownMenuItem>
+                      </>
+                    )}
                   </>
                 )}
                 <DropdownMenuSeparator />
