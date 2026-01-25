@@ -224,47 +224,6 @@ const Header = () => {
                       </li>
                     ))}
                     </ul>
-
-                    {/* Pricing Section for non-authenticated users */}
-                    {!user && (
-                      <div className="mt-6 pt-4 border-t border-border">
-                        <p className="px-4 text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2">
-                          {tx.pricing}
-                        </p>
-                        <ul className="space-y-1">
-                          {pricingItems.map((item) => (
-                            <li key={item.key}>
-                              <button
-                                onClick={() => {
-                                  setMobileMenuOpen(false);
-                                  setAuthMode('register');
-                                  setAuthOpen(true);
-                                }}
-                                className="w-full flex items-center justify-between rounded-lg px-4 py-3 text-left text-foreground transition-colors hover:bg-muted"
-                              >
-                                <div className="flex items-center gap-3">
-                                  {item.profiles === 1 ? (
-                                    <User className="h-4 w-4 text-muted-foreground" />
-                                  ) : (
-                                    <Users className="h-4 w-4 text-muted-foreground" />
-                                  )}
-                                  <span>{item.label[language]}</span>
-                                </div>
-                                <div className="text-right flex flex-col">
-                                  <span className="font-mono font-semibold text-primary">{item.price}</span>
-                                  <span className="text-xs text-muted-foreground">{tx.oneTime}</span>
-                                </div>
-                              </button>
-                            </li>
-                          ))}
-                        </ul>
-                        <p className="px-4 pt-2 text-xs text-muted-foreground text-center">
-                          {language === 'de' 
-                            ? 'Einmalige Zahlung • Lebenslanger Zugang' 
-                            : 'One-time payment • Lifetime access'}
-                        </p>
-                      </div>
-                    )}
                   </nav>
 
                 {/* Mobile Menu Footer */}
@@ -438,6 +397,52 @@ const Header = () => {
           <LanguageToggle />
         </nav>
 
+        {/* Mobile Pricing Button (top right, visible only on mobile for non-authenticated users) */}
+        {!user && (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="md:hidden"
+              >
+                <CreditCard className="mr-1.5 h-4 w-4" />
+                {tx.pricing}
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56 bg-background">
+              {pricingItems.map((item) => (
+                <DropdownMenuItem
+                  key={item.key}
+                  onClick={() => {
+                    setAuthMode('register');
+                    setAuthOpen(true);
+                  }}
+                  className="flex justify-between items-center py-3"
+                >
+                  <div className="flex items-center gap-2">
+                    {item.profiles === 1 ? (
+                      <User className="h-4 w-4 text-muted-foreground" />
+                    ) : (
+                      <Users className="h-4 w-4 text-muted-foreground" />
+                    )}
+                    <span>{item.label[language]}</span>
+                  </div>
+                  <div className="text-right flex flex-col">
+                    <span className="font-mono font-semibold text-primary">{item.price}</span>
+                    <span className="text-xs text-muted-foreground">{tx.oneTime}</span>
+                  </div>
+                </DropdownMenuItem>
+              ))}
+              <DropdownMenuSeparator />
+              <div className="px-2 py-2 text-xs text-muted-foreground text-center">
+                {language === 'de' 
+                  ? 'Einmalige Zahlung • Lebenslanger Zugang' 
+                  : 'One-time payment • Lifetime access'}
+              </div>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
       </div>
 
       {/* Auth Dialog for mobile (triggered from menu) */}
