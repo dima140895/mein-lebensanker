@@ -1,25 +1,29 @@
 import { motion } from 'framer-motion';
-import { User, Wallet, Globe, Heart, FileText, Phone, Users } from 'lucide-react';
+import { User, Wallet, Globe, Heart, FileText, Phone } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 interface VorsorgeData {
   section_key: string;
   data: Record<string, unknown>;
   is_for_partner: boolean;
+  person_profile_id: string | null;
+  profile_name: string | null;
 }
 
-interface ProfileInfo {
-  full_name: string | null;
-  partner_name: string | null;
+interface PersonProfile {
+  profile_id: string;
+  profile_name: string;
+  birth_date: string | null;
 }
 
 interface RelativesSummaryProps {
   data: VorsorgeData[];
-  profileInfo: ProfileInfo | null;
+  profiles: PersonProfile[];
 }
 
-const RelativesSummary = ({ data, profileInfo }: RelativesSummaryProps) => {
+const RelativesSummary = ({ data, profiles }: RelativesSummaryProps) => {
   const { language } = useLanguage();
 
   const t = {
@@ -31,9 +35,8 @@ const RelativesSummary = ({ data, profileInfo }: RelativesSummaryProps) => {
       wishes: 'Persönliche Wünsche',
       documents: 'Dokumenten-Standorte',
       contacts: 'Wichtige Kontakte',
-      forPerson: 'Informationen für',
-      forPartner: 'Informationen für Partner',
       noInfo: 'Keine Angaben hinterlegt',
+      unknownProfile: 'Unbekanntes Profil',
       
       // Personal fields
       name: 'Name',
@@ -129,9 +132,8 @@ const RelativesSummary = ({ data, profileInfo }: RelativesSummaryProps) => {
       wishes: 'Personal Wishes',
       documents: 'Document Locations',
       contacts: 'Important Contacts',
-      forPerson: 'Information for',
-      forPartner: 'Information for Partner',
       noInfo: 'No information provided',
+      unknownProfile: 'Unknown Profile',
       
       // Personal fields
       name: 'Name',
@@ -240,10 +242,6 @@ const RelativesSummary = ({ data, profileInfo }: RelativesSummaryProps) => {
     documents: 'bg-sage-light text-sage-dark',
     contacts: 'bg-amber-light text-amber',
   };
-
-  // Group data by person (main vs partner)
-  const mainData = data.filter(d => !d.is_for_partner);
-  const partnerData = data.filter(d => d.is_for_partner);
 
   const renderInfoItem = (label: string, value: unknown) => {
     if (!value || (typeof value === 'string' && !value.trim())) return null;
@@ -539,11 +537,17 @@ const RelativesSummary = ({ data, profileInfo }: RelativesSummaryProps) => {
     });
   };
 
-  const renderPersonData = (personData: VorsorgeData[], personName: string | null, isPartner: boolean) => {
+  const renderProfileData = (profileData: VorsorgeData[]) => {
     // Filter out empty sections
-    const nonEmptyData = personData.filter(item => hasContent(item.data));
+    const nonEmptyData = profileData.filter(item => hasContent(item.data));
     
-    if (nonEmptyData.length === 0) return null;
+    if (nonEmptyData.length === 0) {
+      return (
+        <div className="text-center py-8 text-muted-foreground">
+          {texts.noInfo}
+        </div>
+      );
+    }
 
     const sectionOrder = ['personal', 'assets', 'digital', 'wishes', 'documents', 'contacts'];
     const sortedData = nonEmptyData.sort((a, b) => 
@@ -551,69 +555,100 @@ const RelativesSummary = ({ data, profileInfo }: RelativesSummaryProps) => {
     );
 
     return (
+      <Accordion type="single" collapsible className="w-full space-y-2">
+        {sortedData.map((item) => {
+          const Icon = sectionIcons[item.section_key] || FileText;
+          const color = sectionColors[item.section_key] || 'bg-sage-light text-sage-dark';
+          
+          return (
+            <AccordionItem
+              key={item.section_key}
+              value={item.section_key}
+              className="rounded-xl border border-border bg-card px-4"
+            >
+              <AccordionTrigger className="hover:no-underline py-4">
+                <div className="flex items-center gap-3">
+                  <div className={`h-8 w-8 rounded-lg flex items-center justify-center ${color}`}>
+                    <Icon className="h-4 w-4" />
+                  </div>
+                  <span className="font-serif font-semibold text-foreground">
+                    {item.section_key === 'personal' && texts.personal}
+                    {item.section_key === 'assets' && texts.assets}
+                    {item.section_key === 'digital' && texts.digital}
+                    {item.section_key === 'wishes' && texts.wishes}
+                    {item.section_key === 'documents' && texts.documents}
+                    {item.section_key === 'contacts' && texts.contacts}
+                  </span>
+                </div>
+              </AccordionTrigger>
+              <AccordionContent className="pb-4">
+                <div className="ml-11">
+                  {renderSection(item.section_key, item.data)}
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          );
+        })}
+      </Accordion>
+    );
+  };
+
+  // Group data by profile
+  const dataByProfile = profiles.map(profile => ({
+    profile,
+    data: data.filter(d => d.person_profile_id === profile.profile_id),
+  })).filter(group => group.data.length > 0);
+
+  // If only one profile or no profiles, render without tabs
+  if (dataByProfile.length <= 1) {
+    return (
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="space-y-4"
       >
-        {personName && (
+        {dataByProfile.length > 0 && dataByProfile[0].profile.profile_name && (
           <div className="flex items-center gap-3 pb-2 border-b border-border">
-            <div className={`h-10 w-10 rounded-full flex items-center justify-center ${isPartner ? 'bg-amber-light' : 'bg-sage-light'}`}>
-              {isPartner ? <Users className="h-5 w-5 text-amber" /> : <User className="h-5 w-5 text-sage-dark" />}
+            <div className="h-10 w-10 rounded-full flex items-center justify-center bg-primary/10">
+              <User className="h-5 w-5 text-primary" />
             </div>
-            <div>
-              <p className="text-sm text-muted-foreground">
-                {isPartner ? texts.forPartner : texts.forPerson}
-              </p>
-              <p className="font-serif text-lg font-semibold text-foreground">{personName}</p>
-            </div>
+            <p className="font-serif text-lg font-semibold text-foreground">
+              {dataByProfile[0].profile.profile_name}
+            </p>
           </div>
         )}
-
-        <Accordion type="single" collapsible className="w-full space-y-2">
-          {sortedData.map((item) => {
-            const Icon = sectionIcons[item.section_key] || FileText;
-            const color = sectionColors[item.section_key] || 'bg-sage-light text-sage-dark';
-            
-            return (
-              <AccordionItem
-                key={item.section_key}
-                value={item.section_key}
-                className="rounded-xl border border-border bg-card px-4"
-              >
-                <AccordionTrigger className="hover:no-underline py-4">
-                  <div className="flex items-center gap-3">
-                    <div className={`h-8 w-8 rounded-lg flex items-center justify-center ${color}`}>
-                      <Icon className="h-4 w-4" />
-                    </div>
-                    <span className="font-serif font-semibold text-foreground">
-                      {item.section_key === 'personal' && texts.personal}
-                      {item.section_key === 'assets' && texts.assets}
-                      {item.section_key === 'digital' && texts.digital}
-                      {item.section_key === 'wishes' && texts.wishes}
-                      {item.section_key === 'documents' && texts.documents}
-                      {item.section_key === 'contacts' && texts.contacts}
-                    </span>
-                  </div>
-                </AccordionTrigger>
-                <AccordionContent className="pb-4">
-                  <div className="ml-11">
-                    {renderSection(item.section_key, item.data)}
-                  </div>
-                </AccordionContent>
-              </AccordionItem>
-            );
-          })}
-        </Accordion>
+        {renderProfileData(dataByProfile.length > 0 ? dataByProfile[0].data : [])}
       </motion.div>
     );
-  };
+  }
 
+  // Multiple profiles - render with tabs
   return (
-    <div className="space-y-8">
-      {renderPersonData(mainData, profileInfo?.full_name || null, false)}
-      {partnerData.length > 0 && renderPersonData(partnerData, profileInfo?.partner_name || null, true)}
-    </div>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+    >
+      <Tabs defaultValue={dataByProfile[0]?.profile.profile_id} className="w-full">
+        <TabsList className="w-full justify-start gap-2 h-auto p-1 bg-muted/50 rounded-xl flex-wrap">
+          {dataByProfile.map(({ profile }) => (
+            <TabsTrigger
+              key={profile.profile_id}
+              value={profile.profile_id}
+              className="data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-lg px-4 py-2.5 gap-2"
+            >
+              <User className="h-4 w-4" />
+              <span className="font-medium">{profile.profile_name || texts.unknownProfile}</span>
+            </TabsTrigger>
+          ))}
+        </TabsList>
+        
+        {dataByProfile.map(({ profile, data: profileData }) => (
+          <TabsContent key={profile.profile_id} value={profile.profile_id} className="mt-6">
+            {renderProfileData(profileData)}
+          </TabsContent>
+        ))}
+      </Tabs>
+    </motion.div>
   );
 };
 
