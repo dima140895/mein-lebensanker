@@ -13,12 +13,12 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Key, Copy, Check, Download, Eye, EyeOff, Loader2, AlertTriangle } from 'lucide-react';
+import { Key, Copy, Check, Download, Eye, EyeOff, Loader2, AlertTriangle, ShieldAlert } from 'lucide-react';
 import { toast } from 'sonner';
 import { generateRecoveryKey, encryptPasswordWithRecoveryKey, formatRecoveryKey } from '@/lib/recoveryKey';
 import { supabase } from '@/integrations/supabase/browserClient';
 import { useAuth } from '@/contexts/AuthContext';
-
+import { EncryptionPasswordDialog } from './EncryptionPasswordDialog';
 interface ViewRecoveryKeyDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -37,6 +37,7 @@ export const ViewRecoveryKeyDialog: React.FC<ViewRecoveryKeyDialogProps> = ({
   const [error, setError] = useState<string | null>(null);
   const [newRecoveryKey, setNewRecoveryKey] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const [showUnlockDialog, setShowUnlockDialog] = useState(false);
 
   const translations = {
     de: {
@@ -54,7 +55,8 @@ export const ViewRecoveryKeyDialog: React.FC<ViewRecoveryKeyDialogProps> = ({
       copied: 'Kopiert!',
       download: 'Als Datei speichern',
       warning: 'Dieser Schlüssel wird nur einmal angezeigt. Wenn Du ihn verlierst und Dein Passwort vergisst, können Deine Daten nicht wiederhergestellt werden!',
-      notUnlocked: 'Bitte entsperre zuerst Deine Daten mit Deinem Verschlüsselungspasswort.',
+      notUnlocked: 'Deine Daten sind gesperrt. Entsperre sie, um einen neuen Recovery-Schlüssel zu generieren.',
+      unlockNow: 'Jetzt entsperren',
     },
     en: {
       title: 'Generate New Recovery Key',
@@ -71,7 +73,8 @@ export const ViewRecoveryKeyDialog: React.FC<ViewRecoveryKeyDialogProps> = ({
       copied: 'Copied!',
       download: 'Save as file',
       warning: 'This key will only be shown once. If you lose it and forget your password, your data cannot be recovered!',
-      notUnlocked: 'Please unlock your data with your encryption password first.',
+      notUnlocked: 'Your data is locked. Unlock it to generate a new recovery key.',
+      unlockNow: 'Unlock Now',
     },
   };
 
@@ -148,25 +151,37 @@ Datum / Date: ${new Date().toLocaleDateString()}
     onOpenChange(false);
   };
 
-  // If not unlocked, show a message
+  // If not unlocked, show a message with unlock button
   if (!isUnlocked) {
     return (
-      <Dialog open={open} onOpenChange={handleClose}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Key className="h-5 w-5 text-primary" />
-              {t.title}
-            </DialogTitle>
-          </DialogHeader>
-          <Alert>
-            <AlertDescription>{t.notUnlocked}</AlertDescription>
-          </Alert>
-          <DialogFooter>
-            <Button onClick={handleClose}>{t.close}</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <>
+        <Dialog open={open} onOpenChange={handleClose}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <Key className="h-5 w-5 text-primary" />
+                {t.title}
+              </DialogTitle>
+            </DialogHeader>
+            <Alert className="border-amber-500 bg-amber-50 text-amber-900">
+              <ShieldAlert className="h-4 w-4" />
+              <AlertDescription>{t.notUnlocked}</AlertDescription>
+            </Alert>
+            <DialogFooter className="gap-2 sm:gap-0">
+              <Button variant="outline" onClick={handleClose}>{t.close}</Button>
+              <Button onClick={() => setShowUnlockDialog(true)}>
+                {t.unlockNow}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+        
+        <EncryptionPasswordDialog
+          open={showUnlockDialog}
+          onOpenChange={setShowUnlockDialog}
+          mode="unlock"
+        />
+      </>
     );
   }
 
