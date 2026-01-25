@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Heart, LogIn, UserPlus, Menu, Home, User, Info, ClipboardList, Wallet, Globe, ScrollText, FolderOpen, Phone, ChevronDown, Link2, CreditCard, Users, Package, ArrowUpCircle } from 'lucide-react';
+import { Heart, LogIn, UserPlus, Menu, Home, User, Info, ClipboardList, Wallet, Globe, ScrollText, FolderOpen, Phone, ChevronDown, Link2, CreditCard, Package, Key, LogOut } from 'lucide-react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import LanguageToggle from './LanguageToggle';
 import ProfileSwitcher from './ProfileSwitcher';
@@ -26,6 +26,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import AuthForm from './AuthForm';
 import PricingDialog from './PricingDialog';
+import ChangePasswordDialog from './ChangePasswordDialog';
 
 interface MenuItem {
   label: string;
@@ -43,6 +44,7 @@ const Header = () => {
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [pricingOpen, setPricingOpen] = useState(false);
+  const [changePasswordOpen, setChangePasswordOpen] = useState(false);
 
   const currentSection = searchParams.get('section');
 
@@ -87,6 +89,8 @@ const Header = () => {
       couple: 'Ehepaar-Paket',
       family: 'Familien-Paket',
       managePackage: 'Paket verwalten',
+      changePassword: 'Passwort ändern',
+      account: 'Konto',
     },
     en: {
       login: 'Sign In',
@@ -112,6 +116,8 @@ const Header = () => {
       couple: 'Couple Package',
       family: 'Family Package',
       managePackage: 'Manage package',
+      changePassword: 'Change Password',
+      account: 'Account',
     },
   };
 
@@ -271,9 +277,23 @@ const Header = () => {
                   )}
                   
                   {user ? (
-                    <Button variant="outline" className="w-full" onClick={handleLogout}>
-                      {tx.logout}
-                    </Button>
+                    <div className="space-y-2">
+                      <Button 
+                        variant="ghost" 
+                        className="w-full justify-start" 
+                        onClick={() => {
+                          setMobileMenuOpen(false);
+                          setChangePasswordOpen(true);
+                        }}
+                      >
+                        <Key className="mr-2 h-4 w-4" />
+                        {tx.changePassword}
+                      </Button>
+                      <Button variant="outline" className="w-full" onClick={handleLogout}>
+                        <LogOut className="mr-2 h-4 w-4" />
+                        {tx.logout}
+                      </Button>
+                    </div>
                   ) : (
                     <>
                       <Button 
@@ -414,9 +434,26 @@ const Header = () => {
           )}
           
           {user ? (
-            <Button variant="outline" size="sm" onClick={handleLogout}>
-              {tx.logout}
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm">
+                  <User className="mr-1.5 h-4 w-4" />
+                  {tx.account}
+                  <ChevronDown className="ml-1 h-3 w-3" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48 bg-popover">
+                <DropdownMenuItem onClick={() => setChangePasswordOpen(true)}>
+                  <Key className="mr-2 h-4 w-4" />
+                  {tx.changePassword}
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleLogout} className="text-destructive focus:text-destructive">
+                  <LogOut className="mr-2 h-4 w-4" />
+                  {tx.logout}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           ) : (
             <Dialog open={authOpen} onOpenChange={setAuthOpen}>
               <DialogTrigger asChild>
@@ -477,6 +514,9 @@ const Header = () => {
           <AuthForm onSuccess={handleAuthSuccess} defaultMode={authMode} />
         </DialogContent>
       </Dialog>
+
+      {/* Change Password Dialog */}
+      <ChangePasswordDialog open={changePasswordOpen} onOpenChange={setChangePasswordOpen} />
     </motion.header>
   );
 };
