@@ -106,7 +106,7 @@ const Header = () => {
       encryptionLocked: 'Daten gesperrt',
       unlockData: 'Daten entsperren',
       lockData: 'Daten sperren',
-      recoveryKey: 'Neuen Recovery-Schlüssel',
+      recoveryKey: 'Recovery-Schlüssel neu generieren',
       forgotPassword: 'Passwort vergessen?',
     },
     en: {
@@ -140,7 +140,7 @@ const Header = () => {
       encryptionLocked: 'Data locked',
       unlockData: 'Unlock Data',
       lockData: 'Lock Data',
-      recoveryKey: 'New Recovery Key',
+      recoveryKey: 'Regenerate Recovery Key',
       forgotPassword: 'Forgot password?',
     },
   };
