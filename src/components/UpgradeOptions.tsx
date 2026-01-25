@@ -19,7 +19,7 @@ const UpgradeOptions = () => {
   const t = {
     de: {
       title: 'Paket upgraden',
-      subtitle: 'Erweitere dein Paket für mehr Profile',
+      subtitle: 'Erweitere Dein Paket für mehr Profile',
       currentPackage: 'Aktuelles Paket',
       upgradeFor: 'Upgrade für',
       upgrade: 'Jetzt upgraden',
@@ -164,7 +164,7 @@ const UpgradeOptions = () => {
                 </div>
                 <p className="text-xs text-muted-foreground mt-1">
                   {language === 'de' 
-                    ? `Differenz zu deinem aktuellen Paket`
+                    ? `Differenz zu Deinem aktuellen Paket`
                     : `Difference from your current package`
                   }
                 </p>
