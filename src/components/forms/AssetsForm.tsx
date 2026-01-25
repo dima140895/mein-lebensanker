@@ -14,6 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { Combobox } from '@/components/ui/combobox';
 import { toast } from 'sonner';
 
 interface AssetsFormProps {
@@ -52,6 +53,8 @@ const AssetsForm = ({ isPartner = false }: AssetsFormProps) => {
       insurances: 'Versicherungen',
       insuranceType: 'Versicherungsart',
       selectInsuranceType: 'Versicherungsart wählen',
+      searchInsuranceType: 'Versicherungsart suchen...',
+      insuranceTypeOtherPlaceholder: 'Welche Versicherungsart?',
       insuranceTypes: {
         life: 'Lebensversicherung',
         health: 'Krankenversicherung',
@@ -68,6 +71,8 @@ const AssetsForm = ({ isPartner = false }: AssetsFormProps) => {
       },
       company: 'Versicherungsgesellschaft',
       selectCompany: 'Gesellschaft wählen',
+      searchCompany: 'Gesellschaft suchen...',
+      companyOtherPlaceholder: 'Welche Gesellschaft?',
       companies: {
         allianz: 'Allianz',
         axa: 'AXA',
@@ -87,6 +92,7 @@ const AssetsForm = ({ isPartner = false }: AssetsFormProps) => {
       },
       policyNumber: 'Policennummer (optional)',
       surrenderValue: 'Rückkaufswert (optional)',
+      noResults: 'Keine Ergebnisse gefunden.',
       valuables: 'Wertgegenstände',
       description: 'Beschreibung',
       location: 'Aufbewahrungsort',
@@ -120,6 +126,8 @@ const AssetsForm = ({ isPartner = false }: AssetsFormProps) => {
       insurances: 'Insurance Policies',
       insuranceType: 'Insurance Type',
       selectInsuranceType: 'Select insurance type',
+      searchInsuranceType: 'Search insurance type...',
+      insuranceTypeOtherPlaceholder: 'Which insurance type?',
       insuranceTypes: {
         life: 'Life Insurance',
         health: 'Health Insurance',
@@ -136,6 +144,8 @@ const AssetsForm = ({ isPartner = false }: AssetsFormProps) => {
       },
       company: 'Insurance Company',
       selectCompany: 'Select company',
+      searchCompany: 'Search company...',
+      companyOtherPlaceholder: 'Which company?',
       companies: {
         allianz: 'Allianz',
         axa: 'AXA',
@@ -155,6 +165,7 @@ const AssetsForm = ({ isPartner = false }: AssetsFormProps) => {
       },
       policyNumber: 'Policy Number (optional)',
       surrenderValue: 'Surrender Value (optional)',
+      noResults: 'No results found.',
       valuables: 'Valuables',
       description: 'Description',
       location: 'Storage Location',
@@ -172,11 +183,21 @@ const AssetsForm = ({ isPartner = false }: AssetsFormProps) => {
     const newItems = {
       bankAccounts: [...data.bankAccounts, { institute: '', purpose: '', balance: '' }],
       properties: [...data.properties, { address: '', type: '', ownership: '', ownershipOther: '', rentalIncome: '', financingStatus: '', outstandingLoan: '' }],
-      insurances: [...data.insurances, { type: '', company: '', policyNumber: '', surrenderValue: '' }],
+      insurances: [...data.insurances, { type: '', typeOther: '', company: '', companyOther: '', policyNumber: '', surrenderValue: '' }],
       valuables: [...data.valuables, { description: '', location: '' }],
     };
     updateSection('assets', { ...data, [field]: newItems[field] }, isPartner);
   };
+
+  const insuranceTypeOptions = Object.entries(texts.insuranceTypes).map(([key, label]) => ({
+    value: key,
+    label: label as string,
+  }));
+
+  const companyOptions = Object.entries(texts.companies).map(([key, label]) => ({
+    value: key,
+    label: label as string,
+  }));
 
   const removeItem = (field: 'bankAccounts' | 'properties' | 'insurances' | 'valuables', index: number) => {
     const newArray = [...data[field]];
@@ -350,36 +371,60 @@ const AssetsForm = ({ isPartner = false }: AssetsFormProps) => {
           <div key={i} className="flex gap-3 items-start">
             <div className="flex-1 space-y-3">
               <div className="grid gap-3 md:grid-cols-2">
-                <Select
+                <Combobox
+                  options={insuranceTypeOptions}
                   value={ins.type || ''}
-                  onValueChange={(value) => updateItem('insurances', i, 'type', value)}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder={texts.selectInsuranceType} />
-                  </SelectTrigger>
-                  <SelectContent className="bg-background border border-border shadow-lg z-50">
-                    {Object.entries(texts.insuranceTypes).map(([key, label]) => (
-                      <SelectItem key={key} value={key}>{label}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <Select
+                  onValueChange={(value) => {
+                    const newArray = [...data.insurances];
+                    newArray[i] = { 
+                      ...newArray[i], 
+                      type: value,
+                      typeOther: value === 'other' ? newArray[i].typeOther : ''
+                    };
+                    updateSection('assets', { ...data, insurances: newArray }, isPartner);
+                  }}
+                  placeholder={texts.selectInsuranceType}
+                  searchPlaceholder={texts.searchInsuranceType}
+                  emptyText={texts.noResults}
+                />
+                <Combobox
+                  options={companyOptions}
                   value={ins.company || ''}
-                  onValueChange={(value) => updateItem('insurances', i, 'company', value)}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder={texts.selectCompany} />
-                  </SelectTrigger>
-                  <SelectContent className="bg-background border border-border shadow-lg z-50">
-                    {Object.entries(texts.companies).map(([key, label]) => (
-                      <SelectItem key={key} value={key}>{label}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                  onValueChange={(value) => {
+                    const newArray = [...data.insurances];
+                    newArray[i] = { 
+                      ...newArray[i], 
+                      company: value,
+                      companyOther: value === 'other' ? newArray[i].companyOther : ''
+                    };
+                    updateSection('assets', { ...data, insurances: newArray }, isPartner);
+                  }}
+                  placeholder={texts.selectCompany}
+                  searchPlaceholder={texts.searchCompany}
+                  emptyText={texts.noResults}
+                />
               </div>
+              {(ins.type === 'other' || ins.company === 'other') && (
+                <div className="grid gap-3 md:grid-cols-2">
+                  {ins.type === 'other' && (
+                    <Input
+                      value={ins.typeOther || ''}
+                      onChange={(e) => updateItem('insurances', i, 'typeOther', e.target.value)}
+                      placeholder={texts.insuranceTypeOtherPlaceholder}
+                    />
+                  )}
+                  {ins.company === 'other' && (
+                    <Input
+                      value={ins.companyOther || ''}
+                      onChange={(e) => updateItem('insurances', i, 'companyOther', e.target.value)}
+                      placeholder={texts.companyOtherPlaceholder}
+                    />
+                  )}
+                </div>
+              )}
               <div className="grid gap-3 md:grid-cols-2">
                 <Input
-                  value={ins.policyNumber}
+                  value={ins.policyNumber || ''}
                   onChange={(e) => updateItem('insurances', i, 'policyNumber', e.target.value)}
                   placeholder={texts.policyNumber}
                 />

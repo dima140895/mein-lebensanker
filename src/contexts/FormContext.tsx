@@ -29,7 +29,7 @@ export interface AssetsData {
     financingStatus: string;
     outstandingLoan: string;
   }>;
-  insurances: Array<{ type: string; company: string; policyNumber: string; surrenderValue: string }>;
+  insurances: Array<{ type: string; typeOther: string; company: string; companyOther: string; policyNumber: string; surrenderValue: string }>;
   valuables: Array<{ description: string; location: string }>;
   notes: string;
 }
