@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { User, ArrowRight, ArrowLeft, Check, Calendar, Loader2 } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
+import { useProfiles } from '@/contexts/ProfileContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -25,6 +26,7 @@ interface ProfileSetupWizardProps {
 const ProfileSetupWizard = ({ maxProfiles, packageType }: ProfileSetupWizardProps) => {
   const { language } = useLanguage();
   const { user, refreshProfile } = useAuth();
+  const { loadProfiles, setActiveProfileId: setActiveProfile } = useProfiles();
   const navigate = useNavigate();
   
   const [currentStep, setCurrentStep] = useState(0);
@@ -270,7 +272,16 @@ const ProfileSetupWizard = ({ maxProfiles, packageType }: ProfileSetupWizardProp
         }
       }
 
+      // Refresh auth profile and reload person profiles to update header/UI
       await refreshProfile();
+      await loadProfiles();
+      
+      // Set the first profile as active
+      const firstProfileWithName = profiles.find(p => p.name.trim());
+      if (firstProfileWithName?.id) {
+        setActiveProfile(firstProfileWithName.id);
+      }
+      
       setCompleted(true);
       toast.success(language === 'de' ? 'Profile erfolgreich gespeichert!' : 'Profiles saved successfully!');
     } catch (error: any) {
