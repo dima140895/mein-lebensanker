@@ -16,6 +16,7 @@ import { Key, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { parseRecoveryKey, decryptPasswordWithRecoveryKey, isValidRecoveryKey } from '@/lib/recoveryKey';
 import { logger } from '@/lib/logger';
+import { ResetEncryptionDialog } from '@/components/ResetEncryptionDialog';
 
 interface RecoveryKeyRecoveryDialogProps {
   open: boolean;
@@ -31,6 +32,7 @@ export const RecoveryKeyRecoveryDialog: React.FC<RecoveryKeyRecoveryDialogProps>
   const [recoveryKeyInput, setRecoveryKeyInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showResetDialog, setShowResetDialog] = useState(false);
 
   const translations = {
     de: {
@@ -45,6 +47,8 @@ export const RecoveryKeyRecoveryDialog: React.FC<RecoveryKeyRecoveryDialogProps>
       keyMismatch: 'Dieser Recovery-Schlüssel passt nicht zum aktuellen Schlüssel. Möglicherweise wurde inzwischen ein neuer Recovery-Schlüssel generiert.',
       noRecoveryAvailable: 'Für dieses Konto ist keine Wiederherstellung verfügbar.',
       success: 'Passwort erfolgreich wiederhergestellt und Daten entsperrt!',
+      resetHint: 'Kein Zugriff möglich? Verschlüsselung zurücksetzen (löscht Daten).',
+      resetOpen: 'Verschlüsselung zurücksetzen',
     },
     en: {
       title: 'Recover with Recovery Key',
@@ -58,6 +62,8 @@ export const RecoveryKeyRecoveryDialog: React.FC<RecoveryKeyRecoveryDialogProps>
       keyMismatch: 'This recovery key does not match the current key. The recovery key may have been regenerated.',
       noRecoveryAvailable: 'No recovery option available for this account.',
       success: 'Password recovered successfully and data unlocked!',
+      resetHint: 'No access possible? Reset encryption (deletes data).',
+      resetOpen: 'Reset encryption',
     },
   };
 
@@ -159,7 +165,24 @@ export const RecoveryKeyRecoveryDialog: React.FC<RecoveryKeyRecoveryDialogProps>
               )}
             </Button>
           </div>
+
+          <button
+            type="button"
+            onClick={() => setShowResetDialog(true)}
+            className="text-sm text-destructive hover:underline"
+          >
+            {t.resetHint}
+          </button>
         </form>
+
+        <ResetEncryptionDialog
+          open={showResetDialog}
+          onOpenChange={setShowResetDialog}
+          onResetComplete={() => {
+            onOpenChange(false);
+            window.location.reload();
+          }}
+        />
       </DialogContent>
     </Dialog>
   );
