@@ -44,10 +44,13 @@ const DashboardContent = () => {
   const [activeSection, setActiveSection] = useState<string | null>(null);
   const [isPartnerView, setIsPartnerView] = useState(false);
 
+  // Valid sections that can be set via URL (includes hidden sections like upgrade/payment)
+  const validUrlSections = [...sections.map(s => s.key), 'upgrade', 'payment'];
+
   // Read section from URL on mount
   useEffect(() => {
     const sectionFromUrl = searchParams.get('section');
-    if (sectionFromUrl && sections.some(s => s.key === sectionFromUrl)) {
+    if (sectionFromUrl && validUrlSections.includes(sectionFromUrl)) {
       setActiveSection(sectionFromUrl);
     }
   }, [searchParams]);
