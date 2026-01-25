@@ -84,11 +84,12 @@ const PaymentSuccessContent = () => {
           }
           setMaxProfiles(profiles);
           
-          // Show profile setup for new purchases AND when adding profiles
-          // Only skip for pure upgrades (changing package tier without adding new profiles)
-          if (!isUpgrade || isAddingProfiles) {
-            setShowProfileSetup(true);
-          }
+          // Show profile setup for:
+          // 1. New purchases (not an upgrade)
+          // 2. Adding additional profiles to family package
+          // 3. Tier upgrades that increase profile slots (e.g., Single→Couple, Single→Family)
+          // The wizard will detect existing profiles and only show slots for new ones
+          setShowProfileSetup(true);
         } else {
           setVerificationStatus('error');
           setErrorMessage(language === 'de' 
