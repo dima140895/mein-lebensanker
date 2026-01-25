@@ -20,7 +20,15 @@ export interface PersonalData {
 
 export interface AssetsData {
   bankAccounts: Array<{ institute: string; purpose: string; balance: string }>;
-  properties: Array<{ address: string; type: string; ownership: string; usageType: string }>;
+  properties: Array<{ 
+    address: string; 
+    type: string; 
+    ownership: string; 
+    usageType: string; 
+    rentalIncome: string;
+    financingStatus: string;
+    outstandingLoan: string;
+  }>;
   insurances: Array<{ type: string; company: string; policyNumber: string; surrenderValue: string }>;
   valuables: Array<{ description: string; location: string }>;
   notes: string;

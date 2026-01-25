@@ -45,6 +45,12 @@ const AssetsForm = ({ isPartner = false }: AssetsFormProps) => {
       usageType: 'Nutzungsart',
       usageSelfOccupied: 'Eigennutzung',
       usageRentedOut: 'Vermietet',
+      rentalIncome: 'Mieteinnahmen kalt (optional)',
+      financingStatus: 'Finanzierungsstatus',
+      financingPaidOff: 'Abbezahlt',
+      financingFinanced: 'Finanziert',
+      selectFinancing: 'Finanzierungsstatus wählen',
+      outstandingLoan: 'Offener Kreditsaldo (optional)',
       insurances: 'Versicherungen',
       insuranceType: 'Versicherungsart',
       company: 'Versicherungsgesellschaft',
@@ -77,6 +83,12 @@ const AssetsForm = ({ isPartner = false }: AssetsFormProps) => {
       usageType: 'Usage Type',
       usageSelfOccupied: 'Self-occupied',
       usageRentedOut: 'Rented out',
+      rentalIncome: 'Rental income cold (optional)',
+      financingStatus: 'Financing Status',
+      financingPaidOff: 'Paid off',
+      financingFinanced: 'Financed',
+      selectFinancing: 'Select financing status',
+      outstandingLoan: 'Outstanding loan balance (optional)',
       insurances: 'Insurance Policies',
       insuranceType: 'Insurance Type',
       company: 'Insurance Company',
@@ -99,7 +111,7 @@ const AssetsForm = ({ isPartner = false }: AssetsFormProps) => {
   const addItem = (field: 'bankAccounts' | 'properties' | 'insurances' | 'valuables') => {
     const newItems = {
       bankAccounts: [...data.bankAccounts, { institute: '', purpose: '', balance: '' }],
-      properties: [...data.properties, { address: '', type: '', ownership: '', usageType: '' }],
+      properties: [...data.properties, { address: '', type: '', ownership: '', usageType: '', rentalIncome: '', financingStatus: '', outstandingLoan: '' }],
       insurances: [...data.insurances, { type: '', company: '', policyNumber: '', surrenderValue: '' }],
       valuables: [...data.valuables, { description: '', location: '' }],
     };
@@ -195,7 +207,10 @@ const AssetsForm = ({ isPartner = false }: AssetsFormProps) => {
                     newArray[i] = { 
                       ...newArray[i], 
                       ownership: value,
-                      usageType: value === 'owned' ? newArray[i].usageType : ''
+                      usageType: value === 'owned' ? newArray[i].usageType : '',
+                      rentalIncome: value === 'rented' ? newArray[i].rentalIncome : '',
+                      financingStatus: value === 'owned' ? newArray[i].financingStatus : '',
+                      outstandingLoan: value === 'owned' ? newArray[i].outstandingLoan : ''
                     };
                     updateSection('assets', { ...data, properties: newArray }, isPartner);
                   }}
@@ -209,21 +224,59 @@ const AssetsForm = ({ isPartner = false }: AssetsFormProps) => {
                     <SelectItem value="other">{texts.ownershipOther}</SelectItem>
                   </SelectContent>
                 </Select>
-                {property.ownership === 'owned' && (
-                  <Select
-                    value={property.usageType || ''}
-                    onValueChange={(value) => updateItem('properties', i, 'usageType', value)}
-                  >
-                  <SelectTrigger>
-                      <SelectValue placeholder={texts.selectUsage} />
-                    </SelectTrigger>
-                    <SelectContent className="bg-background border border-border shadow-lg z-50">
-                      <SelectItem value="self-occupied">{texts.usageSelfOccupied}</SelectItem>
-                      <SelectItem value="rented-out">{texts.usageRentedOut}</SelectItem>
-                    </SelectContent>
-                  </Select>
+                {property.ownership === 'rented' && (
+                  <Input
+                    value={property.rentalIncome || ''}
+                    onChange={(e) => updateItem('properties', i, 'rentalIncome', e.target.value)}
+                    placeholder={texts.rentalIncome}
+                  />
                 )}
               </div>
+              {property.ownership === 'owned' && (
+                <>
+                  <div className="grid gap-3 md:grid-cols-2">
+                    <Select
+                      value={property.usageType || ''}
+                      onValueChange={(value) => updateItem('properties', i, 'usageType', value)}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder={texts.selectUsage} />
+                      </SelectTrigger>
+                      <SelectContent className="bg-background border border-border shadow-lg z-50">
+                        <SelectItem value="self-occupied">{texts.usageSelfOccupied}</SelectItem>
+                        <SelectItem value="rented-out">{texts.usageRentedOut}</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <Select
+                      value={property.financingStatus || ''}
+                      onValueChange={(value) => {
+                        const newArray = [...data.properties];
+                        newArray[i] = { 
+                          ...newArray[i], 
+                          financingStatus: value,
+                          outstandingLoan: value === 'financed' ? newArray[i].outstandingLoan : ''
+                        };
+                        updateSection('assets', { ...data, properties: newArray }, isPartner);
+                      }}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder={texts.selectFinancing} />
+                      </SelectTrigger>
+                      <SelectContent className="bg-background border border-border shadow-lg z-50">
+                        <SelectItem value="paid-off">{texts.financingPaidOff}</SelectItem>
+                        <SelectItem value="financed">{texts.financingFinanced}</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  {property.financingStatus === 'financed' && (
+                    <Input
+                      value={property.outstandingLoan || ''}
+                      onChange={(e) => updateItem('properties', i, 'outstandingLoan', e.target.value)}
+                      placeholder={texts.outstandingLoan}
+                    />
+                  )}
+                </>
+              )}
             </div>
             <Button variant="ghost" size="icon" onClick={() => removeItem('properties', i)}>
               <Trash2 className="h-4 w-4 text-destructive" />
