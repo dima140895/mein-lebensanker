@@ -13,12 +13,15 @@ import { logger } from '@/lib/logger';
 interface VorsorgeData {
   section_key: string;
   data: Record<string, unknown>;
-  is_for_partner: boolean | null;
+  is_for_partner: boolean;
+  person_profile_id: string | null;
+  profile_name: string | null;
 }
 
-interface ProfileInfo {
-  full_name: string | null;
-  partner_name: string | null;
+interface PersonProfile {
+  profile_id: string;
+  profile_name: string;
+  birth_date: string | null;
 }
 
 const RelativesViewContent = () => {
@@ -27,7 +30,7 @@ const RelativesViewContent = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [vorsorgeData, setVorsorgeData] = useState<VorsorgeData[]>([]);
-  const [profileInfo, setProfileInfo] = useState<ProfileInfo | null>(null);
+  const [profiles, setProfiles] = useState<PersonProfile[]>([]);
   const [requiresPIN, setRequiresPIN] = useState(false);
   const [pinVerified, setPINVerified] = useState(false);
   const [remainingAttempts, setRemainingAttempts] = useState(3);
@@ -43,8 +46,6 @@ const RelativesViewContent = () => {
       mainMessageSub: 'Diese Übersicht soll Dir Orientierung geben. Nimm Dir die Zeit, die Du brauchst.',
       disclaimerTop: 'Diese Übersicht dient ausschließlich der persönlichen Orientierung und hat keinerlei rechtliche Wirkung. Sie ersetzt keine rechtliche, notarielle, medizinische oder steuerliche Beratung.',
       disclaimerBottom: 'Alle hier dokumentierten Informationen dienen der Übersicht und vorbereitenden Organisation. Sie sind nicht rechtlich bindend und ersetzen keine professionelle Beratung bei rechtlichen, steuerlichen oder medizinischen Fragen.',
-      forPerson: 'Für',
-      forPartner: 'Für Partner',
     },
     en: {
       title: 'Overview for Orientation',
@@ -55,8 +56,6 @@ const RelativesViewContent = () => {
       mainMessageSub: 'This overview is meant to give you orientation. Take the time you need.',
       disclaimerTop: 'This overview is for personal orientation only and has no legal effect. It does not replace legal, notarial, medical, or tax advice.',
       disclaimerBottom: 'All information documented here is for overview and preparatory organization purposes only. It is not legally binding and does not replace professional advice on legal, tax, or medical matters.',
-      forPerson: 'For',
-      forPartner: 'For Partner',
     },
   };
 
@@ -123,30 +122,38 @@ const RelativesViewContent = () => {
     if (!token) return;
 
     try {
-      // Get profile info
-      const { data: profileData } = await supabase
-        .rpc('get_profile_by_token', { _token: token });
+      // Get profiles and vorsorge data in parallel
+      const [profilesResult, dataResult] = await Promise.all([
+        supabase.rpc('get_profiles_by_token', { _token: token }),
+        supabase.rpc('get_vorsorge_data_by_token', { _token: token }),
+      ]);
 
-      if (profileData?.length) {
-        setProfileInfo({
-          full_name: profileData[0].full_name,
-          partner_name: profileData[0].partner_name,
-        });
+      if (profilesResult.data) {
+        const transformedProfiles: PersonProfile[] = (profilesResult.data || []).map((p: { profile_id: string; profile_name: string; birth_date: string | null }) => ({
+          profile_id: p.profile_id,
+          profile_name: p.profile_name,
+          birth_date: p.birth_date,
+        }));
+        setProfiles(transformedProfiles);
       }
 
-      // Get vorsorge data
-      const { data: vData, error: vError } = await supabase
-        .rpc('get_vorsorge_data_by_token', { _token: token });
-
-      if (vError) {
-        logger.error('Error loading data:', vError);
+      if (dataResult.error) {
+        logger.error('Error loading data:', dataResult.error);
         setError(texts.invalidLink);
       } else {
         // Transform data to match expected interface
-        const transformedData: VorsorgeData[] = (vData || []).map((item: { section_key: string; data: unknown; is_for_partner: boolean | null }) => ({
+        const transformedData: VorsorgeData[] = (dataResult.data || []).map((item: { 
+          section_key: string; 
+          data: unknown; 
+          is_for_partner: boolean | null;
+          person_profile_id: string | null;
+          profile_name: string | null;
+        }) => ({
           section_key: item.section_key,
           data: (typeof item.data === 'object' && item.data !== null ? item.data : {}) as Record<string, unknown>,
           is_for_partner: item.is_for_partner ?? false,
+          person_profile_id: item.person_profile_id,
+          profile_name: item.profile_name,
         }));
         setVorsorgeData(transformedData);
       }
@@ -268,7 +275,7 @@ const RelativesViewContent = () => {
         {vorsorgeData.length > 0 ? (
           <RelativesSummary 
             data={vorsorgeData} 
-            profileInfo={profileInfo}
+            profiles={profiles}
           />
         ) : (
           <div className="rounded-xl border border-border bg-card p-8 text-center">

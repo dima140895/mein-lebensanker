@@ -224,11 +224,21 @@ export type Database = {
           partner_name: string
         }[]
       }
+      get_profiles_by_token: {
+        Args: { _token: string }
+        Returns: {
+          birth_date: string
+          profile_id: string
+          profile_name: string
+        }[]
+      }
       get_vorsorge_data_by_token: {
         Args: { _token: string }
         Returns: {
           data: Json
           is_for_partner: boolean
+          person_profile_id: string
+          profile_name: string
           section_key: string
         }[]
       }
