@@ -239,7 +239,7 @@ export const EncryptionPasswordDialog: React.FC<EncryptionPasswordDialogProps> =
           </DialogHeader>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form onSubmit={handleSubmit} className="space-y-5 max-h-[60vh] overflow-y-auto pr-1">
           {mode === 'setup' && !showVisualGuide && (
             <div className="space-y-4">
               {/* Watch explanation button */}
