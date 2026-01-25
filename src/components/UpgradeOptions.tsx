@@ -1,18 +1,19 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Check, Crown, Users, Home, ArrowUp } from 'lucide-react';
+import { Check, Crown, Users, Home, ArrowUp, Minus, Plus } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/browserClient';
 import { toast } from 'sonner';
-import { PRICING, getUpgradePrice, canUpgrade, type PackageType } from '@/lib/pricing';
+import { PRICING, getUpgradePrice, canUpgrade, calculateFamilyPrice, type PackageType } from '@/lib/pricing';
 import { logger } from '@/lib/logger';
 
 const UpgradeOptions = () => {
   const { user, profile } = useAuth();
   const { language } = useLanguage();
   const [loading, setLoading] = useState<string | null>(null);
+  const [familyProfileCount, setFamilyProfileCount] = useState<number>(PRICING.family.minProfiles);
 
   const currentTier = (profile?.purchased_tier as PackageType) || 'single';
 
@@ -71,6 +72,7 @@ const UpgradeOptions = () => {
           paymentType: targetTier,
           isUpgrade: true,
           currentTier: currentTier,
+          familyProfileCount: targetTier === 'family' ? familyProfileCount : undefined,
         },
       });
 
@@ -118,7 +120,10 @@ const UpgradeOptions = () => {
       <div className="grid gap-6 md:grid-cols-2">
         {upgradeablePackages.map((pkg, i) => {
           const Icon = pkg.icon;
-          const upgradePrice = getUpgradePrice(currentTier, pkg.key);
+          const isFamily = pkg.key === 'family';
+          const upgradePrice = isFamily 
+            ? getUpgradePrice(currentTier, pkg.key, familyProfileCount)
+            : getUpgradePrice(currentTier, pkg.key);
           const isLoading = loading === pkg.key;
 
           return (
@@ -155,6 +160,39 @@ const UpgradeOptions = () => {
                 </div>
               </div>
 
+              {/* Family profile selector */}
+              {isFamily && (
+                <div className="mb-4 flex items-center justify-center gap-3 p-3 bg-muted/50 rounded-lg">
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="h-8 w-8"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setFamilyProfileCount(Math.max(PRICING.family.minProfiles, familyProfileCount - 1));
+                    }}
+                    disabled={familyProfileCount <= PRICING.family.minProfiles}
+                  >
+                    <Minus className="h-4 w-4" />
+                  </Button>
+                  <span className="font-medium min-w-[80px] text-center">
+                    {familyProfileCount} {language === 'de' ? 'Profile' : 'Profiles'}
+                  </span>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="h-8 w-8"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setFamilyProfileCount(Math.min(PRICING.family.maxProfiles, familyProfileCount + 1));
+                    }}
+                    disabled={familyProfileCount >= PRICING.family.maxProfiles}
+                  >
+                    <Plus className="h-4 w-4" />
+                  </Button>
+                </div>
+              )}
+
               <div className="mb-6">
                 <div className="flex items-baseline gap-1">
                   <span className="text-3xl font-bold text-foreground">+€{upgradePrice}</span>
@@ -173,8 +211,8 @@ const UpgradeOptions = () => {
               <ul className="space-y-2 mb-6">
                 {[
                   language === 'de' 
-                    ? `${PRICING[pkg.key].maxProfiles} Profile verwalten`
-                    : `Manage ${PRICING[pkg.key].maxProfiles} profiles`,
+                    ? `${isFamily ? familyProfileCount : PRICING[pkg.key].maxProfiles} Profile verwalten`
+                    : `Manage ${isFamily ? familyProfileCount : PRICING[pkg.key].maxProfiles} profiles`,
                   language === 'de' ? 'Alle Bereiche verfügbar' : 'All sections available',
                   language === 'de' ? 'Link für Angehörige' : 'Link for relatives',
                 ].map((feature, idx) => (
