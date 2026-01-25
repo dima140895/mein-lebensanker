@@ -17,6 +17,8 @@ import { toast } from 'sonner';
 import { parseRecoveryKey, decryptPasswordWithRecoveryKey, isValidRecoveryKey } from '@/lib/recoveryKey';
 import { logger } from '@/lib/logger';
 import { ResetEncryptionDialog } from '@/components/ResetEncryptionDialog';
+import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/browserClient';
 
 interface RecoveryKeyRecoveryDialogProps {
   open: boolean;
@@ -28,6 +30,7 @@ export const RecoveryKeyRecoveryDialog: React.FC<RecoveryKeyRecoveryDialogProps>
   onOpenChange,
 }) => {
   const { language } = useLanguage();
+  const { user } = useAuth();
   const { recoverWithKey, encryptedPasswordRecovery } = useEncryption();
   const [recoveryKeyInput, setRecoveryKeyInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -75,7 +78,26 @@ export const RecoveryKeyRecoveryDialog: React.FC<RecoveryKeyRecoveryDialogProps>
     setIsLoading(true);
 
     try {
-      if (!encryptedPasswordRecovery) {
+      // Always fetch latest recovery blob from backend to avoid stale state
+      // right after regenerating/activating a new recovery key.
+      const latestRecoveryBlob = await (async () => {
+        if (!user) return null;
+
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('encrypted_password_recovery')
+          .eq('user_id', user.id)
+          .maybeSingle();
+
+        if (error) {
+          logger.error('Recovery: Failed to fetch latest encrypted_password_recovery', error);
+          return encryptedPasswordRecovery;
+        }
+
+        return data?.encrypted_password_recovery ?? encryptedPasswordRecovery;
+      })();
+
+      if (!latestRecoveryBlob) {
         logger.warn('Recovery: No encryptedPasswordRecovery available');
         setError(t.noRecoveryAvailable);
         setIsLoading(false);
@@ -91,7 +113,7 @@ export const RecoveryKeyRecoveryDialog: React.FC<RecoveryKeyRecoveryDialogProps>
         return;
       }
       
-      const password = await decryptPasswordWithRecoveryKey(encryptedPasswordRecovery, cleanKey);
+      const password = await decryptPasswordWithRecoveryKey(latestRecoveryBlob, cleanKey);
       
       const success = await recoverWithKey(password);
       
