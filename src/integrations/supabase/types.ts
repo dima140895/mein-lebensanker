@@ -206,6 +206,7 @@ export type Database = {
         Returns: {
           is_valid: boolean
           pin_valid: boolean
+          remaining_attempts: number
           requires_pin: boolean
           user_id: string
         }[]

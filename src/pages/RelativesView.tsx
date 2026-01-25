@@ -30,6 +30,8 @@ const RelativesViewContent = () => {
   const [profileInfo, setProfileInfo] = useState<ProfileInfo | null>(null);
   const [requiresPIN, setRequiresPIN] = useState(false);
   const [pinVerified, setPINVerified] = useState(false);
+  const [remainingAttempts, setRemainingAttempts] = useState(3);
+  const [isLocked, setIsLocked] = useState(false);
 
   const t = {
     de: {
@@ -82,6 +84,15 @@ const RelativesViewContent = () => {
 
         const validation = tokenValidation[0];
         
+        // Check if locked (0 remaining attempts)
+        if (validation.remaining_attempts === 0) {
+          setIsLocked(true);
+          setRequiresPIN(true);
+          setRemainingAttempts(0);
+          setLoading(false);
+          return;
+        }
+        
         if (!validation.is_valid) {
           setError(texts.invalidLink);
           setLoading(false);
@@ -89,8 +100,9 @@ const RelativesViewContent = () => {
         }
 
         if (validation.requires_pin && !validation.pin_valid) {
-          // PIN is required, show PIN entry
+          // PIN is required, show PIN entry with remaining attempts
           setRequiresPIN(true);
+          setRemainingAttempts(validation.remaining_attempts ?? 3);
           setLoading(false);
           return;
         }
@@ -146,31 +158,37 @@ const RelativesViewContent = () => {
     }
   };
 
-  const handlePINSubmit = async (enteredPIN: string): Promise<boolean> => {
-    if (!token) return false;
+  const handlePINSubmit = async (enteredPIN: string): Promise<{ valid: boolean; remainingAttempts: number }> => {
+    if (!token) return { valid: false, remainingAttempts: 0 };
 
     try {
       const { data: tokenValidation, error: tokenError } = await supabase
         .rpc('validate_share_token_with_pin', { _token: token, _pin: enteredPIN });
 
       if (tokenError || !tokenValidation?.length) {
-        return false;
+        return { valid: false, remainingAttempts: 0 };
       }
 
       const validation = tokenValidation[0];
+      const newRemainingAttempts = validation.remaining_attempts ?? 0;
       
       if (validation.is_valid && validation.pin_valid) {
         setPINVerified(true);
         setRequiresPIN(false);
         setLoading(true);
         await loadFullData();
-        return true;
+        return { valid: true, remainingAttempts: 3 };
       }
 
-      return false;
+      // Update state for locked status
+      if (newRemainingAttempts === 0) {
+        setIsLocked(true);
+      }
+
+      return { valid: false, remainingAttempts: newRemainingAttempts };
     } catch (err) {
       logger.error('Error validating PIN:', err);
-      return false;
+      return { valid: false, remainingAttempts: 0 };
     }
   };
 
@@ -190,7 +208,12 @@ const RelativesViewContent = () => {
   if (requiresPIN && !pinVerified) {
     return (
       <div className="container mx-auto px-4 py-12">
-        <PINEntry onSubmit={handlePINSubmit} language={language} />
+        <PINEntry 
+          onSubmit={handlePINSubmit} 
+          language={language} 
+          initialRemainingAttempts={remainingAttempts}
+          isLocked={isLocked}
+        />
       </div>
     );
   }

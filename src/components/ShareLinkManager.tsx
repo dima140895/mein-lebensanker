@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Link2, Plus, Trash2, Copy, Check, ExternalLink, Shield, Lock, Share2, Eye, Info } from 'lucide-react';
+import { Link2, Plus, Trash2, Copy, Check, ExternalLink, Shield, Lock, Share2, Eye, Info, ShieldX } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/browserClient';
@@ -32,6 +32,7 @@ interface ShareToken {
   expires_at: string | null;
   created_at: string;
   pin_hash: string | null;
+  failed_attempts: number;
 }
 
 const ShareLinkManager = () => {
@@ -67,6 +68,9 @@ const ShareLinkManager = () => {
       enterPIN: 'PIN festlegen',
       pinRequired: 'Bitte gib einen 6-stelligen PIN ein',
       protected: 'Geschützt',
+      blocked: 'Gesperrt',
+      blockedReason: '3x falscher PIN',
+      inactive: 'Inaktiv',
       howItWorksTitle: 'So funktioniert der Angehörigen-Zugang',
       howItWorksStep1Title: 'Link erstellen',
       howItWorksStep1Desc: 'Erstelle einen persönlichen Zugangslink – optional mit PIN-Schutz für mehr Sicherheit.',
@@ -99,6 +103,9 @@ const ShareLinkManager = () => {
       enterPIN: 'Set PIN',
       pinRequired: 'Please enter a 6-digit PIN',
       protected: 'Protected',
+      blocked: 'Blocked',
+      blockedReason: '3x wrong PIN',
+      inactive: 'Inactive',
       howItWorksTitle: 'How Relatives Access Works',
       howItWorksStep1Title: 'Create a Link',
       howItWorksStep1Desc: 'Create a personal access link – optionally with PIN protection for added security.',
@@ -363,59 +370,81 @@ const ShareLinkManager = () => {
         </div>
       ) : (
         <div className="space-y-3">
-          {tokens.map((token) => (
-            <div
-              key={token.id}
-              className="flex items-center justify-between gap-4 rounded-xl border border-border bg-card p-4"
-            >
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2">
-                  <p className="font-medium text-foreground truncate">
-                    {token.label || `Link ${token.token.slice(0, 8)}...`}
+          {tokens.map((token) => {
+            const isBlocked = token.failed_attempts >= 3;
+            const isInactive = !token.is_active && !isBlocked;
+            
+            return (
+              <div
+                key={token.id}
+                className={`flex items-center justify-between gap-4 rounded-xl border p-4 ${
+                  isBlocked 
+                    ? 'border-destructive/30 bg-destructive/5' 
+                    : isInactive 
+                      ? 'border-muted bg-muted/30' 
+                      : 'border-border bg-card'
+                }`}
+              >
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <p className="font-medium text-foreground truncate">
+                      {token.label || `Link ${token.token.slice(0, 8)}...`}
+                    </p>
+                    {isBlocked ? (
+                      <span className="inline-flex items-center gap-1 rounded-full bg-destructive/10 px-2 py-0.5 text-xs font-medium text-destructive">
+                        <ShieldX className="h-3 w-3" />
+                        {texts.blocked} ({texts.blockedReason})
+                      </span>
+                    ) : isInactive ? (
+                      <span className="inline-flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">
+                        {texts.inactive}
+                      </span>
+                    ) : token.pin_hash ? (
+                      <span className="inline-flex items-center gap-1 rounded-full bg-sage-light px-2 py-0.5 text-xs font-medium text-sage-dark">
+                        <Lock className="h-3 w-3" />
+                        {texts.protected}
+                      </span>
+                    ) : null}
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    {texts.createdAt} {formatDate(token.created_at)}
                   </p>
-                  {token.pin_hash && (
-                    <span className="inline-flex items-center gap-1 rounded-full bg-sage-light px-2 py-0.5 text-xs font-medium text-sage-dark">
-                      <Lock className="h-3 w-3" />
-                      {texts.protected}
-                    </span>
-                  )}
                 </div>
-                <p className="text-sm text-muted-foreground">
-                  {texts.createdAt} {formatDate(token.created_at)}
-                </p>
+
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => copyLink(token.token, token.id)}
+                    disabled={isBlocked}
+                  >
+                    {copiedId === token.id ? (
+                      <Check className="h-4 w-4 text-green-600" />
+                    ) : (
+                      <Copy className="h-4 w-4" />
+                    )}
+                  </Button>
+
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => window.open(`/fuer-angehoerige/${token.token}`, '_blank')}
+                    disabled={isBlocked}
+                  >
+                    <ExternalLink className="h-4 w-4" />
+                  </Button>
+
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => deleteToken(token.id)}
+                  >
+                    <Trash2 className="h-4 w-4 text-destructive" />
+                  </Button>
+                </div>
               </div>
-
-              <div className="flex items-center gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => copyLink(token.token, token.id)}
-                >
-                  {copiedId === token.id ? (
-                    <Check className="h-4 w-4 text-green-600" />
-                  ) : (
-                    <Copy className="h-4 w-4" />
-                  )}
-                </Button>
-
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => window.open(`/fuer-angehoerige/${token.token}`, '_blank')}
-                >
-                  <ExternalLink className="h-4 w-4" />
-                </Button>
-
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => deleteToken(token.id)}
-                >
-                  <Trash2 className="h-4 w-4 text-destructive" />
-                </Button>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </motion.div>

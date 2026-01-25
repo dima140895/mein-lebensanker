@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Lock, AlertCircle } from 'lucide-react';
+import { Lock, AlertCircle, ShieldX } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   InputOTP,
@@ -9,14 +9,18 @@ import {
 } from '@/components/ui/input-otp';
 
 interface PINEntryProps {
-  onSubmit: (pin: string) => Promise<boolean>;
+  onSubmit: (pin: string) => Promise<{ valid: boolean; remainingAttempts: number }>;
   language: 'de' | 'en';
+  initialRemainingAttempts?: number;
+  isLocked?: boolean;
 }
 
-const PINEntry = ({ onSubmit, language }: PINEntryProps) => {
+const PINEntry = ({ onSubmit, language, initialRemainingAttempts = 3, isLocked = false }: PINEntryProps) => {
   const [pin, setPIN] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
+  const [remainingAttempts, setRemainingAttempts] = useState(initialRemainingAttempts);
+  const [locked, setLocked] = useState(isLocked);
 
   const t = {
     de: {
@@ -24,32 +28,69 @@ const PINEntry = ({ onSubmit, language }: PINEntryProps) => {
       description: 'Dieser Zugang ist geschützt. Bitte gib den 6-stelligen PIN ein, den Du erhalten hast.',
       submit: 'Zugang öffnen',
       error: 'Falscher PIN. Bitte versuche es erneut.',
+      attemptsRemaining: 'Verbleibende Versuche:',
+      lockWarning: 'Nach 3 Fehlversuchen wird der Zugang gesperrt.',
+      lockedTitle: 'Zugang gesperrt',
+      lockedDescription: 'Dieser Link wurde aufgrund von 3 falschen PIN-Eingaben gesperrt. Bitte kontaktiere die Person, die Dir diesen Link gegeben hat.',
     },
     en: {
       title: 'PIN Required',
       description: 'This access is protected. Please enter the 6-digit PIN you received.',
       submit: 'Open Access',
       error: 'Incorrect PIN. Please try again.',
+      attemptsRemaining: 'Remaining attempts:',
+      lockWarning: 'Access will be locked after 3 failed attempts.',
+      lockedTitle: 'Access Locked',
+      lockedDescription: 'This link has been locked due to 3 incorrect PIN entries. Please contact the person who shared this link with you.',
     },
   };
 
   const texts = t[language];
 
   const handleSubmit = async () => {
-    if (pin.length !== 6) return;
+    if (pin.length !== 6 || locked) return;
     
     setLoading(true);
     setError(false);
     
-    const isValid = await onSubmit(pin);
+    const result = await onSubmit(pin);
     
-    if (!isValid) {
+    setRemainingAttempts(result.remainingAttempts);
+    
+    if (!result.valid) {
       setError(true);
       setPIN('');
+      if (result.remainingAttempts === 0) {
+        setLocked(true);
+      }
     }
     
     setLoading(false);
   };
+
+  if (locked) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="max-w-sm mx-auto"
+      >
+        <div className="rounded-2xl border border-destructive/30 bg-destructive/5 p-8 text-center shadow-lg">
+          <div className="inline-flex items-center justify-center h-16 w-16 rounded-full bg-destructive/10 mb-6">
+            <ShieldX className="h-8 w-8 text-destructive" />
+          </div>
+          
+          <h1 className="font-serif text-2xl font-bold text-foreground mb-2">
+            {texts.lockedTitle}
+          </h1>
+          
+          <p className="text-muted-foreground">
+            {texts.lockedDescription}
+          </p>
+        </div>
+      </motion.div>
+    );
+  }
 
   return (
     <motion.div
@@ -66,9 +107,19 @@ const PINEntry = ({ onSubmit, language }: PINEntryProps) => {
           {texts.title}
         </h1>
         
-        <p className="text-muted-foreground mb-8">
+        <p className="text-muted-foreground mb-4">
           {texts.description}
         </p>
+        
+        {/* Lock warning */}
+        <div className="rounded-lg bg-amber-light/30 border border-amber/20 p-3 mb-6">
+          <p className="text-sm text-amber font-medium">
+            {texts.lockWarning}
+          </p>
+          <p className="text-sm text-amber mt-1">
+            {texts.attemptsRemaining} <span className="font-bold">{remainingAttempts}</span>
+          </p>
+        </div>
         
         <div className="flex justify-center mb-6">
           <InputOTP
