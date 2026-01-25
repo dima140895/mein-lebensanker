@@ -7,6 +7,13 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { toast } from 'sonner';
 
 interface AssetsFormProps {
@@ -27,14 +34,22 @@ const AssetsForm = ({ isPartner = false }: AssetsFormProps) => {
       bankAccounts: 'Bankkonten',
       institute: 'Institut',
       purpose: 'Verwendungszweck',
+      balance: 'Kontostand (optional)',
       properties: 'Immobilien',
       address: 'Adresse',
       type: 'Art (z.B. Wohnung, Haus)',
       ownership: 'Eigentumsverhältnis',
+      ownershipOwned: 'Eigentum',
+      ownershipRented: 'Miete',
+      ownershipOther: 'Sonstiges',
+      usageType: 'Nutzungsart',
+      usageSelfOccupied: 'Eigennutzung',
+      usageRentedOut: 'Vermietet',
       insurances: 'Versicherungen',
       insuranceType: 'Versicherungsart',
       company: 'Versicherungsgesellschaft',
       policyNumber: 'Policennummer (optional)',
+      surrenderValue: 'Rückkaufswert (optional)',
       valuables: 'Wertgegenstände',
       description: 'Beschreibung',
       location: 'Aufbewahrungsort',
@@ -42,6 +57,8 @@ const AssetsForm = ({ isPartner = false }: AssetsFormProps) => {
       notes: 'Zusätzliche Hinweise',
       save: 'Speichern',
       saved: 'Gespeichert!',
+      selectOwnership: 'Eigentumsverhältnis wählen',
+      selectUsage: 'Nutzungsart wählen',
     },
     en: {
       title: 'Asset Overview',
@@ -49,14 +66,22 @@ const AssetsForm = ({ isPartner = false }: AssetsFormProps) => {
       bankAccounts: 'Bank Accounts',
       institute: 'Bank/Institute',
       purpose: 'Purpose',
+      balance: 'Balance (optional)',
       properties: 'Properties',
       address: 'Address',
       type: 'Type (e.g., apartment, house)',
       ownership: 'Ownership',
+      ownershipOwned: 'Owned',
+      ownershipRented: 'Rented',
+      ownershipOther: 'Other',
+      usageType: 'Usage Type',
+      usageSelfOccupied: 'Self-occupied',
+      usageRentedOut: 'Rented out',
       insurances: 'Insurance Policies',
       insuranceType: 'Insurance Type',
       company: 'Insurance Company',
       policyNumber: 'Policy Number (optional)',
+      surrenderValue: 'Surrender Value (optional)',
       valuables: 'Valuables',
       description: 'Description',
       location: 'Storage Location',
@@ -64,6 +89,8 @@ const AssetsForm = ({ isPartner = false }: AssetsFormProps) => {
       notes: 'Additional Notes',
       save: 'Save',
       saved: 'Saved!',
+      selectOwnership: 'Select ownership',
+      selectUsage: 'Select usage type',
     },
   };
 
@@ -71,9 +98,9 @@ const AssetsForm = ({ isPartner = false }: AssetsFormProps) => {
 
   const addItem = (field: 'bankAccounts' | 'properties' | 'insurances' | 'valuables') => {
     const newItems = {
-      bankAccounts: [...data.bankAccounts, { institute: '', purpose: '' }],
-      properties: [...data.properties, { address: '', type: '', ownership: '' }],
-      insurances: [...data.insurances, { type: '', company: '', policyNumber: '' }],
+      bankAccounts: [...data.bankAccounts, { institute: '', purpose: '', balance: '' }],
+      properties: [...data.properties, { address: '', type: '', ownership: '', usageType: '' }],
+      insurances: [...data.insurances, { type: '', company: '', policyNumber: '', surrenderValue: '' }],
       valuables: [...data.valuables, { description: '', location: '' }],
     };
     updateSection('assets', { ...data, [field]: newItems[field] }, isPartner);
@@ -113,7 +140,7 @@ const AssetsForm = ({ isPartner = false }: AssetsFormProps) => {
         <h3 className="font-serif text-lg font-semibold text-foreground">{texts.bankAccounts}</h3>
         {data.bankAccounts.map((account, i) => (
           <div key={i} className="flex gap-3 items-start">
-            <div className="flex-1 grid gap-3 md:grid-cols-2">
+            <div className="flex-1 grid gap-3 md:grid-cols-3">
               <Input
                 value={account.institute}
                 onChange={(e) => updateItem('bankAccounts', i, 'institute', e.target.value)}
@@ -123,6 +150,11 @@ const AssetsForm = ({ isPartner = false }: AssetsFormProps) => {
                 value={account.purpose}
                 onChange={(e) => updateItem('bankAccounts', i, 'purpose', e.target.value)}
                 placeholder={texts.purpose}
+              />
+              <Input
+                value={account.balance || ''}
+                onChange={(e) => updateItem('bankAccounts', i, 'balance', e.target.value)}
+                placeholder={texts.balance}
               />
             </div>
             {data.bankAccounts.length > 1 && (
@@ -142,22 +174,54 @@ const AssetsForm = ({ isPartner = false }: AssetsFormProps) => {
         <h3 className="font-serif text-lg font-semibold text-foreground">{texts.properties}</h3>
         {data.properties.map((property, i) => (
           <div key={i} className="flex gap-3 items-start">
-            <div className="flex-1 grid gap-3 md:grid-cols-3">
-              <Input
-                value={property.address}
-                onChange={(e) => updateItem('properties', i, 'address', e.target.value)}
-                placeholder={texts.address}
-              />
-              <Input
-                value={property.type}
-                onChange={(e) => updateItem('properties', i, 'type', e.target.value)}
-                placeholder={texts.type}
-              />
-              <Input
-                value={property.ownership}
-                onChange={(e) => updateItem('properties', i, 'ownership', e.target.value)}
-                placeholder={texts.ownership}
-              />
+            <div className="flex-1 space-y-3">
+              <div className="grid gap-3 md:grid-cols-2">
+                <Input
+                  value={property.address}
+                  onChange={(e) => updateItem('properties', i, 'address', e.target.value)}
+                  placeholder={texts.address}
+                />
+                <Input
+                  value={property.type}
+                  onChange={(e) => updateItem('properties', i, 'type', e.target.value)}
+                  placeholder={texts.type}
+                />
+              </div>
+              <div className="grid gap-3 md:grid-cols-2">
+                <Select
+                  value={property.ownership || ''}
+                  onValueChange={(value) => {
+                    updateItem('properties', i, 'ownership', value);
+                    // Reset usage type if ownership is not "owned"
+                    if (value !== 'owned') {
+                      updateItem('properties', i, 'usageType', '');
+                    }
+                  }}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder={texts.selectOwnership} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="owned">{texts.ownershipOwned}</SelectItem>
+                    <SelectItem value="rented">{texts.ownershipRented}</SelectItem>
+                    <SelectItem value="other">{texts.ownershipOther}</SelectItem>
+                  </SelectContent>
+                </Select>
+                {property.ownership === 'owned' && (
+                  <Select
+                    value={property.usageType || ''}
+                    onValueChange={(value) => updateItem('properties', i, 'usageType', value)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder={texts.selectUsage} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="self-occupied">{texts.usageSelfOccupied}</SelectItem>
+                      <SelectItem value="rented-out">{texts.usageRentedOut}</SelectItem>
+                    </SelectContent>
+                  </Select>
+                )}
+              </div>
             </div>
             <Button variant="ghost" size="icon" onClick={() => removeItem('properties', i)}>
               <Trash2 className="h-4 w-4 text-destructive" />
@@ -174,7 +238,7 @@ const AssetsForm = ({ isPartner = false }: AssetsFormProps) => {
         <h3 className="font-serif text-lg font-semibold text-foreground">{texts.insurances}</h3>
         {data.insurances.map((ins, i) => (
           <div key={i} className="flex gap-3 items-start">
-            <div className="flex-1 grid gap-3 md:grid-cols-3">
+            <div className="flex-1 grid gap-3 md:grid-cols-2 lg:grid-cols-4">
               <Input
                 value={ins.type}
                 onChange={(e) => updateItem('insurances', i, 'type', e.target.value)}
@@ -189,6 +253,11 @@ const AssetsForm = ({ isPartner = false }: AssetsFormProps) => {
                 value={ins.policyNumber}
                 onChange={(e) => updateItem('insurances', i, 'policyNumber', e.target.value)}
                 placeholder={texts.policyNumber}
+              />
+              <Input
+                value={ins.surrenderValue || ''}
+                onChange={(e) => updateItem('insurances', i, 'surrenderValue', e.target.value)}
+                placeholder={texts.surrenderValue}
               />
             </div>
             <Button variant="ghost" size="icon" onClick={() => removeItem('insurances', i)}>
