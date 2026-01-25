@@ -502,6 +502,9 @@ const Header = () => {
               {/* Profile Switcher for multi-profile packages */}
               <ProfileSwitcher />
               
+              {/* Encryption Status - shows unlock button when locked */}
+              <EncryptionStatus />
+              
               <div className="w-px h-6 bg-border" />
             </>
           )}
