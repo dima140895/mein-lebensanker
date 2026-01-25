@@ -141,7 +141,7 @@ const DashboardContent = () => {
   const texts = t[language];
 
   if (loading) {
-    return <div className="flex items-center justify-center min-h-[50vh]">Loading...</div>;
+    return <div className="flex items-center justify-center min-h-[50vh]">{language === 'de' ? 'Laden...' : 'Loading...'}</div>;
   }
 
   if (!user) {

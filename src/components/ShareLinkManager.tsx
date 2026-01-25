@@ -164,7 +164,7 @@ const ShareLinkManager = () => {
 
     if (error) {
       logger.error('Error creating token:', error);
-      toast.error('Fehler beim Erstellen');
+      toast.error(language === 'de' ? 'Fehler beim Erstellen' : 'Error creating link');
       setCreating(false);
       return;
     }

@@ -108,7 +108,7 @@ const ChangePasswordDialog = ({ open, onOpenChange }: ChangePasswordDialogProps)
     } catch {
       toast({
         title: texts.error,
-        description: 'An unexpected error occurred.',
+        description: language === 'de' ? 'Ein unerwarteter Fehler ist aufgetreten.' : 'An unexpected error occurred.',
         variant: 'destructive',
       });
     } finally {
