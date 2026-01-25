@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Heart, LogIn, UserPlus, Menu, Home, User, Info, ClipboardList, Wallet, Globe, ScrollText, FolderOpen, Phone, ChevronDown, Link2, CreditCard, Users } from 'lucide-react';
+import { Heart, LogIn, UserPlus, Menu, Home, User, Info, ClipboardList, Wallet, Globe, ScrollText, FolderOpen, Phone, ChevronDown, Link2, CreditCard, Users, Package, ArrowUpCircle } from 'lucide-react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import LanguageToggle from './LanguageToggle';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -35,7 +35,7 @@ interface MenuItem {
 
 const Header = () => {
   const { language } = useLanguage();
-  const { user, signOut } = useAuth();
+  const { user, profile, signOut } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [authOpen, setAuthOpen] = useState(false);
@@ -79,6 +79,13 @@ const Header = () => {
       pricing: 'Preise',
       oneTime: 'einmalig',
       profiles: 'Profile',
+      myPackage: 'Mein Paket',
+      upgrade: 'Upgrade verfügbar',
+      currentTier: 'Aktuelles Paket',
+      single: 'Einzelperson',
+      couple: 'Ehepaar-Paket',
+      family: 'Familien-Paket',
+      managePackage: 'Paket verwalten',
     },
     en: {
       login: 'Sign In',
@@ -97,6 +104,13 @@ const Header = () => {
       pricing: 'Pricing',
       oneTime: 'one-time',
       profiles: 'profiles',
+      myPackage: 'My Package',
+      upgrade: 'Upgrade available',
+      currentTier: 'Current package',
+      single: 'Individual',
+      couple: 'Couple Package',
+      family: 'Family Package',
+      managePackage: 'Manage package',
     },
   };
 
@@ -230,6 +244,34 @@ const Header = () => {
 
                 {/* Mobile Menu Footer */}
                 <div className="border-t border-border p-4 space-y-3">
+                  {/* My Package for paid users (mobile) */}
+                  {user && profile?.has_paid && (
+                    <div className="pb-3 border-b border-border">
+                      <p className="text-xs text-muted-foreground mb-1">{tx.currentTier}</p>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <Package className="h-4 w-4 text-primary" />
+                          <span className="font-medium">
+                            {profile.purchased_tier === 'single' && tx.single}
+                            {profile.purchased_tier === 'couple' && tx.couple}
+                            {profile.purchased_tier === 'family' && tx.family}
+                          </span>
+                        </div>
+                        {profile.purchased_tier !== 'family' && (
+                          <Button 
+                            variant="link" 
+                            size="sm" 
+                            className="text-primary p-0 h-auto"
+                            onClick={() => navigateTo('/dashboard?section=upgrade')}
+                          >
+                            <ArrowUpCircle className="mr-1 h-3 w-3" />
+                            {tx.upgrade}
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                  
                   {user ? (
                     <Button variant="outline" className="w-full" onClick={handleLogout}>
                       {tx.logout}
@@ -310,7 +352,7 @@ const Header = () => {
                     <ChevronDown className="ml-1 h-3 w-3" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuContent align="end" className="w-48 bg-popover">
                   {sectionItems.map((item) => {
                     const Icon = item.icon;
                     const isActive = currentSection === item.key;
@@ -327,6 +369,57 @@ const Header = () => {
                   })}
                 </DropdownMenuContent>
               </DropdownMenu>
+
+              {/* My Package Button for paid users */}
+              {profile?.has_paid && (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="text-muted-foreground hover:text-foreground"
+                    >
+                      <Package className="mr-1.5 h-4 w-4" />
+                      {tx.myPackage}
+                      <ChevronDown className="ml-1 h-3 w-3" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-56 bg-popover">
+                    {/* Current Package Info */}
+                    <div className="px-2 py-2 border-b border-border">
+                      <p className="text-xs text-muted-foreground">{tx.currentTier}</p>
+                      <p className="font-medium text-foreground">
+                        {profile.purchased_tier === 'single' && tx.single}
+                        {profile.purchased_tier === 'couple' && tx.couple}
+                        {profile.purchased_tier === 'family' && tx.family}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {profile.max_profiles} {tx.profiles}
+                      </p>
+                    </div>
+                    
+                    {/* Upgrade Option (only if not already on family) */}
+                    {profile.purchased_tier !== 'family' && (
+                      <>
+                        <DropdownMenuItem
+                          onClick={() => navigateTo('/dashboard?section=upgrade')}
+                          className="text-primary"
+                        >
+                          <ArrowUpCircle className="mr-2 h-4 w-4" />
+                          {tx.upgrade}
+                        </DropdownMenuItem>
+                      </>
+                    )}
+                    
+                    <DropdownMenuItem
+                      onClick={() => navigateTo('/dashboard?section=payment')}
+                    >
+                      <CreditCard className="mr-2 h-4 w-4" />
+                      {tx.managePackage}
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )}
               <div className="w-px h-6 bg-border" />
             </>
           )}
