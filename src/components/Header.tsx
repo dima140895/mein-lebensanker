@@ -374,7 +374,7 @@ const Header = () => {
                   {/* Direct link to Dashboard Overview */}
                   <DropdownMenuItem
                     onClick={() => navigateTo('/dashboard')}
-                    className={!currentSection ? 'bg-muted font-medium' : ''}
+                    className={!currentSection ? 'bg-primary text-primary-foreground font-medium' : ''}
                   >
                     <ClipboardList className="mr-2 h-4 w-4" />
                     {language === 'de' ? 'Dashboard' : 'Dashboard'}
@@ -387,7 +387,7 @@ const Header = () => {
                       <DropdownMenuItem
                         key={item.key}
                         onClick={() => navigateTo(`/dashboard?section=${item.key}`)}
-                        className={isActive ? 'bg-muted font-medium' : ''}
+                        className={isActive ? 'bg-primary text-primary-foreground font-medium' : ''}
                       >
                         <Icon className="mr-2 h-4 w-4" />
                         {item.label[language]}
