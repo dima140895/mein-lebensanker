@@ -228,8 +228,8 @@ const PaymentOptions = () => {
                 )}
               </div>
 
-              {/* Family Profile Selector */}
-              {key === 'family' && !isCurrentPlan && (
+              {/* Family Profile Selector - show for new purchases AND upgrades */}
+              {key === 'family' && !isCurrentPlan && !isDisabled && (
                 <div className="mb-4 p-3 rounded-lg bg-muted/50">
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-medium text-foreground">
