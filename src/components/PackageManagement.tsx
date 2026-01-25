@@ -13,14 +13,17 @@ import { PRICING, getUpgradePrice, canUpgrade, calculateFamilyPrice, type Packag
 import { logger } from '@/lib/logger';
 
 const PackageManagement = () => {
-  const { user, profile } = useAuth();
+  const { user, profile, refreshProfile } = useAuth();
   const { language } = useLanguage();
   const [loading, setLoading] = useState<string | null>(null);
   const [familyProfileCount, setFamilyProfileCount] = useState<number>(PRICING.family.minProfiles);
+  const [additionalProfilesToAdd, setAdditionalProfilesToAdd] = useState<number>(1);
 
   const currentTier = (profile?.purchased_tier as PackageType) || 'single';
   const hasUpdateSubscription = profile?.has_update_subscription || false;
   const currentMaxProfiles = profile?.max_profiles || 1;
+  const canAddMoreProfiles = currentTier === 'family' && currentMaxProfiles < PRICING.family.maxProfiles;
+  const maxAdditionalProfiles = PRICING.family.maxProfiles - currentMaxProfiles;
 
   const t = {
     de: {
@@ -53,6 +56,14 @@ const PackageManagement = () => {
         'DSGVO-konform',
       ],
       purchasedOn: 'Gekauft am',
+      expandFamily: 'Familienpaket erweitern',
+      expandFamilyDesc: 'Füge weitere Familienmitglieder hinzu',
+      additionalProfiles: 'Zusätzliche Profile',
+      pricePerProfile: '19€ pro Profil',
+      buyProfiles: 'Profile hinzukaufen',
+      currentProfiles: 'Aktuelle Profile',
+      maxReached: 'Maximum erreicht (10 Profile)',
+      newTotal: 'Neuer Gesamtwert',
       profilesUsed: 'Profile',
       profiles: 'Profile',
       basePrice: 'Grundpreis',
@@ -88,6 +99,14 @@ const PackageManagement = () => {
         'GDPR compliant',
       ],
       purchasedOn: 'Purchased on',
+      expandFamily: 'Expand Family Package',
+      expandFamilyDesc: 'Add more family members',
+      additionalProfiles: 'Additional profiles',
+      pricePerProfile: '€19 per profile',
+      buyProfiles: 'Buy profiles',
+      currentProfiles: 'Current profiles',
+      maxReached: 'Maximum reached (10 profiles)',
+      newTotal: 'New total',
       profilesUsed: 'Profiles used',
       profiles: 'Profiles',
       basePrice: 'Base price',
@@ -176,6 +195,33 @@ const PackageManagement = () => {
     } catch (error: any) {
       logger.error('Subscription error:', error);
       toast.error(error.message || (language === 'de' ? 'Fehler' : 'Error'));
+    } finally {
+      setLoading(null);
+    }
+  };
+
+  const handleAddFamilyProfiles = async () => {
+    if (!user || additionalProfilesToAdd < 1) return;
+
+    setLoading('add-profiles');
+
+    try {
+      const { data, error } = await supabase.functions.invoke('create-payment', {
+        body: {
+          paymentType: 'family',
+          isAddingProfiles: true,
+          additionalProfileCount: additionalProfilesToAdd,
+          currentMaxProfiles: currentMaxProfiles,
+        },
+      });
+
+      if (error) throw error;
+      if (data?.url) {
+        window.location.href = data.url;
+      }
+    } catch (error: any) {
+      logger.error('Add profiles error:', error);
+      toast.error(error.message || (language === 'de' ? 'Fehler beim Hinzufügen' : 'Error adding profiles'));
     } finally {
       setLoading(null);
     }
@@ -292,6 +338,111 @@ const PackageManagement = () => {
           </CardContent>
         </Card>
       </motion.div>
+
+      {/* Expand Family Package Section - for existing family tier users */}
+      {canAddMoreProfiles && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.15 }}
+        >
+          <Card className="border-2 border-primary/50">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center">
+                    <Users className="h-6 w-6 text-primary" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-lg">{texts.expandFamily}</CardTitle>
+                    <CardDescription>{texts.expandFamilyDesc}</CardDescription>
+                  </div>
+                </div>
+                <Badge variant="secondary">
+                  {texts.currentProfiles}: {currentMaxProfiles}/{PRICING.family.maxProfiles}
+                </Badge>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
+                  <p className="text-sm font-medium text-foreground mb-1">{texts.additionalProfiles}</p>
+                  <p className="text-xs text-muted-foreground">{texts.pricePerProfile}</p>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    className="h-9 w-9"
+                    onClick={() => setAdditionalProfilesToAdd(Math.max(1, additionalProfilesToAdd - 1))}
+                    disabled={additionalProfilesToAdd <= 1}
+                  >
+                    <Minus className="h-4 w-4" />
+                  </Button>
+                  <span className="w-10 text-center font-semibold text-xl">
+                    {additionalProfilesToAdd}
+                  </span>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    className="h-9 w-9"
+                    onClick={() => setAdditionalProfilesToAdd(Math.min(maxAdditionalProfiles, additionalProfilesToAdd + 1))}
+                    disabled={additionalProfilesToAdd >= maxAdditionalProfiles}
+                  >
+                    <Plus className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
+                  <p className="text-sm text-muted-foreground">{texts.newTotal}: {currentMaxProfiles + additionalProfilesToAdd} {texts.profiles}</p>
+                  <p className="text-2xl font-bold text-foreground">
+                    €{additionalProfilesToAdd * PRICING.family.pricePerAdditionalProfile}
+                    <span className="text-sm font-normal text-muted-foreground ml-2">
+                      {language === 'de' ? 'einmalig' : 'one-time'}
+                    </span>
+                  </p>
+                </div>
+                <Button
+                  onClick={handleAddFamilyProfiles}
+                  disabled={loading === 'add-profiles'}
+                  className="sm:min-w-[160px]"
+                >
+                  {loading === 'add-profiles' ? (
+                    texts.processing
+                  ) : (
+                    <>
+                      <Plus className="h-4 w-4 mr-2" />
+                      {texts.buyProfiles}
+                    </>
+                  )}
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+      )}
+
+      {/* Maximum reached message for family users */}
+      {currentTier === 'family' && currentMaxProfiles >= PRICING.family.maxProfiles && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.15 }}
+        >
+          <Card className="border-muted">
+            <CardContent className="py-6 text-center">
+              <Crown className="h-10 w-10 text-primary mx-auto mb-3" />
+              <p className="text-muted-foreground">{texts.maxReached}</p>
+            </CardContent>
+          </Card>
+        </motion.div>
+      )}
 
       {/* Upgrade Section */}
       {upgradeablePackages.length > 0 && (
