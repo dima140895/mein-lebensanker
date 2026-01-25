@@ -17,6 +17,7 @@ import { toast } from 'sonner';
 import { parseRecoveryKey, decryptPasswordWithRecoveryKey, isValidRecoveryKey } from '@/lib/recoveryKey';
 import { logger } from '@/lib/logger';
 import { ResetEncryptionDialog } from '@/components/ResetEncryptionDialog';
+import { ChangeEncryptionPasswordDialog } from '@/components/ChangeEncryptionPasswordDialog';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/browserClient';
 
@@ -31,11 +32,13 @@ export const RecoveryKeyRecoveryDialog: React.FC<RecoveryKeyRecoveryDialogProps>
 }) => {
   const { language } = useLanguage();
   const { user } = useAuth();
-  const { recoverWithKey, encryptedPasswordRecovery } = useEncryption();
+  const { recoverWithKey, encryptedPasswordRecovery, encryptionSalt } = useEncryption();
   const [recoveryKeyInput, setRecoveryKeyInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showResetDialog, setShowResetDialog] = useState(false);
+  const [showChangePasswordDialog, setShowChangePasswordDialog] = useState(false);
+  const [recoveredPassword, setRecoveredPassword] = useState<string | null>(null);
 
   const translations = {
     de: {
@@ -119,8 +122,10 @@ export const RecoveryKeyRecoveryDialog: React.FC<RecoveryKeyRecoveryDialogProps>
       
       if (success) {
         toast.success(t.success);
-        onOpenChange(false);
         setRecoveryKeyInput('');
+        // Store recovered password and show change password dialog
+        setRecoveredPassword(password);
+        setShowChangePasswordDialog(true);
       } else {
         setError(t.invalidKey);
       }
@@ -205,6 +210,29 @@ export const RecoveryKeyRecoveryDialog: React.FC<RecoveryKeyRecoveryDialogProps>
             window.location.reload();
           }}
         />
+
+        {/* Change Password Dialog after successful recovery */}
+        {recoveredPassword && encryptionSalt && (
+          <ChangeEncryptionPasswordDialog
+            open={showChangePasswordDialog}
+            onOpenChange={(open) => {
+              setShowChangePasswordDialog(open);
+              if (!open) {
+                // Close this dialog when change password dialog closes
+                setRecoveredPassword(null);
+                onOpenChange(false);
+              }
+            }}
+            currentPassword={recoveredPassword}
+            encryptionSalt={encryptionSalt}
+            onPasswordChanged={() => {
+              // Password was changed successfully, close everything
+              setRecoveredPassword(null);
+              setShowChangePasswordDialog(false);
+              onOpenChange(false);
+            }}
+          />
+        )}
       </DialogContent>
     </Dialog>
   );
