@@ -1,9 +1,11 @@
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { Cookie, Shield, FileText } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 
-const Footer = () => {
-  const { language } = useLanguage();
+const Footer = React.forwardRef<HTMLElement, React.HTMLAttributes<HTMLElement>>(
+  (props, ref) => {
+    const { language } = useLanguage();
 
   const t = {
     de: {
@@ -28,7 +30,7 @@ const Footer = () => {
   };
 
   return (
-    <footer className="border-t border-border bg-card/50 py-6">
+    <footer ref={ref} {...props} className="border-t border-border bg-card/50 py-6">
       <div className="container mx-auto px-4">
         <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
           <p className="text-sm text-muted-foreground">{texts.copyright}</p>
@@ -60,6 +62,8 @@ const Footer = () => {
       </div>
     </footer>
   );
-};
+});
+
+Footer.displayName = "Footer";
 
 export default Footer;
