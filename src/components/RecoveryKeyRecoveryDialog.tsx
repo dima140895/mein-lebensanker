@@ -14,7 +14,7 @@ import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Key, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
-import { parseRecoveryKey, decryptPasswordWithRecoveryKey } from '@/lib/recoveryKey';
+import { parseRecoveryKey, decryptPasswordWithRecoveryKey, isValidRecoveryKey } from '@/lib/recoveryKey';
 
 interface RecoveryKeyRecoveryDialogProps {
   open: boolean;
@@ -39,7 +39,8 @@ export const RecoveryKeyRecoveryDialog: React.FC<RecoveryKeyRecoveryDialogProps>
       placeholder: 'XXXX-XXXX-XXXX-...',
       recover: 'Wiederherstellen',
       cancel: 'Abbrechen',
-      invalidKey: 'Ungültiger Recovery-Schlüssel',
+      invalidKey: 'Ungültiger Recovery-Schlüssel. Bitte überprüfe die Eingabe.',
+      invalidFormat: 'Das Format des Schlüssels ist ungültig. Der Schlüssel sollte etwa 44 Zeichen lang sein (ohne Bindestriche).',
       noRecoveryAvailable: 'Für dieses Konto ist keine Wiederherstellung verfügbar.',
       success: 'Passwort erfolgreich wiederhergestellt und Daten entsperrt!',
     },
@@ -50,7 +51,8 @@ export const RecoveryKeyRecoveryDialog: React.FC<RecoveryKeyRecoveryDialogProps>
       placeholder: 'XXXX-XXXX-XXXX-...',
       recover: 'Recover',
       cancel: 'Cancel',
-      invalidKey: 'Invalid recovery key',
+      invalidKey: 'Invalid recovery key. Please check your input.',
+      invalidFormat: 'The key format is invalid. The key should be about 44 characters long (without dashes).',
       noRecoveryAvailable: 'No recovery option available for this account.',
       success: 'Password recovered successfully and data unlocked!',
     },
@@ -67,15 +69,23 @@ export const RecoveryKeyRecoveryDialog: React.FC<RecoveryKeyRecoveryDialogProps>
       if (!encryptedPasswordRecovery) {
         console.error('Recovery: No encryptedPasswordRecovery available');
         setError(t.noRecoveryAvailable);
+        setIsLoading(false);
         return;
       }
 
-      console.log('Recovery: Starting decryption with key length:', recoveryKeyInput.trim().length);
       const cleanKey = parseRecoveryKey(recoveryKeyInput.trim());
       console.log('Recovery: Clean key length:', cleanKey.length);
       
+      // Validate key format before trying to decrypt
+      if (!isValidRecoveryKey(recoveryKeyInput.trim())) {
+        console.error('Recovery: Invalid key format, length:', cleanKey.length);
+        setError(t.invalidFormat);
+        setIsLoading(false);
+        return;
+      }
+      
       const password = await decryptPasswordWithRecoveryKey(encryptedPasswordRecovery, cleanKey);
-      console.log('Recovery: Password decrypted successfully, length:', password.length);
+      console.log('Recovery: Password decrypted successfully');
       
       const success = await recoverWithKey(password);
       console.log('Recovery: recoverWithKey result:', success);
@@ -85,7 +95,7 @@ export const RecoveryKeyRecoveryDialog: React.FC<RecoveryKeyRecoveryDialogProps>
         onOpenChange(false);
         setRecoveryKeyInput('');
       } else {
-        console.error('Recovery: recoverWithKey returned false');
+        console.error('Recovery: recoverWithKey returned false - password verification failed');
         setError(t.invalidKey);
       }
     } catch (err) {
