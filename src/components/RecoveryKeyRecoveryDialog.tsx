@@ -65,23 +65,31 @@ export const RecoveryKeyRecoveryDialog: React.FC<RecoveryKeyRecoveryDialogProps>
 
     try {
       if (!encryptedPasswordRecovery) {
+        console.error('Recovery: No encryptedPasswordRecovery available');
         setError(t.noRecoveryAvailable);
         return;
       }
 
+      console.log('Recovery: Starting decryption with key length:', recoveryKeyInput.trim().length);
       const cleanKey = parseRecoveryKey(recoveryKeyInput.trim());
+      console.log('Recovery: Clean key length:', cleanKey.length);
+      
       const password = await decryptPasswordWithRecoveryKey(encryptedPasswordRecovery, cleanKey);
+      console.log('Recovery: Password decrypted successfully, length:', password.length);
       
       const success = await recoverWithKey(password);
+      console.log('Recovery: recoverWithKey result:', success);
       
       if (success) {
         toast.success(t.success);
         onOpenChange(false);
         setRecoveryKeyInput('');
       } else {
+        console.error('Recovery: recoverWithKey returned false');
         setError(t.invalidKey);
       }
-    } catch {
+    } catch (err) {
+      console.error('Recovery: Error during recovery:', err);
       setError(t.invalidKey);
     } finally {
       setIsLoading(false);
