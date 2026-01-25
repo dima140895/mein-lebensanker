@@ -7,8 +7,10 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import Header from '@/components/Header';
 import RelativesSummary from '@/components/relatives/RelativesSummary';
 import PINEntry from '@/components/relatives/PINEntry';
+import RecoveryKeyEntry from '@/components/relatives/RecoveryKeyEntry';
 import { Skeleton } from '@/components/ui/skeleton';
 import { logger } from '@/lib/logger';
+import { decryptData, isEncryptedData } from '@/lib/encryption';
 
 interface VorsorgeData {
   section_key: string;
@@ -24,6 +26,12 @@ interface PersonProfile {
   birth_date: string | null;
 }
 
+interface EncryptionInfo {
+  encryption_salt: string | null;
+  encrypted_password_recovery: string | null;
+  is_encrypted: boolean;
+}
+
 const RelativesViewContent = () => {
   const { token } = useParams<{ token: string }>();
   const { language } = useLanguage();
@@ -35,6 +43,11 @@ const RelativesViewContent = () => {
   const [pinVerified, setPINVerified] = useState(false);
   const [remainingAttempts, setRemainingAttempts] = useState(3);
   const [isLocked, setIsLocked] = useState(false);
+  
+  // Encryption state
+  const [encryptionInfo, setEncryptionInfo] = useState<EncryptionInfo | null>(null);
+  const [decryptionPassword, setDecryptionPassword] = useState<string | null>(null);
+  const [requiresDecryption, setRequiresDecryption] = useState(false);
 
   const t = {
     de: {
@@ -46,6 +59,7 @@ const RelativesViewContent = () => {
       mainMessageSub: 'Diese Übersicht soll Dir Orientierung geben. Nimm Dir die Zeit, die Du brauchst.',
       disclaimerTop: 'Diese Übersicht dient ausschließlich der persönlichen Orientierung und hat keinerlei rechtliche Wirkung. Sie ersetzt keine rechtliche, notarielle, medizinische oder steuerliche Beratung.',
       disclaimerBottom: 'Alle hier dokumentierten Informationen dienen der Übersicht und vorbereitenden Organisation. Sie sind nicht rechtlich bindend und ersetzen keine professionelle Beratung bei rechtlichen, steuerlichen oder medizinischen Fragen.',
+      decryptionError: 'Fehler beim Entschlüsseln der Daten.',
     },
     en: {
       title: 'Overview for Orientation',
@@ -56,6 +70,7 @@ const RelativesViewContent = () => {
       mainMessageSub: 'This overview is meant to give you orientation. Take the time you need.',
       disclaimerTop: 'This overview is for personal orientation only and has no legal effect. It does not replace legal, notarial, medical, or tax advice.',
       disclaimerBottom: 'All information documented here is for overview and preparatory organization purposes only. It is not legally binding and does not replace professional advice on legal, tax, or medical matters.',
+      decryptionError: 'Error decrypting data.',
     },
   };
 
@@ -106,8 +121,8 @@ const RelativesViewContent = () => {
           return;
         }
 
-        // No PIN required or PIN not set, load data directly
-        await loadFullData();
+        // No PIN required or PIN not set, load encryption info
+        await loadEncryptionInfo();
       } catch (err) {
         logger.error('Error:', err);
         setError(texts.invalidLink);
@@ -118,7 +133,37 @@ const RelativesViewContent = () => {
     checkPINRequirement();
   }, [token]);
 
-  const loadFullData = async () => {
+  const loadEncryptionInfo = async () => {
+    if (!token) return;
+
+    try {
+      const { data: encInfo, error: encError } = await supabase
+        .rpc('get_encryption_info_by_token', { _token: token });
+
+      if (encError || !encInfo?.length) {
+        // No encryption info, load data directly
+        await loadFullData(null);
+        return;
+      }
+
+      const info = encInfo[0] as EncryptionInfo;
+      setEncryptionInfo(info);
+
+      if (info.is_encrypted && info.encrypted_password_recovery) {
+        // Data is encrypted, need recovery key
+        setRequiresDecryption(true);
+        setLoading(false);
+      } else {
+        // Not encrypted, load directly
+        await loadFullData(null);
+      }
+    } catch (err) {
+      logger.error('Error loading encryption info:', err);
+      await loadFullData(null);
+    }
+  };
+
+  const loadFullData = async (password: string | null) => {
     if (!token) return;
 
     try {
@@ -141,20 +186,42 @@ const RelativesViewContent = () => {
         logger.error('Error loading data:', dataResult.error);
         setError(texts.invalidLink);
       } else {
-        // Transform data to match expected interface
-        const transformedData: VorsorgeData[] = (dataResult.data || []).map((item: { 
-          section_key: string; 
-          data: unknown; 
-          is_for_partner: boolean | null;
-          person_profile_id: string | null;
-          profile_name: string | null;
-        }) => ({
-          section_key: item.section_key,
-          data: (typeof item.data === 'object' && item.data !== null ? item.data : {}) as Record<string, unknown>,
-          is_for_partner: item.is_for_partner ?? false,
-          person_profile_id: item.person_profile_id,
-          profile_name: item.profile_name,
-        }));
+        // Transform and potentially decrypt data
+        const rawData = dataResult.data || [];
+        const transformedData: VorsorgeData[] = [];
+
+        for (const item of rawData) {
+          let parsedData: Record<string, unknown> = {};
+          
+          // Check if data needs decryption
+          if (typeof item.data === 'string' && isEncryptedData(item.data) && password && encryptionInfo?.encryption_salt) {
+            try {
+              parsedData = await decryptData<Record<string, unknown>>(
+                item.data,
+                password,
+                encryptionInfo.encryption_salt
+              );
+            } catch (decryptErr) {
+              logger.error('Error decrypting item:', decryptErr);
+              // Skip items that can't be decrypted
+              continue;
+            }
+          } else if (typeof item.data === 'object' && item.data !== null) {
+            parsedData = item.data as Record<string, unknown>;
+          }
+
+          // Skip internal verifier sections
+          if (item.section_key === '_encryption_verifier') continue;
+
+          transformedData.push({
+            section_key: item.section_key,
+            data: parsedData,
+            is_for_partner: item.is_for_partner ?? false,
+            person_profile_id: item.person_profile_id,
+            profile_name: item.profile_name,
+          });
+        }
+        
         setVorsorgeData(transformedData);
       }
     } catch (err) {
@@ -183,7 +250,7 @@ const RelativesViewContent = () => {
         setPINVerified(true);
         setRequiresPIN(false);
         setLoading(true);
-        await loadFullData();
+        await loadEncryptionInfo();
         return { valid: true, remainingAttempts: 3 };
       }
 
@@ -197,6 +264,13 @@ const RelativesViewContent = () => {
       logger.error('Error validating PIN:', err);
       return { valid: false, remainingAttempts: 0 };
     }
+  };
+
+  const handleDecrypted = async (password: string) => {
+    setDecryptionPassword(password);
+    setRequiresDecryption(false);
+    setLoading(true);
+    await loadFullData(password);
   };
 
   if (loading) {
@@ -220,6 +294,18 @@ const RelativesViewContent = () => {
           language={language} 
           initialRemainingAttempts={remainingAttempts}
           isLocked={isLocked}
+        />
+      </div>
+    );
+  }
+
+  if (requiresDecryption && encryptionInfo?.encrypted_password_recovery) {
+    return (
+      <div className="container mx-auto px-4 py-12">
+        <RecoveryKeyEntry
+          language={language}
+          encryptedPasswordRecovery={encryptionInfo.encrypted_password_recovery}
+          onDecrypted={handleDecrypted}
         />
       </div>
     );
