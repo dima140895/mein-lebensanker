@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { User, Plus, ChevronDown, Check, Pencil, Trash2 } from 'lucide-react';
 import { useProfiles } from '@/contexts/ProfileContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useFormData } from '@/contexts/FormContext';
 import { supabase } from '@/integrations/supabase/browserClient';
 import { Button } from '@/components/ui/button';
 import {
@@ -27,6 +28,7 @@ import { Json } from '@/integrations/supabase/types';
 const ProfileSwitcher = () => {
   const { language } = useLanguage();
   const { profile, user } = useAuth();
+  const { loadAllData } = useFormData();
   const {
     personProfiles,
     activeProfileId,
@@ -160,6 +162,9 @@ const ProfileSwitcher = () => {
       }, {
         onConflict: 'user_id,section_key,person_profile_id'
       });
+    
+    // Reload form data to reflect changes in the UI
+    await loadAllData();
     
     toast.success(t.profileUpdated);
     setDialogOpen(false);
