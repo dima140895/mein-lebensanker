@@ -28,7 +28,7 @@ const PackageManagement = () => {
   const t = {
     de: {
       title: 'Mein Paket',
-      subtitle: 'Verwalte dein Vorsorge-Paket',
+      subtitle: 'Verwalte Dein Vorsorge-Paket',
       currentPackage: 'Aktuelles Paket',
       single: 'Einzelperson',
       couple: 'Paar',
