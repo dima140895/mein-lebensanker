@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { supabase } from '@/integrations/supabase/browserClient';
 import { useAuth } from './AuthContext';
 import { useProfiles } from './ProfileContext';
+import { useEncryption } from './EncryptionContext';
 import { Json } from '@/integrations/supabase/types';
 import { logger } from '@/lib/logger';
 
@@ -157,6 +158,7 @@ const FormContext = createContext<FormContextType | undefined>(undefined);
 export const FormProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const { user, profile } = useAuth();
   const { activeProfileId } = useProfiles();
+  const { isEncryptionEnabled, isUnlocked, encrypt, decrypt } = useEncryption();
   const [formData, setFormData] = useState<VorsorgeFormData>(defaultFormData);
   const [saving, setSaving] = useState(false);
 
@@ -170,16 +172,27 @@ export const FormProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const saveSection = async (section: keyof VorsorgeFormData) => {
     if (!user || !profile?.has_paid || !activeProfileId) return;
     
+    // If encryption is enabled but not unlocked, don't allow saves
+    if (isEncryptionEnabled && !isUnlocked) {
+      logger.warn('Cannot save: encryption is enabled but not unlocked');
+      return;
+    }
+    
     setSaving(true);
     try {
       const dataToSave = formData[section];
+      
+      // Encrypt data if encryption is enabled
+      const processedData = isEncryptionEnabled && isUnlocked 
+        ? await encrypt(dataToSave)
+        : dataToSave;
       
       const { error } = await supabase
         .from('vorsorge_data')
         .upsert({
           user_id: user.id,
           section_key: section,
-          data: dataToSave as unknown as Json,
+          data: processedData as unknown as Json,
           person_profile_id: activeProfileId,
           is_for_partner: false, // Legacy field, keep for backwards compatibility
         }, {
@@ -196,6 +209,12 @@ export const FormProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const loadAllData = React.useCallback(async () => {
     if (!user || !activeProfileId) return;
+    
+    // If encryption is enabled but not unlocked, don't load data
+    if (isEncryptionEnabled && !isUnlocked) {
+      setFormData(defaultFormData);
+      return;
+    }
 
     try {
       const { data, error } = await supabase
@@ -209,14 +228,22 @@ export const FormProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       if (data && data.length > 0) {
         const newFormData = { ...defaultFormData };
 
-        data.forEach((item) => {
+        for (const item of data) {
+          // Skip encryption verifier
+          if (item.section_key === '_encryption_verifier') continue;
+          
           const sectionKey = item.section_key as keyof VorsorgeFormData;
-          const sectionData = item.data as Record<string, unknown>;
+          
+          // Decrypt data if encryption is enabled
+          let sectionData = item.data as Record<string, unknown>;
+          if (isEncryptionEnabled && isUnlocked) {
+            sectionData = await decrypt<Record<string, unknown>>(item.data);
+          }
           
           if (sectionKey in newFormData) {
             (newFormData as Record<string, unknown>)[sectionKey] = sectionData;
           }
-        });
+        }
 
         setFormData(newFormData);
       } else {
@@ -226,16 +253,19 @@ export const FormProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     } catch (error) {
       logger.error('Error loading data:', error);
     }
-  }, [user, activeProfileId]);
+  }, [user, activeProfileId, isEncryptionEnabled, isUnlocked, decrypt]);
 
-  // Reload data when active profile changes
+  // Reload data when active profile changes or encryption state changes
   useEffect(() => {
     if (user && profile?.has_paid && activeProfileId) {
-      loadAllData();
+      // Only load if encryption is not enabled OR if it's unlocked
+      if (!isEncryptionEnabled || isUnlocked) {
+        loadAllData();
+      }
     } else {
       setFormData(defaultFormData);
     }
-  }, [user, profile?.has_paid, activeProfileId, loadAllData]);
+  }, [user, profile?.has_paid, activeProfileId, loadAllData, isEncryptionEnabled, isUnlocked]);
 
   return (
     <FormContext.Provider value={{ 

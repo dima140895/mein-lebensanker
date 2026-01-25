@@ -7,6 +7,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { ProfileProvider } from "@/contexts/ProfileContext";
 import { FormProvider } from "@/contexts/FormContext";
+import { EncryptionProvider } from "@/contexts/EncryptionContext";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import LearnMore from "./pages/LearnMore";
@@ -24,28 +25,30 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <LanguageProvider>
       <AuthProvider>
-        <ProfileProvider>
-          <FormProvider>
-            <TooltipProvider>
-              <Toaster />
-              <Sonner />
-              <BrowserRouter>
-                <Routes>
-                  <Route path="/" element={<Index />} />
-                  <Route path="/mehr-erfahren" element={<LearnMore />} />
-                  <Route path="/dashboard" element={<Dashboard />} />
-                  <Route path="/payment-success" element={<PaymentSuccess />} />
-                  <Route path="/reset-password" element={<ResetPassword />} />
-                  <Route path="/datenschutz" element={<Datenschutz />} />
-                  <Route path="/impressum" element={<Impressum />} />
-                  <Route path="/fuer-angehoerige/:token" element={<RelativesView />} />
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
-                <CookieConsent />
-              </BrowserRouter>
-            </TooltipProvider>
-          </FormProvider>
-        </ProfileProvider>
+        <EncryptionProvider>
+          <ProfileProvider>
+            <FormProvider>
+              <TooltipProvider>
+                <Toaster />
+                <Sonner />
+                <BrowserRouter>
+                  <Routes>
+                    <Route path="/" element={<Index />} />
+                    <Route path="/mehr-erfahren" element={<LearnMore />} />
+                    <Route path="/dashboard" element={<Dashboard />} />
+                    <Route path="/payment-success" element={<PaymentSuccess />} />
+                    <Route path="/reset-password" element={<ResetPassword />} />
+                    <Route path="/datenschutz" element={<Datenschutz />} />
+                    <Route path="/impressum" element={<Impressum />} />
+                    <Route path="/fuer-angehoerige/:token" element={<RelativesView />} />
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                  <CookieConsent />
+                </BrowserRouter>
+              </TooltipProvider>
+            </FormProvider>
+          </ProfileProvider>
+        </EncryptionProvider>
       </AuthProvider>
     </LanguageProvider>
   </QueryClientProvider>

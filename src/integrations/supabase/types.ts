@@ -45,10 +45,12 @@ export type Database = {
         Row: {
           created_at: string
           email: string | null
+          encryption_salt: string | null
           full_name: string | null
           has_paid: boolean | null
           has_update_subscription: boolean | null
           id: string
+          is_encrypted: boolean | null
           max_profiles: number | null
           partner_name: string | null
           payment_type: string | null
@@ -59,10 +61,12 @@ export type Database = {
         Insert: {
           created_at?: string
           email?: string | null
+          encryption_salt?: string | null
           full_name?: string | null
           has_paid?: boolean | null
           has_update_subscription?: boolean | null
           id?: string
+          is_encrypted?: boolean | null
           max_profiles?: number | null
           partner_name?: string | null
           payment_type?: string | null
@@ -73,10 +77,12 @@ export type Database = {
         Update: {
           created_at?: string
           email?: string | null
+          encryption_salt?: string | null
           full_name?: string | null
           has_paid?: boolean | null
           has_update_subscription?: boolean | null
           id?: string
+          is_encrypted?: boolean | null
           max_profiles?: number | null
           partner_name?: string | null
           payment_type?: string | null

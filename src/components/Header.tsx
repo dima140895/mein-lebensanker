@@ -4,6 +4,7 @@ import { Heart, LogIn, UserPlus, Menu, Home, User, Info, ClipboardList, Wallet, 
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import LanguageToggle from './LanguageToggle';
 import ProfileSwitcher from './ProfileSwitcher';
+import { EncryptionStatus } from './EncryptionStatus';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
@@ -437,6 +438,9 @@ const Header = () => {
               
               {/* Profile Switcher for multi-profile packages */}
               <ProfileSwitcher />
+              
+              {/* Encryption Status */}
+              <EncryptionStatus />
               
               <div className="w-px h-6 bg-border" />
             </>
