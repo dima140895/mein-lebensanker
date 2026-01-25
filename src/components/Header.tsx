@@ -258,17 +258,14 @@ const Header = () => {
                             {profile.purchased_tier === 'family' && tx.family}
                           </span>
                         </div>
-                        {profile.purchased_tier !== 'family' && (
-                          <Button 
-                            variant="link" 
-                            size="sm" 
-                            className="text-primary p-0 h-auto"
-                            onClick={() => navigateTo('/dashboard?section=upgrade')}
-                          >
-                            <ArrowUpCircle className="mr-1 h-3 w-3" />
-                            {tx.upgrade}
-                          </Button>
-                        )}
+                        <Button 
+                          variant="link" 
+                          size="sm" 
+                          className="text-primary p-0 h-auto"
+                          onClick={() => navigateTo('/dashboard?section=payment')}
+                        >
+                          {tx.managePackage}
+                        </Button>
                       </div>
                     </div>
                   )}
@@ -398,19 +395,6 @@ const Header = () => {
                         {profile.max_profiles} {tx.profiles}
                       </p>
                     </div>
-                    
-                    {/* Upgrade Option (only if not already on family) */}
-                    {profile.purchased_tier !== 'family' && (
-                      <>
-                        <DropdownMenuItem
-                          onClick={() => navigateTo('/dashboard?section=upgrade')}
-                          className="text-primary"
-                        >
-                          <ArrowUpCircle className="mr-2 h-4 w-4" />
-                          {tx.upgrade}
-                        </DropdownMenuItem>
-                      </>
-                    )}
                     
                     <DropdownMenuItem
                       onClick={() => navigateTo('/dashboard?section=payment')}
