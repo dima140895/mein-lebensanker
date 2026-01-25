@@ -55,11 +55,25 @@ serve(async (req) => {
       throw new Error("User not authenticated or email not available");
     }
 
-    const { paymentType, isUpgrade, currentTier, includeUpdateService, familyProfileCount } = await req.json();
+    const { paymentType, isUpgrade, currentTier, includeUpdateService, familyProfileCount, isAddingProfiles, additionalProfileCount, currentMaxProfiles } = await req.json();
     
     const validTypes = ["single", "couple", "family"];
     if (!paymentType || !validTypes.includes(paymentType)) {
       throw new Error("Invalid payment type. Must be 'single', 'couple', or 'family'");
+    }
+
+    // Validate additional profile purchase for existing family users
+    if (isAddingProfiles) {
+      if (paymentType !== "family") {
+        throw new Error("Adding profiles is only available for family package");
+      }
+      if (!additionalProfileCount || additionalProfileCount < 1) {
+        throw new Error("Invalid additional profile count");
+      }
+      const newTotal = (currentMaxProfiles || 4) + additionalProfileCount;
+      if (newTotal > FAMILY_PRICING.maxProfiles) {
+        throw new Error(`Maximum ${FAMILY_PRICING.maxProfiles} profiles allowed`);
+      }
     }
 
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
@@ -91,10 +105,28 @@ serve(async (req) => {
       return type === "couple" ? 2 : 1;
     };
 
-    const selectedMaxProfiles = getMaxProfiles(paymentType, familyProfileCount);
+    const selectedMaxProfiles = isAddingProfiles 
+      ? (currentMaxProfiles || 4) + additionalProfileCount
+      : getMaxProfiles(paymentType, familyProfileCount);
     const packagePrice = getPackagePrice(paymentType, familyProfileCount);
 
-    if (isUpgrade && currentTier && validTypes.includes(currentTier)) {
+    if (isAddingProfiles) {
+      // Adding profiles to existing family package
+      const addProfilesAmount = additionalProfileCount * FAMILY_PRICING.pricePerAdditionalProfile;
+      
+      const addProfilesPrice = await stripe.prices.create({
+        unit_amount: addProfilesAmount,
+        currency: "eur",
+        product_data: {
+          name: `${additionalProfileCount} zusätzliche Familien-Profile`,
+        },
+      });
+
+      lineItems.push({
+        price: addProfilesPrice.id,
+        quantity: 1,
+      });
+    } else if (isUpgrade && currentTier && validTypes.includes(currentTier)) {
       // Calculate upgrade price
       const currentPrice = getPackagePrice(currentTier);
       const upgradeAmount = packagePrice - currentPrice;
@@ -151,12 +183,13 @@ serve(async (req) => {
       customer_email: customerId ? undefined : user.email,
       line_items: lineItems,
       mode: includeUpdateService ? "subscription" : "payment",
-      success_url: `${req.headers.get("origin")}/payment-success?session_id={CHECKOUT_SESSION_ID}&type=${paymentType}${isUpgrade ? "&upgrade=true" : ""}&profiles=${selectedMaxProfiles}`,
+      success_url: `${req.headers.get("origin")}/payment-success?session_id={CHECKOUT_SESSION_ID}&type=${paymentType}${isUpgrade ? "&upgrade=true" : ""}${isAddingProfiles ? "&add_profiles=true" : ""}&profiles=${selectedMaxProfiles}`,
       cancel_url: `${req.headers.get("origin")}/dashboard`,
       metadata: {
         user_id: user.id,
         payment_type: paymentType,
         is_upgrade: isUpgrade ? "true" : "false",
+        is_adding_profiles: isAddingProfiles ? "true" : "false",
         max_profiles: String(selectedMaxProfiles),
         include_update_service: includeUpdateService ? "true" : "false",
       },

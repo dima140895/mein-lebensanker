@@ -7,10 +7,10 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-const MAX_PROFILES: Record<string, number> = {
+const DEFAULT_MAX_PROFILES: Record<string, number> = {
   single: 1,
   couple: 2,
-  family: 4,
+  family: 4, // Minimum for family, can be higher from metadata
 };
 
 serve(async (req) => {
@@ -88,8 +88,20 @@ serve(async (req) => {
       );
 
       const tier = paymentType || session.metadata?.payment_type || "single";
-      const maxProfiles = MAX_PROFILES[tier] || 1;
+      const isAddingProfiles = session.metadata?.is_adding_profiles === "true";
+      const metadataMaxProfiles = session.metadata?.max_profiles ? parseInt(session.metadata.max_profiles) : null;
       const hasUpdateService = session.metadata?.include_update_service === "true";
+
+      // For adding profiles to family, use the new max from metadata
+      // Otherwise use the tier default or metadata value
+      let maxProfiles: number;
+      if (isAddingProfiles && metadataMaxProfiles) {
+        maxProfiles = metadataMaxProfiles;
+      } else if (metadataMaxProfiles) {
+        maxProfiles = metadataMaxProfiles;
+      } else {
+        maxProfiles = DEFAULT_MAX_PROFILES[tier] || 1;
+      }
 
       // Only update the authenticated user's own profile
       const { error } = await supabaseAdmin
