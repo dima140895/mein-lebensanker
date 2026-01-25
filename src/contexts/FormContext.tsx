@@ -24,7 +24,7 @@ export interface AssetsData {
     address: string; 
     type: string; 
     ownership: string; 
-    usageType: string; 
+    ownershipOther: string;
     rentalIncome: string;
     financingStatus: string;
     outstandingLoan: string;

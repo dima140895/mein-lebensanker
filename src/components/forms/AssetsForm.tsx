@@ -38,13 +38,11 @@ const AssetsForm = ({ isPartner = false }: AssetsFormProps) => {
       properties: 'Immobilien',
       address: 'Adresse',
       type: 'Art (z.B. Wohnung, Haus)',
-      ownership: 'Eigentumsverhältnis',
-      ownershipOwned: 'Eigentum',
-      ownershipRented: 'Miete',
+      ownership: 'Nutzungsart',
+      ownershipSelfOccupied: 'Eigennutzung',
+      ownershipRentedOut: 'Vermietung',
       ownershipOther: 'Sonstiges',
-      usageType: 'Nutzungsart',
-      usageSelfOccupied: 'Eigennutzung',
-      usageRentedOut: 'Vermietet',
+      ownershipOtherPlaceholder: 'Bitte beschreiben...',
       rentalIncome: 'Mieteinnahmen kalt (optional)',
       financingStatus: 'Finanzierungsstatus',
       financingPaidOff: 'Abbezahlt',
@@ -63,8 +61,7 @@ const AssetsForm = ({ isPartner = false }: AssetsFormProps) => {
       notes: 'Zusätzliche Hinweise',
       save: 'Speichern',
       saved: 'Gespeichert!',
-      selectOwnership: 'Eigentumsverhältnis wählen',
-      selectUsage: 'Nutzungsart wählen',
+      selectOwnership: 'Nutzungsart wählen',
     },
     en: {
       title: 'Asset Overview',
@@ -76,13 +73,11 @@ const AssetsForm = ({ isPartner = false }: AssetsFormProps) => {
       properties: 'Properties',
       address: 'Address',
       type: 'Type (e.g., apartment, house)',
-      ownership: 'Ownership',
-      ownershipOwned: 'Owned',
-      ownershipRented: 'Rented',
+      ownership: 'Usage Type',
+      ownershipSelfOccupied: 'Self-occupied',
+      ownershipRentedOut: 'Rented out',
       ownershipOther: 'Other',
-      usageType: 'Usage Type',
-      usageSelfOccupied: 'Self-occupied',
-      usageRentedOut: 'Rented out',
+      ownershipOtherPlaceholder: 'Please describe...',
       rentalIncome: 'Rental income cold (optional)',
       financingStatus: 'Financing Status',
       financingPaidOff: 'Paid off',
@@ -101,8 +96,7 @@ const AssetsForm = ({ isPartner = false }: AssetsFormProps) => {
       notes: 'Additional Notes',
       save: 'Save',
       saved: 'Saved!',
-      selectOwnership: 'Select ownership',
-      selectUsage: 'Select usage type',
+      selectOwnership: 'Select usage type',
     },
   };
 
@@ -111,7 +105,7 @@ const AssetsForm = ({ isPartner = false }: AssetsFormProps) => {
   const addItem = (field: 'bankAccounts' | 'properties' | 'insurances' | 'valuables') => {
     const newItems = {
       bankAccounts: [...data.bankAccounts, { institute: '', purpose: '', balance: '' }],
-      properties: [...data.properties, { address: '', type: '', ownership: '', usageType: '', rentalIncome: '', financingStatus: '', outstandingLoan: '' }],
+      properties: [...data.properties, { address: '', type: '', ownership: '', ownershipOther: '', rentalIncome: '', financingStatus: '', outstandingLoan: '' }],
       insurances: [...data.insurances, { type: '', company: '', policyNumber: '', surrenderValue: '' }],
       valuables: [...data.valuables, { description: '', location: '' }],
     };
@@ -207,10 +201,10 @@ const AssetsForm = ({ isPartner = false }: AssetsFormProps) => {
                     newArray[i] = { 
                       ...newArray[i], 
                       ownership: value,
-                      usageType: value === 'owned' ? newArray[i].usageType : '',
-                      rentalIncome: value === 'rented' ? newArray[i].rentalIncome : '',
-                      financingStatus: value === 'owned' ? newArray[i].financingStatus : '',
-                      outstandingLoan: value === 'owned' ? newArray[i].outstandingLoan : ''
+                      ownershipOther: value === 'other' ? newArray[i].ownershipOther : '',
+                      rentalIncome: value === 'rented-out' ? newArray[i].rentalIncome : '',
+                      financingStatus: (value === 'self-occupied' || value === 'rented-out') ? newArray[i].financingStatus : '',
+                      outstandingLoan: (value === 'self-occupied' || value === 'rented-out') ? newArray[i].outstandingLoan : ''
                     };
                     updateSection('assets', { ...data, properties: newArray }, isPartner);
                   }}
@@ -219,34 +213,29 @@ const AssetsForm = ({ isPartner = false }: AssetsFormProps) => {
                     <SelectValue placeholder={texts.selectOwnership} />
                   </SelectTrigger>
                   <SelectContent className="bg-background border border-border shadow-lg z-50">
-                    <SelectItem value="owned">{texts.ownershipOwned}</SelectItem>
-                    <SelectItem value="rented">{texts.ownershipRented}</SelectItem>
+                    <SelectItem value="self-occupied">{texts.ownershipSelfOccupied}</SelectItem>
+                    <SelectItem value="rented-out">{texts.ownershipRentedOut}</SelectItem>
                     <SelectItem value="other">{texts.ownershipOther}</SelectItem>
                   </SelectContent>
                 </Select>
-                {property.ownership === 'rented' && (
+                {property.ownership === 'other' && (
                   <Input
-                    value={property.rentalIncome || ''}
-                    onChange={(e) => updateItem('properties', i, 'rentalIncome', e.target.value)}
-                    placeholder={texts.rentalIncome}
+                    value={property.ownershipOther || ''}
+                    onChange={(e) => updateItem('properties', i, 'ownershipOther', e.target.value)}
+                    placeholder={texts.ownershipOtherPlaceholder}
                   />
                 )}
               </div>
-              {property.ownership === 'owned' && (
+              {(property.ownership === 'self-occupied' || property.ownership === 'rented-out') && (
                 <>
+                  {property.ownership === 'rented-out' && (
+                    <Input
+                      value={property.rentalIncome || ''}
+                      onChange={(e) => updateItem('properties', i, 'rentalIncome', e.target.value)}
+                      placeholder={texts.rentalIncome}
+                    />
+                  )}
                   <div className="grid gap-3 md:grid-cols-2">
-                    <Select
-                      value={property.usageType || ''}
-                      onValueChange={(value) => updateItem('properties', i, 'usageType', value)}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder={texts.selectUsage} />
-                      </SelectTrigger>
-                      <SelectContent className="bg-background border border-border shadow-lg z-50">
-                        <SelectItem value="self-occupied">{texts.usageSelfOccupied}</SelectItem>
-                        <SelectItem value="rented-out">{texts.usageRentedOut}</SelectItem>
-                      </SelectContent>
-                    </Select>
                     <Select
                       value={property.financingStatus || ''}
                       onValueChange={(value) => {
@@ -267,14 +256,14 @@ const AssetsForm = ({ isPartner = false }: AssetsFormProps) => {
                         <SelectItem value="financed">{texts.financingFinanced}</SelectItem>
                       </SelectContent>
                     </Select>
+                    {property.financingStatus === 'financed' && (
+                      <Input
+                        value={property.outstandingLoan || ''}
+                        onChange={(e) => updateItem('properties', i, 'outstandingLoan', e.target.value)}
+                        placeholder={texts.outstandingLoan}
+                      />
+                    )}
                   </div>
-                  {property.financingStatus === 'financed' && (
-                    <Input
-                      value={property.outstandingLoan || ''}
-                      onChange={(e) => updateItem('properties', i, 'outstandingLoan', e.target.value)}
-                      placeholder={texts.outstandingLoan}
-                    />
-                  )}
                 </>
               )}
             </div>
