@@ -1,0 +1,71 @@
+import { useRef, useCallback } from 'react';
+import { useFormData, VorsorgeFormData } from '@/contexts/FormContext';
+import { useProfiles } from '@/contexts/ProfileContext';
+import { useAuth } from '@/contexts/AuthContext';
+import { logger } from '@/lib/logger';
+
+interface UseAutoSaveOptions {
+  section: keyof VorsorgeFormData;
+  /** If true, syncs fullName/birthDate to person_profiles after saving 'personal' section */
+  syncToProfile?: boolean;
+}
+
+export const useAutoSave = ({ section, syncToProfile = false }: UseAutoSaveOptions) => {
+  const { formData, saveSection } = useFormData();
+  const { activeProfileId, updateProfile, loadProfiles } = useProfiles();
+  const { profile } = useAuth();
+  const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const lastSavedRef = useRef<string>('');
+
+  const triggerSave = useCallback(async () => {
+    if (!profile?.has_paid || !activeProfileId) return;
+    
+    // Create a hash of current data to avoid duplicate saves
+    const currentDataHash = JSON.stringify(formData[section]);
+    if (currentDataHash === lastSavedRef.current) {
+      return; // No changes, skip save
+    }
+    
+    try {
+      await saveSection(section);
+      lastSavedRef.current = currentDataHash;
+      
+      // Sync personal data to profile if needed
+      if (syncToProfile && section === 'personal') {
+        const personalData = formData.personal;
+        if (personalData.fullName || personalData.birthDate) {
+          const profileName = personalData.fullName?.trim() || 'Unbenannt';
+          await updateProfile(activeProfileId, profileName, personalData.birthDate || undefined);
+          await loadProfiles();
+        }
+      }
+      
+      logger.debug(`Auto-saved section: ${section}`);
+    } catch (error) {
+      logger.error(`Error auto-saving section ${section}:`, error);
+    }
+  }, [profile?.has_paid, activeProfileId, formData, section, saveSection, syncToProfile, updateProfile, loadProfiles]);
+
+  const handleBlur = useCallback(() => {
+    // Clear any pending timeout
+    if (saveTimeoutRef.current) {
+      clearTimeout(saveTimeoutRef.current);
+    }
+    
+    // Debounce the save by 300ms to avoid saving on rapid field changes
+    saveTimeoutRef.current = setTimeout(() => {
+      triggerSave();
+    }, 300);
+  }, [triggerSave]);
+
+  // Reset the last saved hash when profile changes (to allow saving for new profile)
+  const resetSaveState = useCallback(() => {
+    lastSavedRef.current = '';
+  }, []);
+
+  return {
+    handleBlur,
+    triggerSave,
+    resetSaveState,
+  };
+};

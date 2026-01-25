@@ -1,24 +1,31 @@
-import { useState } from 'react';
+import { useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Save, Plus, Trash2, Info } from 'lucide-react';
+import { Info } from 'lucide-react';
 import { useFormData, PersonalData } from '@/contexts/FormContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useProfiles } from '@/contexts/ProfileContext';
-import { supabase } from '@/integrations/supabase/browserClient';
-import { Button } from '@/components/ui/button';
+import { useAutoSave } from '@/hooks/useAutoSave';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { toast } from 'sonner';
 
 const PersonalForm = () => {
-  const { formData, updateSection, saveSection, saving } = useFormData();
+  const { formData, updateSection } = useFormData();
   const { profile } = useAuth();
   const { language } = useLanguage();
-  const { activeProfileId, updateProfile, loadProfiles } = useProfiles();
+  const { activeProfileId } = useProfiles();
+  const { handleBlur, resetSaveState } = useAutoSave({ 
+    section: 'personal', 
+    syncToProfile: true 
+  });
   
   const data = formData.personal;
+
+  // Reset save state when profile changes
+  useEffect(() => {
+    resetSaveState();
+  }, [activeProfileId, resetSaveState]);
 
   const t = {
     de: {
@@ -33,9 +40,7 @@ const PersonalForm = () => {
       emergencyContact: 'Notfallkontakt',
       phonePlaceholder: 'Telefon',
       notes: 'Zusätzliche Hinweise',
-      save: 'Speichern',
-      saved: 'Gespeichert!',
-      disclaimer: 'Diese Angaben dienen nur der persönlichen Übersicht und haben keine rechtliche Verbindlichkeit.',
+      disclaimer: 'Diese Angaben dienen nur der persönlichen Übersicht und haben keine rechtliche Verbindlichkeit. Änderungen werden automatisch gespeichert.',
     },
     en: {
       title: 'Personal Information',
@@ -49,9 +54,7 @@ const PersonalForm = () => {
       emergencyContact: 'Emergency Contact',
       phonePlaceholder: 'Phone',
       notes: 'Additional Notes',
-      save: 'Save',
-      saved: 'Saved!',
-      disclaimer: 'This information is for personal overview only and has no legal validity.',
+      disclaimer: 'This information is for personal overview only and has no legal validity. Changes are saved automatically.',
     },
   };
 
@@ -61,19 +64,10 @@ const PersonalForm = () => {
     updateSection('personal', { ...data, [field]: value });
   };
 
-  const handleSave = async () => {
-    await saveSection('personal');
-    
-    // Sync full name and birth date to the person profile (bidirectional sync)
-    if (activeProfileId && (data.fullName || data.birthDate)) {
-      const profileName = data.fullName?.trim() || 'Unbenannt';
-      await updateProfile(activeProfileId, profileName, data.birthDate || undefined);
-      // Reload profiles to update the ProfileSwitcher UI
-      await loadProfiles();
-    }
-    
-    toast.success(texts.saved);
-  };
+  // Only show form for paid users
+  if (!profile?.has_paid) {
+    return null;
+  }
 
   return (
     <motion.div
@@ -92,6 +86,7 @@ const PersonalForm = () => {
           <Input
             value={data.fullName}
             onChange={(e) => handleChange('fullName', e.target.value)}
+            onBlur={handleBlur}
             placeholder={texts.fullName}
           />
         </div>
@@ -101,6 +96,7 @@ const PersonalForm = () => {
             type="date"
             value={data.birthDate}
             onChange={(e) => handleChange('birthDate', e.target.value)}
+            onBlur={handleBlur}
           />
         </div>
       </div>
@@ -110,6 +106,7 @@ const PersonalForm = () => {
         <Textarea
           value={data.address}
           onChange={(e) => handleChange('address', e.target.value)}
+          onBlur={handleBlur}
           placeholder={texts.address}
           rows={2}
         />
@@ -121,6 +118,7 @@ const PersonalForm = () => {
           type="tel"
           value={data.phone}
           onChange={(e) => handleChange('phone', e.target.value)}
+          onBlur={handleBlur}
           placeholder={texts.phone}
         />
       </div>
@@ -131,12 +129,14 @@ const PersonalForm = () => {
           <Input
             value={data.trustedPerson1}
             onChange={(e) => handleChange('trustedPerson1', e.target.value)}
+            onBlur={handleBlur}
             placeholder={texts.fullName}
           />
           <Input
             type="tel"
             value={data.trustedPerson1Phone}
             onChange={(e) => handleChange('trustedPerson1Phone', e.target.value)}
+            onBlur={handleBlur}
             placeholder={texts.phonePlaceholder}
           />
         </div>
@@ -148,12 +148,14 @@ const PersonalForm = () => {
           <Input
             value={data.trustedPerson2}
             onChange={(e) => handleChange('trustedPerson2', e.target.value)}
+            onBlur={handleBlur}
             placeholder={texts.fullName}
           />
           <Input
             type="tel"
             value={data.trustedPerson2Phone}
             onChange={(e) => handleChange('trustedPerson2Phone', e.target.value)}
+            onBlur={handleBlur}
             placeholder={texts.phonePlaceholder}
           />
         </div>
@@ -165,12 +167,14 @@ const PersonalForm = () => {
           <Input
             value={data.emergencyContact}
             onChange={(e) => handleChange('emergencyContact', e.target.value)}
+            onBlur={handleBlur}
             placeholder={texts.fullName}
           />
           <Input
             type="tel"
             value={data.emergencyPhone}
             onChange={(e) => handleChange('emergencyPhone', e.target.value)}
+            onBlur={handleBlur}
             placeholder={texts.phonePlaceholder}
           />
         </div>
@@ -181,17 +185,11 @@ const PersonalForm = () => {
         <Textarea
           value={data.notes}
           onChange={(e) => handleChange('notes', e.target.value)}
+          onBlur={handleBlur}
           placeholder={texts.notes}
           rows={3}
         />
       </div>
-
-      {profile?.has_paid && (
-        <Button onClick={handleSave} disabled={saving} className="w-full md:w-auto">
-          <Save className="mr-2 h-4 w-4" />
-          {saving ? '...' : texts.save}
-        </Button>
-      )}
     </motion.div>
   );
 };
