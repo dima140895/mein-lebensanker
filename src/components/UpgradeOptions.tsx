@@ -59,7 +59,7 @@ const UpgradeOptions = () => {
 
   const handleUpgrade = async (targetTier: PackageType) => {
     if (!user) {
-      toast.error('Bitte melde dich an');
+      toast.error(language === 'de' ? 'Bitte melde dich an' : 'Please sign in');
       return;
     }
 
@@ -80,7 +80,7 @@ const UpgradeOptions = () => {
       }
     } catch (error: any) {
       logger.error('Upgrade error:', error);
-      toast.error(error.message || 'Fehler beim Upgrade');
+      toast.error(error.message || (language === 'de' ? 'Fehler beim Upgrade' : 'Upgrade error'));
     } finally {
       setLoading(null);
     }

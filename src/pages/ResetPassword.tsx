@@ -116,7 +116,7 @@ const ResetPassword = () => {
       <div className="flex min-h-screen flex-col bg-background">
         <Header />
         <main className="flex-1 flex items-center justify-center">
-          <div className="animate-pulse text-muted-foreground">Loading...</div>
+          <div className="animate-pulse text-muted-foreground">{language === 'de' ? 'Laden...' : 'Loading...'}</div>
         </main>
       </div>
     );
