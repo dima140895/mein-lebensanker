@@ -324,8 +324,8 @@ const Header = () => {
         
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center gap-2">
-          {/* Pricing Button for non-authenticated users */}
-          {!user && (
+          {/* Pricing Button for non-authenticated users OR authenticated users who haven't paid */}
+          {(!user || (user && !profile?.has_paid)) && (
             <Button 
               variant="ghost" 
               size="sm" 
@@ -457,8 +457,8 @@ const Header = () => {
           <LanguageToggle />
         </nav>
 
-        {/* Mobile Pricing Button (top right, visible only on mobile for non-authenticated users) */}
-        {!user && (
+        {/* Mobile Pricing Button (top right, visible only on mobile for non-authenticated users OR users who haven't paid) */}
+        {(!user || (user && !profile?.has_paid)) && (
           <Button 
             variant="outline" 
             size="sm" 
