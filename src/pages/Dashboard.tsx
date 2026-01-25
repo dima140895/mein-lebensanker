@@ -184,19 +184,29 @@ const DashboardContent = () => {
 
   if (activeSection) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex items-center justify-between mb-6">
-          <Button variant="ghost" onClick={() => handleSectionChange(null)}>
-            <ArrowLeft className="mr-2 h-4 w-4" /> {texts.back}
-          </Button>
-          <h2 className="font-serif text-xl font-semibold text-foreground absolute left-1/2 -translate-x-1/2">
-            {texts[activeSection as keyof typeof texts]}
-          </h2>
-          <div className="w-[140px]" />
+      <>
+        <div className="container mx-auto px-4 py-8">
+          <div className="flex items-center justify-between mb-6">
+            <Button variant="ghost" onClick={() => handleSectionChange(null)}>
+              <ArrowLeft className="mr-2 h-4 w-4" /> {texts.back}
+            </Button>
+            <h2 className="font-serif text-xl font-semibold text-foreground absolute left-1/2 -translate-x-1/2">
+              {texts[activeSection as keyof typeof texts]}
+            </h2>
+            <div className="w-[140px]" />
+          </div>
+
+          {renderContent()}
         </div>
 
-        {renderContent()}
-      </div>
+        {/* Encryption Unlock Dialog - always shown when encryption is enabled but locked */}
+        <EncryptionPasswordDialog 
+          open={showUnlockDialog} 
+          onOpenChange={setShowUnlockDialog}
+          mode="unlock"
+          preventClose
+        />
+      </>
     );
   }
 
@@ -238,7 +248,7 @@ const DashboardContent = () => {
         </div>
       </div>
 
-      {/* Encryption Unlock Dialog - shown automatically when encryption is enabled but locked */}
+      {/* Encryption Unlock Dialog - always shown when encryption is enabled but locked */}
       <EncryptionPasswordDialog 
         open={showUnlockDialog} 
         onOpenChange={setShowUnlockDialog}
