@@ -17,20 +17,15 @@ import {
 import { Combobox } from '@/components/ui/combobox';
 import { toast } from 'sonner';
 
-interface AssetsFormProps {
-  isPartner?: boolean;
-}
-
-const AssetsForm = ({ isPartner = false }: AssetsFormProps) => {
-  const { formData, partnerFormData, updateSection, saveSection, saving } = useFormData();
+const AssetsForm = () => {
+  const { formData, updateSection, saveSection, saving } = useFormData();
   const { profile } = useAuth();
   const { language } = useLanguage();
   
-  const data = isPartner ? partnerFormData.assets : formData.assets;
+  const data = formData.assets;
 
   const t = {
     de: {
-      title: 'Vermögensübersicht',
       disclaimer: 'Diese Übersicht dient nur der Orientierung. Beträge sind optional und haben keine rechtliche Verbindlichkeit.',
       bankAccounts: 'Bankkonten',
       institute: 'Institut',
@@ -55,41 +50,12 @@ const AssetsForm = ({ isPartner = false }: AssetsFormProps) => {
       selectInsuranceType: 'Versicherungsart wählen',
       searchInsuranceType: 'Versicherungsart suchen...',
       insuranceTypeOtherPlaceholder: 'Welche Versicherungsart?',
-      insuranceTypes: {
-        life: 'Lebensversicherung',
-        health: 'Krankenversicherung',
-        liability: 'Haftpflichtversicherung',
-        household: 'Hausratversicherung',
-        building: 'Gebäudeversicherung',
-        car: 'KFZ-Versicherung',
-        disability: 'Berufsunfähigkeitsversicherung',
-        accident: 'Unfallversicherung',
-        legal: 'Rechtsschutzversicherung',
-        pension: 'Private Rentenversicherung',
-        travel: 'Reiseversicherung',
-        other: 'Sonstige',
-      },
+      insuranceTypes: { life: 'Lebensversicherung', health: 'Krankenversicherung', liability: 'Haftpflichtversicherung', household: 'Hausratversicherung', building: 'Gebäudeversicherung', car: 'KFZ-Versicherung', disability: 'Berufsunfähigkeitsversicherung', accident: 'Unfallversicherung', legal: 'Rechtsschutzversicherung', pension: 'Private Rentenversicherung', travel: 'Reiseversicherung', other: 'Sonstige' },
       company: 'Versicherungsgesellschaft',
       selectCompany: 'Gesellschaft wählen',
       searchCompany: 'Gesellschaft suchen...',
       companyOtherPlaceholder: 'Welche Gesellschaft?',
-      companies: {
-        allianz: 'Allianz',
-        axa: 'AXA',
-        ergo: 'ERGO',
-        generali: 'Generali',
-        huk: 'HUK-COBURG',
-        debeka: 'Debeka',
-        signal: 'Signal Iduna',
-        provinzial: 'Provinzial',
-        lvm: 'LVM',
-        vgh: 'VGH',
-        devk: 'DEVK',
-        zurich: 'Zurich',
-        swisslife: 'Swiss Life',
-        nuernberger: 'Nürnberger',
-        other: 'Sonstige',
-      },
+      companies: { allianz: 'Allianz', axa: 'AXA', ergo: 'ERGO', generali: 'Generali', huk: 'HUK-COBURG', debeka: 'Debeka', signal: 'Signal Iduna', provinzial: 'Provinzial', lvm: 'LVM', vgh: 'VGH', devk: 'DEVK', zurich: 'Zurich', swisslife: 'Swiss Life', nuernberger: 'Nürnberger', other: 'Sonstige' },
       policyNumber: 'Policennummer (optional)',
       surrenderValue: 'Rückkaufswert (optional)',
       noResults: 'Keine Ergebnisse gefunden.',
@@ -103,7 +69,6 @@ const AssetsForm = ({ isPartner = false }: AssetsFormProps) => {
       selectOwnership: 'Nutzungsart wählen',
     },
     en: {
-      title: 'Asset Overview',
       disclaimer: 'This overview is for orientation only. Amounts are optional and have no legal validity.',
       bankAccounts: 'Bank Accounts',
       institute: 'Bank/Institute',
@@ -128,41 +93,12 @@ const AssetsForm = ({ isPartner = false }: AssetsFormProps) => {
       selectInsuranceType: 'Select insurance type',
       searchInsuranceType: 'Search insurance type...',
       insuranceTypeOtherPlaceholder: 'Which insurance type?',
-      insuranceTypes: {
-        life: 'Life Insurance',
-        health: 'Health Insurance',
-        liability: 'Liability Insurance',
-        household: 'Household Insurance',
-        building: 'Building Insurance',
-        car: 'Car Insurance',
-        disability: 'Disability Insurance',
-        accident: 'Accident Insurance',
-        legal: 'Legal Protection',
-        pension: 'Private Pension',
-        travel: 'Travel Insurance',
-        other: 'Other',
-      },
+      insuranceTypes: { life: 'Life Insurance', health: 'Health Insurance', liability: 'Liability Insurance', household: 'Household Insurance', building: 'Building Insurance', car: 'Car Insurance', disability: 'Disability Insurance', accident: 'Accident Insurance', legal: 'Legal Protection', pension: 'Private Pension', travel: 'Travel Insurance', other: 'Other' },
       company: 'Insurance Company',
       selectCompany: 'Select company',
       searchCompany: 'Search company...',
       companyOtherPlaceholder: 'Which company?',
-      companies: {
-        allianz: 'Allianz',
-        axa: 'AXA',
-        ergo: 'ERGO',
-        generali: 'Generali',
-        huk: 'HUK-COBURG',
-        debeka: 'Debeka',
-        signal: 'Signal Iduna',
-        provinzial: 'Provinzial',
-        lvm: 'LVM',
-        vgh: 'VGH',
-        devk: 'DEVK',
-        zurich: 'Zurich',
-        swisslife: 'Swiss Life',
-        nuernberger: 'Nürnberger',
-        other: 'Other',
-      },
+      companies: { allianz: 'Allianz', axa: 'AXA', ergo: 'ERGO', generali: 'Generali', huk: 'HUK-COBURG', debeka: 'Debeka', signal: 'Signal Iduna', provinzial: 'Provinzial', lvm: 'LVM', vgh: 'VGH', devk: 'DEVK', zurich: 'Zurich', swisslife: 'Swiss Life', nuernberger: 'Nürnberger', other: 'Other' },
       policyNumber: 'Policy Number (optional)',
       surrenderValue: 'Surrender Value (optional)',
       noResults: 'No results found.',
@@ -186,38 +122,26 @@ const AssetsForm = ({ isPartner = false }: AssetsFormProps) => {
       insurances: [...data.insurances, { type: '', typeOther: '', company: '', companyOther: '', policyNumber: '', surrenderValue: '' }],
       valuables: [...data.valuables, { description: '', location: '' }],
     };
-    updateSection('assets', { ...data, [field]: newItems[field] }, isPartner);
+    updateSection('assets', { ...data, [field]: newItems[field] });
   };
 
-  const insuranceTypeOptions = Object.entries(texts.insuranceTypes).map(([key, label]) => ({
-    value: key,
-    label: label as string,
-  }));
-
-  const companyOptions = Object.entries(texts.companies).map(([key, label]) => ({
-    value: key,
-    label: label as string,
-  }));
+  const insuranceTypeOptions = Object.entries(texts.insuranceTypes).map(([key, label]) => ({ value: key, label: label as string }));
+  const companyOptions = Object.entries(texts.companies).map(([key, label]) => ({ value: key, label: label as string }));
 
   const removeItem = (field: 'bankAccounts' | 'properties' | 'insurances' | 'valuables', index: number) => {
     const newArray = [...data[field]];
     newArray.splice(index, 1);
-    updateSection('assets', { ...data, [field]: newArray }, isPartner);
+    updateSection('assets', { ...data, [field]: newArray });
   };
 
-  const updateItem = <T extends keyof AssetsData>(
-    field: T,
-    index: number,
-    key: string,
-    value: string
-  ) => {
+  const updateItem = <T extends keyof AssetsData>(field: T, index: number, key: string, value: string) => {
     const newArray = [...(data[field] as Array<Record<string, string>>)];
     newArray[index] = { ...newArray[index], [key]: value };
-    updateSection('assets', { ...data, [field]: newArray }, isPartner);
+    updateSection('assets', { ...data, [field]: newArray });
   };
 
   const handleSave = async () => {
-    await saveSection('assets', isPartner);
+    await saveSection('assets');
     toast.success(texts.saved);
   };
 
@@ -234,32 +158,16 @@ const AssetsForm = ({ isPartner = false }: AssetsFormProps) => {
         {data.bankAccounts.map((account, i) => (
           <div key={i} className="flex gap-3 items-start">
             <div className="flex-1 grid gap-3 md:grid-cols-3">
-              <Input
-                value={account.institute}
-                onChange={(e) => updateItem('bankAccounts', i, 'institute', e.target.value)}
-                placeholder={texts.institute}
-              />
-              <Input
-                value={account.purpose}
-                onChange={(e) => updateItem('bankAccounts', i, 'purpose', e.target.value)}
-                placeholder={texts.purpose}
-              />
-              <Input
-                value={account.balance || ''}
-                onChange={(e) => updateItem('bankAccounts', i, 'balance', e.target.value)}
-                placeholder={texts.balance}
-              />
+              <Input value={account.institute} onChange={(e) => updateItem('bankAccounts', i, 'institute', e.target.value)} placeholder={texts.institute} />
+              <Input value={account.purpose} onChange={(e) => updateItem('bankAccounts', i, 'purpose', e.target.value)} placeholder={texts.purpose} />
+              <Input value={account.balance || ''} onChange={(e) => updateItem('bankAccounts', i, 'balance', e.target.value)} placeholder={texts.balance} />
             </div>
             {data.bankAccounts.length > 1 && (
-              <Button variant="ghost" size="icon" onClick={() => removeItem('bankAccounts', i)}>
-                <Trash2 className="h-4 w-4 text-destructive" />
-              </Button>
+              <Button variant="ghost" size="icon" onClick={() => removeItem('bankAccounts', i)}><Trash2 className="h-4 w-4 text-destructive" /></Button>
             )}
           </div>
         ))}
-        <Button variant="outline" size="sm" onClick={() => addItem('bankAccounts')}>
-          <Plus className="mr-2 h-4 w-4" /> {texts.addItem}
-        </Button>
+        <Button variant="outline" size="sm" onClick={() => addItem('bankAccounts')}><Plus className="mr-2 h-4 w-4" /> {texts.addItem}</Button>
       </div>
 
       {/* Properties */}
@@ -269,99 +177,48 @@ const AssetsForm = ({ isPartner = false }: AssetsFormProps) => {
           <div key={i} className="flex gap-3 items-start">
             <div className="flex-1 space-y-3">
               <div className="grid gap-3 md:grid-cols-2">
-                <Input
-                  value={property.address}
-                  onChange={(e) => updateItem('properties', i, 'address', e.target.value)}
-                  placeholder={texts.address}
-                />
-                <Input
-                  value={property.type}
-                  onChange={(e) => updateItem('properties', i, 'type', e.target.value)}
-                  placeholder={texts.type}
-                />
+                <Input value={property.address} onChange={(e) => updateItem('properties', i, 'address', e.target.value)} placeholder={texts.address} />
+                <Input value={property.type} onChange={(e) => updateItem('properties', i, 'type', e.target.value)} placeholder={texts.type} />
               </div>
               <div className="grid gap-3 md:grid-cols-2">
-                <Select
-                  value={property.ownership || ''}
-                  onValueChange={(value) => {
-                    const newArray = [...data.properties];
-                    newArray[i] = { 
-                      ...newArray[i], 
-                      ownership: value,
-                      ownershipOther: value === 'other' ? newArray[i].ownershipOther : '',
-                      rentalIncome: value === 'rented-out' ? newArray[i].rentalIncome : '',
-                      financingStatus: (value === 'self-occupied' || value === 'rented-out') ? newArray[i].financingStatus : '',
-                      outstandingLoan: (value === 'self-occupied' || value === 'rented-out') ? newArray[i].outstandingLoan : ''
-                    };
-                    updateSection('assets', { ...data, properties: newArray }, isPartner);
-                  }}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder={texts.selectOwnership} />
-                  </SelectTrigger>
+                <Select value={property.ownership || ''} onValueChange={(value) => {
+                  const newArray = [...data.properties];
+                  newArray[i] = { ...newArray[i], ownership: value, ownershipOther: value === 'other' ? newArray[i].ownershipOther : '', rentalIncome: value === 'rented-out' ? newArray[i].rentalIncome : '', financingStatus: (value === 'self-occupied' || value === 'rented-out') ? newArray[i].financingStatus : '', outstandingLoan: (value === 'self-occupied' || value === 'rented-out') ? newArray[i].outstandingLoan : '' };
+                  updateSection('assets', { ...data, properties: newArray });
+                }}>
+                  <SelectTrigger><SelectValue placeholder={texts.selectOwnership} /></SelectTrigger>
                   <SelectContent className="bg-background border border-border shadow-lg z-50">
                     <SelectItem value="self-occupied">{texts.ownershipSelfOccupied}</SelectItem>
                     <SelectItem value="rented-out">{texts.ownershipRentedOut}</SelectItem>
                     <SelectItem value="other">{texts.ownershipOther}</SelectItem>
                   </SelectContent>
                 </Select>
-                {property.ownership === 'other' && (
-                  <Input
-                    value={property.ownershipOther || ''}
-                    onChange={(e) => updateItem('properties', i, 'ownershipOther', e.target.value)}
-                    placeholder={texts.ownershipOtherPlaceholder}
-                  />
-                )}
+                {property.ownership === 'other' && <Input value={property.ownershipOther || ''} onChange={(e) => updateItem('properties', i, 'ownershipOther', e.target.value)} placeholder={texts.ownershipOtherPlaceholder} />}
               </div>
               {(property.ownership === 'self-occupied' || property.ownership === 'rented-out') && (
                 <>
-                  {property.ownership === 'rented-out' && (
-                    <Input
-                      value={property.rentalIncome || ''}
-                      onChange={(e) => updateItem('properties', i, 'rentalIncome', e.target.value)}
-                      placeholder={texts.rentalIncome}
-                    />
-                  )}
+                  {property.ownership === 'rented-out' && <Input value={property.rentalIncome || ''} onChange={(e) => updateItem('properties', i, 'rentalIncome', e.target.value)} placeholder={texts.rentalIncome} />}
                   <div className="grid gap-3 md:grid-cols-2">
-                    <Select
-                      value={property.financingStatus || ''}
-                      onValueChange={(value) => {
-                        const newArray = [...data.properties];
-                        newArray[i] = { 
-                          ...newArray[i], 
-                          financingStatus: value,
-                          outstandingLoan: value === 'financed' ? newArray[i].outstandingLoan : ''
-                        };
-                        updateSection('assets', { ...data, properties: newArray }, isPartner);
-                      }}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder={texts.selectFinancing} />
-                      </SelectTrigger>
+                    <Select value={property.financingStatus || ''} onValueChange={(value) => {
+                      const newArray = [...data.properties];
+                      newArray[i] = { ...newArray[i], financingStatus: value, outstandingLoan: value === 'financed' ? newArray[i].outstandingLoan : '' };
+                      updateSection('assets', { ...data, properties: newArray });
+                    }}>
+                      <SelectTrigger><SelectValue placeholder={texts.selectFinancing} /></SelectTrigger>
                       <SelectContent className="bg-background border border-border shadow-lg z-50">
                         <SelectItem value="paid-off">{texts.financingPaidOff}</SelectItem>
                         <SelectItem value="financed">{texts.financingFinanced}</SelectItem>
                       </SelectContent>
                     </Select>
-                    {property.financingStatus === 'financed' && (
-                      <Input
-                        value={property.outstandingLoan || ''}
-                        onChange={(e) => updateItem('properties', i, 'outstandingLoan', e.target.value)}
-                        placeholder={texts.outstandingLoan}
-                      />
-                    )}
+                    {property.financingStatus === 'financed' && <Input value={property.outstandingLoan || ''} onChange={(e) => updateItem('properties', i, 'outstandingLoan', e.target.value)} placeholder={texts.outstandingLoan} />}
                   </div>
                 </>
               )}
             </div>
-            <Button variant="ghost" size="icon" onClick={() => removeItem('properties', i)}>
-              <Trash2 className="h-4 w-4 text-destructive" />
-            </Button>
+            <Button variant="ghost" size="icon" onClick={() => removeItem('properties', i)}><Trash2 className="h-4 w-4 text-destructive" /></Button>
           </div>
         ))}
-        <Button variant="outline" size="sm" onClick={() => addItem('properties')}>
-          <Plus className="mr-2 h-4 w-4" /> {texts.addItem}
-        </Button>
+        <Button variant="outline" size="sm" onClick={() => addItem('properties')}><Plus className="mr-2 h-4 w-4" /> {texts.addItem}</Button>
       </div>
 
       {/* Insurances */}
@@ -371,78 +228,32 @@ const AssetsForm = ({ isPartner = false }: AssetsFormProps) => {
           <div key={i} className="flex gap-3 items-start">
             <div className="flex-1 space-y-3">
               <div className="grid gap-3 md:grid-cols-2">
-                <Combobox
-                  options={insuranceTypeOptions}
-                  value={ins.type || ''}
-                  onValueChange={(value) => {
-                    const newArray = [...data.insurances];
-                    newArray[i] = { 
-                      ...newArray[i], 
-                      type: value,
-                      typeOther: value === 'other' ? newArray[i].typeOther : ''
-                    };
-                    updateSection('assets', { ...data, insurances: newArray }, isPartner);
-                  }}
-                  placeholder={texts.selectInsuranceType}
-                  searchPlaceholder={texts.searchInsuranceType}
-                  emptyText={texts.noResults}
-                />
-                <Combobox
-                  options={companyOptions}
-                  value={ins.company || ''}
-                  onValueChange={(value) => {
-                    const newArray = [...data.insurances];
-                    newArray[i] = { 
-                      ...newArray[i], 
-                      company: value,
-                      companyOther: value === 'other' ? newArray[i].companyOther : ''
-                    };
-                    updateSection('assets', { ...data, insurances: newArray }, isPartner);
-                  }}
-                  placeholder={texts.selectCompany}
-                  searchPlaceholder={texts.searchCompany}
-                  emptyText={texts.noResults}
-                />
+                <Combobox options={insuranceTypeOptions} value={ins.type || ''} onValueChange={(value) => {
+                  const newArray = [...data.insurances];
+                  newArray[i] = { ...newArray[i], type: value, typeOther: value === 'other' ? newArray[i].typeOther : '' };
+                  updateSection('assets', { ...data, insurances: newArray });
+                }} placeholder={texts.selectInsuranceType} searchPlaceholder={texts.searchInsuranceType} emptyText={texts.noResults} />
+                <Combobox options={companyOptions} value={ins.company || ''} onValueChange={(value) => {
+                  const newArray = [...data.insurances];
+                  newArray[i] = { ...newArray[i], company: value, companyOther: value === 'other' ? newArray[i].companyOther : '' };
+                  updateSection('assets', { ...data, insurances: newArray });
+                }} placeholder={texts.selectCompany} searchPlaceholder={texts.searchCompany} emptyText={texts.noResults} />
               </div>
               {(ins.type === 'other' || ins.company === 'other') && (
                 <div className="grid gap-3 md:grid-cols-2">
-                  {ins.type === 'other' && (
-                    <Input
-                      value={ins.typeOther || ''}
-                      onChange={(e) => updateItem('insurances', i, 'typeOther', e.target.value)}
-                      placeholder={texts.insuranceTypeOtherPlaceholder}
-                    />
-                  )}
-                  {ins.company === 'other' && (
-                    <Input
-                      value={ins.companyOther || ''}
-                      onChange={(e) => updateItem('insurances', i, 'companyOther', e.target.value)}
-                      placeholder={texts.companyOtherPlaceholder}
-                    />
-                  )}
+                  {ins.type === 'other' && <Input value={ins.typeOther || ''} onChange={(e) => updateItem('insurances', i, 'typeOther', e.target.value)} placeholder={texts.insuranceTypeOtherPlaceholder} />}
+                  {ins.company === 'other' && <Input value={ins.companyOther || ''} onChange={(e) => updateItem('insurances', i, 'companyOther', e.target.value)} placeholder={texts.companyOtherPlaceholder} />}
                 </div>
               )}
               <div className="grid gap-3 md:grid-cols-2">
-                <Input
-                  value={ins.policyNumber || ''}
-                  onChange={(e) => updateItem('insurances', i, 'policyNumber', e.target.value)}
-                  placeholder={texts.policyNumber}
-                />
-                <Input
-                  value={ins.surrenderValue || ''}
-                  onChange={(e) => updateItem('insurances', i, 'surrenderValue', e.target.value)}
-                  placeholder={texts.surrenderValue}
-                />
+                <Input value={ins.policyNumber || ''} onChange={(e) => updateItem('insurances', i, 'policyNumber', e.target.value)} placeholder={texts.policyNumber} />
+                <Input value={ins.surrenderValue || ''} onChange={(e) => updateItem('insurances', i, 'surrenderValue', e.target.value)} placeholder={texts.surrenderValue} />
               </div>
             </div>
-            <Button variant="ghost" size="icon" onClick={() => removeItem('insurances', i)}>
-              <Trash2 className="h-4 w-4 text-destructive" />
-            </Button>
+            <Button variant="ghost" size="icon" onClick={() => removeItem('insurances', i)}><Trash2 className="h-4 w-4 text-destructive" /></Button>
           </div>
         ))}
-        <Button variant="outline" size="sm" onClick={() => addItem('insurances')}>
-          <Plus className="mr-2 h-4 w-4" /> {texts.addItem}
-        </Button>
+        <Button variant="outline" size="sm" onClick={() => addItem('insurances')}><Plus className="mr-2 h-4 w-4" /> {texts.addItem}</Button>
       </div>
 
       {/* Valuables */}
@@ -451,42 +262,22 @@ const AssetsForm = ({ isPartner = false }: AssetsFormProps) => {
         {data.valuables.map((item, i) => (
           <div key={i} className="flex gap-3 items-start">
             <div className="flex-1 grid gap-3 md:grid-cols-2">
-              <Input
-                value={item.description}
-                onChange={(e) => updateItem('valuables', i, 'description', e.target.value)}
-                placeholder={texts.description}
-              />
-              <Input
-                value={item.location}
-                onChange={(e) => updateItem('valuables', i, 'location', e.target.value)}
-                placeholder={texts.location}
-              />
+              <Input value={item.description} onChange={(e) => updateItem('valuables', i, 'description', e.target.value)} placeholder={texts.description} />
+              <Input value={item.location} onChange={(e) => updateItem('valuables', i, 'location', e.target.value)} placeholder={texts.location} />
             </div>
-            <Button variant="ghost" size="icon" onClick={() => removeItem('valuables', i)}>
-              <Trash2 className="h-4 w-4 text-destructive" />
-            </Button>
+            <Button variant="ghost" size="icon" onClick={() => removeItem('valuables', i)}><Trash2 className="h-4 w-4 text-destructive" /></Button>
           </div>
         ))}
-        <Button variant="outline" size="sm" onClick={() => addItem('valuables')}>
-          <Plus className="mr-2 h-4 w-4" /> {texts.addItem}
-        </Button>
+        <Button variant="outline" size="sm" onClick={() => addItem('valuables')}><Plus className="mr-2 h-4 w-4" /> {texts.addItem}</Button>
       </div>
 
       <div className="space-y-2 border-t border-border pt-6">
         <Label>{texts.notes}</Label>
-        <Textarea
-          value={data.notes}
-          onChange={(e) => updateSection('assets', { ...data, notes: e.target.value }, isPartner)}
-          placeholder={texts.notes}
-          rows={3}
-        />
+        <Textarea value={data.notes} onChange={(e) => updateSection('assets', { ...data, notes: e.target.value })} placeholder={texts.notes} rows={3} />
       </div>
 
       {profile?.has_paid && (
-        <Button onClick={handleSave} disabled={saving}>
-          <Save className="mr-2 h-4 w-4" />
-          {saving ? '...' : texts.save}
-        </Button>
+        <Button onClick={handleSave} disabled={saving}><Save className="mr-2 h-4 w-4" />{saving ? '...' : texts.save}</Button>
       )}
     </motion.div>
   );

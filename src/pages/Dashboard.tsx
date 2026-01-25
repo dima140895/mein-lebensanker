@@ -131,12 +131,12 @@ const DashboardContent = () => {
       case 'share': return <ShareLinkManager />;
       case 'upgrade': return <UpgradeOptions />;
       case 'payment': return <UpgradeOptions />;
-      case 'personal': return <PersonalForm isPartner={isPartnerView} />;
-      case 'assets': return <AssetsForm isPartner={isPartnerView} />;
-      case 'digital': return <DigitalForm isPartner={isPartnerView} />;
-      case 'wishes': return <WishesForm isPartner={isPartnerView} />;
-      case 'documents': return <DocumentsForm isPartner={isPartnerView} />;
-      case 'contacts': return <ContactsForm isPartner={isPartnerView} />;
+      case 'personal': return <PersonalForm />;
+      case 'assets': return <AssetsForm />;
+      case 'digital': return <DigitalForm />;
+      case 'wishes': return <WishesForm />;
+      case 'documents': return <DocumentsForm />;
+      case 'contacts': return <ContactsForm />;
       default: return null;
     }
   };
@@ -150,15 +150,6 @@ const DashboardContent = () => {
         <Button variant="ghost" onClick={() => handleSectionChange(null)} className="mb-6">
           <ArrowLeft className="mr-2 h-4 w-4" /> {texts.back}
         </Button>
-
-        {!isInfoSection && profile.payment_type === 'partner' && (
-          <Tabs value={isPartnerView ? 'partner' : 'me'} onValueChange={(v) => setIsPartnerView(v === 'partner')} className="mb-6">
-            <TabsList>
-              <TabsTrigger value="me"><User className="mr-2 h-4 w-4" />{texts.you}</TabsTrigger>
-              <TabsTrigger value="partner"><Users className="mr-2 h-4 w-4" />{texts.partner}</TabsTrigger>
-            </TabsList>
-          </Tabs>
-        )}
 
         {renderContent()}
       </div>

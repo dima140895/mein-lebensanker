@@ -9,16 +9,12 @@ import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 
-interface DocumentsFormProps {
-  isPartner?: boolean;
-}
-
-const DocumentsForm = ({ isPartner = false }: DocumentsFormProps) => {
-  const { formData, partnerFormData, updateSection, saveSection, saving } = useFormData();
+const DocumentsForm = () => {
+  const { formData, updateSection, saveSection, saving } = useFormData();
   const { profile } = useAuth();
   const { language } = useLanguage();
   
-  const data = isPartner ? partnerFormData.documents : formData.documents;
+  const data = formData.documents;
 
   const t = {
     de: {
@@ -66,11 +62,11 @@ const DocumentsForm = ({ isPartner = false }: DocumentsFormProps) => {
   const texts = t[language];
 
   const handleChange = (field: keyof DocumentsData, value: string) => {
-    updateSection('documents', { ...data, [field]: value }, isPartner);
+    updateSection('documents', { ...data, [field]: value });
   };
 
   const handleSave = async () => {
-    await saveSection('documents', isPartner);
+    await saveSection('documents');
     toast.success(texts.saved);
   };
 

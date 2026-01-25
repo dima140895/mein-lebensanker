@@ -8,16 +8,12 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
 
-interface WishesFormProps {
-  isPartner?: boolean;
-}
-
-const WishesForm = ({ isPartner = false }: WishesFormProps) => {
-  const { formData, partnerFormData, updateSection, saveSection, saving } = useFormData();
+const WishesForm = () => {
+  const { formData, updateSection, saveSection, saving } = useFormData();
   const { profile } = useAuth();
   const { language } = useLanguage();
   
-  const data = isPartner ? partnerFormData.wishes : formData.wishes;
+  const data = formData.wishes;
 
   const t = {
     de: {
@@ -61,11 +57,11 @@ const WishesForm = ({ isPartner = false }: WishesFormProps) => {
   const texts = t[language];
 
   const handleChange = (field: keyof WishesData, value: string) => {
-    updateSection('wishes', { ...data, [field]: value }, isPartner);
+    updateSection('wishes', { ...data, [field]: value });
   };
 
   const handleSave = async () => {
-    await saveSection('wishes', isPartner);
+    await saveSection('wishes');
     toast.success(texts.saved);
   };
 

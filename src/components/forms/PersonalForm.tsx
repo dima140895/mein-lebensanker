@@ -10,16 +10,12 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
 
-interface PersonalFormProps {
-  isPartner?: boolean;
-}
-
-const PersonalForm = ({ isPartner = false }: PersonalFormProps) => {
-  const { formData, partnerFormData, updateSection, saveSection, saving } = useFormData();
+const PersonalForm = () => {
+  const { formData, updateSection, saveSection, saving } = useFormData();
   const { profile } = useAuth();
   const { language } = useLanguage();
   
-  const data = isPartner ? partnerFormData.personal : formData.personal;
+  const data = formData.personal;
 
   const t = {
     de: {
@@ -59,11 +55,11 @@ const PersonalForm = ({ isPartner = false }: PersonalFormProps) => {
   const texts = t[language];
 
   const handleChange = (field: keyof PersonalData, value: string) => {
-    updateSection('personal', { ...data, [field]: value }, isPartner);
+    updateSection('personal', { ...data, [field]: value });
   };
 
   const handleSave = async () => {
-    await saveSection('personal', isPartner);
+    await saveSection('personal');
     toast.success(texts.saved);
   };
 

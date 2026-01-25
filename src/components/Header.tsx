@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Heart, LogIn, UserPlus, Menu, Home, User, Info, ClipboardList, Wallet, Globe, ScrollText, FolderOpen, Phone, ChevronDown, Link2, CreditCard, Users, Package, ArrowUpCircle } from 'lucide-react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import LanguageToggle from './LanguageToggle';
+import ProfileSwitcher from './ProfileSwitcher';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
@@ -420,6 +421,10 @@ const Header = () => {
                   </DropdownMenuContent>
                 </DropdownMenu>
               )}
+              
+              {/* Profile Switcher for multi-profile packages */}
+              <ProfileSwitcher />
+              
               <div className="w-px h-6 bg-border" />
             </>
           )}

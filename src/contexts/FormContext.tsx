@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { supabase } from '@/integrations/supabase/browserClient';
 import { useAuth } from './AuthContext';
+import { useProfiles } from './ProfileContext';
 import { Json } from '@/integrations/supabase/types';
 import { logger } from '@/lib/logger';
 
@@ -142,13 +143,11 @@ const defaultFormData: VorsorgeFormData = {
 
 interface FormContextType {
   formData: VorsorgeFormData;
-  partnerFormData: VorsorgeFormData;
   updateSection: <K extends keyof VorsorgeFormData>(
     section: K,
-    data: VorsorgeFormData[K],
-    isPartner?: boolean
+    data: VorsorgeFormData[K]
   ) => void;
-  saveSection: (section: keyof VorsorgeFormData, isPartner?: boolean) => Promise<void>;
+  saveSection: (section: keyof VorsorgeFormData) => Promise<void>;
   loadAllData: () => Promise<void>;
   saving: boolean;
 }
@@ -157,28 +156,23 @@ const FormContext = createContext<FormContextType | undefined>(undefined);
 
 export const FormProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const { user, profile } = useAuth();
+  const { activeProfileId } = useProfiles();
   const [formData, setFormData] = useState<VorsorgeFormData>(defaultFormData);
-  const [partnerFormData, setPartnerFormData] = useState<VorsorgeFormData>(defaultFormData);
   const [saving, setSaving] = useState(false);
 
   const updateSection = <K extends keyof VorsorgeFormData>(
     section: K,
-    data: VorsorgeFormData[K],
-    isPartner = false
+    data: VorsorgeFormData[K]
   ) => {
-    if (isPartner) {
-      setPartnerFormData(prev => ({ ...prev, [section]: data }));
-    } else {
-      setFormData(prev => ({ ...prev, [section]: data }));
-    }
+    setFormData(prev => ({ ...prev, [section]: data }));
   };
 
-  const saveSection = async (section: keyof VorsorgeFormData, isPartner = false) => {
-    if (!user || !profile?.has_paid) return;
+  const saveSection = async (section: keyof VorsorgeFormData) => {
+    if (!user || !profile?.has_paid || !activeProfileId) return;
     
     setSaving(true);
     try {
-      const dataToSave = isPartner ? partnerFormData[section] : formData[section];
+      const dataToSave = formData[section];
       
       const { error } = await supabase
         .from('vorsorge_data')
@@ -186,9 +180,10 @@ export const FormProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           user_id: user.id,
           section_key: section,
           data: dataToSave as unknown as Json,
-          is_for_partner: isPartner,
+          person_profile_id: activeProfileId,
+          is_for_partner: false, // Legacy field, keep for backwards compatibility
         }, {
-          onConflict: 'user_id,section_key,is_for_partner'
+          onConflict: 'user_id,section_key,person_profile_id'
         });
 
       if (error) throw error;
@@ -200,51 +195,51 @@ export const FormProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   const loadAllData = async () => {
-    if (!user) return;
+    if (!user || !activeProfileId) return;
 
     try {
       const { data, error } = await supabase
         .from('vorsorge_data')
         .select('*')
-        .eq('user_id', user.id);
+        .eq('user_id', user.id)
+        .eq('person_profile_id', activeProfileId);
 
       if (error) throw error;
 
-      if (data) {
+      if (data && data.length > 0) {
         const newFormData = { ...defaultFormData };
-        const newPartnerFormData = { ...defaultFormData };
 
         data.forEach((item) => {
           const sectionKey = item.section_key as keyof VorsorgeFormData;
           const sectionData = item.data as Record<string, unknown>;
           
           if (sectionKey in newFormData) {
-            if (item.is_for_partner) {
-              (newPartnerFormData as Record<string, unknown>)[sectionKey] = sectionData;
-            } else {
-              (newFormData as Record<string, unknown>)[sectionKey] = sectionData;
-            }
+            (newFormData as Record<string, unknown>)[sectionKey] = sectionData;
           }
         });
 
         setFormData(newFormData);
-        setPartnerFormData(newPartnerFormData);
+      } else {
+        // Reset to defaults for new profile
+        setFormData(defaultFormData);
       }
     } catch (error) {
       logger.error('Error loading data:', error);
     }
   };
 
+  // Reload data when active profile changes
   useEffect(() => {
-    if (user && profile?.has_paid) {
+    if (user && profile?.has_paid && activeProfileId) {
       loadAllData();
+    } else {
+      setFormData(defaultFormData);
     }
-  }, [user, profile?.has_paid]);
+  }, [user, profile?.has_paid, activeProfileId]);
 
   return (
     <FormContext.Provider value={{ 
       formData, 
-      partnerFormData, 
       updateSection, 
       saveSection, 
       loadAllData,

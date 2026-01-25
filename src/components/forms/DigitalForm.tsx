@@ -9,16 +9,12 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
 
-interface DigitalFormProps {
-  isPartner?: boolean;
-}
-
-const DigitalForm = ({ isPartner = false }: DigitalFormProps) => {
-  const { formData, partnerFormData, updateSection, saveSection, saving } = useFormData();
+const DigitalForm = () => {
+  const { formData, updateSection, saveSection, saving } = useFormData();
   const { profile } = useAuth();
   const { language } = useLanguage();
   
-  const data = isPartner ? partnerFormData.digital : formData.digital;
+  const data = formData.digital;
 
   const t = {
     de: {
@@ -87,13 +83,13 @@ const DigitalForm = ({ isPartner = false }: DigitalFormProps) => {
       socialMedia: [...data.socialMedia, { platform: '', username: '', accessInfo: '' }],
       subscriptions: [...data.subscriptions, { service: '', accessInfo: '' }],
     };
-    updateSection('digital', { ...data, [field]: newItems[field] }, isPartner);
+    updateSection('digital', { ...data, [field]: newItems[field] });
   };
 
   const removeItem = (field: 'emailAccounts' | 'socialMedia' | 'subscriptions', index: number) => {
     const newArray = [...data[field]];
     newArray.splice(index, 1);
-    updateSection('digital', { ...data, [field]: newArray }, isPartner);
+    updateSection('digital', { ...data, [field]: newArray });
   };
 
   const updateItem = (
@@ -104,11 +100,11 @@ const DigitalForm = ({ isPartner = false }: DigitalFormProps) => {
   ) => {
     const newArray = [...data[field]] as Array<Record<string, string>>;
     newArray[index] = { ...newArray[index], [key]: value };
-    updateSection('digital', { ...data, [field]: newArray }, isPartner);
+    updateSection('digital', { ...data, [field]: newArray });
   };
 
   const handleSave = async () => {
-    await saveSection('digital', isPartner);
+    await saveSection('digital');
     toast.success(texts.saved);
   };
 
@@ -223,7 +219,7 @@ const DigitalForm = ({ isPartner = false }: DigitalFormProps) => {
         <Label>{texts.passwordManager}</Label>
         <Textarea
           value={data.passwordManagerInfo}
-          onChange={(e) => updateSection('digital', { ...data, passwordManagerInfo: e.target.value }, isPartner)}
+          onChange={(e) => updateSection('digital', { ...data, passwordManagerInfo: e.target.value })}
           placeholder={texts.passwordManagerPlaceholder}
           rows={3}
         />
@@ -233,7 +229,7 @@ const DigitalForm = ({ isPartner = false }: DigitalFormProps) => {
         <Label>{texts.notes}</Label>
         <Textarea
           value={data.notes}
-          onChange={(e) => updateSection('digital', { ...data, notes: e.target.value }, isPartner)}
+          onChange={(e) => updateSection('digital', { ...data, notes: e.target.value })}
           placeholder={texts.notes}
           rows={3}
         />
