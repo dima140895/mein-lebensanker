@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Check, Crown, Users, Home, ArrowUp, Settings, CreditCard } from 'lucide-react';
+import { Check, Crown, Users, Home, ArrowUp, Settings, CreditCard, Plus, Minus } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
@@ -9,16 +9,18 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { supabase } from '@/integrations/supabase/browserClient';
 import { toast } from 'sonner';
-import { PRICING, getUpgradePrice, canUpgrade, type PackageType } from '@/lib/pricing';
+import { PRICING, getUpgradePrice, canUpgrade, calculateFamilyPrice, type PackageType } from '@/lib/pricing';
 import { logger } from '@/lib/logger';
 
 const PackageManagement = () => {
   const { user, profile } = useAuth();
   const { language } = useLanguage();
   const [loading, setLoading] = useState<string | null>(null);
+  const [familyProfileCount, setFamilyProfileCount] = useState<number>(PRICING.family.minProfiles);
 
   const currentTier = (profile?.purchased_tier as PackageType) || 'single';
   const hasUpdateSubscription = profile?.has_update_subscription || false;
+  const currentMaxProfiles = profile?.max_profiles || 1;
 
   const t = {
     de: {
@@ -52,6 +54,9 @@ const PackageManagement = () => {
       ],
       purchasedOn: 'Gekauft am',
       profilesUsed: 'Profile',
+      profiles: 'Profile',
+      basePrice: 'Grundpreis',
+      perProfile: 'pro weiteres Profil',
     },
     en: {
       title: 'My Package',
@@ -84,6 +89,9 @@ const PackageManagement = () => {
       ],
       purchasedOn: 'Purchased on',
       profilesUsed: 'Profiles used',
+      profiles: 'Profiles',
+      basePrice: 'Base price',
+      perProfile: 'per additional profile',
     },
   };
 
@@ -112,6 +120,7 @@ const PackageManagement = () => {
           paymentType: targetTier,
           isUpgrade: true,
           currentTier: currentTier,
+          familyProfileCount: targetTier === 'family' ? familyProfileCount : undefined,
         },
       });
 
@@ -212,8 +221,13 @@ const PackageManagement = () => {
             <div className="flex items-center gap-6 text-sm text-muted-foreground">
               <div className="flex items-center gap-2">
                 <Users className="h-4 w-4" />
-                <span>{texts.profilesUsed}: {profile?.max_profiles || 1} max</span>
+                <span>{texts.profilesUsed}: {currentMaxProfiles} max</span>
               </div>
+              {currentTier === 'family' && (
+                <div className="text-muted-foreground">
+                  ({language === 'de' ? 'Bezahlt' : 'Paid'}: €{calculateFamilyPrice(currentMaxProfiles)})
+                </div>
+              )}
             </div>
 
             <Separator />
@@ -294,9 +308,11 @@ const PackageManagement = () => {
           <div className="grid gap-4 md:grid-cols-2">
             {upgradeablePackages.map((pkg, i) => {
               const Icon = pkg.icon;
-              const upgradePrice = getUpgradePrice(currentTier, pkg.key);
-              const isLoading = loading === pkg.key;
               const isFamily = pkg.key === 'family';
+              const upgradePrice = isFamily 
+                ? getUpgradePrice(currentTier, pkg.key, familyProfileCount)
+                : getUpgradePrice(currentTier, pkg.key);
+              const isLoading = loading === pkg.key;
 
               return (
                 <Card
@@ -321,6 +337,48 @@ const PackageManagement = () => {
                     </div>
                   </CardHeader>
                   <CardContent className="space-y-4">
+                    {/* Family profile selector */}
+                    {isFamily && (
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-medium text-foreground">
+                            {texts.profiles}
+                          </span>
+                          <div className="flex items-center gap-3">
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="icon"
+                              className="h-8 w-8"
+                              onClick={() => setFamilyProfileCount(Math.max(PRICING.family.minProfiles, familyProfileCount - 1))}
+                              disabled={familyProfileCount <= PRICING.family.minProfiles}
+                            >
+                              <Minus className="h-4 w-4" />
+                            </Button>
+                            <span className="w-8 text-center font-semibold text-lg">
+                              {familyProfileCount}
+                            </span>
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="icon"
+                              className="h-8 w-8"
+                              onClick={() => setFamilyProfileCount(Math.min(PRICING.family.maxProfiles, familyProfileCount + 1))}
+                              disabled={familyProfileCount >= PRICING.family.maxProfiles}
+                            >
+                              <Plus className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          {texts.basePrice}: €{PRICING.family.basePrice} ({PRICING.family.minProfiles} {texts.profiles}) + €{PRICING.family.pricePerAdditionalProfile} {texts.perProfile}
+                        </div>
+                        <div className="text-sm text-muted-foreground">
+                          {language === 'de' ? 'Neuer Gesamtpreis' : 'New total price'}: €{calculateFamilyPrice(familyProfileCount)}
+                        </div>
+                      </div>
+                    )}
+
                     <div className="flex items-baseline gap-1">
                       <span className="text-2xl font-bold text-foreground">+€{upgradePrice}</span>
                       <span className="text-muted-foreground text-sm">
