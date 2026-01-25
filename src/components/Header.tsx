@@ -49,21 +49,14 @@ const Header = () => {
   const currentSection = searchParams.get('section');
 
   const sectionItems = [
-    { key: 'about', label: { de: 'Was ist das?', en: 'What is this?' }, icon: Info },
     { key: 'personal', label: { de: 'Persönliche Daten', en: 'Personal Data' }, icon: User },
     { key: 'assets', label: { de: 'Vermögen', en: 'Assets' }, icon: Wallet },
     { key: 'digital', label: { de: 'Digitales', en: 'Digital' }, icon: Globe },
     { key: 'wishes', label: { de: 'Wünsche', en: 'Wishes' }, icon: ScrollText },
     { key: 'documents', label: { de: 'Dokumente', en: 'Documents' }, icon: FolderOpen },
     { key: 'contacts', label: { de: 'Kontakte', en: 'Contacts' }, icon: Phone },
-    { key: 'guidance', label: { de: 'Orientierung', en: 'Guidance' }, icon: Info },
-    { key: 'decision', label: { de: 'Entscheidungen', en: 'Decisions' }, icon: Info },
     { key: 'share', label: { de: 'Für Angehörige', en: 'For Relatives' }, icon: Link2 },
-    { key: 'payment', label: { de: 'Paket verwalten', en: 'Manage Package' }, icon: CreditCard },
-    { key: 'upgrade', label: { de: 'Paket verwalten', en: 'Manage Package' }, icon: CreditCard },
   ];
-
-  const currentSectionItem = currentSection ? sectionItems.find(s => s.key === currentSection) : null;
 
   const pricingItems = [
     { key: 'single', label: { de: 'Einzelperson', en: 'Individual' }, price: '39 €', profiles: 1 },
@@ -345,16 +338,6 @@ const Header = () => {
               Vorsorge
             </span>
           </Link>
-
-          {/* Current Section Indicator */}
-          {currentSectionItem && (
-            <div className="hidden sm:flex items-center gap-2 ml-2 pl-3 border-l border-border">
-              <currentSectionItem.icon className="h-4 w-4 text-muted-foreground" />
-              <span className="text-sm font-medium text-muted-foreground">
-                {currentSectionItem.label[language]}
-              </span>
-            </div>
-          )}
         </div>
         
         {/* Desktop Navigation */}
