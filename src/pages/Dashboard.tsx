@@ -10,6 +10,7 @@ import Footer from '@/components/Footer';
 import Disclaimer from '@/components/Disclaimer';
 import AuthForm from '@/components/AuthForm';
 import PaymentOptions from '@/components/PaymentOptions';
+import UpgradeOptions from '@/components/UpgradeOptions';
 import PersonalForm from '@/components/forms/PersonalForm';
 import AssetsForm from '@/components/forms/AssetsForm';
 import DigitalForm from '@/components/forms/DigitalForm';
@@ -128,6 +129,8 @@ const DashboardContent = () => {
       case 'guidance': return <GuidanceSection />;
       case 'decision': return <DecisionAssistant />;
       case 'share': return <ShareLinkManager />;
+      case 'upgrade': return <UpgradeOptions />;
+      case 'payment': return <UpgradeOptions />;
       case 'personal': return <PersonalForm isPartner={isPartnerView} />;
       case 'assets': return <AssetsForm isPartner={isPartnerView} />;
       case 'digital': return <DigitalForm isPartner={isPartnerView} />;
