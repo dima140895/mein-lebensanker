@@ -1,8 +1,12 @@
+import { useRef } from 'react';
 import { motion } from 'framer-motion';
-import { User, Wallet, Globe, Heart, FileText, Phone } from 'lucide-react';
+import { User, Wallet, Globe, Heart, FileText, Phone, Printer } from 'lucide-react';
+import { useReactToPrint } from 'react-to-print';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Button } from '@/components/ui/button';
+import PrintableRelativesSummary from './PrintableRelativesSummary';
 
 interface VorsorgeData {
   section_key: string;
@@ -25,6 +29,12 @@ interface RelativesSummaryProps {
 
 const RelativesSummary = ({ data, profiles }: RelativesSummaryProps) => {
   const { language } = useLanguage();
+  const printRef = useRef<HTMLDivElement>(null);
+
+  const handlePrint = useReactToPrint({
+    contentRef: printRef,
+    documentTitle: language === 'de' ? 'Vorsorge-Übersicht' : 'Care Planning Overview',
+  });
 
   const t = {
     de: {
@@ -37,6 +47,7 @@ const RelativesSummary = ({ data, profiles }: RelativesSummaryProps) => {
       contacts: 'Wichtige Kontakte',
       noInfo: 'Keine Angaben hinterlegt',
       unknownProfile: 'Unbekanntes Profil',
+      printButton: 'Übersicht drucken',
       
       // Personal fields
       name: 'Name',
@@ -134,6 +145,7 @@ const RelativesSummary = ({ data, profiles }: RelativesSummaryProps) => {
       contacts: 'Important Contacts',
       noInfo: 'No information provided',
       unknownProfile: 'Unknown Profile',
+      printButton: 'Print Overview',
       
       // Personal fields
       name: 'Name',
@@ -599,56 +611,97 @@ const RelativesSummary = ({ data, profiles }: RelativesSummaryProps) => {
     data: data.filter(d => d.person_profile_id === profile.profile_id),
   })).filter(group => group.data.length > 0);
 
+  const PrintButton = () => (
+    <Button
+      variant="outline"
+      onClick={() => handlePrint()}
+      className="gap-2"
+    >
+      <Printer className="h-4 w-4" />
+      {texts.printButton}
+    </Button>
+  );
+
   // If only one profile or no profiles, render without tabs
   if (dataByProfile.length <= 1) {
     return (
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="space-y-4"
-      >
-        {dataByProfile.length > 0 && dataByProfile[0].profile.profile_name && (
-          <div className="flex items-center gap-3 pb-2 border-b border-border">
-            <div className="h-10 w-10 rounded-full flex items-center justify-center bg-primary/10">
-              <User className="h-5 w-5 text-primary" />
-            </div>
-            <p className="font-serif text-lg font-semibold text-foreground">
-              {dataByProfile[0].profile.profile_name}
-            </p>
+      <>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="space-y-4"
+        >
+          <div className="flex items-center justify-between">
+            {dataByProfile.length > 0 && dataByProfile[0].profile.profile_name && (
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 rounded-full flex items-center justify-center bg-primary/10">
+                  <User className="h-5 w-5 text-primary" />
+                </div>
+                <p className="font-serif text-lg font-semibold text-foreground">
+                  {dataByProfile[0].profile.profile_name}
+                </p>
+              </div>
+            )}
+            <PrintButton />
           </div>
-        )}
-        {renderProfileData(dataByProfile.length > 0 ? dataByProfile[0].data : [])}
-      </motion.div>
+          {renderProfileData(dataByProfile.length > 0 ? dataByProfile[0].data : [])}
+        </motion.div>
+
+        {/* Hidden printable content */}
+        <div className="hidden">
+          <PrintableRelativesSummary
+            ref={printRef}
+            data={data}
+            profiles={profiles}
+            language={language}
+          />
+        </div>
+      </>
     );
   }
 
   // Multiple profiles - render with tabs
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-    >
-      <Tabs defaultValue={dataByProfile[0]?.profile.profile_id} className="w-full">
-        <TabsList className="w-full justify-start gap-2 h-auto p-1 bg-muted/50 rounded-xl flex-wrap">
-          {dataByProfile.map(({ profile }) => (
-            <TabsTrigger
-              key={profile.profile_id}
-              value={profile.profile_id}
-              className="data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-lg px-4 py-2.5 gap-2"
-            >
-              <User className="h-4 w-4" />
-              <span className="font-medium">{profile.profile_name || texts.unknownProfile}</span>
-            </TabsTrigger>
+    <>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+      >
+        <div className="flex justify-end mb-4">
+          <PrintButton />
+        </div>
+        <Tabs defaultValue={dataByProfile[0]?.profile.profile_id} className="w-full">
+          <TabsList className="w-full justify-start gap-2 h-auto p-1 bg-muted/50 rounded-xl flex-wrap">
+            {dataByProfile.map(({ profile }) => (
+              <TabsTrigger
+                key={profile.profile_id}
+                value={profile.profile_id}
+                className="data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-lg px-4 py-2.5 gap-2"
+              >
+                <User className="h-4 w-4" />
+                <span className="font-medium">{profile.profile_name || texts.unknownProfile}</span>
+              </TabsTrigger>
+            ))}
+          </TabsList>
+          
+          {dataByProfile.map(({ profile, data: profileData }) => (
+            <TabsContent key={profile.profile_id} value={profile.profile_id} className="mt-6">
+              {renderProfileData(profileData)}
+            </TabsContent>
           ))}
-        </TabsList>
-        
-        {dataByProfile.map(({ profile, data: profileData }) => (
-          <TabsContent key={profile.profile_id} value={profile.profile_id} className="mt-6">
-            {renderProfileData(profileData)}
-          </TabsContent>
-        ))}
-      </Tabs>
-    </motion.div>
+        </Tabs>
+      </motion.div>
+
+      {/* Hidden printable content */}
+      <div className="hidden">
+        <PrintableRelativesSummary
+          ref={printRef}
+          data={data}
+          profiles={profiles}
+          language={language}
+        />
+      </div>
+    </>
   );
 };
 
