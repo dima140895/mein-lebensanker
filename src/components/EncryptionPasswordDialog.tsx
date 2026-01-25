@@ -21,12 +21,14 @@ interface EncryptionPasswordDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   mode: 'unlock' | 'setup';
+  preventClose?: boolean;
 }
 
 export const EncryptionPasswordDialog: React.FC<EncryptionPasswordDialogProps> = ({
   open,
   onOpenChange,
   mode,
+  preventClose = false,
 }) => {
   const { language } = useLanguage();
   const { unlock, enableEncryption, migrationProgress, generatedRecoveryKey, clearGeneratedRecoveryKey } = useEncryption();
@@ -135,8 +137,8 @@ export const EncryptionPasswordDialog: React.FC<EncryptionPasswordDialogProps> =
   };
 
   const handleClose = () => {
-    // Don't allow closing during migration
-    if (migrationProgress?.isRunning) return;
+    // Don't allow closing during migration or if preventClose is set
+    if (migrationProgress?.isRunning || preventClose) return;
     
     setPassword('');
     setConfirmPassword('');
@@ -170,7 +172,7 @@ export const EncryptionPasswordDialog: React.FC<EncryptionPasswordDialogProps> =
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md" hideCloseButton={preventClose} onPointerDownOutside={preventClose ? (e) => e.preventDefault() : undefined} onEscapeKeyDown={preventClose ? (e) => e.preventDefault() : undefined}>
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             {mode === 'setup' ? (
@@ -262,9 +264,11 @@ export const EncryptionPasswordDialog: React.FC<EncryptionPasswordDialogProps> =
           )}
 
           <div className="flex gap-2 justify-end">
-            <Button type="button" variant="outline" onClick={handleClose} disabled={isMigrating}>
-              {t.cancel}
-            </Button>
+            {!preventClose && (
+              <Button type="button" variant="outline" onClick={handleClose} disabled={isMigrating}>
+                {t.cancel}
+              </Button>
+            )}
             <Button type="submit" disabled={isLoading || isMigrating || !password}>
               {isLoading || isMigrating ? (
                 <Loader2 className="h-4 w-4 animate-spin" />

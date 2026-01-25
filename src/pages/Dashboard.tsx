@@ -243,6 +243,7 @@ const DashboardContent = () => {
         open={showUnlockDialog} 
         onOpenChange={setShowUnlockDialog}
         mode="unlock"
+        preventClose
       />
     </>
   );
