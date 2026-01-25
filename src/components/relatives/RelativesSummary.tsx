@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { User, Wallet, Globe, Heart, FileText, Phone, Users, MapPin, Mail, Building } from 'lucide-react';
+import { User, Wallet, Globe, Heart, FileText, Phone, Users } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 
@@ -24,6 +24,7 @@ const RelativesSummary = ({ data, profileInfo }: RelativesSummaryProps) => {
 
   const t = {
     de: {
+      // Section titles
       personal: 'Persönliche Daten',
       assets: 'Vermögensübersicht',
       digital: 'Digitale Dienste',
@@ -33,35 +34,95 @@ const RelativesSummary = ({ data, profileInfo }: RelativesSummaryProps) => {
       forPerson: 'Informationen für',
       forPartner: 'Informationen für Partner',
       noInfo: 'Keine Angaben hinterlegt',
+      
+      // Personal fields
       name: 'Name',
       birthDate: 'Geburtsdatum',
       address: 'Adresse',
       phone: 'Telefon',
       trustedPersons: 'Vertrauenspersonen',
       emergencyContact: 'Notfallkontakt',
+      
+      // Assets fields
       bankAccounts: 'Bankkonten',
+      institute: 'Institut',
+      purpose: 'Verwendungszweck',
+      balance: 'Kontostand',
       properties: 'Immobilien',
+      propertyAddress: 'Adresse',
+      propertyType: 'Art',
+      ownership: 'Nutzung',
+      ownershipSelfOccupied: 'Eigennutzung',
+      ownershipRentedOut: 'Vermietung',
+      rentalIncome: 'Mieteinnahmen',
+      financingStatus: 'Finanzierung',
+      financingPaidOff: 'Abbezahlt',
+      financingFinanced: 'Finanziert',
+      outstandingLoan: 'Offener Kredit',
       insurances: 'Versicherungen',
+      insuranceType: 'Art',
+      insuranceCompany: 'Gesellschaft',
+      policyNumber: 'Policennummer',
+      surrenderValue: 'Rückkaufswert',
       valuables: 'Wertgegenstände',
+      description: 'Beschreibung',
+      location: 'Aufbewahrungsort',
+      
+      // Insurance types
+      insuranceTypes: {
+        life: 'Lebensversicherung',
+        health: 'Krankenversicherung',
+        liability: 'Haftpflichtversicherung',
+        household: 'Hausratversicherung',
+        building: 'Gebäudeversicherung',
+        car: 'KFZ-Versicherung',
+        disability: 'Berufsunfähigkeitsversicherung',
+        accident: 'Unfallversicherung',
+        legal: 'Rechtsschutzversicherung',
+        pension: 'Private Rentenversicherung',
+        travel: 'Reiseversicherung',
+        other: 'Sonstige',
+      },
+      
+      // Digital fields
       emailAccounts: 'E-Mail-Konten',
+      provider: 'Anbieter',
+      emailAddress: 'E-Mail-Adresse',
       socialMedia: 'Soziale Medien',
+      platform: 'Plattform',
+      username: 'Benutzername',
       subscriptions: 'Abonnements',
+      service: 'Dienst',
       passwordManager: 'Passwort-Manager',
+      
+      // Wishes fields
       medicalWishes: 'Medizinische Wünsche',
       carePreferences: 'Pflegewünsche',
       funeralWishes: 'Beerdigungswünsche',
       organDonation: 'Organspende',
+      otherWishes: 'Weitere Wünsche',
+      
+      // Documents fields
       testament: 'Testament',
       powerOfAttorney: 'Vorsorgevollmacht',
       livingWill: 'Patientenverfügung',
       insuranceDocs: 'Versicherungsunterlagen',
       propertyDocs: 'Immobilienunterlagen',
       otherDocs: 'Sonstige Dokumente',
+      
+      // Contacts fields
       personalContacts: 'Persönliche Kontakte',
       professionalContacts: 'Fachliche Kontakte',
+      contactName: 'Name',
+      contactPhone: 'Telefon',
+      contactEmail: 'E-Mail',
+      contactRelation: 'Beziehung',
+      professionalType: 'Fachrichtung',
+      
       notes: 'Hinweise',
     },
     en: {
+      // Section titles
       personal: 'Personal Information',
       assets: 'Asset Overview',
       digital: 'Digital Services',
@@ -71,32 +132,91 @@ const RelativesSummary = ({ data, profileInfo }: RelativesSummaryProps) => {
       forPerson: 'Information for',
       forPartner: 'Information for Partner',
       noInfo: 'No information provided',
+      
+      // Personal fields
       name: 'Name',
       birthDate: 'Date of Birth',
       address: 'Address',
       phone: 'Phone',
       trustedPersons: 'Trusted Persons',
       emergencyContact: 'Emergency Contact',
+      
+      // Assets fields
       bankAccounts: 'Bank Accounts',
+      institute: 'Institute',
+      purpose: 'Purpose',
+      balance: 'Balance',
       properties: 'Properties',
-      insurances: 'Insurances',
+      propertyAddress: 'Address',
+      propertyType: 'Type',
+      ownership: 'Usage',
+      ownershipSelfOccupied: 'Self-occupied',
+      ownershipRentedOut: 'Rented out',
+      rentalIncome: 'Rental Income',
+      financingStatus: 'Financing',
+      financingPaidOff: 'Paid off',
+      financingFinanced: 'Financed',
+      outstandingLoan: 'Outstanding Loan',
+      insurances: 'Insurance Policies',
+      insuranceType: 'Type',
+      insuranceCompany: 'Company',
+      policyNumber: 'Policy Number',
+      surrenderValue: 'Surrender Value',
       valuables: 'Valuables',
+      description: 'Description',
+      location: 'Storage Location',
+      
+      // Insurance types
+      insuranceTypes: {
+        life: 'Life Insurance',
+        health: 'Health Insurance',
+        liability: 'Liability Insurance',
+        household: 'Household Insurance',
+        building: 'Building Insurance',
+        car: 'Car Insurance',
+        disability: 'Disability Insurance',
+        accident: 'Accident Insurance',
+        legal: 'Legal Protection',
+        pension: 'Private Pension',
+        travel: 'Travel Insurance',
+        other: 'Other',
+      },
+      
+      // Digital fields
       emailAccounts: 'Email Accounts',
+      provider: 'Provider',
+      emailAddress: 'Email Address',
       socialMedia: 'Social Media',
+      platform: 'Platform',
+      username: 'Username',
       subscriptions: 'Subscriptions',
+      service: 'Service',
       passwordManager: 'Password Manager',
+      
+      // Wishes fields
       medicalWishes: 'Medical Wishes',
       carePreferences: 'Care Preferences',
       funeralWishes: 'Funeral Wishes',
       organDonation: 'Organ Donation',
+      otherWishes: 'Other Wishes',
+      
+      // Documents fields
       testament: 'Will',
       powerOfAttorney: 'Power of Attorney',
       livingWill: 'Living Will',
       insuranceDocs: 'Insurance Documents',
       propertyDocs: 'Property Documents',
       otherDocs: 'Other Documents',
+      
+      // Contacts fields
       personalContacts: 'Personal Contacts',
       professionalContacts: 'Professional Contacts',
+      contactName: 'Name',
+      contactPhone: 'Phone',
+      contactEmail: 'Email',
+      contactRelation: 'Relation',
+      professionalType: 'Profession',
+      
       notes: 'Notes',
     },
   };
@@ -135,25 +255,173 @@ const RelativesSummary = ({ data, profileInfo }: RelativesSummaryProps) => {
     );
   };
 
-  const renderArrayItems = (items: Array<Record<string, unknown>>, labelKey: string) => {
+  const getInsuranceTypeLabel = (type: string): string => {
+    if (!type) return '';
+    const key = type as keyof typeof texts.insuranceTypes;
+    return texts.insuranceTypes[key] || type;
+  };
+
+  const getOwnershipLabel = (ownership: string, ownershipOther?: string): string => {
+    if (ownership === 'self-occupied') return texts.ownershipSelfOccupied;
+    if (ownership === 'rented-out') return texts.ownershipRentedOut;
+    if (ownership === 'other' && ownershipOther) return ownershipOther;
+    return ownership;
+  };
+
+  const getFinancingLabel = (status: string): string => {
+    if (status === 'paid-off') return texts.financingPaidOff;
+    if (status === 'financed') return texts.financingFinanced;
+    return status;
+  };
+
+  const renderBankAccounts = (accounts: Array<Record<string, unknown>>) => {
+    const validAccounts = accounts?.filter(acc => 
+      acc.institute && typeof acc.institute === 'string' && acc.institute.trim()
+    ) || [];
+    
+    if (validAccounts.length === 0) return null;
+
+    return (
+      <div className="space-y-2">
+        <span className="text-sm font-medium text-foreground">{texts.bankAccounts}</span>
+        {validAccounts.map((acc, i) => (
+          <div key={i} className="rounded-lg bg-background/50 p-3 text-sm space-y-1">
+            {acc.institute && <p><span className="text-muted-foreground">{texts.institute}: </span>{String(acc.institute)}</p>}
+            {acc.purpose && <p><span className="text-muted-foreground">{texts.purpose}: </span>{String(acc.purpose)}</p>}
+            {acc.balance && <p><span className="text-muted-foreground">{texts.balance}: </span>{String(acc.balance)}</p>}
+          </div>
+        ))}
+      </div>
+    );
+  };
+
+  const renderProperties = (properties: Array<Record<string, unknown>>) => {
+    const validProperties = properties?.filter(prop => 
+      prop.address && typeof prop.address === 'string' && prop.address.trim()
+    ) || [];
+    
+    if (validProperties.length === 0) return null;
+
+    return (
+      <div className="space-y-2">
+        <span className="text-sm font-medium text-foreground">{texts.properties}</span>
+        {validProperties.map((prop, i) => (
+          <div key={i} className="rounded-lg bg-background/50 p-3 text-sm space-y-1">
+            {prop.address && <p><span className="text-muted-foreground">{texts.propertyAddress}: </span>{String(prop.address)}</p>}
+            {prop.type && <p><span className="text-muted-foreground">{texts.propertyType}: </span>{String(prop.type)}</p>}
+            {prop.ownership && <p><span className="text-muted-foreground">{texts.ownership}: </span>{getOwnershipLabel(String(prop.ownership), String(prop.ownershipOther || ''))}</p>}
+            {prop.rentalIncome && <p><span className="text-muted-foreground">{texts.rentalIncome}: </span>{String(prop.rentalIncome)}</p>}
+            {prop.financingStatus && <p><span className="text-muted-foreground">{texts.financingStatus}: </span>{getFinancingLabel(String(prop.financingStatus))}</p>}
+            {prop.outstandingLoan && <p><span className="text-muted-foreground">{texts.outstandingLoan}: </span>{String(prop.outstandingLoan)}</p>}
+          </div>
+        ))}
+      </div>
+    );
+  };
+
+  const renderInsurances = (insurances: Array<Record<string, unknown>>) => {
+    const validInsurances = insurances?.filter(ins => 
+      (ins.type && typeof ins.type === 'string' && ins.type.trim()) ||
+      (ins.company && typeof ins.company === 'string' && ins.company.trim())
+    ) || [];
+    
+    if (validInsurances.length === 0) return null;
+
+    return (
+      <div className="space-y-2">
+        <span className="text-sm font-medium text-foreground">{texts.insurances}</span>
+        {validInsurances.map((ins, i) => (
+          <div key={i} className="rounded-lg bg-background/50 p-3 text-sm space-y-1">
+            {ins.type && <p><span className="text-muted-foreground">{texts.insuranceType}: </span>{ins.type === 'other' && ins.typeOther ? String(ins.typeOther) : getInsuranceTypeLabel(String(ins.type))}</p>}
+            {ins.company && <p><span className="text-muted-foreground">{texts.insuranceCompany}: </span>{ins.company === 'other' && ins.companyOther ? String(ins.companyOther) : String(ins.company)}</p>}
+            {ins.policyNumber && <p><span className="text-muted-foreground">{texts.policyNumber}: </span>{String(ins.policyNumber)}</p>}
+            {ins.surrenderValue && <p><span className="text-muted-foreground">{texts.surrenderValue}: </span>{String(ins.surrenderValue)}</p>}
+          </div>
+        ))}
+      </div>
+    );
+  };
+
+  const renderValuables = (valuables: Array<Record<string, unknown>>) => {
+    const validValuables = valuables?.filter(val => 
+      val.description && typeof val.description === 'string' && val.description.trim()
+    ) || [];
+    
+    if (validValuables.length === 0) return null;
+
+    return (
+      <div className="space-y-2">
+        <span className="text-sm font-medium text-foreground">{texts.valuables}</span>
+        {validValuables.map((val, i) => (
+          <div key={i} className="rounded-lg bg-background/50 p-3 text-sm space-y-1">
+            {val.description && <p><span className="text-muted-foreground">{texts.description}: </span>{String(val.description)}</p>}
+            {val.location && <p><span className="text-muted-foreground">{texts.location}: </span>{String(val.location)}</p>}
+          </div>
+        ))}
+      </div>
+    );
+  };
+
+  const renderDigitalItems = (items: Array<Record<string, unknown>>, type: 'email' | 'social' | 'subscription') => {
     const validItems = items?.filter(item => 
       Object.values(item).some(v => v && typeof v === 'string' && v.trim())
     ) || [];
     
     if (validItems.length === 0) return null;
 
+    const titleMap = {
+      email: texts.emailAccounts,
+      social: texts.socialMedia,
+      subscription: texts.subscriptions,
+    };
+
     return (
       <div className="space-y-2">
+        <span className="text-sm font-medium text-foreground">{titleMap[type]}</span>
         {validItems.map((item, i) => (
-          <div key={i} className="rounded-lg bg-background/50 p-3 text-sm">
-            {Object.entries(item).map(([key, value]) => (
-              value && typeof value === 'string' && value.trim() && (
-                <p key={key} className="text-foreground">
-                  <span className="text-muted-foreground">{key}: </span>
-                  {value}
-                </p>
-              )
-            ))}
+          <div key={i} className="rounded-lg bg-background/50 p-3 text-sm space-y-1">
+            {type === 'email' && (
+              <>
+                {item.provider && <p><span className="text-muted-foreground">{texts.provider}: </span>{String(item.provider)}</p>}
+                {item.email && <p><span className="text-muted-foreground">{texts.emailAddress}: </span>{String(item.email)}</p>}
+              </>
+            )}
+            {type === 'social' && (
+              <>
+                {item.platform && <p><span className="text-muted-foreground">{texts.platform}: </span>{String(item.platform)}</p>}
+                {item.username && <p><span className="text-muted-foreground">{texts.username}: </span>{String(item.username)}</p>}
+              </>
+            )}
+            {type === 'subscription' && (
+              <>
+                {item.service && <p><span className="text-muted-foreground">{texts.service}: </span>{String(item.service)}</p>}
+              </>
+            )}
+          </div>
+        ))}
+      </div>
+    );
+  };
+
+  const renderContacts = (contacts: Array<Record<string, unknown>>, isProfessional: boolean) => {
+    const validContacts = contacts?.filter(contact => 
+      contact.name && typeof contact.name === 'string' && contact.name.trim()
+    ) || [];
+    
+    if (validContacts.length === 0) return null;
+
+    return (
+      <div className="space-y-2">
+        <span className="text-sm font-medium text-foreground">
+          {isProfessional ? texts.professionalContacts : texts.personalContacts}
+        </span>
+        {validContacts.map((contact, i) => (
+          <div key={i} className="rounded-lg bg-background/50 p-3 text-sm space-y-1">
+            {contact.name && <p><span className="text-muted-foreground">{texts.contactName}: </span>{String(contact.name)}</p>}
+            {isProfessional && contact.type && <p><span className="text-muted-foreground">{texts.professionalType}: </span>{String(contact.type)}</p>}
+            {!isProfessional && contact.relation && <p><span className="text-muted-foreground">{texts.contactRelation}: </span>{String(contact.relation)}</p>}
+            {contact.phone && <p><span className="text-muted-foreground">{texts.contactPhone}: </span>{String(contact.phone)}</p>}
+            {contact.email && <p><span className="text-muted-foreground">{texts.contactEmail}: </span>{String(contact.email)}</p>}
           </div>
         ))}
       </div>
@@ -161,9 +429,6 @@ const RelativesSummary = ({ data, profileInfo }: RelativesSummaryProps) => {
   };
 
   const renderSection = (sectionKey: string, sectionData: Record<string, unknown>) => {
-    const Icon = sectionIcons[sectionKey] || FileText;
-    const color = sectionColors[sectionKey] || 'bg-sage-light text-sage-dark';
-
     switch (sectionKey) {
       case 'personal':
         return (
@@ -175,14 +440,27 @@ const RelativesSummary = ({ data, profileInfo }: RelativesSummaryProps) => {
             {(sectionData.trustedPerson1 || sectionData.trustedPerson2) && (
               <div className="pt-4">
                 <span className="text-sm font-medium text-foreground">{texts.trustedPersons}</span>
-                {renderInfoItem('', `${sectionData.trustedPerson1 || ''} ${sectionData.trustedPerson1Phone ? `(${sectionData.trustedPerson1Phone})` : ''}`)}
-                {renderInfoItem('', `${sectionData.trustedPerson2 || ''} ${sectionData.trustedPerson2Phone ? `(${sectionData.trustedPerson2Phone})` : ''}`)}
+                {sectionData.trustedPerson1 && (
+                  <p className="text-foreground text-sm mt-1">
+                    {String(sectionData.trustedPerson1)}
+                    {sectionData.trustedPerson1Phone && ` (${sectionData.trustedPerson1Phone})`}
+                  </p>
+                )}
+                {sectionData.trustedPerson2 && (
+                  <p className="text-foreground text-sm mt-1">
+                    {String(sectionData.trustedPerson2)}
+                    {sectionData.trustedPerson2Phone && ` (${sectionData.trustedPerson2Phone})`}
+                  </p>
+                )}
               </div>
             )}
             {sectionData.emergencyContact && (
               <div className="pt-4">
                 <span className="text-sm font-medium text-foreground">{texts.emergencyContact}</span>
-                {renderInfoItem('', `${sectionData.emergencyContact} ${sectionData.emergencyPhone ? `(${sectionData.emergencyPhone})` : ''}`)}
+                <p className="text-foreground text-sm mt-1">
+                  {String(sectionData.emergencyContact)}
+                  {sectionData.emergencyPhone && ` (${sectionData.emergencyPhone})`}
+                </p>
               </div>
             )}
             {renderInfoItem(texts.notes, sectionData.notes)}
@@ -192,30 +470,10 @@ const RelativesSummary = ({ data, profileInfo }: RelativesSummaryProps) => {
       case 'assets':
         return (
           <div className="space-y-4">
-            {(sectionData.bankAccounts as Array<Record<string, unknown>>)?.length > 0 && (
-              <div>
-                <span className="text-sm font-medium text-foreground block mb-2">{texts.bankAccounts}</span>
-                {renderArrayItems(sectionData.bankAccounts as Array<Record<string, unknown>>, 'institute')}
-              </div>
-            )}
-            {(sectionData.properties as Array<Record<string, unknown>>)?.length > 0 && (
-              <div>
-                <span className="text-sm font-medium text-foreground block mb-2">{texts.properties}</span>
-                {renderArrayItems(sectionData.properties as Array<Record<string, unknown>>, 'address')}
-              </div>
-            )}
-            {(sectionData.insurances as Array<Record<string, unknown>>)?.length > 0 && (
-              <div>
-                <span className="text-sm font-medium text-foreground block mb-2">{texts.insurances}</span>
-                {renderArrayItems(sectionData.insurances as Array<Record<string, unknown>>, 'type')}
-              </div>
-            )}
-            {(sectionData.valuables as Array<Record<string, unknown>>)?.length > 0 && (
-              <div>
-                <span className="text-sm font-medium text-foreground block mb-2">{texts.valuables}</span>
-                {renderArrayItems(sectionData.valuables as Array<Record<string, unknown>>, 'description')}
-              </div>
-            )}
+            {renderBankAccounts(sectionData.bankAccounts as Array<Record<string, unknown>>)}
+            {renderProperties(sectionData.properties as Array<Record<string, unknown>>)}
+            {renderInsurances(sectionData.insurances as Array<Record<string, unknown>>)}
+            {renderValuables(sectionData.valuables as Array<Record<string, unknown>>)}
             {renderInfoItem(texts.notes, sectionData.notes)}
           </div>
         );
@@ -223,24 +481,9 @@ const RelativesSummary = ({ data, profileInfo }: RelativesSummaryProps) => {
       case 'digital':
         return (
           <div className="space-y-4">
-            {(sectionData.emailAccounts as Array<Record<string, unknown>>)?.length > 0 && (
-              <div>
-                <span className="text-sm font-medium text-foreground block mb-2">{texts.emailAccounts}</span>
-                {renderArrayItems(sectionData.emailAccounts as Array<Record<string, unknown>>, 'provider')}
-              </div>
-            )}
-            {(sectionData.socialMedia as Array<Record<string, unknown>>)?.length > 0 && (
-              <div>
-                <span className="text-sm font-medium text-foreground block mb-2">{texts.socialMedia}</span>
-                {renderArrayItems(sectionData.socialMedia as Array<Record<string, unknown>>, 'platform')}
-              </div>
-            )}
-            {(sectionData.subscriptions as Array<Record<string, unknown>>)?.length > 0 && (
-              <div>
-                <span className="text-sm font-medium text-foreground block mb-2">{texts.subscriptions}</span>
-                {renderArrayItems(sectionData.subscriptions as Array<Record<string, unknown>>, 'service')}
-              </div>
-            )}
+            {renderDigitalItems(sectionData.emailAccounts as Array<Record<string, unknown>>, 'email')}
+            {renderDigitalItems(sectionData.socialMedia as Array<Record<string, unknown>>, 'social')}
+            {renderDigitalItems(sectionData.subscriptions as Array<Record<string, unknown>>, 'subscription')}
             {renderInfoItem(texts.passwordManager, sectionData.passwordManagerInfo)}
             {renderInfoItem(texts.notes, sectionData.notes)}
           </div>
@@ -253,7 +496,8 @@ const RelativesSummary = ({ data, profileInfo }: RelativesSummaryProps) => {
             {renderInfoItem(texts.carePreferences, sectionData.carePreferences)}
             {renderInfoItem(texts.funeralWishes, sectionData.funeralWishes)}
             {renderInfoItem(texts.organDonation, sectionData.organDonation)}
-            {renderInfoItem(texts.notes, sectionData.otherWishes)}
+            {renderInfoItem(texts.otherWishes, sectionData.otherWishes)}
+            {renderInfoItem(texts.notes, sectionData.notes)}
           </div>
         );
 
@@ -273,18 +517,8 @@ const RelativesSummary = ({ data, profileInfo }: RelativesSummaryProps) => {
       case 'contacts':
         return (
           <div className="space-y-4">
-            {(sectionData.contacts as Array<Record<string, unknown>>)?.length > 0 && (
-              <div>
-                <span className="text-sm font-medium text-foreground block mb-2">{texts.personalContacts}</span>
-                {renderArrayItems(sectionData.contacts as Array<Record<string, unknown>>, 'name')}
-              </div>
-            )}
-            {(sectionData.professionals as Array<Record<string, unknown>>)?.length > 0 && (
-              <div>
-                <span className="text-sm font-medium text-foreground block mb-2">{texts.professionalContacts}</span>
-                {renderArrayItems(sectionData.professionals as Array<Record<string, unknown>>, 'type')}
-              </div>
-            )}
+            {renderContacts(sectionData.contacts as Array<Record<string, unknown>>, false)}
+            {renderContacts(sectionData.professionals as Array<Record<string, unknown>>, true)}
             {renderInfoItem(texts.notes, sectionData.notes)}
           </div>
         );
@@ -294,11 +528,25 @@ const RelativesSummary = ({ data, profileInfo }: RelativesSummaryProps) => {
     }
   };
 
+  const hasContent = (sectionData: Record<string, unknown>): boolean => {
+    return Object.values(sectionData).some(value => {
+      if (Array.isArray(value)) {
+        return value.some(item => 
+          Object.values(item).some(v => v && typeof v === 'string' && v.trim())
+        );
+      }
+      return value && typeof value === 'string' && value.trim();
+    });
+  };
+
   const renderPersonData = (personData: VorsorgeData[], personName: string | null, isPartner: boolean) => {
-    if (personData.length === 0) return null;
+    // Filter out empty sections
+    const nonEmptyData = personData.filter(item => hasContent(item.data));
+    
+    if (nonEmptyData.length === 0) return null;
 
     const sectionOrder = ['personal', 'assets', 'digital', 'wishes', 'documents', 'contacts'];
-    const sortedData = personData.sort((a, b) => 
+    const sortedData = nonEmptyData.sort((a, b) => 
       sectionOrder.indexOf(a.section_key) - sectionOrder.indexOf(b.section_key)
     );
 
@@ -339,7 +587,12 @@ const RelativesSummary = ({ data, profileInfo }: RelativesSummaryProps) => {
                       <Icon className="h-4 w-4" />
                     </div>
                     <span className="font-serif font-semibold text-foreground">
-                      {texts[item.section_key as keyof typeof texts] || item.section_key}
+                      {item.section_key === 'personal' && texts.personal}
+                      {item.section_key === 'assets' && texts.assets}
+                      {item.section_key === 'digital' && texts.digital}
+                      {item.section_key === 'wishes' && texts.wishes}
+                      {item.section_key === 'documents' && texts.documents}
+                      {item.section_key === 'contacts' && texts.contacts}
                     </span>
                   </div>
                 </AccordionTrigger>
