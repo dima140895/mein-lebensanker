@@ -15,6 +15,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Progress } from '@/components/ui/progress';
 import { Lock, Shield, AlertTriangle, Eye, EyeOff, Loader2, Key, Trash2, CheckCircle2, PlayCircle } from 'lucide-react';
 import { toast } from 'sonner';
+import { cn } from '@/lib/utils';
 import { RecoveryKeyDialog } from './RecoveryKeyDialog';
 import { RecoveryKeyRecoveryDialog } from './RecoveryKeyRecoveryDialog';
 import { ResetEncryptionDialog } from './ResetEncryptionDialog';
@@ -218,7 +219,10 @@ export const EncryptionPasswordDialog: React.FC<EncryptionPasswordDialogProps> =
   return (
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent 
-        className={showVisualGuide ? "sm:max-w-xl" : "sm:max-w-md"} 
+        className={cn(
+          "max-h-[90vh] flex flex-col",
+          showVisualGuide ? "sm:max-w-xl" : "sm:max-w-md"
+        )}
         hideCloseButton={preventClose} 
         onPointerDownOutside={preventClose ? (e) => e.preventDefault() : undefined} 
         onEscapeKeyDown={preventClose ? (e) => e.preventDefault() : undefined}
@@ -239,7 +243,9 @@ export const EncryptionPasswordDialog: React.FC<EncryptionPasswordDialogProps> =
           </DialogHeader>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-5 max-h-[60vh] overflow-y-auto pr-1">
+        <form onSubmit={handleSubmit} className="flex flex-col flex-1 min-h-0">
+          {/* Scrollable content wrapper */}
+          <div className="overflow-y-auto flex-1 space-y-5 -mx-6 px-6">
           {mode === 'setup' && !showVisualGuide && (
             <div className="space-y-4">
               {/* Watch explanation button */}
@@ -383,10 +389,11 @@ export const EncryptionPasswordDialog: React.FC<EncryptionPasswordDialogProps> =
               </button>
             </div>
           )}
-
-          {/* Only show buttons when visual guide is not active */}
+          </div>
+          
+          {/* Fixed footer buttons */}
           {!showVisualGuide && (
-            <div className="flex gap-3 justify-end pt-2">
+            <div className="flex gap-3 justify-end pt-4 border-t border-border -mx-6 px-6 mt-4 bg-background">
               {!preventClose && (
                 <Button type="button" variant="outline" onClick={handleClose} disabled={isMigrating} className="h-11">
                   {t.cancel}
