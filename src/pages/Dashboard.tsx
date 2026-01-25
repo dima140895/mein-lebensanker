@@ -47,11 +47,13 @@ const DashboardContent = () => {
   // Valid sections that can be set via URL (includes hidden sections like upgrade/payment)
   const validUrlSections = [...sections.map(s => s.key), 'upgrade', 'payment'];
 
-  // Read section from URL on mount
+  // Sync activeSection with URL - also reset to overview when no section in URL
   useEffect(() => {
     const sectionFromUrl = searchParams.get('section');
     if (sectionFromUrl && validUrlSections.includes(sectionFromUrl)) {
       setActiveSection(sectionFromUrl);
+    } else {
+      setActiveSection(null);
     }
   }, [searchParams]);
 
