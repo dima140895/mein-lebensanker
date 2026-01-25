@@ -72,15 +72,25 @@ const DashboardContent = () => {
       subtitle: 'Wähle einen Bereich zum Ausfüllen',
       back: 'Zurück zur Übersicht',
       about: 'Was ist das?',
+      aboutDesc: 'Erfahre, wie dieses Tool Dir hilft',
       personal: 'Persönliche Daten',
+      personalDesc: 'Name, Geburtsdatum, Anschrift, wichtige Nummern',
       assets: 'Vermögen',
+      assetsDesc: 'Konten, Immobilien, Versicherungen, Schulden',
       digital: 'Digital',
+      digitalDesc: 'Passwörter, Online-Konten, digitaler Nachlass',
       wishes: 'Wünsche',
+      wishesDesc: 'Bestattung, Trauerfeier, persönliche Wünsche',
       documents: 'Dokumente',
+      documentsDesc: 'Wichtige Unterlagen hochladen & verwalten',
       contacts: 'Kontakte',
+      contactsDesc: 'Angehörige, Ärzte, Anwälte, Berater',
       guidance: 'Orientierung',
+      guidanceDesc: 'Hilfreiche Tipps und nächste Schritte',
       decision: 'Entscheidungen',
+      decisionDesc: 'Unterstützung bei schwierigen Fragen',
       share: 'Für Angehörige',
+      shareDesc: 'Sicheren Zugangslink erstellen & verwalten',
       you: 'Für mich',
       partner: 'Für Partner',
       notPaid: 'Um Deine Daten zu speichern, wähle ein Paket:',
@@ -90,15 +100,25 @@ const DashboardContent = () => {
       subtitle: 'Select a section to fill out',
       back: 'Back to Overview',
       about: 'What is this?',
+      aboutDesc: 'Learn how this tool helps you',
       personal: 'Personal',
+      personalDesc: 'Name, birth date, address, important numbers',
       assets: 'Assets',
+      assetsDesc: 'Accounts, property, insurance, debts',
       digital: 'Digital',
+      digitalDesc: 'Passwords, online accounts, digital legacy',
       wishes: 'Wishes',
+      wishesDesc: 'Burial, memorial service, personal wishes',
       documents: 'Documents',
+      documentsDesc: 'Upload & manage important documents',
       contacts: 'Contacts',
+      contactsDesc: 'Family, doctors, lawyers, advisors',
       guidance: 'Guidance',
+      guidanceDesc: 'Helpful tips and next steps',
       decision: 'Decisions',
+      decisionDesc: 'Support for difficult questions',
       share: 'For Relatives',
+      shareDesc: 'Create & manage secure access link',
       you: 'For Me',
       partner: 'For Partner',
       notPaid: 'To save your data, choose a package:',
@@ -171,6 +191,7 @@ const DashboardContent = () => {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 max-w-4xl mx-auto">
         {sections.map((section, i) => {
           const Icon = section.icon;
+          const descKey = `${section.key}Desc` as keyof typeof texts;
           return (
             <motion.button
               key={section.key}
@@ -178,14 +199,19 @@ const DashboardContent = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.1 }}
               onClick={() => handleSectionChange(section.key)}
-              className="flex items-center gap-4 p-6 rounded-xl border border-border bg-card shadow-card hover:shadow-elevated transition-all text-left"
+              className="flex items-start gap-4 p-6 rounded-xl border border-border bg-card shadow-card hover:shadow-elevated transition-all text-left"
             >
-              <div className={`h-12 w-12 rounded-lg flex items-center justify-center ${section.color}`}>
+              <div className={`h-12 w-12 rounded-lg flex items-center justify-center flex-shrink-0 ${section.color}`}>
                 <Icon className="h-6 w-6" />
               </div>
-              <span className="font-serif text-lg font-semibold text-foreground">
-                {texts[section.key as keyof typeof texts]}
-              </span>
+              <div className="flex flex-col gap-1">
+                <span className="font-serif text-lg font-semibold text-foreground">
+                  {texts[section.key as keyof typeof texts]}
+                </span>
+                <span className="text-sm text-muted-foreground">
+                  {texts[descKey]}
+                </span>
+              </div>
             </motion.button>
           );
         })}
