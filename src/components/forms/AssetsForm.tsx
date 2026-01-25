@@ -51,7 +51,40 @@ const AssetsForm = ({ isPartner = false }: AssetsFormProps) => {
       outstandingLoan: 'Offener Kreditsaldo (optional)',
       insurances: 'Versicherungen',
       insuranceType: 'Versicherungsart',
+      selectInsuranceType: 'Versicherungsart wählen',
+      insuranceTypes: {
+        life: 'Lebensversicherung',
+        health: 'Krankenversicherung',
+        liability: 'Haftpflichtversicherung',
+        household: 'Hausratversicherung',
+        building: 'Gebäudeversicherung',
+        car: 'KFZ-Versicherung',
+        disability: 'Berufsunfähigkeitsversicherung',
+        accident: 'Unfallversicherung',
+        legal: 'Rechtsschutzversicherung',
+        pension: 'Private Rentenversicherung',
+        travel: 'Reiseversicherung',
+        other: 'Sonstige',
+      },
       company: 'Versicherungsgesellschaft',
+      selectCompany: 'Gesellschaft wählen',
+      companies: {
+        allianz: 'Allianz',
+        axa: 'AXA',
+        ergo: 'ERGO',
+        generali: 'Generali',
+        huk: 'HUK-COBURG',
+        debeka: 'Debeka',
+        signal: 'Signal Iduna',
+        provinzial: 'Provinzial',
+        lvm: 'LVM',
+        vgh: 'VGH',
+        devk: 'DEVK',
+        zurich: 'Zurich',
+        swisslife: 'Swiss Life',
+        nuernberger: 'Nürnberger',
+        other: 'Sonstige',
+      },
       policyNumber: 'Policennummer (optional)',
       surrenderValue: 'Rückkaufswert (optional)',
       valuables: 'Wertgegenstände',
@@ -86,7 +119,40 @@ const AssetsForm = ({ isPartner = false }: AssetsFormProps) => {
       outstandingLoan: 'Outstanding loan balance (optional)',
       insurances: 'Insurance Policies',
       insuranceType: 'Insurance Type',
+      selectInsuranceType: 'Select insurance type',
+      insuranceTypes: {
+        life: 'Life Insurance',
+        health: 'Health Insurance',
+        liability: 'Liability Insurance',
+        household: 'Household Insurance',
+        building: 'Building Insurance',
+        car: 'Car Insurance',
+        disability: 'Disability Insurance',
+        accident: 'Accident Insurance',
+        legal: 'Legal Protection',
+        pension: 'Private Pension',
+        travel: 'Travel Insurance',
+        other: 'Other',
+      },
       company: 'Insurance Company',
+      selectCompany: 'Select company',
+      companies: {
+        allianz: 'Allianz',
+        axa: 'AXA',
+        ergo: 'ERGO',
+        generali: 'Generali',
+        huk: 'HUK-COBURG',
+        debeka: 'Debeka',
+        signal: 'Signal Iduna',
+        provinzial: 'Provinzial',
+        lvm: 'LVM',
+        vgh: 'VGH',
+        devk: 'DEVK',
+        zurich: 'Zurich',
+        swisslife: 'Swiss Life',
+        nuernberger: 'Nürnberger',
+        other: 'Other',
+      },
       policyNumber: 'Policy Number (optional)',
       surrenderValue: 'Surrender Value (optional)',
       valuables: 'Valuables',
@@ -282,27 +348,47 @@ const AssetsForm = ({ isPartner = false }: AssetsFormProps) => {
         <h3 className="font-serif text-lg font-semibold text-foreground">{texts.insurances}</h3>
         {data.insurances.map((ins, i) => (
           <div key={i} className="flex gap-3 items-start">
-            <div className="flex-1 grid gap-3 md:grid-cols-2 lg:grid-cols-4">
-              <Input
-                value={ins.type}
-                onChange={(e) => updateItem('insurances', i, 'type', e.target.value)}
-                placeholder={texts.insuranceType}
-              />
-              <Input
-                value={ins.company}
-                onChange={(e) => updateItem('insurances', i, 'company', e.target.value)}
-                placeholder={texts.company}
-              />
-              <Input
-                value={ins.policyNumber}
-                onChange={(e) => updateItem('insurances', i, 'policyNumber', e.target.value)}
-                placeholder={texts.policyNumber}
-              />
-              <Input
-                value={ins.surrenderValue || ''}
-                onChange={(e) => updateItem('insurances', i, 'surrenderValue', e.target.value)}
-                placeholder={texts.surrenderValue}
-              />
+            <div className="flex-1 space-y-3">
+              <div className="grid gap-3 md:grid-cols-2">
+                <Select
+                  value={ins.type || ''}
+                  onValueChange={(value) => updateItem('insurances', i, 'type', value)}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder={texts.selectInsuranceType} />
+                  </SelectTrigger>
+                  <SelectContent className="bg-background border border-border shadow-lg z-50">
+                    {Object.entries(texts.insuranceTypes).map(([key, label]) => (
+                      <SelectItem key={key} value={key}>{label}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Select
+                  value={ins.company || ''}
+                  onValueChange={(value) => updateItem('insurances', i, 'company', value)}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder={texts.selectCompany} />
+                  </SelectTrigger>
+                  <SelectContent className="bg-background border border-border shadow-lg z-50">
+                    {Object.entries(texts.companies).map(([key, label]) => (
+                      <SelectItem key={key} value={key}>{label}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="grid gap-3 md:grid-cols-2">
+                <Input
+                  value={ins.policyNumber}
+                  onChange={(e) => updateItem('insurances', i, 'policyNumber', e.target.value)}
+                  placeholder={texts.policyNumber}
+                />
+                <Input
+                  value={ins.surrenderValue || ''}
+                  onChange={(e) => updateItem('insurances', i, 'surrenderValue', e.target.value)}
+                  placeholder={texts.surrenderValue}
+                />
+              </div>
             </div>
             <Button variant="ghost" size="icon" onClick={() => removeItem('insurances', i)}>
               <Trash2 className="h-4 w-4 text-destructive" />
