@@ -143,7 +143,6 @@ const Header = () => {
       recoveryKey: 'New Recovery Key',
       forgotPassword: 'Forgot password?',
     },
-    },
   };
 
   const tx = texts[language];
