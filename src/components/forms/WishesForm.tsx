@@ -1,24 +1,32 @@
+import { useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Save, Info, Scale } from 'lucide-react';
+import { Info, Scale } from 'lucide-react';
 import { useFormData, WishesData } from '@/contexts/FormContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
-import { Button } from '@/components/ui/button';
+import { useProfiles } from '@/contexts/ProfileContext';
+import { useAutoSave } from '@/hooks/useAutoSave';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { toast } from 'sonner';
 
 const WishesForm = () => {
-  const { formData, updateSection, saveSection, saving } = useFormData();
+  const { formData, updateSection } = useFormData();
   const { profile } = useAuth();
   const { language } = useLanguage();
+  const { activeProfileId } = useProfiles();
+  const { handleBlur, resetSaveState } = useAutoSave({ section: 'wishes' });
   
   const data = formData.wishes;
+
+  // Reset save state when profile changes
+  useEffect(() => {
+    resetSaveState();
+  }, [activeProfileId, resetSaveState]);
 
   const t = {
     de: {
       title: 'Persönliche Wünsche',
-      disclaimer: 'Diese Angaben dienen der Kommunikation Deiner Wünsche. Sie ersetzen keine Patientenverfügung oder andere rechtliche Dokumente.',
+      disclaimer: 'Diese Angaben dienen der Kommunikation Deiner Wünsche. Sie ersetzen keine Patientenverfügung oder andere rechtliche Dokumente. Änderungen werden automatisch gespeichert.',
       legalNote: 'Für rechtlich bindende Dokumente wende Dich an einen Notar oder Rechtsanwalt.',
       medicalWishes: 'Medizinische Wünsche',
       medicalPlaceholder: 'Welche medizinischen Wünsche möchtest du festhalten? (z.B. Behandlungswünsche, Therapieformen)',
@@ -31,12 +39,10 @@ const WishesForm = () => {
       otherWishes: 'Weitere Wünsche',
       otherPlaceholder: 'Gibt es weitere Wünsche, die du festhalten möchtest?',
       notes: 'Zusätzliche Hinweise',
-      save: 'Speichern',
-      saved: 'Gespeichert!',
     },
     en: {
       title: 'Personal Wishes',
-      disclaimer: 'These entries serve to communicate your wishes. They do not replace a living will or other legal documents.',
+      disclaimer: 'These entries serve to communicate your wishes. They do not replace a living will or other legal documents. Changes are saved automatically.',
       legalNote: 'For legally binding documents, please consult a notary or lawyer.',
       medicalWishes: 'Medical Wishes',
       medicalPlaceholder: 'What medical wishes would you like to document? (e.g., treatment preferences, therapy forms)',
@@ -49,8 +55,6 @@ const WishesForm = () => {
       otherWishes: 'Other Wishes',
       otherPlaceholder: 'Are there other wishes you would like to document?',
       notes: 'Additional Notes',
-      save: 'Save',
-      saved: 'Saved!',
     },
   };
 
@@ -60,10 +64,9 @@ const WishesForm = () => {
     updateSection('wishes', { ...data, [field]: value });
   };
 
-  const handleSave = async () => {
-    await saveSection('wishes');
-    toast.success(texts.saved);
-  };
+  if (!profile?.has_paid) {
+    return null;
+  }
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
@@ -82,6 +85,7 @@ const WishesForm = () => {
         <Textarea
           value={data.medicalWishes}
           onChange={(e) => handleChange('medicalWishes', e.target.value)}
+          onBlur={handleBlur}
           placeholder={texts.medicalPlaceholder}
           rows={4}
         />
@@ -92,6 +96,7 @@ const WishesForm = () => {
         <Textarea
           value={data.carePreferences}
           onChange={(e) => handleChange('carePreferences', e.target.value)}
+          onBlur={handleBlur}
           placeholder={texts.carePlaceholder}
           rows={4}
         />
@@ -102,6 +107,7 @@ const WishesForm = () => {
         <Textarea
           value={data.funeralWishes}
           onChange={(e) => handleChange('funeralWishes', e.target.value)}
+          onBlur={handleBlur}
           placeholder={texts.funeralPlaceholder}
           rows={4}
         />
@@ -112,6 +118,7 @@ const WishesForm = () => {
         <Textarea
           value={data.organDonation}
           onChange={(e) => handleChange('organDonation', e.target.value)}
+          onBlur={handleBlur}
           placeholder={texts.organPlaceholder}
           rows={3}
         />
@@ -122,6 +129,7 @@ const WishesForm = () => {
         <Textarea
           value={data.otherWishes}
           onChange={(e) => handleChange('otherWishes', e.target.value)}
+          onBlur={handleBlur}
           placeholder={texts.otherPlaceholder}
           rows={3}
         />
@@ -132,17 +140,11 @@ const WishesForm = () => {
         <Textarea
           value={data.notes}
           onChange={(e) => handleChange('notes', e.target.value)}
+          onBlur={handleBlur}
           placeholder={texts.notes}
           rows={3}
         />
       </div>
-
-      {profile?.has_paid && (
-        <Button onClick={handleSave} disabled={saving}>
-          <Save className="mr-2 h-4 w-4" />
-          {saving ? '...' : texts.save}
-        </Button>
-      )}
     </motion.div>
   );
 };

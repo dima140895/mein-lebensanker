@@ -1,8 +1,11 @@
+import { useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Save, Plus, Trash2, Info } from 'lucide-react';
+import { Plus, Trash2, Info } from 'lucide-react';
 import { useFormData, AssetsData } from '@/contexts/FormContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
+import { useProfiles } from '@/contexts/ProfileContext';
+import { useAutoSave } from '@/hooks/useAutoSave';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -15,18 +18,24 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Combobox } from '@/components/ui/combobox';
-import { toast } from 'sonner';
 
 const AssetsForm = () => {
-  const { formData, updateSection, saveSection, saving } = useFormData();
+  const { formData, updateSection } = useFormData();
   const { profile } = useAuth();
   const { language } = useLanguage();
+  const { activeProfileId } = useProfiles();
+  const { handleBlur, resetSaveState } = useAutoSave({ section: 'assets' });
   
   const data = formData.assets;
 
+  // Reset save state when profile changes
+  useEffect(() => {
+    resetSaveState();
+  }, [activeProfileId, resetSaveState]);
+
   const t = {
     de: {
-      disclaimer: 'Diese Übersicht dient nur der Orientierung. Beträge sind optional und haben keine rechtliche Verbindlichkeit.',
+      disclaimer: 'Diese Übersicht dient nur der Orientierung. Beträge sind optional und haben keine rechtliche Verbindlichkeit. Änderungen werden automatisch gespeichert.',
       bankAccounts: 'Bankkonten',
       institute: 'Institut',
       purpose: 'Verwendungszweck',
@@ -64,12 +73,10 @@ const AssetsForm = () => {
       location: 'Aufbewahrungsort',
       addItem: 'Hinzufügen',
       notes: 'Zusätzliche Hinweise',
-      save: 'Speichern',
-      saved: 'Gespeichert!',
       selectOwnership: 'Nutzungsart wählen',
     },
     en: {
-      disclaimer: 'This overview is for orientation only. Amounts are optional and have no legal validity.',
+      disclaimer: 'This overview is for orientation only. Amounts are optional and have no legal validity. Changes are saved automatically.',
       bankAccounts: 'Bank Accounts',
       institute: 'Bank/Institute',
       purpose: 'Purpose',
@@ -107,8 +114,6 @@ const AssetsForm = () => {
       location: 'Storage Location',
       addItem: 'Add',
       notes: 'Additional Notes',
-      save: 'Save',
-      saved: 'Saved!',
       selectOwnership: 'Select usage type',
     },
   };
@@ -140,10 +145,9 @@ const AssetsForm = () => {
     updateSection('assets', { ...data, [field]: newArray });
   };
 
-  const handleSave = async () => {
-    await saveSection('assets');
-    toast.success(texts.saved);
-  };
+  if (!profile?.has_paid) {
+    return null;
+  }
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-8">
@@ -158,9 +162,9 @@ const AssetsForm = () => {
         {data.bankAccounts.map((account, i) => (
           <div key={i} className="flex gap-3 items-start">
             <div className="flex-1 grid gap-3 md:grid-cols-3">
-              <Input value={account.institute} onChange={(e) => updateItem('bankAccounts', i, 'institute', e.target.value)} placeholder={texts.institute} />
-              <Input value={account.purpose} onChange={(e) => updateItem('bankAccounts', i, 'purpose', e.target.value)} placeholder={texts.purpose} />
-              <Input value={account.balance || ''} onChange={(e) => updateItem('bankAccounts', i, 'balance', e.target.value)} placeholder={texts.balance} />
+              <Input value={account.institute} onChange={(e) => updateItem('bankAccounts', i, 'institute', e.target.value)} onBlur={handleBlur} placeholder={texts.institute} />
+              <Input value={account.purpose} onChange={(e) => updateItem('bankAccounts', i, 'purpose', e.target.value)} onBlur={handleBlur} placeholder={texts.purpose} />
+              <Input value={account.balance || ''} onChange={(e) => updateItem('bankAccounts', i, 'balance', e.target.value)} onBlur={handleBlur} placeholder={texts.balance} />
             </div>
             {data.bankAccounts.length > 1 && (
               <Button variant="ghost" size="icon" onClick={() => removeItem('bankAccounts', i)}><Trash2 className="h-4 w-4 text-destructive" /></Button>
@@ -177,14 +181,15 @@ const AssetsForm = () => {
           <div key={i} className="flex gap-3 items-start">
             <div className="flex-1 space-y-3">
               <div className="grid gap-3 md:grid-cols-2">
-                <Input value={property.address} onChange={(e) => updateItem('properties', i, 'address', e.target.value)} placeholder={texts.address} />
-                <Input value={property.type} onChange={(e) => updateItem('properties', i, 'type', e.target.value)} placeholder={texts.type} />
+                <Input value={property.address} onChange={(e) => updateItem('properties', i, 'address', e.target.value)} onBlur={handleBlur} placeholder={texts.address} />
+                <Input value={property.type} onChange={(e) => updateItem('properties', i, 'type', e.target.value)} onBlur={handleBlur} placeholder={texts.type} />
               </div>
               <div className="grid gap-3 md:grid-cols-2">
                 <Select value={property.ownership || ''} onValueChange={(value) => {
                   const newArray = [...data.properties];
                   newArray[i] = { ...newArray[i], ownership: value, ownershipOther: value === 'other' ? newArray[i].ownershipOther : '', rentalIncome: value === 'rented-out' ? newArray[i].rentalIncome : '', financingStatus: (value === 'self-occupied' || value === 'rented-out') ? newArray[i].financingStatus : '', outstandingLoan: (value === 'self-occupied' || value === 'rented-out') ? newArray[i].outstandingLoan : '' };
                   updateSection('assets', { ...data, properties: newArray });
+                  handleBlur();
                 }}>
                   <SelectTrigger><SelectValue placeholder={texts.selectOwnership} /></SelectTrigger>
                   <SelectContent className="bg-background border border-border shadow-lg z-50">
@@ -193,16 +198,17 @@ const AssetsForm = () => {
                     <SelectItem value="other">{texts.ownershipOther}</SelectItem>
                   </SelectContent>
                 </Select>
-                {property.ownership === 'other' && <Input value={property.ownershipOther || ''} onChange={(e) => updateItem('properties', i, 'ownershipOther', e.target.value)} placeholder={texts.ownershipOtherPlaceholder} />}
+                {property.ownership === 'other' && <Input value={property.ownershipOther || ''} onChange={(e) => updateItem('properties', i, 'ownershipOther', e.target.value)} onBlur={handleBlur} placeholder={texts.ownershipOtherPlaceholder} />}
               </div>
               {(property.ownership === 'self-occupied' || property.ownership === 'rented-out') && (
                 <>
-                  {property.ownership === 'rented-out' && <Input value={property.rentalIncome || ''} onChange={(e) => updateItem('properties', i, 'rentalIncome', e.target.value)} placeholder={texts.rentalIncome} />}
+                  {property.ownership === 'rented-out' && <Input value={property.rentalIncome || ''} onChange={(e) => updateItem('properties', i, 'rentalIncome', e.target.value)} onBlur={handleBlur} placeholder={texts.rentalIncome} />}
                   <div className="grid gap-3 md:grid-cols-2">
                     <Select value={property.financingStatus || ''} onValueChange={(value) => {
                       const newArray = [...data.properties];
                       newArray[i] = { ...newArray[i], financingStatus: value, outstandingLoan: value === 'financed' ? newArray[i].outstandingLoan : '' };
                       updateSection('assets', { ...data, properties: newArray });
+                      handleBlur();
                     }}>
                       <SelectTrigger><SelectValue placeholder={texts.selectFinancing} /></SelectTrigger>
                       <SelectContent className="bg-background border border-border shadow-lg z-50">
@@ -210,7 +216,7 @@ const AssetsForm = () => {
                         <SelectItem value="financed">{texts.financingFinanced}</SelectItem>
                       </SelectContent>
                     </Select>
-                    {property.financingStatus === 'financed' && <Input value={property.outstandingLoan || ''} onChange={(e) => updateItem('properties', i, 'outstandingLoan', e.target.value)} placeholder={texts.outstandingLoan} />}
+                    {property.financingStatus === 'financed' && <Input value={property.outstandingLoan || ''} onChange={(e) => updateItem('properties', i, 'outstandingLoan', e.target.value)} onBlur={handleBlur} placeholder={texts.outstandingLoan} />}
                   </div>
                 </>
               )}
@@ -232,22 +238,24 @@ const AssetsForm = () => {
                   const newArray = [...data.insurances];
                   newArray[i] = { ...newArray[i], type: value, typeOther: value === 'other' ? newArray[i].typeOther : '' };
                   updateSection('assets', { ...data, insurances: newArray });
+                  handleBlur();
                 }} placeholder={texts.selectInsuranceType} searchPlaceholder={texts.searchInsuranceType} emptyText={texts.noResults} />
                 <Combobox options={companyOptions} value={ins.company || ''} onValueChange={(value) => {
                   const newArray = [...data.insurances];
                   newArray[i] = { ...newArray[i], company: value, companyOther: value === 'other' ? newArray[i].companyOther : '' };
                   updateSection('assets', { ...data, insurances: newArray });
+                  handleBlur();
                 }} placeholder={texts.selectCompany} searchPlaceholder={texts.searchCompany} emptyText={texts.noResults} />
               </div>
               {(ins.type === 'other' || ins.company === 'other') && (
                 <div className="grid gap-3 md:grid-cols-2">
-                  {ins.type === 'other' && <Input value={ins.typeOther || ''} onChange={(e) => updateItem('insurances', i, 'typeOther', e.target.value)} placeholder={texts.insuranceTypeOtherPlaceholder} />}
-                  {ins.company === 'other' && <Input value={ins.companyOther || ''} onChange={(e) => updateItem('insurances', i, 'companyOther', e.target.value)} placeholder={texts.companyOtherPlaceholder} />}
+                  {ins.type === 'other' && <Input value={ins.typeOther || ''} onChange={(e) => updateItem('insurances', i, 'typeOther', e.target.value)} onBlur={handleBlur} placeholder={texts.insuranceTypeOtherPlaceholder} />}
+                  {ins.company === 'other' && <Input value={ins.companyOther || ''} onChange={(e) => updateItem('insurances', i, 'companyOther', e.target.value)} onBlur={handleBlur} placeholder={texts.companyOtherPlaceholder} />}
                 </div>
               )}
               <div className="grid gap-3 md:grid-cols-2">
-                <Input value={ins.policyNumber || ''} onChange={(e) => updateItem('insurances', i, 'policyNumber', e.target.value)} placeholder={texts.policyNumber} />
-                <Input value={ins.surrenderValue || ''} onChange={(e) => updateItem('insurances', i, 'surrenderValue', e.target.value)} placeholder={texts.surrenderValue} />
+                <Input value={ins.policyNumber || ''} onChange={(e) => updateItem('insurances', i, 'policyNumber', e.target.value)} onBlur={handleBlur} placeholder={texts.policyNumber} />
+                <Input value={ins.surrenderValue || ''} onChange={(e) => updateItem('insurances', i, 'surrenderValue', e.target.value)} onBlur={handleBlur} placeholder={texts.surrenderValue} />
               </div>
             </div>
             <Button variant="ghost" size="icon" onClick={() => removeItem('insurances', i)}><Trash2 className="h-4 w-4 text-destructive" /></Button>
@@ -262,8 +270,8 @@ const AssetsForm = () => {
         {data.valuables.map((item, i) => (
           <div key={i} className="flex gap-3 items-start">
             <div className="flex-1 grid gap-3 md:grid-cols-2">
-              <Input value={item.description} onChange={(e) => updateItem('valuables', i, 'description', e.target.value)} placeholder={texts.description} />
-              <Input value={item.location} onChange={(e) => updateItem('valuables', i, 'location', e.target.value)} placeholder={texts.location} />
+              <Input value={item.description} onChange={(e) => updateItem('valuables', i, 'description', e.target.value)} onBlur={handleBlur} placeholder={texts.description} />
+              <Input value={item.location} onChange={(e) => updateItem('valuables', i, 'location', e.target.value)} onBlur={handleBlur} placeholder={texts.location} />
             </div>
             <Button variant="ghost" size="icon" onClick={() => removeItem('valuables', i)}><Trash2 className="h-4 w-4 text-destructive" /></Button>
           </div>
@@ -273,12 +281,8 @@ const AssetsForm = () => {
 
       <div className="space-y-2 border-t border-border pt-6">
         <Label>{texts.notes}</Label>
-        <Textarea value={data.notes} onChange={(e) => updateSection('assets', { ...data, notes: e.target.value })} placeholder={texts.notes} rows={3} />
+        <Textarea value={data.notes} onChange={(e) => updateSection('assets', { ...data, notes: e.target.value })} onBlur={handleBlur} placeholder={texts.notes} rows={3} />
       </div>
-
-      {profile?.has_paid && (
-        <Button onClick={handleSave} disabled={saving}><Save className="mr-2 h-4 w-4" />{saving ? '...' : texts.save}</Button>
-      )}
     </motion.div>
   );
 };

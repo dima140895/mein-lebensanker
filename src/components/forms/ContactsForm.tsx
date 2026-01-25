@@ -1,8 +1,11 @@
+import { useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Save, Plus, Trash2, Info } from 'lucide-react';
+import { Plus, Trash2, Info } from 'lucide-react';
 import { useFormData } from '@/contexts/FormContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
+import { useProfiles } from '@/contexts/ProfileContext';
+import { useAutoSave } from '@/hooks/useAutoSave';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -14,19 +17,25 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { toast } from 'sonner';
 
 const ContactsForm = () => {
-  const { formData, updateSection, saveSection, saving } = useFormData();
+  const { formData, updateSection } = useFormData();
   const { profile } = useAuth();
   const { language } = useLanguage();
+  const { activeProfileId } = useProfiles();
+  const { handleBlur, resetSaveState } = useAutoSave({ section: 'contacts' });
   
   const data = formData.contacts;
+
+  // Reset save state when profile changes
+  useEffect(() => {
+    resetSaveState();
+  }, [activeProfileId, resetSaveState]);
 
   const t = {
     de: {
       title: 'Wichtige Kontakte',
-      disclaimer: 'Notiere hier alle wichtigen Kontaktpersonen, die im Ernstfall informiert werden sollten.',
+      disclaimer: 'Notiere hier alle wichtigen Kontaktpersonen, die im Ernstfall informiert werden sollten. Änderungen werden automatisch gespeichert.',
       contacts: 'Kontaktpersonen',
       name: 'Name',
       relationship: 'Beziehung',
@@ -58,12 +67,10 @@ const ContactsForm = () => {
       addContact: 'Kontakt hinzufügen',
       addProfessional: 'Beruflichen Kontakt hinzufügen',
       notes: 'Zusätzliche Hinweise',
-      save: 'Speichern',
-      saved: 'Gespeichert!',
     },
     en: {
       title: 'Important Contacts',
-      disclaimer: 'Note all important contacts who should be informed in case of emergency.',
+      disclaimer: 'Note all important contacts who should be informed in case of emergency. Changes are saved automatically.',
       contacts: 'Personal Contacts',
       name: 'Name',
       relationship: 'Relationship',
@@ -95,8 +102,6 @@ const ContactsForm = () => {
       addContact: 'Add Contact',
       addProfessional: 'Add Professional Contact',
       notes: 'Additional Notes',
-      save: 'Save',
-      saved: 'Saved!',
     },
   };
 
@@ -136,10 +141,9 @@ const ContactsForm = () => {
     updateSection('contacts', { ...data, professionals: newProfessionals });
   };
 
-  const handleSave = async () => {
-    await saveSection('contacts');
-    toast.success(texts.saved);
-  };
+  if (!profile?.has_paid) {
+    return null;
+  }
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-8">
@@ -158,11 +162,15 @@ const ContactsForm = () => {
                 <Input
                   value={contact.name}
                   onChange={(e) => updateContact(i, 'name', e.target.value)}
+                  onBlur={handleBlur}
                   placeholder={texts.name}
                 />
                 <Select
                   value={contact.relationship}
-                  onValueChange={(value) => updateContact(i, 'relationship', value)}
+                  onValueChange={(value) => {
+                    updateContact(i, 'relationship', value);
+                    handleBlur();
+                  }}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder={texts.relationship} />
@@ -183,18 +191,21 @@ const ContactsForm = () => {
                 type="tel"
                 value={contact.phone}
                 onChange={(e) => updateContact(i, 'phone', e.target.value)}
+                onBlur={handleBlur}
                 placeholder={texts.phone}
               />
               <Input
                 type="email"
                 value={contact.email}
                 onChange={(e) => updateContact(i, 'email', e.target.value)}
+                onBlur={handleBlur}
                 placeholder={texts.email}
               />
             </div>
             <Input
               value={contact.address}
               onChange={(e) => updateContact(i, 'address', e.target.value)}
+              onBlur={handleBlur}
               placeholder={texts.address}
             />
           </div>
@@ -213,7 +224,10 @@ const ContactsForm = () => {
               <div className="flex-1 grid gap-3 md:grid-cols-2">
                 <Select
                   value={prof.type}
-                  onValueChange={(value) => updateProfessional(i, 'type', value)}
+                  onValueChange={(value) => {
+                    updateProfessional(i, 'type', value);
+                    handleBlur();
+                  }}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder={texts.professionalType} />
@@ -227,6 +241,7 @@ const ContactsForm = () => {
                 <Input
                   value={prof.name}
                   onChange={(e) => updateProfessional(i, 'name', e.target.value)}
+                  onBlur={handleBlur}
                   placeholder={texts.name}
                 />
               </div>
@@ -239,18 +254,21 @@ const ContactsForm = () => {
                 type="tel"
                 value={prof.phone}
                 onChange={(e) => updateProfessional(i, 'phone', e.target.value)}
+                onBlur={handleBlur}
                 placeholder={texts.phone}
               />
               <Input
                 type="email"
                 value={prof.email}
                 onChange={(e) => updateProfessional(i, 'email', e.target.value)}
+                onBlur={handleBlur}
                 placeholder={texts.email}
               />
             </div>
             <Input
               value={prof.address}
               onChange={(e) => updateProfessional(i, 'address', e.target.value)}
+              onBlur={handleBlur}
               placeholder={texts.address}
             />
           </div>
@@ -265,17 +283,11 @@ const ContactsForm = () => {
         <Textarea
           value={data.notes}
           onChange={(e) => updateSection('contacts', { ...data, notes: e.target.value })}
+          onBlur={handleBlur}
           placeholder={texts.notes}
           rows={3}
         />
       </div>
-
-      {profile?.has_paid && (
-        <Button onClick={handleSave} disabled={saving}>
-          <Save className="mr-2 h-4 w-4" />
-          {saving ? '...' : texts.save}
-        </Button>
-      )}
     </motion.div>
   );
 };
