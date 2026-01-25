@@ -16,16 +16,12 @@ import {
 } from '@/components/ui/select';
 import { toast } from 'sonner';
 
-interface ContactsFormProps {
-  isPartner?: boolean;
-}
-
-const ContactsForm = ({ isPartner = false }: ContactsFormProps) => {
-  const { formData, partnerFormData, updateSection, saveSection, saving } = useFormData();
+const ContactsForm = () => {
+  const { formData, updateSection, saveSection, saving } = useFormData();
   const { profile } = useAuth();
   const { language } = useLanguage();
   
-  const data = isPartner ? partnerFormData.contacts : formData.contacts;
+  const data = formData.contacts;
 
   const t = {
     de: {
@@ -108,40 +104,40 @@ const ContactsForm = ({ isPartner = false }: ContactsFormProps) => {
 
   const addContact = () => {
     const newContacts = [...data.contacts, { name: '', relationship: '', phone: '', email: '', address: '' }];
-    updateSection('contacts', { ...data, contacts: newContacts }, isPartner);
+    updateSection('contacts', { ...data, contacts: newContacts });
   };
 
   const addProfessional = () => {
     const newProfessionals = [...data.professionals, { type: '', name: '', phone: '', email: '', address: '' }];
-    updateSection('contacts', { ...data, professionals: newProfessionals }, isPartner);
+    updateSection('contacts', { ...data, professionals: newProfessionals });
   };
 
   const removeContact = (index: number) => {
     const newContacts = [...data.contacts];
     newContacts.splice(index, 1);
-    updateSection('contacts', { ...data, contacts: newContacts }, isPartner);
+    updateSection('contacts', { ...data, contacts: newContacts });
   };
 
   const removeProfessional = (index: number) => {
     const newProfessionals = [...data.professionals];
     newProfessionals.splice(index, 1);
-    updateSection('contacts', { ...data, professionals: newProfessionals }, isPartner);
+    updateSection('contacts', { ...data, professionals: newProfessionals });
   };
 
   const updateContact = (index: number, key: string, value: string) => {
     const newContacts = [...data.contacts];
     newContacts[index] = { ...newContacts[index], [key]: value };
-    updateSection('contacts', { ...data, contacts: newContacts }, isPartner);
+    updateSection('contacts', { ...data, contacts: newContacts });
   };
 
   const updateProfessional = (index: number, key: string, value: string) => {
     const newProfessionals = [...data.professionals];
     newProfessionals[index] = { ...newProfessionals[index], [key]: value };
-    updateSection('contacts', { ...data, professionals: newProfessionals }, isPartner);
+    updateSection('contacts', { ...data, professionals: newProfessionals });
   };
 
   const handleSave = async () => {
-    await saveSection('contacts', isPartner);
+    await saveSection('contacts');
     toast.success(texts.saved);
   };
 
@@ -268,7 +264,7 @@ const ContactsForm = ({ isPartner = false }: ContactsFormProps) => {
         <Label>{texts.notes}</Label>
         <Textarea
           value={data.notes}
-          onChange={(e) => updateSection('contacts', { ...data, notes: e.target.value }, isPartner)}
+          onChange={(e) => updateSection('contacts', { ...data, notes: e.target.value })}
           placeholder={texts.notes}
           rows={3}
         />
