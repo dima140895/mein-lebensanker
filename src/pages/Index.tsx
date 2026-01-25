@@ -3,6 +3,7 @@ import HeroSection from '@/components/HeroSection';
 import ValuePropositions from '@/components/ValuePropositions';
 import DashboardSections from '@/components/DashboardSections';
 import Disclaimer from '@/components/Disclaimer';
+import Footer from '@/components/Footer';
 
 const Index = () => {
   return (
@@ -14,6 +15,7 @@ const Index = () => {
         <ValuePropositions />
       </main>
       <Disclaimer />
+      <Footer />
     </div>
   );
 };
