@@ -15,6 +15,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Key, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { parseRecoveryKey, decryptPasswordWithRecoveryKey, isValidRecoveryKey } from '@/lib/recoveryKey';
+import { logger } from '@/lib/logger';
 
 interface RecoveryKeyRecoveryDialogProps {
   open: boolean;
@@ -41,6 +42,7 @@ export const RecoveryKeyRecoveryDialog: React.FC<RecoveryKeyRecoveryDialogProps>
       cancel: 'Abbrechen',
       invalidKey: 'Ungültiger Recovery-Schlüssel. Bitte überprüfe die Eingabe.',
       invalidFormat: 'Das Format des Schlüssels ist ungültig. Der Schlüssel sollte etwa 44 Zeichen lang sein (ohne Bindestriche).',
+      keyMismatch: 'Dieser Recovery-Schlüssel passt nicht zum aktuellen Schlüssel. Möglicherweise wurde inzwischen ein neuer Recovery-Schlüssel generiert.',
       noRecoveryAvailable: 'Für dieses Konto ist keine Wiederherstellung verfügbar.',
       success: 'Passwort erfolgreich wiederhergestellt und Daten entsperrt!',
     },
@@ -53,6 +55,7 @@ export const RecoveryKeyRecoveryDialog: React.FC<RecoveryKeyRecoveryDialogProps>
       cancel: 'Cancel',
       invalidKey: 'Invalid recovery key. Please check your input.',
       invalidFormat: 'The key format is invalid. The key should be about 44 characters long (without dashes).',
+      keyMismatch: 'This recovery key does not match the current key. The recovery key may have been regenerated.',
       noRecoveryAvailable: 'No recovery option available for this account.',
       success: 'Password recovered successfully and data unlocked!',
     },
@@ -67,40 +70,41 @@ export const RecoveryKeyRecoveryDialog: React.FC<RecoveryKeyRecoveryDialogProps>
 
     try {
       if (!encryptedPasswordRecovery) {
-        console.error('Recovery: No encryptedPasswordRecovery available');
+        logger.warn('Recovery: No encryptedPasswordRecovery available');
         setError(t.noRecoveryAvailable);
         setIsLoading(false);
         return;
       }
 
       const cleanKey = parseRecoveryKey(recoveryKeyInput.trim());
-      console.log('Recovery: Clean key length:', cleanKey.length);
       
       // Validate key format before trying to decrypt
       if (!isValidRecoveryKey(recoveryKeyInput.trim())) {
-        console.error('Recovery: Invalid key format, length:', cleanKey.length);
         setError(t.invalidFormat);
         setIsLoading(false);
         return;
       }
       
       const password = await decryptPasswordWithRecoveryKey(encryptedPasswordRecovery, cleanKey);
-      console.log('Recovery: Password decrypted successfully');
       
       const success = await recoverWithKey(password);
-      console.log('Recovery: recoverWithKey result:', success);
       
       if (success) {
         toast.success(t.success);
         onOpenChange(false);
         setRecoveryKeyInput('');
       } else {
-        console.error('Recovery: recoverWithKey returned false - password verification failed');
         setError(t.invalidKey);
       }
     } catch (err) {
-      console.error('Recovery: Error during recovery:', err);
-      setError(t.invalidKey);
+      const name = (err as { name?: string } | null)?.name;
+      // OperationError from WebCrypto typically means "key/ciphertext doesn't match".
+      if (name === 'OperationError') {
+        setError(t.keyMismatch);
+      } else {
+        setError(t.invalidKey);
+      }
+      logger.error('Recovery: Error during recovery', err);
     } finally {
       setIsLoading(false);
     }
