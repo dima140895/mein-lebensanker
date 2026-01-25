@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Plus, Trash2, Info } from 'lucide-react';
+import { Plus, Trash2, Info, AlertTriangle } from 'lucide-react';
 import { useFormData, AssetsData } from '@/contexts/FormContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
@@ -36,6 +36,7 @@ const AssetsForm = () => {
   const t = {
     de: {
       disclaimer: 'Diese Übersicht dient nur der Orientierung. Beträge sind optional und haben keine rechtliche Verbindlichkeit. Änderungen werden automatisch gespeichert.',
+      warning: 'Bitte keine Kontonummern, IBANs oder PINs eingeben! Notiere hier nur das Institut und den Verwendungszweck – Deine sensiblen Daten gehören nicht in diese Übersicht.',
       bankAccounts: 'Bankkonten',
       institute: 'Institut',
       purpose: 'Verwendungszweck',
@@ -77,6 +78,7 @@ const AssetsForm = () => {
     },
     en: {
       disclaimer: 'This overview is for orientation only. Amounts are optional and have no legal validity. Changes are saved automatically.',
+      warning: 'Please do not enter account numbers, IBANs, or PINs! Only note the institution and purpose here – your sensitive data does not belong in this overview.',
       bankAccounts: 'Bank Accounts',
       institute: 'Bank/Institute',
       purpose: 'Purpose',
@@ -154,6 +156,11 @@ const AssetsForm = () => {
       <div className="rounded-lg bg-sage-light/50 p-4 flex items-start gap-3">
         <Info className="h-5 w-5 text-sage-dark flex-shrink-0 mt-0.5" />
         <p className="text-sm text-sage-dark">{texts.disclaimer}</p>
+      </div>
+
+      <div className="rounded-lg bg-destructive/10 border border-destructive/20 p-4 flex items-start gap-3">
+        <AlertTriangle className="h-5 w-5 text-destructive flex-shrink-0 mt-0.5" />
+        <p className="text-sm text-destructive font-medium">{texts.warning}</p>
       </div>
 
       {/* Bank Accounts */}
