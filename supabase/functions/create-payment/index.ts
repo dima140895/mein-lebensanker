@@ -11,20 +11,26 @@ const corsHeaders = {
 const PRICES = {
   single: "price_1StQxpICzkfBNYhyfkFifG39",
   couple: "price_1StQy5ICzkfBNYhyGqh7RUsk",
-  family: "price_1StQyTICzkfBNYhyNTAl4QrA",
   update_service: "price_1StQyfICzkfBNYhyTXftLV1j",
 };
 
 const PACKAGE_PRICES = {
   single: 3900,
   couple: 4900,
-  family: 9900,
 };
 
-const MAX_PROFILES = {
-  single: 1,
-  couple: 2,
-  family: 4,
+// Family pricing configuration
+const FAMILY_PRICING = {
+  basePrice: 5900, // 59 EUR in cents
+  pricePerAdditionalProfile: 1900, // 19 EUR in cents
+  minProfiles: 4,
+  maxProfiles: 10,
+};
+
+const calculateFamilyPrice = (profileCount: number): number => {
+  const clampedCount = Math.max(FAMILY_PRICING.minProfiles, Math.min(FAMILY_PRICING.maxProfiles, profileCount));
+  const additionalProfiles = clampedCount - FAMILY_PRICING.minProfiles;
+  return FAMILY_PRICING.basePrice + (additionalProfiles * FAMILY_PRICING.pricePerAdditionalProfile);
 };
 
 type PackageType = "single" | "couple" | "family";
@@ -49,7 +55,7 @@ serve(async (req) => {
       throw new Error("User not authenticated or email not available");
     }
 
-    const { paymentType, isUpgrade, currentTier, includeUpdateService } = await req.json();
+    const { paymentType, isUpgrade, currentTier, includeUpdateService, familyProfileCount } = await req.json();
     
     const validTypes = ["single", "couple", "family"];
     if (!paymentType || !validTypes.includes(paymentType)) {
@@ -68,12 +74,30 @@ serve(async (req) => {
     }
 
     const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = [];
+    
+    // Calculate the price for the selected package
+    const getPackagePrice = (type: string, profileCount?: number): number => {
+      if (type === "family") {
+        return calculateFamilyPrice(profileCount || FAMILY_PRICING.minProfiles);
+      }
+      return PACKAGE_PRICES[type as "single" | "couple"];
+    };
+    
+    // Get max profiles for metadata
+    const getMaxProfiles = (type: string, profileCount?: number): number => {
+      if (type === "family") {
+        return Math.max(FAMILY_PRICING.minProfiles, Math.min(FAMILY_PRICING.maxProfiles, profileCount || FAMILY_PRICING.minProfiles));
+      }
+      return type === "couple" ? 2 : 1;
+    };
+
+    const selectedMaxProfiles = getMaxProfiles(paymentType, familyProfileCount);
+    const packagePrice = getPackagePrice(paymentType, familyProfileCount);
 
     if (isUpgrade && currentTier && validTypes.includes(currentTier)) {
       // Calculate upgrade price
-      const currentPrice = PACKAGE_PRICES[currentTier as PackageType];
-      const newPrice = PACKAGE_PRICES[paymentType as PackageType];
-      const upgradeAmount = newPrice - currentPrice;
+      const currentPrice = getPackagePrice(currentTier);
+      const upgradeAmount = packagePrice - currentPrice;
 
       if (upgradeAmount <= 0) {
         throw new Error("Invalid upgrade: new package must be more expensive");
@@ -84,7 +108,7 @@ serve(async (req) => {
         unit_amount: upgradeAmount,
         currency: "eur",
         product_data: {
-          name: `Upgrade von ${currentTier} zu ${paymentType}`,
+          name: `Upgrade von ${currentTier} zu ${paymentType}${paymentType === "family" ? ` (${selectedMaxProfiles} Profile)` : ""}`,
         },
       });
 
@@ -93,11 +117,25 @@ serve(async (req) => {
         quantity: 1,
       });
     } else {
-      // Regular purchase
-      lineItems.push({
-        price: PRICES[paymentType as PackageType],
-        quantity: 1,
-      });
+      // Regular purchase - create dynamic price for family, use fixed for others
+      if (paymentType === "family") {
+        const dynamicPrice = await stripe.prices.create({
+          unit_amount: packagePrice,
+          currency: "eur",
+          product_data: {
+            name: `Familien-Paket (${selectedMaxProfiles} Profile)`,
+          },
+        });
+        lineItems.push({
+          price: dynamicPrice.id,
+          quantity: 1,
+        });
+      } else {
+        lineItems.push({
+          price: PRICES[paymentType as "single" | "couple"],
+          quantity: 1,
+        });
+      }
     }
 
     // Add update service subscription if requested
@@ -113,13 +151,13 @@ serve(async (req) => {
       customer_email: customerId ? undefined : user.email,
       line_items: lineItems,
       mode: includeUpdateService ? "subscription" : "payment",
-      success_url: `${req.headers.get("origin")}/payment-success?session_id={CHECKOUT_SESSION_ID}&type=${paymentType}${isUpgrade ? "&upgrade=true" : ""}`,
+      success_url: `${req.headers.get("origin")}/payment-success?session_id={CHECKOUT_SESSION_ID}&type=${paymentType}${isUpgrade ? "&upgrade=true" : ""}&profiles=${selectedMaxProfiles}`,
       cancel_url: `${req.headers.get("origin")}/dashboard`,
       metadata: {
         user_id: user.id,
         payment_type: paymentType,
         is_upgrade: isUpgrade ? "true" : "false",
-        max_profiles: String(MAX_PROFILES[paymentType as PackageType]),
+        max_profiles: String(selectedMaxProfiles),
         include_update_service: includeUpdateService ? "true" : "false",
       },
     };
@@ -131,7 +169,7 @@ serve(async (req) => {
         metadata: {
           user_id: user.id,
           payment_type: paymentType,
-          max_profiles: String(MAX_PROFILES[paymentType as PackageType]),
+          max_profiles: String(selectedMaxProfiles),
         },
       };
     }

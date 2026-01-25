@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Check, CreditCard, User, Users, Home, Bell, ArrowUp } from 'lucide-react';
+import { Check, CreditCard, User, Users, Home, Bell, ArrowUp, Minus, Plus } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { supabase } from '@/integrations/supabase/browserClient';
@@ -9,17 +9,17 @@ import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import { logger } from '@/lib/logger';
-import { PRICING, getUpgradePrice, canUpgrade, type PackageType } from '@/lib/pricing';
+import { PRICING, getUpgradePrice, canUpgrade, calculateFamilyPrice, type PackageType } from '@/lib/pricing';
 
 const PaymentOptions = () => {
   const { user, profile, refreshProfile } = useAuth();
   const { language } = useLanguage();
   const [loading, setLoading] = useState<string | null>(null);
   const [includeUpdateService, setIncludeUpdateService] = useState(false);
+  const [familyProfileCount, setFamilyProfileCount] = useState<number>(PRICING.family.minProfiles);
 
   const currentTier = profile?.purchased_tier as PackageType | null;
   const hasPaid = profile?.has_paid;
-
   const t = {
     de: {
       title: 'Wähle Dein Paket',
@@ -33,8 +33,10 @@ const PaymentOptions = () => {
       couplePrice: '49 €',
       coupleDesc: '2 getrennte Personenprofile',
       family: 'Familien-Paket',
-      familyPrice: '99 €',
-      familyDesc: 'Bis zu 4 Personenprofile',
+      familyPrice: '59 €',
+      familyDesc: '4-10 Personenprofile',
+      perProfile: '19 € pro weiteres Profil',
+      profiles: 'Profile',
       features: [
         'Strukturierte Nachlassübersicht',
         'Dokumenten-Upload (PDF, Bilder)',
@@ -66,8 +68,10 @@ const PaymentOptions = () => {
       couplePrice: '€49',
       coupleDesc: '2 separate person profiles',
       family: 'Family Package',
-      familyPrice: '€99',
-      familyDesc: 'Up to 4 person profiles',
+      familyPrice: '€59',
+      familyDesc: '4-10 person profiles',
+      perProfile: '€19 per additional profile',
+      profiles: 'Profiles',
       features: [
         'Structured estate overview',
         'Document upload (PDF, images)',
@@ -107,6 +111,7 @@ const PaymentOptions = () => {
           isUpgrade,
           currentTier: currentTier || undefined,
           includeUpdateService: !isUpgrade && includeUpdateService,
+          familyProfileCount: type === 'family' ? familyProfileCount : undefined,
         },
       });
 
@@ -132,10 +137,14 @@ const PaymentOptions = () => {
     { key: 'family', icon: Home, badge: texts.bestValue },
   ];
 
+  // Calculate dynamic family price
+  const familyPrice = calculateFamilyPrice(familyProfileCount);
+  const familyPriceDisplay = language === 'de' ? `${familyPrice} €` : `€${familyPrice}`;
+
   const packageTexts: Record<PackageType, { name: string; price: string; desc: string }> = {
     single: { name: texts.single, price: texts.singlePrice, desc: texts.singleDesc },
     couple: { name: texts.couple, price: texts.couplePrice, desc: texts.coupleDesc },
-    family: { name: texts.family, price: texts.familyPrice, desc: texts.familyDesc },
+    family: { name: texts.family, price: familyPriceDisplay, desc: `${familyProfileCount} ${texts.profiles}` },
   };
 
   return (
@@ -154,7 +163,7 @@ const PaymentOptions = () => {
           const pkg = packageTexts[key];
           const isCurrentPlan = currentTier === key;
           const canUpgradeTo = currentTier ? canUpgrade(currentTier, key) : false;
-          const upgradePrice = currentTier ? getUpgradePrice(currentTier, key) : null;
+          const upgradePrice = currentTier ? getUpgradePrice(currentTier, key, key === 'family' ? familyProfileCount : undefined) : null;
           const isDisabled = hasPaid && !canUpgradeTo && !isCurrentPlan;
 
           return (
@@ -218,6 +227,47 @@ const PaymentOptions = () => {
                   </>
                 )}
               </div>
+
+              {/* Family Profile Selector */}
+              {key === 'family' && !isCurrentPlan && (
+                <div className="mb-4 p-3 rounded-lg bg-muted/50">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium text-foreground">
+                      {texts.profiles}:
+                    </span>
+                    <div className="flex items-center gap-2">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="icon"
+                        className="h-8 w-8"
+                        onClick={() => setFamilyProfileCount(Math.max(PRICING.family.minProfiles, familyProfileCount - 1))}
+                        disabled={familyProfileCount <= PRICING.family.minProfiles}
+                      >
+                        <Minus className="h-4 w-4" />
+                      </Button>
+                      <span className="font-mono text-lg font-semibold w-8 text-center">
+                        {familyProfileCount}
+                      </span>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="icon"
+                        className="h-8 w-8"
+                        onClick={() => setFamilyProfileCount(Math.min(PRICING.family.maxProfiles, familyProfileCount + 1))}
+                        disabled={familyProfileCount >= PRICING.family.maxProfiles}
+                      >
+                        <Plus className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                  {familyProfileCount > PRICING.family.minProfiles && (
+                    <p className="text-xs text-muted-foreground mt-2">
+                      {texts.perProfile}
+                    </p>
+                  )}
+                </div>
+              )}
 
               <ul className="space-y-2 mb-6 text-sm">
                 {texts.features.slice(0, 4).map((feature, i) => (
