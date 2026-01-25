@@ -95,16 +95,18 @@ export const EncryptionPasswordDialog: React.FC<EncryptionPasswordDialogProps> =
       if (mode === 'setup') {
         if (password.length < 8) {
           setError(t.passwordTooShort);
+          setIsLoading(false);
           return;
         }
         if (password !== confirmPassword) {
           setError(t.passwordMismatch);
+          setIsLoading(false);
           return;
         }
 
         const result = await enableEncryption(password);
         if (result.success) {
-          // Show recovery key dialog instead of closing
+          // Show recovery key dialog - the generatedRecoveryKey is set in EncryptionContext
           setShowRecoveryKeyDialog(true);
           setPassword('');
           setConfirmPassword('');
@@ -148,6 +150,13 @@ export const EncryptionPasswordDialog: React.FC<EncryptionPasswordDialogProps> =
     : 0;
 
   // Show recovery key dialog if we have a generated key
+  // Use useEffect to detect when recovery key becomes available
+  useEffect(() => {
+    if (generatedRecoveryKey && mode === 'setup') {
+      setShowRecoveryKeyDialog(true);
+    }
+  }, [generatedRecoveryKey, mode]);
+
   if (showRecoveryKeyDialog && generatedRecoveryKey) {
     return (
       <RecoveryKeyDialog
