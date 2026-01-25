@@ -13,11 +13,12 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Progress } from '@/components/ui/progress';
-import { Lock, Shield, AlertTriangle, Eye, EyeOff, Loader2, Key, Trash2, CheckCircle2 } from 'lucide-react';
+import { Lock, Shield, AlertTriangle, Eye, EyeOff, Loader2, Key, Trash2, CheckCircle2, PlayCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { RecoveryKeyDialog } from './RecoveryKeyDialog';
 import { RecoveryKeyRecoveryDialog } from './RecoveryKeyRecoveryDialog';
 import { ResetEncryptionDialog } from './ResetEncryptionDialog';
+import { EncryptionVisualGuide } from './EncryptionVisualGuide';
 
 interface EncryptionPasswordDialogProps {
   open: boolean;
@@ -42,6 +43,7 @@ export const EncryptionPasswordDialog: React.FC<EncryptionPasswordDialogProps> =
   const [showRecoveryKeyDialog, setShowRecoveryKeyDialog] = useState(false);
   const [showRecoveryDialog, setShowRecoveryDialog] = useState(false);
   const [showResetDialog, setShowResetDialog] = useState(false);
+  const [showVisualGuide, setShowVisualGuide] = useState(false);
 
   const translations = {
     de: {
@@ -78,6 +80,9 @@ export const EncryptionPasswordDialog: React.FC<EncryptionPasswordDialogProps> =
       forgotPassword: 'Passwort vergessen?',
       resetEncryption: 'Alles zurücksetzen',
       resetHint: 'Kein Zugriff mehr möglich?',
+      
+      watchExplanation: 'Kurze Erklärung ansehen',
+      howItWorksButton: 'Wie funktioniert das?',
     },
     en: {
       unlockTitle: 'Your Data is Protected',
@@ -113,6 +118,9 @@ export const EncryptionPasswordDialog: React.FC<EncryptionPasswordDialogProps> =
       forgotPassword: 'Forgot password?',
       resetEncryption: 'Reset everything',
       resetHint: 'No access possible anymore?',
+      
+      watchExplanation: 'Watch short explanation',
+      howItWorksButton: 'How does it work?',
     },
   };
 
@@ -209,24 +217,41 @@ export const EncryptionPasswordDialog: React.FC<EncryptionPasswordDialogProps> =
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-md" hideCloseButton={preventClose} onPointerDownOutside={preventClose ? (e) => e.preventDefault() : undefined} onEscapeKeyDown={preventClose ? (e) => e.preventDefault() : undefined}>
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2 text-xl">
-            {mode === 'setup' ? (
-              <Shield className="h-6 w-6 text-primary" />
-            ) : (
-              <Lock className="h-6 w-6 text-primary" />
-            )}
-            {mode === 'setup' ? t.setupTitle : t.unlockTitle}
-          </DialogTitle>
-          <DialogDescription className="text-base">
-            {mode === 'setup' ? t.setupDescription : t.unlockDescription}
-          </DialogDescription>
-        </DialogHeader>
+      <DialogContent 
+        className={showVisualGuide ? "sm:max-w-xl" : "sm:max-w-md"} 
+        hideCloseButton={preventClose} 
+        onPointerDownOutside={preventClose ? (e) => e.preventDefault() : undefined} 
+        onEscapeKeyDown={preventClose ? (e) => e.preventDefault() : undefined}
+      >
+        {!showVisualGuide && (
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-xl">
+              {mode === 'setup' ? (
+                <Shield className="h-6 w-6 text-primary" />
+              ) : (
+                <Lock className="h-6 w-6 text-primary" />
+              )}
+              {mode === 'setup' ? t.setupTitle : t.unlockTitle}
+            </DialogTitle>
+            <DialogDescription className="text-base">
+              {mode === 'setup' ? t.setupDescription : t.unlockDescription}
+            </DialogDescription>
+          </DialogHeader>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-5">
-          {mode === 'setup' && (
+          {mode === 'setup' && !showVisualGuide && (
             <div className="space-y-4">
+              {/* Watch explanation button */}
+              <button
+                type="button"
+                onClick={() => setShowVisualGuide(true)}
+                className="w-full flex items-center justify-center gap-2 p-3 rounded-lg border-2 border-dashed border-primary/30 bg-primary/5 hover:bg-primary/10 transition-colors text-primary"
+              >
+                <PlayCircle className="h-5 w-5" />
+                <span className="font-medium text-sm">{t.howItWorksButton}</span>
+              </button>
+              
               {/* Step indicator */}
               <div className="flex items-center gap-2 text-sm font-medium text-primary">
                 <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs">
@@ -260,49 +285,61 @@ export const EncryptionPasswordDialog: React.FC<EncryptionPasswordDialogProps> =
             </div>
           )}
 
-          <div className="space-y-2">
-            <Label htmlFor="encryption-password" className="text-base">{t.password}</Label>
-            <div className="relative">
-              <Input
-                id="encryption-password"
-                type={showPassword ? 'text' : 'password'}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                autoComplete={mode === 'setup' ? 'new-password' : 'current-password'}
-                className="pr-10 h-12 text-base"
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground p-1"
-                aria-label={showPassword ? 'Passwort verbergen' : 'Passwort anzeigen'}
-              >
-                {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-              </button>
-            </div>
-          </div>
-
-          {mode === 'setup' && (
-            <div className="space-y-2">
-              <Label htmlFor="confirm-encryption-password" className="text-base">{t.confirmPassword}</Label>
-              <Input
-                id="confirm-encryption-password"
-                type={showPassword ? 'text' : 'password'}
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="••••••••"
-                autoComplete="new-password"
-                className="h-12 text-base"
-              />
+          {/* Visual Guide */}
+          {mode === 'setup' && showVisualGuide && (
+            <div className="py-2">
+              <EncryptionVisualGuide onComplete={() => setShowVisualGuide(false)} />
             </div>
           )}
 
-          {mode === 'setup' && (
-            <div className="flex items-center gap-2 text-sm text-muted-foreground bg-muted/30 rounded-lg p-3">
-              <CheckCircle2 className="h-4 w-4 text-primary flex-shrink-0" />
-              <span>{t.afterSetup}</span>
-            </div>
+          {/* Only show form fields when visual guide is not active */}
+          {!showVisualGuide && (
+            <>
+              <div className="space-y-2">
+                <Label htmlFor="encryption-password" className="text-base">{t.password}</Label>
+                <div className="relative">
+                  <Input
+                    id="encryption-password"
+                    type={showPassword ? 'text' : 'password'}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="••••••••"
+                    autoComplete={mode === 'setup' ? 'new-password' : 'current-password'}
+                    className="pr-10 h-12 text-base"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground p-1"
+                    aria-label={showPassword ? 'Passwort verbergen' : 'Passwort anzeigen'}
+                  >
+                    {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                  </button>
+                </div>
+              </div>
+
+              {mode === 'setup' && (
+                <div className="space-y-2">
+                  <Label htmlFor="confirm-encryption-password" className="text-base">{t.confirmPassword}</Label>
+                  <Input
+                    id="confirm-encryption-password"
+                    type={showPassword ? 'text' : 'password'}
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    placeholder="••••••••"
+                    autoComplete="new-password"
+                    className="h-12 text-base"
+                  />
+                </div>
+              )}
+
+              {mode === 'setup' && (
+                <div className="flex items-center gap-2 text-sm text-muted-foreground bg-muted/30 rounded-lg p-3">
+                  <CheckCircle2 className="h-4 w-4 text-primary flex-shrink-0" />
+                  <span>{t.afterSetup}</span>
+                </div>
+              )}
+            </>
           )}
 
           {error && (
@@ -347,18 +384,21 @@ export const EncryptionPasswordDialog: React.FC<EncryptionPasswordDialogProps> =
             </div>
           )}
 
-          <div className="flex gap-3 justify-end pt-2">
-            {!preventClose && (
-              <Button type="button" variant="outline" onClick={handleClose} disabled={isMigrating} className="h-11">
-                {t.cancel}
+          {/* Only show buttons when visual guide is not active */}
+          {!showVisualGuide && (
+            <div className="flex gap-3 justify-end pt-2">
+              {!preventClose && (
+                <Button type="button" variant="outline" onClick={handleClose} disabled={isMigrating} className="h-11">
+                  {t.cancel}
+                </Button>
+              )}
+              <Button type="submit" disabled={isLoading || isMigrating || !password} className="h-11 px-6">
+                {isLoading || isMigrating ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : mode === 'setup' ? t.enable : t.unlock}
               </Button>
-            )}
-            <Button type="submit" disabled={isLoading || isMigrating || !password} className="h-11 px-6">
-              {isLoading || isMigrating ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : mode === 'setup' ? t.enable : t.unlock}
-            </Button>
-          </div>
+            </div>
+          )}
         </form>
 
         {/* Recovery Dialog */}
