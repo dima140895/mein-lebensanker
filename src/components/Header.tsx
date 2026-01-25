@@ -24,6 +24,7 @@ import {
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu';
 import AuthForm from './AuthForm';
+import PricingDialog from './PricingDialog';
 
 interface MenuItem {
   label: string;
@@ -40,6 +41,7 @@ const Header = () => {
   const [authOpen, setAuthOpen] = useState(false);
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [pricingOpen, setPricingOpen] = useState(false);
 
   const currentSection = searchParams.get('section');
 
@@ -280,52 +282,17 @@ const Header = () => {
         
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center gap-2">
-          {/* Pricing Dropdown for non-authenticated users */}
+          {/* Pricing Button for non-authenticated users */}
           {!user && (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  className="text-muted-foreground hover:text-foreground"
-                >
-                  <CreditCard className="mr-1.5 h-4 w-4" />
-                  {tx.pricing}
-                  <ChevronDown className="ml-1 h-3 w-3" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="center" className="w-56">
-                {pricingItems.map((item) => (
-                  <DropdownMenuItem
-                    key={item.key}
-                    onClick={() => {
-                      setAuthMode('register');
-                      setAuthOpen(true);
-                    }}
-                    className="flex justify-between items-center py-3"
-                  >
-                    <div className="flex items-center gap-2">
-                      {item.profiles === 1 ? (
-                        <User className="h-4 w-4 text-muted-foreground" />
-                      ) : (
-                        <Users className="h-4 w-4 text-muted-foreground" />
-                      )}
-                      <span>{item.label[language]}</span>
-                    </div>
-                    <div className="text-right flex flex-col">
-                      <span className="font-mono font-semibold text-primary">{item.price}</span>
-                      <span className="text-xs text-muted-foreground">{tx.oneTime}</span>
-                    </div>
-                  </DropdownMenuItem>
-                ))}
-                <DropdownMenuSeparator />
-                <div className="px-2 py-2 text-xs text-muted-foreground text-center">
-                  {language === 'de' 
-                    ? 'Einmalige Zahlung • Lebenslanger Zugang' 
-                    : 'One-time payment • Lifetime access'}
-                </div>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="text-muted-foreground hover:text-foreground"
+              onClick={() => setPricingOpen(true)}
+            >
+              <CreditCard className="mr-1.5 h-4 w-4" />
+              {tx.pricing}
+            </Button>
           )}
 
           {/* Quick Links Dropdown for authenticated users */}
@@ -399,51 +366,28 @@ const Header = () => {
 
         {/* Mobile Pricing Button (top right, visible only on mobile for non-authenticated users) */}
         {!user && (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button 
-                variant="outline" 
-                size="sm" 
-                className="md:hidden"
-              >
-                <CreditCard className="mr-1.5 h-4 w-4" />
-                {tx.pricing}
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56 bg-background">
-              {pricingItems.map((item) => (
-                <DropdownMenuItem
-                  key={item.key}
-                  onClick={() => {
-                    setAuthMode('register');
-                    setAuthOpen(true);
-                  }}
-                  className="flex justify-between items-center py-3"
-                >
-                  <div className="flex items-center gap-2">
-                    {item.profiles === 1 ? (
-                      <User className="h-4 w-4 text-muted-foreground" />
-                    ) : (
-                      <Users className="h-4 w-4 text-muted-foreground" />
-                    )}
-                    <span>{item.label[language]}</span>
-                  </div>
-                  <div className="text-right flex flex-col">
-                    <span className="font-mono font-semibold text-primary">{item.price}</span>
-                    <span className="text-xs text-muted-foreground">{tx.oneTime}</span>
-                  </div>
-                </DropdownMenuItem>
-              ))}
-              <DropdownMenuSeparator />
-              <div className="px-2 py-2 text-xs text-muted-foreground text-center">
-                {language === 'de' 
-                  ? 'Einmalige Zahlung • Lebenslanger Zugang' 
-                  : 'One-time payment • Lifetime access'}
-              </div>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="md:hidden"
+            onClick={() => setPricingOpen(true)}
+          >
+            <CreditCard className="mr-1.5 h-4 w-4" />
+            {tx.pricing}
+          </Button>
         )}
       </div>
+
+      {/* Pricing Dialog */}
+      <PricingDialog 
+        open={pricingOpen} 
+        onOpenChange={setPricingOpen}
+        onSelectPackage={() => {
+          setPricingOpen(false);
+          setAuthMode('register');
+          setAuthOpen(true);
+        }}
+      />
 
       {/* Auth Dialog for mobile (triggered from menu) */}
       <Dialog open={authOpen} onOpenChange={setAuthOpen}>
