@@ -9,6 +9,7 @@ import { useAutoSave } from '@/hooks/useAutoSave';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
+import DocumentUploadSection from './DocumentUploadSection';
 
 const DocumentsForm = () => {
   const { formData, updateSection } = useFormData();
@@ -27,38 +28,50 @@ const DocumentsForm = () => {
   const t = {
     de: {
       title: 'Dokumenten-Übersicht',
-      disclaimer: 'Notiere hier, WO wichtige Dokumente aufbewahrt werden. Diese Übersicht ersetzt keine rechtlichen Dokumente. Änderungen werden automatisch gespeichert.',
+      disclaimer: 'Notiere hier, WO wichtige Dokumente aufbewahrt werden. Du kannst auch Kopien hochladen. Änderungen werden automatisch gespeichert.',
       documentNote: 'Für Testament, Vorsorgevollmacht und Patientenverfügung wende dich an einen Notar.',
       testament: 'Testament',
       testamentPlaceholder: 'Wo befindet sich das Testament? (z.B. Notar, Schließfach, zu Hause)',
+      testamentUpload: 'Testament-Kopie hochladen',
       powerOfAttorney: 'Vorsorgevollmacht',
       powerPlaceholder: 'Wo befindet sich die Vorsorgevollmacht?',
+      powerUpload: 'Vorsorgevollmacht-Kopie hochladen',
       livingWill: 'Patientenverfügung',
       livingWillPlaceholder: 'Wo befindet sich die Patientenverfügung?',
+      livingWillUpload: 'Patientenverfügung-Kopie hochladen',
       insuranceDocs: 'Versicherungsunterlagen',
       insurancePlaceholder: 'Wo befinden sich die Versicherungsunterlagen?',
+      insuranceUpload: 'Versicherungsunterlagen hochladen',
       propertyDocs: 'Immobilienunterlagen',
       propertyPlaceholder: 'Wo befinden sich Grundbuchauszüge, Kaufverträge etc.?',
+      propertyUpload: 'Immobilienunterlagen hochladen',
       otherDocs: 'Sonstige wichtige Dokumente',
       otherPlaceholder: 'Wo befinden sich weitere wichtige Dokumente?',
+      otherUpload: 'Sonstige Dokumente hochladen',
       notes: 'Zusätzliche Hinweise',
     },
     en: {
       title: 'Document Overview',
-      disclaimer: 'Note here WHERE important documents are stored. This overview does not replace legal documents. Changes are saved automatically.',
+      disclaimer: 'Note here WHERE important documents are stored. You can also upload copies. Changes are saved automatically.',
       documentNote: 'For wills, power of attorney, and living wills, please consult a notary.',
       testament: 'Last Will & Testament',
       testamentPlaceholder: 'Where is the will located? (e.g., notary, safe deposit box, at home)',
+      testamentUpload: 'Upload will copy',
       powerOfAttorney: 'Power of Attorney',
       powerPlaceholder: 'Where is the power of attorney located?',
+      powerUpload: 'Upload power of attorney copy',
       livingWill: 'Living Will / Advance Directive',
       livingWillPlaceholder: 'Where is the living will located?',
+      livingWillUpload: 'Upload living will copy',
       insuranceDocs: 'Insurance Documents',
       insurancePlaceholder: 'Where are the insurance documents located?',
+      insuranceUpload: 'Upload insurance documents',
       propertyDocs: 'Property Documents',
       propertyPlaceholder: 'Where are land registry extracts, purchase contracts, etc.?',
+      propertyUpload: 'Upload property documents',
       otherDocs: 'Other Important Documents',
       otherPlaceholder: 'Where are other important documents located?',
+      otherUpload: 'Upload other documents',
       notes: 'Additional Notes',
     },
   };
@@ -69,13 +82,19 @@ const DocumentsForm = () => {
     updateSection('documents', { ...data, [field]: value });
   };
 
-  const documentFields: Array<{ key: keyof DocumentsData; label: string; placeholder: string }> = [
-    { key: 'testamentLocation', label: texts.testament, placeholder: texts.testamentPlaceholder },
-    { key: 'powerOfAttorneyLocation', label: texts.powerOfAttorney, placeholder: texts.powerPlaceholder },
-    { key: 'livingWillLocation', label: texts.livingWill, placeholder: texts.livingWillPlaceholder },
-    { key: 'insuranceDocsLocation', label: texts.insuranceDocs, placeholder: texts.insurancePlaceholder },
-    { key: 'propertyDocsLocation', label: texts.propertyDocs, placeholder: texts.propertyPlaceholder },
-    { key: 'otherDocsLocation', label: texts.otherDocs, placeholder: texts.otherPlaceholder },
+  const documentFields: Array<{ 
+    key: keyof DocumentsData; 
+    label: string; 
+    placeholder: string;
+    uploadLabel: string;
+    uploadType: string;
+  }> = [
+    { key: 'testamentLocation', label: texts.testament, placeholder: texts.testamentPlaceholder, uploadLabel: texts.testamentUpload, uploadType: 'testament' },
+    { key: 'powerOfAttorneyLocation', label: texts.powerOfAttorney, placeholder: texts.powerPlaceholder, uploadLabel: texts.powerUpload, uploadType: 'power-of-attorney' },
+    { key: 'livingWillLocation', label: texts.livingWill, placeholder: texts.livingWillPlaceholder, uploadLabel: texts.livingWillUpload, uploadType: 'living-will' },
+    { key: 'insuranceDocsLocation', label: texts.insuranceDocs, placeholder: texts.insurancePlaceholder, uploadLabel: texts.insuranceUpload, uploadType: 'insurance' },
+    { key: 'propertyDocsLocation', label: texts.propertyDocs, placeholder: texts.propertyPlaceholder, uploadLabel: texts.propertyUpload, uploadType: 'property' },
+    { key: 'otherDocsLocation', label: texts.otherDocs, placeholder: texts.otherPlaceholder, uploadLabel: texts.otherUpload, uploadType: 'other' },
   ];
 
   if (!profile?.has_paid) {
@@ -94,15 +113,22 @@ const DocumentsForm = () => {
         <p className="text-sm text-amber">{texts.documentNote}</p>
       </div>
 
-      <div className="grid gap-6">
+      <div className="space-y-8">
         {documentFields.map((field) => (
-          <div key={field.key} className="space-y-2">
-            <Label>{field.label}</Label>
-            <Input
-              value={data[field.key]}
-              onChange={(e) => handleChange(field.key, e.target.value)}
-              onBlur={handleBlur}
-              placeholder={field.placeholder}
+          <div key={field.key} className="space-y-4 p-4 rounded-lg border border-border bg-card/50">
+            <div className="space-y-2">
+              <Label className="text-base font-semibold">{field.label}</Label>
+              <Input
+                value={data[field.key]}
+                onChange={(e) => handleChange(field.key, e.target.value)}
+                onBlur={handleBlur}
+                placeholder={field.placeholder}
+              />
+            </div>
+            
+            <DocumentUploadSection
+              documentType={field.uploadType}
+              label={field.uploadLabel}
             />
           </div>
         ))}
