@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Heart, LogIn, UserPlus, Menu, Home, User, Info, ClipboardList, Wallet, Globe, ScrollText, FolderOpen, Phone, ChevronDown, Link2 } from 'lucide-react';
+import { Heart, LogIn, UserPlus, Menu, Home, User, Info, ClipboardList, Wallet, Globe, ScrollText, FolderOpen, Phone, ChevronDown, Link2, CreditCard, Users } from 'lucide-react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import LanguageToggle from './LanguageToggle';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -21,6 +21,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu';
 import AuthForm from './AuthForm';
 
@@ -52,6 +53,12 @@ const Header = () => {
     { key: 'share', label: { de: 'Für Angehörige', en: 'For Relatives' }, icon: Link2 },
   ];
 
+  const pricingItems = [
+    { key: 'single', label: { de: 'Einzelperson', en: 'Individual' }, price: '39 €', profiles: 1 },
+    { key: 'couple', label: { de: 'Ehepaar-Paket', en: 'Couple Package' }, price: '49 €', profiles: 2 },
+    { key: 'family', label: { de: 'Familien-Paket', en: 'Family Package' }, price: '99 €', profiles: 4 },
+  ];
+
   const texts = {
     de: {
       login: 'Anmelden',
@@ -67,6 +74,9 @@ const Header = () => {
       wishes: 'Wünsche',
       documents: 'Dokumente',
       contacts: 'Kontakte',
+      pricing: 'Preise',
+      oneTime: 'einmalig',
+      profiles: 'Profile',
     },
     en: {
       login: 'Sign In',
@@ -82,6 +92,9 @@ const Header = () => {
       wishes: 'Wishes',
       documents: 'Documents',
       contacts: 'Contacts',
+      pricing: 'Pricing',
+      oneTime: 'one-time',
+      profiles: 'profiles',
     },
   };
 
@@ -267,6 +280,54 @@ const Header = () => {
         
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center gap-2">
+          {/* Pricing Dropdown for non-authenticated users */}
+          {!user && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="text-muted-foreground hover:text-foreground"
+                >
+                  <CreditCard className="mr-1.5 h-4 w-4" />
+                  {tx.pricing}
+                  <ChevronDown className="ml-1 h-3 w-3" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="center" className="w-56">
+                {pricingItems.map((item) => (
+                  <DropdownMenuItem
+                    key={item.key}
+                    onClick={() => {
+                      setAuthMode('register');
+                      setAuthOpen(true);
+                    }}
+                    className="flex justify-between items-center py-3"
+                  >
+                    <div className="flex items-center gap-2">
+                      {item.profiles === 1 ? (
+                        <User className="h-4 w-4 text-muted-foreground" />
+                      ) : (
+                        <Users className="h-4 w-4 text-muted-foreground" />
+                      )}
+                      <span>{item.label[language]}</span>
+                    </div>
+                    <div className="text-right">
+                      <span className="font-mono font-semibold text-primary">{item.price}</span>
+                      <span className="text-xs text-muted-foreground ml-1">{tx.oneTime}</span>
+                    </div>
+                  </DropdownMenuItem>
+                ))}
+                <DropdownMenuSeparator />
+                <div className="px-2 py-2 text-xs text-muted-foreground text-center">
+                  {language === 'de' 
+                    ? 'Einmalige Zahlung • Lebenslanger Zugang' 
+                    : 'One-time payment • Lifetime access'}
+                </div>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
+
           {/* Quick Links Dropdown for authenticated users */}
           {user && (
             <>
