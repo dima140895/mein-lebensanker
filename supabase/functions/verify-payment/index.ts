@@ -7,6 +7,12 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+const MAX_PROFILES: Record<string, number> = {
+  single: 1,
+  couple: 2,
+  family: 4,
+};
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -81,12 +87,19 @@ serve(async (req) => {
         Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
       );
 
+      const tier = paymentType || session.metadata?.payment_type || "single";
+      const maxProfiles = MAX_PROFILES[tier] || 1;
+      const hasUpdateService = session.metadata?.include_update_service === "true";
+
       // Only update the authenticated user's own profile
       const { error } = await supabaseAdmin
         .from("profiles")
         .update({ 
           has_paid: true, 
-          payment_type: paymentType || session.metadata?.payment_type || "single"
+          payment_type: tier,
+          purchased_tier: tier,
+          max_profiles: maxProfiles,
+          has_update_subscription: hasUpdateService,
         })
         .eq("user_id", authenticatedUserId);
 
@@ -100,7 +113,9 @@ serve(async (req) => {
 
       return new Response(JSON.stringify({ 
         success: true, 
-        paymentStatus: session.payment_status 
+        paymentStatus: session.payment_status,
+        tier,
+        maxProfiles,
       }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 200,
