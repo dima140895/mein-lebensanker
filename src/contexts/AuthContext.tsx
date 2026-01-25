@@ -36,13 +36,24 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
 
-  const fetchProfile = async (userId: string) => {
+  const fetchProfile = async (userId: string): Promise<boolean> => {
     // Fetch profile
     const { data, error } = await supabase
       .from('profiles')
       .select('*')
       .eq('user_id', userId)
-      .single();
+      .maybeSingle();
+    
+    // If profile doesn't exist, user was likely deleted server-side
+    if (error || !data) {
+      // Clear local session since user no longer exists
+      await supabase.auth.signOut();
+      setUser(null);
+      setSession(null);
+      setProfile(null);
+      setIsAdmin(false);
+      return false;
+    }
     
     // Fetch admin role
     const { data: roleData } = await supabase
@@ -55,14 +66,13 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const hasAdminRole = !!roleData;
     setIsAdmin(hasAdminRole);
     
-    if (!error && data) {
-      // Admins are treated as having paid
-      const profileData = data as Profile;
-      if (hasAdminRole) {
-        profileData.has_paid = true;
-      }
-      setProfile(profileData);
+    // Admins are treated as having paid
+    const profileData = data as Profile;
+    if (hasAdminRole) {
+      profileData.has_paid = true;
     }
+    setProfile(profileData);
+    return true;
   };
 
   const refreshProfile = async () => {
