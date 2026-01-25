@@ -26,7 +26,7 @@ import { Json } from '@/integrations/supabase/types';
 
 const ProfileSwitcher = () => {
   const { language } = useLanguage();
-  const { profile } = useAuth();
+  const { profile, user } = useAuth();
   const {
     personProfiles,
     activeProfileId,
@@ -128,9 +128,39 @@ const ProfileSwitcher = () => {
   };
 
   const handleEditProfile = async () => {
-    if (!editingProfile || !newProfileName.trim()) return;
+    if (!editingProfile || !newProfileName.trim() || !user) return;
     
     await updateProfile(editingProfile, newProfileName.trim(), newProfileBirthDate || undefined);
+    
+    // Also update personal data with the new name and birth date
+    // First fetch existing personal data to preserve other fields
+    const { data: existingData } = await supabase
+      .from('vorsorge_data')
+      .select('data')
+      .eq('user_id', user.id)
+      .eq('section_key', 'personal')
+      .eq('person_profile_id', editingProfile)
+      .maybeSingle();
+    
+    const existingPersonal = (existingData?.data as Record<string, unknown>) || {};
+    const updatedPersonalData = {
+      ...existingPersonal,
+      fullName: newProfileName.trim(),
+      birthDate: newProfileBirthDate || existingPersonal.birthDate || '',
+    };
+    
+    await supabase
+      .from('vorsorge_data')
+      .upsert({
+        user_id: user.id,
+        section_key: 'personal',
+        data: updatedPersonalData as unknown as Json,
+        person_profile_id: editingProfile,
+        is_for_partner: false,
+      }, {
+        onConflict: 'user_id,section_key,person_profile_id'
+      });
+    
     toast.success(t.profileUpdated);
     setDialogOpen(false);
     setEditingProfile(null);
