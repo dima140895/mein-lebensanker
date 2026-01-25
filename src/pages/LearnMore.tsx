@@ -10,8 +10,13 @@ import {
   Clock,
   CheckCircle,
   HelpCircle,
-  BookOpen
+  BookOpen,
+  KeyRound,
+  Eye,
+  EyeOff,
+  RefreshCw
 } from 'lucide-react';
+import encryptionDiagram from '@/assets/encryption-diagram.png';
 import Header from '@/components/Header';
 import Disclaimer from '@/components/Disclaimer';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -270,6 +275,187 @@ const LearnMore = () => {
                   ))}
                 </ul>
               </div>
+            </motion.div>
+          </div>
+        </section>
+
+        {/* Encryption Security Section */}
+        <section className="py-20">
+          <div className="container mx-auto px-4">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="mb-12 text-center"
+            >
+              <span className="inline-block rounded-full bg-sage-light px-4 py-1.5 text-sm font-medium text-sage-dark mb-4">
+                <Shield className="inline h-4 w-4 mr-2" />
+                {language === 'de' ? 'Datensicherheit' : 'Data Security'}
+              </span>
+              <h2 className="font-serif text-3xl font-bold text-foreground md:text-4xl">
+                {language === 'de' ? 'Wie Deine Daten geschützt werden' : 'How Your Data Is Protected'}
+              </h2>
+              <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
+                {language === 'de' 
+                  ? 'Deine sensiblen Informationen werden mit modernster End-to-End-Verschlüsselung geschützt. Nur Du hast Zugriff – selbst wir können Deine Daten nicht lesen.'
+                  : 'Your sensitive information is protected with state-of-the-art end-to-end encryption. Only you have access – even we cannot read your data.'
+                }
+              </p>
+            </motion.div>
+
+            {/* Encryption Diagram */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              className="max-w-4xl mx-auto mb-12"
+            >
+              <div className="relative rounded-2xl border border-border/50 bg-card p-6 md:p-8 shadow-sm">
+                <img 
+                  src={encryptionDiagram} 
+                  alt={language === 'de' ? 'Verschlüsselungs-Diagramm' : 'Encryption Diagram'}
+                  className="w-full max-w-xl mx-auto mb-6"
+                />
+                <div className="grid grid-cols-3 gap-4 text-center text-sm">
+                  <div>
+                    <div className="font-medium text-foreground">
+                      {language === 'de' ? '1. Dein Passwort' : '1. Your Password'}
+                    </div>
+                    <p className="text-muted-foreground text-xs mt-1">
+                      {language === 'de' ? 'Wähle ein sicheres Passwort' : 'Choose a secure password'}
+                    </p>
+                  </div>
+                  <div>
+                    <div className="font-medium text-foreground">
+                      {language === 'de' ? '2. Verschlüsselte Daten' : '2. Encrypted Data'}
+                    </div>
+                    <p className="text-muted-foreground text-xs mt-1">
+                      {language === 'de' ? 'AES-256 Verschlüsselung' : 'AES-256 Encryption'}
+                    </p>
+                  </div>
+                  <div>
+                    <div className="font-medium text-foreground">
+                      {language === 'de' ? '3. Recovery Key' : '3. Recovery Key'}
+                    </div>
+                    <p className="text-muted-foreground text-xs mt-1">
+                      {language === 'de' ? 'Dein Notfall-Zugang' : 'Your emergency access'}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Encryption Process Steps */}
+            <motion.div
+              variants={containerVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              className="grid gap-6 md:grid-cols-2 max-w-4xl mx-auto"
+            >
+              {/* Password Section */}
+              <motion.div variants={itemVariants} className="rounded-2xl border border-border/50 bg-card p-6">
+                <div className="flex items-start gap-4">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-sage-light text-sage-dark flex-shrink-0">
+                    <Lock className="h-6 w-6" />
+                  </div>
+                  <div>
+                    <h3 className="font-serif text-lg font-semibold text-foreground mb-2">
+                      {language === 'de' ? 'Verschlüsselungspasswort' : 'Encryption Password'}
+                    </h3>
+                    <p className="text-muted-foreground text-sm leading-relaxed">
+                      {language === 'de' 
+                        ? 'Beim Aktivieren der Verschlüsselung wählst Du ein persönliches Passwort. Dieses Passwort wird verwendet, um alle Deine sensiblen Daten zu verschlüsseln. Das Passwort verlässt niemals Deinen Browser – wir speichern es nicht und können es nicht wiederherstellen.'
+                        : 'When activating encryption, you choose a personal password. This password is used to encrypt all your sensitive data. The password never leaves your browser – we don\'t store it and cannot recover it.'
+                      }
+                    </p>
+                    <div className="mt-4 flex items-center gap-2 text-xs text-muted-foreground">
+                      <Eye className="h-3.5 w-3.5" />
+                      {language === 'de' ? 'Nur in Deinem Browser gespeichert' : 'Only stored in your browser'}
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* Recovery Key Section */}
+              <motion.div variants={itemVariants} className="rounded-2xl border border-border/50 bg-card p-6">
+                <div className="flex items-start gap-4">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-amber-light text-amber flex-shrink-0">
+                    <KeyRound className="h-6 w-6" />
+                  </div>
+                  <div>
+                    <h3 className="font-serif text-lg font-semibold text-foreground mb-2">
+                      {language === 'de' ? 'Recovery Key (Wiederherstellungsschlüssel)' : 'Recovery Key'}
+                    </h3>
+                    <p className="text-muted-foreground text-sm leading-relaxed">
+                      {language === 'de' 
+                        ? 'Bei der Einrichtung erhältst Du einen einzigartigen Recovery Key. Dieser Schlüssel ist Deine Absicherung für den Fall, dass Du Dein Passwort vergisst. Bewahre ihn an einem sicheren Ort auf – idealerweise ausgedruckt oder in einem Passwort-Manager.'
+                        : 'During setup, you receive a unique recovery key. This key is your backup in case you forget your password. Store it in a safe place – ideally printed out or in a password manager.'
+                      }
+                    </p>
+                    <div className="mt-4 flex items-center gap-2 text-xs text-muted-foreground">
+                      <EyeOff className="h-3.5 w-3.5" />
+                      {language === 'de' ? 'Wird nur einmal angezeigt' : 'Shown only once'}
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* How It Works */}
+              <motion.div variants={itemVariants} className="rounded-2xl border border-border/50 bg-card p-6">
+                <div className="flex items-start gap-4">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary flex-shrink-0">
+                    <Shield className="h-6 w-6" />
+                  </div>
+                  <div>
+                    <h3 className="font-serif text-lg font-semibold text-foreground mb-2">
+                      {language === 'de' ? 'So funktioniert der Schutz' : 'How Protection Works'}
+                    </h3>
+                    <ul className="text-muted-foreground text-sm leading-relaxed space-y-2">
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="h-4 w-4 text-sage flex-shrink-0 mt-0.5" />
+                        {language === 'de' ? 'Verschlüsselung erfolgt lokal in Deinem Browser' : 'Encryption happens locally in your browser'}
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="h-4 w-4 text-sage flex-shrink-0 mt-0.5" />
+                        {language === 'de' ? 'AES-256-GCM Standard (Banken-Niveau)' : 'AES-256-GCM standard (bank-level)'}
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <CheckCircle className="h-4 w-4 text-sage flex-shrink-0 mt-0.5" />
+                        {language === 'de' ? 'Selbst wir haben keinen Zugriff auf Deine Daten' : 'Even we have no access to your data'}
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* Password Recovery */}
+              <motion.div variants={itemVariants} className="rounded-2xl border border-border/50 bg-card p-6">
+                <div className="flex items-start gap-4">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-violet-100 text-violet-600 flex-shrink-0">
+                    <RefreshCw className="h-6 w-6" />
+                  </div>
+                  <div>
+                    <h3 className="font-serif text-lg font-semibold text-foreground mb-2">
+                      {language === 'de' ? 'Passwort vergessen?' : 'Forgot Password?'}
+                    </h3>
+                    <p className="text-muted-foreground text-sm leading-relaxed">
+                      {language === 'de' 
+                        ? 'Kein Problem – mit Deinem Recovery Key kannst Du jederzeit ein neues Passwort setzen. Danach wird automatisch ein neuer Recovery Key generiert, den Du wieder sicher aufbewahren solltest.'
+                        : 'No problem – with your recovery key, you can set a new password at any time. Afterwards, a new recovery key is automatically generated, which you should store safely again.'
+                      }
+                    </p>
+                    <div className="mt-4 p-3 bg-amber-light/30 rounded-lg">
+                      <p className="text-xs text-amber font-medium">
+                        {language === 'de' 
+                          ? '⚠️ Ohne Passwort UND Recovery Key ist kein Zugriff möglich!'
+                          : '⚠️ Without password AND recovery key, no access is possible!'
+                        }
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
             </motion.div>
           </div>
         </section>
