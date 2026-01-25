@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { User, Wallet, Globe, Heart, FileText, ArrowLeft, Users, Phone, Info, Compass, MessageCircle, Link2 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useEncryption } from '@/contexts/EncryptionContext';
 import { FormProvider } from '@/contexts/FormContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -23,6 +24,7 @@ import DecisionAssistant from '@/components/sections/DecisionAssistant';
 import ShareLinkManager from '@/components/ShareLinkManager';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { EncryptionPasswordDialog } from '@/components/EncryptionPasswordDialog';
 
 const sections = [
   { key: 'about', icon: Info, color: 'bg-sage-light text-sage-dark', isInfo: true },
@@ -40,9 +42,20 @@ const sections = [
 const DashboardContent = () => {
   const { user, profile, loading } = useAuth();
   const { language } = useLanguage();
+  const { isEncryptionEnabled, isUnlocked, isLoading: encryptionLoading } = useEncryption();
   const [searchParams, setSearchParams] = useSearchParams();
   const [activeSection, setActiveSection] = useState<string | null>(null);
   const [isPartnerView, setIsPartnerView] = useState(false);
+  const [showUnlockDialog, setShowUnlockDialog] = useState(false);
+
+  // Show unlock dialog automatically when encryption is enabled but locked
+  useEffect(() => {
+    if (!encryptionLoading && isEncryptionEnabled && !isUnlocked) {
+      setShowUnlockDialog(true);
+    } else {
+      setShowUnlockDialog(false);
+    }
+  }, [isEncryptionEnabled, isUnlocked, encryptionLoading]);
 
   // Valid sections that can be set via URL (includes hidden sections like upgrade/payment)
   const validUrlSections = [...sections.map(s => s.key), 'upgrade', 'payment'];
@@ -188,41 +201,50 @@ const DashboardContent = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="text-center mb-8">
-        <h1 className="font-serif text-3xl font-bold text-foreground">{texts.title}</h1>
-        <p className="mt-2 text-muted-foreground">{texts.subtitle}</p>
+    <>
+      <div className="container mx-auto px-4 py-8">
+        <div className="text-center mb-8">
+          <h1 className="font-serif text-3xl font-bold text-foreground">{texts.title}</h1>
+          <p className="mt-2 text-muted-foreground">{texts.subtitle}</p>
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 max-w-4xl mx-auto">
+          {sections.map((section, i) => {
+            const Icon = section.icon;
+            const descKey = `${section.key}Desc` as keyof typeof texts;
+            return (
+              <motion.button
+                key={section.key}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.1 }}
+                onClick={() => handleSectionChange(section.key)}
+                className="flex items-start gap-4 p-6 rounded-xl border border-border bg-card shadow-card hover:shadow-elevated transition-all text-left"
+              >
+                <div className={`h-12 w-12 rounded-lg flex items-center justify-center flex-shrink-0 ${section.color}`}>
+                  <Icon className="h-6 w-6" />
+                </div>
+                <div className="flex flex-col gap-1">
+                  <span className="font-serif text-lg font-semibold text-foreground">
+                    {texts[section.key as keyof typeof texts]}
+                  </span>
+                  <span className="text-sm text-muted-foreground">
+                    {texts[descKey]}
+                  </span>
+                </div>
+              </motion.button>
+            );
+          })}
+        </div>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 max-w-4xl mx-auto">
-        {sections.map((section, i) => {
-          const Icon = section.icon;
-          const descKey = `${section.key}Desc` as keyof typeof texts;
-          return (
-            <motion.button
-              key={section.key}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.1 }}
-              onClick={() => handleSectionChange(section.key)}
-              className="flex items-start gap-4 p-6 rounded-xl border border-border bg-card shadow-card hover:shadow-elevated transition-all text-left"
-            >
-              <div className={`h-12 w-12 rounded-lg flex items-center justify-center flex-shrink-0 ${section.color}`}>
-                <Icon className="h-6 w-6" />
-              </div>
-              <div className="flex flex-col gap-1">
-                <span className="font-serif text-lg font-semibold text-foreground">
-                  {texts[section.key as keyof typeof texts]}
-                </span>
-                <span className="text-sm text-muted-foreground">
-                  {texts[descKey]}
-                </span>
-              </div>
-            </motion.button>
-          );
-        })}
-      </div>
-    </div>
+      {/* Encryption Unlock Dialog - shown automatically when encryption is enabled but locked */}
+      <EncryptionPasswordDialog 
+        open={showUnlockDialog} 
+        onOpenChange={setShowUnlockDialog}
+        mode="unlock"
+      />
+    </>
   );
 };
 
