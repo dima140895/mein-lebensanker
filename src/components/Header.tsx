@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Heart, LogIn, UserPlus, Menu, Home, User, Info, ClipboardList, Wallet, Globe, ScrollText, FolderOpen, Phone, ChevronDown, Link2, CreditCard, Package, Key, LogOut, Shield, KeyRound, Lock } from 'lucide-react';
+import { Heart, LogIn, UserPlus, Menu, Home, User, Info, ClipboardList, Wallet, Globe, ScrollText, FolderOpen, Phone, ChevronDown, Link2, CreditCard, Package, Key, LogOut, Shield, KeyRound, Lock, Unlock } from 'lucide-react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import LanguageToggle from './LanguageToggle';
 import ProfileSwitcher from './ProfileSwitcher';
-import { EncryptionStatus } from './EncryptionStatus';
+
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useEncryption } from '@/contexts/EncryptionContext';
@@ -31,6 +31,7 @@ import PricingDialog from './PricingDialog';
 import ChangePasswordDialog from './ChangePasswordDialog';
 import { EncryptionPasswordDialog } from './EncryptionPasswordDialog';
 import { ViewRecoveryKeyDialog } from './ViewRecoveryKeyDialog';
+import { RecoveryKeyRecoveryDialog } from './RecoveryKeyRecoveryDialog';
 
 interface MenuItem {
   label: string;
@@ -42,7 +43,7 @@ interface MenuItem {
 const Header = () => {
   const { language } = useLanguage();
   const { user, profile, signOut } = useAuth();
-  const { isEncryptionEnabled: encryptionEnabled, isUnlocked, lock } = useEncryption();
+  const { isEncryptionEnabled: encryptionEnabled, isUnlocked, lock, encryptedPasswordRecovery } = useEncryption();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [authOpen, setAuthOpen] = useState(false);
@@ -51,7 +52,9 @@ const Header = () => {
   const [pricingOpen, setPricingOpen] = useState(false);
   const [changePasswordOpen, setChangePasswordOpen] = useState(false);
   const [encryptionSetupOpen, setEncryptionSetupOpen] = useState(false);
+  const [encryptionUnlockOpen, setEncryptionUnlockOpen] = useState(false);
   const [recoveryKeyDialogOpen, setRecoveryKeyDialogOpen] = useState(false);
+  const [recoveryKeyRecoveryOpen, setRecoveryKeyRecoveryOpen] = useState(false);
 
   const currentSection = searchParams.get('section');
 
@@ -101,8 +104,10 @@ const Header = () => {
       encryption: 'Verschlüsselung',
       encryptionEnabled: 'Verschlüsselung aktiv',
       encryptionLocked: 'Daten gesperrt',
+      unlockData: 'Daten entsperren',
       lockData: 'Daten sperren',
       recoveryKey: 'Neuen Recovery-Schlüssel',
+      forgotPassword: 'Passwort vergessen?',
     },
     en: {
       login: 'Sign In',
@@ -133,8 +138,11 @@ const Header = () => {
       encryption: 'Encryption',
       encryptionEnabled: 'Encryption active',
       encryptionLocked: 'Data locked',
+      unlockData: 'Unlock Data',
       lockData: 'Lock Data',
       recoveryKey: 'New Recovery Key',
+      forgotPassword: 'Forgot password?',
+    },
     },
   };
 
@@ -321,12 +329,12 @@ const Header = () => {
                       )}
                       {encryptionEnabled && (
                         <>
-                          <div className="flex items-center gap-2 px-4 py-2 text-sm text-muted-foreground">
-                            <Shield className="h-4 w-4 text-primary" />
-                            {isUnlocked ? tx.encryptionEnabled : tx.encryptionLocked}
-                          </div>
-                          {isUnlocked && (
+                          {isUnlocked ? (
                             <>
+                              <div className="flex items-center gap-2 px-4 py-2 text-sm text-muted-foreground">
+                                <Shield className="h-4 w-4 text-primary" />
+                                {tx.encryptionEnabled}
+                              </div>
                               <Button 
                                 variant="ghost" 
                                 className="w-full justify-start" 
@@ -349,6 +357,33 @@ const Header = () => {
                                 <KeyRound className="mr-2 h-4 w-4" />
                                 {tx.recoveryKey}
                               </Button>
+                            </>
+                          ) : (
+                            <>
+                              <Button 
+                                variant="ghost" 
+                                className="w-full justify-start text-primary" 
+                                onClick={() => {
+                                  setMobileMenuOpen(false);
+                                  setEncryptionUnlockOpen(true);
+                                }}
+                              >
+                                <Unlock className="mr-2 h-4 w-4" />
+                                {tx.unlockData}
+                              </Button>
+                              {encryptedPasswordRecovery && (
+                                <Button 
+                                  variant="ghost" 
+                                  className="w-full justify-start text-muted-foreground" 
+                                  onClick={() => {
+                                    setMobileMenuOpen(false);
+                                    setRecoveryKeyRecoveryOpen(true);
+                                  }}
+                                >
+                                  <Key className="mr-2 h-4 w-4" />
+                                  {tx.forgotPassword}
+                                </Button>
+                              )}
                             </>
                           )}
                         </>
@@ -502,9 +537,6 @@ const Header = () => {
               {/* Profile Switcher for multi-profile packages */}
               <ProfileSwitcher />
               
-              {/* Encryption Status - shows unlock button when locked */}
-              <EncryptionStatus />
-              
               <div className="w-px h-6 bg-border" />
             </>
           )}
@@ -530,12 +562,12 @@ const Header = () => {
                   </DropdownMenuItem>
                 ) : (
                   <>
-                    <DropdownMenuItem disabled className="opacity-70">
-                      <Shield className="mr-2 h-4 w-4 text-primary" />
-                      {isUnlocked ? tx.encryptionEnabled : tx.encryptionLocked}
-                    </DropdownMenuItem>
-                    {isUnlocked && (
+                    {isUnlocked ? (
                       <>
+                        <DropdownMenuItem disabled className="opacity-70">
+                          <Shield className="mr-2 h-4 w-4 text-primary" />
+                          {tx.encryptionEnabled}
+                        </DropdownMenuItem>
                         <DropdownMenuItem 
                           onClick={() => lock()}
                           className="cursor-pointer"
@@ -550,6 +582,25 @@ const Header = () => {
                           <KeyRound className="mr-2 h-4 w-4" />
                           {tx.recoveryKey}
                         </DropdownMenuItem>
+                      </>
+                    ) : (
+                      <>
+                        <DropdownMenuItem 
+                          onClick={() => setEncryptionUnlockOpen(true)}
+                          className="cursor-pointer text-primary hover:text-primary"
+                        >
+                          <Unlock className="mr-2 h-4 w-4" />
+                          {tx.unlockData}
+                        </DropdownMenuItem>
+                        {encryptedPasswordRecovery && (
+                          <DropdownMenuItem 
+                            onClick={() => setRecoveryKeyRecoveryOpen(true)}
+                            className="cursor-pointer text-muted-foreground"
+                          >
+                            <Key className="mr-2 h-4 w-4" />
+                            {tx.forgotPassword}
+                          </DropdownMenuItem>
+                        )}
                       </>
                     )}
                   </>
@@ -636,6 +687,19 @@ const Header = () => {
       <ViewRecoveryKeyDialog 
         open={recoveryKeyDialogOpen} 
         onOpenChange={setRecoveryKeyDialogOpen}
+      />
+
+      {/* Encryption Unlock Dialog */}
+      <EncryptionPasswordDialog 
+        open={encryptionUnlockOpen} 
+        onOpenChange={setEncryptionUnlockOpen}
+        mode="unlock"
+      />
+
+      {/* Recovery Key Recovery Dialog */}
+      <RecoveryKeyRecoveryDialog 
+        open={recoveryKeyRecoveryOpen} 
+        onOpenChange={setRecoveryKeyRecoveryOpen}
       />
     </motion.header>
   );
