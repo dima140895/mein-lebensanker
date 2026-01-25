@@ -152,12 +152,26 @@ export const ProfileProvider: React.FC<{ children: ReactNode }> = ({ children })
   }, [user, profile?.has_paid]);
 
   // Create default profile if none exist and user has paid
+  // Use a ref to prevent race conditions with multiple effect runs
+  const isCreatingDefaultProfile = React.useRef(false);
+  
   useEffect(() => {
     const createDefaultProfile = async () => {
-      if (user && profile?.has_paid && personProfiles.length === 0 && !loading) {
-        // Use the user's full_name from profile or a default
-        const defaultName = profile.full_name || profile.email?.split('@')[0] || 'Profil 1';
-        await createProfile(defaultName);
+      if (
+        user && 
+        profile?.has_paid && 
+        personProfiles.length === 0 && 
+        !loading &&
+        !isCreatingDefaultProfile.current
+      ) {
+        isCreatingDefaultProfile.current = true;
+        try {
+          // Use the user's full_name from profile or a default
+          const defaultName = profile.full_name || profile.email?.split('@')[0] || 'Profil 1';
+          await createProfile(defaultName);
+        } finally {
+          isCreatingDefaultProfile.current = false;
+        }
       }
     };
     
