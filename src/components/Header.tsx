@@ -466,9 +466,6 @@ const Header = () => {
               {/* Profile Switcher for multi-profile packages */}
               <ProfileSwitcher />
               
-              {/* Encryption Status */}
-              <EncryptionStatus />
-              
               <div className="w-px h-6 bg-border" />
             </>
           )}
