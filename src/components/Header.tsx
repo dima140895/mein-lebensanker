@@ -312,9 +312,9 @@ const Header = () => {
                       )}
                       <span>{item.label[language]}</span>
                     </div>
-                    <div className="text-right">
+                    <div className="text-right flex flex-col">
                       <span className="font-mono font-semibold text-primary">{item.price}</span>
-                      <span className="text-xs text-muted-foreground ml-1">{tx.oneTime}</span>
+                      <span className="text-xs text-muted-foreground">{tx.oneTime}</span>
                     </div>
                   </DropdownMenuItem>
                 ))}
