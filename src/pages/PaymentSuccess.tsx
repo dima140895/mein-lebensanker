@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { logger } from '@/lib/logger';
 
 const PaymentSuccessContent = () => {
-  const { user, refreshProfile } = useAuth();
+  const { user, loading: authLoading, refreshProfile } = useAuth();
   const { language } = useLanguage();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -17,17 +17,37 @@ const PaymentSuccessContent = () => {
   
   const [verificationStatus, setVerificationStatus] = useState<'loading' | 'success' | 'error'>('loading');
   const [errorMessage, setErrorMessage] = useState<string>('');
+  const [hasVerified, setHasVerified] = useState(false);
 
   useEffect(() => {
     const verifyPayment = async () => {
-      // Must have both user and session_id from Stripe redirect
-      if (!user || !sessionId) {
+      // Prevent double verification
+      if (hasVerified) return;
+      
+      // Must have session_id from Stripe redirect
+      if (!sessionId) {
         setVerificationStatus('error');
         setErrorMessage(language === 'de' 
           ? 'Ungültige Zahlungssitzung. Bitte versuche es erneut.' 
           : 'Invalid payment session. Please try again.');
         return;
       }
+
+      // Wait for auth to finish loading
+      if (authLoading) {
+        return;
+      }
+
+      // User must be authenticated
+      if (!user) {
+        setVerificationStatus('error');
+        setErrorMessage(language === 'de' 
+          ? 'Bitte melde Dich an, um die Zahlung zu verifizieren.' 
+          : 'Please sign in to verify your payment.');
+        return;
+      }
+
+      setHasVerified(true);
 
       try {
         // Call the verify-payment edge function to validate with Stripe
@@ -62,7 +82,7 @@ const PaymentSuccessContent = () => {
     };
 
     verifyPayment();
-  }, [user, sessionId, paymentType, language, refreshProfile]);
+  }, [user, authLoading, sessionId, paymentType, language, refreshProfile, hasVerified]);
 
   const t = {
     de: {
