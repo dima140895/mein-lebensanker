@@ -21,13 +21,13 @@ const PINEntry = ({ onSubmit, language }: PINEntryProps) => {
   const t = {
     de: {
       title: 'PIN erforderlich',
-      description: 'Dieser Zugang ist geschützt. Bitte gib den 4-stelligen PIN ein, den Du erhalten hast.',
+      description: 'Dieser Zugang ist geschützt. Bitte gib den 6-stelligen PIN ein, den Du erhalten hast.',
       submit: 'Zugang öffnen',
       error: 'Falscher PIN. Bitte versuche es erneut.',
     },
     en: {
       title: 'PIN Required',
-      description: 'This access is protected. Please enter the 4-digit PIN you received.',
+      description: 'This access is protected. Please enter the 6-digit PIN you received.',
       submit: 'Open Access',
       error: 'Incorrect PIN. Please try again.',
     },
@@ -36,7 +36,7 @@ const PINEntry = ({ onSubmit, language }: PINEntryProps) => {
   const texts = t[language];
 
   const handleSubmit = async () => {
-    if (pin.length !== 4) return;
+    if (pin.length !== 6) return;
     
     setLoading(true);
     setError(false);
@@ -72,7 +72,7 @@ const PINEntry = ({ onSubmit, language }: PINEntryProps) => {
         
         <div className="flex justify-center mb-6">
           <InputOTP
-            maxLength={4}
+            maxLength={6}
             value={pin}
             onChange={(value) => {
               setPIN(value);
@@ -80,10 +80,12 @@ const PINEntry = ({ onSubmit, language }: PINEntryProps) => {
             }}
           >
             <InputOTPGroup>
-              <InputOTPSlot index={0} className="h-14 w-14 text-xl" />
-              <InputOTPSlot index={1} className="h-14 w-14 text-xl" />
-              <InputOTPSlot index={2} className="h-14 w-14 text-xl" />
-              <InputOTPSlot index={3} className="h-14 w-14 text-xl" />
+              <InputOTPSlot index={0} className="h-12 w-12 text-lg" />
+              <InputOTPSlot index={1} className="h-12 w-12 text-lg" />
+              <InputOTPSlot index={2} className="h-12 w-12 text-lg" />
+              <InputOTPSlot index={3} className="h-12 w-12 text-lg" />
+              <InputOTPSlot index={4} className="h-12 w-12 text-lg" />
+              <InputOTPSlot index={5} className="h-12 w-12 text-lg" />
             </InputOTPGroup>
           </InputOTP>
         </div>
@@ -101,7 +103,7 @@ const PINEntry = ({ onSubmit, language }: PINEntryProps) => {
         
         <Button
           onClick={handleSubmit}
-          disabled={pin.length !== 4 || loading}
+          disabled={pin.length !== 6 || loading}
           className="w-full"
         >
           {loading ? '...' : texts.submit}

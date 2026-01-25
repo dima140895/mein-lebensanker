@@ -63,9 +63,9 @@ const ShareLinkManager = () => {
       securityNote: 'Jeder mit diesem Link kann Deine Übersicht einsehen. Teile ihn nur mit Personen, denen Du vertraust.',
       createdAt: 'Erstellt am',
       pinProtection: 'PIN-Schutz aktivieren',
-      pinDescription: 'Angehörige müssen einen 4-stelligen PIN eingeben',
+      pinDescription: 'Angehörige müssen einen 6-stelligen PIN eingeben. Nach 3 Fehlversuchen wird der Link gesperrt.',
       enterPIN: 'PIN festlegen',
-      pinRequired: 'Bitte gib einen 4-stelligen PIN ein',
+      pinRequired: 'Bitte gib einen 6-stelligen PIN ein',
       protected: 'Geschützt',
       howItWorksTitle: 'So funktioniert der Angehörigen-Zugang',
       howItWorksStep1Title: 'Link erstellen',
@@ -95,9 +95,9 @@ const ShareLinkManager = () => {
       securityNote: 'Anyone with this link can view your overview. Only share it with people you trust.',
       createdAt: 'Created on',
       pinProtection: 'Enable PIN protection',
-      pinDescription: 'Relatives must enter a 4-digit PIN',
+      pinDescription: 'Relatives must enter a 6-digit PIN. After 3 failed attempts, the link will be locked.',
       enterPIN: 'Set PIN',
-      pinRequired: 'Please enter a 4-digit PIN',
+      pinRequired: 'Please enter a 6-digit PIN',
       protected: 'Protected',
       howItWorksTitle: 'How Relatives Access Works',
       howItWorksStep1Title: 'Create a Link',
@@ -138,7 +138,7 @@ const ShareLinkManager = () => {
     if (!user) return;
     
     // Validate PIN if enabled
-    if (usePIN && pin.length !== 4) {
+    if (usePIN && pin.length !== 6) {
       toast.error(texts.pinRequired);
       return;
     }
@@ -163,7 +163,7 @@ const ShareLinkManager = () => {
     }
     
     // If PIN is enabled, hash and update
-    if (usePIN && pin.length === 4 && data) {
+    if (usePIN && pin.length === 6 && data) {
       const { data: hashData } = await supabase
         .rpc('hash_pin', { _pin: pin });
       
@@ -272,7 +272,7 @@ const ShareLinkManager = () => {
                   <div className="space-y-2">
                     <Label>{texts.enterPIN}</Label>
                     <InputOTP
-                      maxLength={4}
+                      maxLength={6}
                       value={pin}
                       onChange={setPIN}
                     >
@@ -281,13 +281,15 @@ const ShareLinkManager = () => {
                         <InputOTPSlot index={1} />
                         <InputOTPSlot index={2} />
                         <InputOTPSlot index={3} />
+                        <InputOTPSlot index={4} />
+                        <InputOTPSlot index={5} />
                       </InputOTPGroup>
                     </InputOTP>
                   </div>
                 )}
               </div>
               
-              <Button onClick={createToken} disabled={creating || (usePIN && pin.length !== 4)} className="w-full">
+              <Button onClick={createToken} disabled={creating || (usePIN && pin.length !== 6)} className="w-full">
                 {creating ? '...' : texts.create}
               </Button>
             </div>
