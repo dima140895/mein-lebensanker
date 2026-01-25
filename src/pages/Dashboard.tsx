@@ -6,6 +6,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { FormProvider } from '@/contexts/FormContext';
 import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 import Disclaimer from '@/components/Disclaimer';
 import AuthForm from '@/components/AuthForm';
 import PaymentOptions from '@/components/PaymentOptions';
@@ -201,6 +202,7 @@ const Dashboard = () => {
         <Header />
         <main className="flex-1"><DashboardContent /></main>
         <Disclaimer />
+        <Footer />
       </div>
     </FormProvider>
   );

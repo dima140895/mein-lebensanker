@@ -11,7 +11,10 @@ import LearnMore from "./pages/LearnMore";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import RelativesView from "./pages/RelativesView";
 import ResetPassword from "./pages/ResetPassword";
+import Datenschutz from "./pages/Datenschutz";
+import Impressum from "./pages/Impressum";
 import NotFound from "./pages/NotFound";
+import CookieConsent from "./components/CookieConsent";
 
 const queryClient = new QueryClient();
 
@@ -29,9 +32,12 @@ const App = () => (
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/payment-success" element={<PaymentSuccess />} />
               <Route path="/reset-password" element={<ResetPassword />} />
+              <Route path="/datenschutz" element={<Datenschutz />} />
+              <Route path="/impressum" element={<Impressum />} />
               <Route path="/fuer-angehoerige/:token" element={<RelativesView />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
+            <CookieConsent />
           </BrowserRouter>
         </TooltipProvider>
       </AuthProvider>
