@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Link2, Plus, Trash2, Copy, Check, ExternalLink, Shield, Lock, Share2, Eye, Info, ShieldX } from 'lucide-react';
+import { Link2, Plus, Trash2, Copy, Check, ExternalLink, Shield, Lock, Share2, Eye, Info, ShieldX, User, Wallet, Smartphone, Heart, FileText, Users } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/browserClient';
@@ -23,6 +23,7 @@ import {
   InputOTPSlot,
 } from '@/components/ui/input-otp';
 import { Switch } from '@/components/ui/switch';
+import { Checkbox } from '@/components/ui/checkbox';
 
 interface ShareToken {
   id: string;
@@ -33,7 +34,11 @@ interface ShareToken {
   created_at: string;
   pin_hash: string | null;
   failed_attempts: number;
+  shared_sections: string[] | null;
 }
+
+const ALL_SECTIONS = ['personal', 'assets', 'digital', 'wishes', 'documents', 'contacts'] as const;
+type SectionKey = typeof ALL_SECTIONS[number];
 
 const ShareLinkManager = () => {
   const { user } = useAuth();
@@ -46,6 +51,35 @@ const ShareLinkManager = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [usePIN, setUsePIN] = useState(false);
   const [pin, setPIN] = useState('');
+  const [selectedSections, setSelectedSections] = useState<SectionKey[]>([...ALL_SECTIONS]);
+
+  const sectionLabels = {
+    de: {
+      personal: 'Persönliche Daten',
+      assets: 'Vermögen',
+      digital: 'Digital',
+      wishes: 'Wünsche',
+      documents: 'Dokumente',
+      contacts: 'Kontakte',
+    },
+    en: {
+      personal: 'Personal Data',
+      assets: 'Assets',
+      digital: 'Digital',
+      wishes: 'Wishes',
+      documents: 'Documents',
+      contacts: 'Contacts',
+    },
+  };
+
+  const sectionIcons: Record<SectionKey, React.ReactNode> = {
+    personal: <User className="h-4 w-4" />,
+    assets: <Wallet className="h-4 w-4" />,
+    digital: <Smartphone className="h-4 w-4" />,
+    wishes: <Heart className="h-4 w-4" />,
+    documents: <FileText className="h-4 w-4" />,
+    contacts: <Users className="h-4 w-4" />,
+  };
 
   const t = {
     de: {
@@ -82,6 +116,12 @@ const ShareLinkManager = () => {
       whatTheySeeDesc: 'Eine beruhigende Übersicht aller von Dir hinterlegten Informationen – persönliche Daten, Vermögenswerte, digitale Konten, persönliche Wünsche, Dokumentenstandorte und wichtige Kontakte. Die Darstellung ist einfühlsam gestaltet mit dem Hinweis: "Du musst jetzt nicht alles entscheiden."',
       importantNote: 'Wichtiger Hinweis',
       importantNoteDesc: 'Die Übersicht dient nur der Orientierung und hat keine rechtliche Wirkung. Sie ersetzt keine notarielle, rechtliche oder steuerliche Beratung.',
+      selectSections: 'Bereiche auswählen',
+      selectSectionsDesc: 'Wähle aus, welche Informationen Du mit diesem Link teilen möchtest.',
+      selectAll: 'Alle auswählen',
+      selectNone: 'Alle abwählen',
+      atLeastOne: 'Bitte wähle mindestens einen Bereich aus',
+      sharedSections: 'Geteilte Bereiche',
     },
     en: {
       title: 'Relatives Access',
@@ -117,6 +157,12 @@ const ShareLinkManager = () => {
       whatTheySeeDesc: 'A reassuring overview of all your recorded information – personal data, assets, digital accounts, personal wishes, document locations, and important contacts. The presentation is designed with empathy, with the message: "You don\'t have to decide everything now."',
       importantNote: 'Important Note',
       importantNoteDesc: 'This overview is for orientation only and has no legal effect. It does not replace notarial, legal, or tax advice.',
+      selectSections: 'Select Sections',
+      selectSectionsDesc: 'Choose which information you want to share with this link.',
+      selectAll: 'Select all',
+      selectNone: 'Deselect all',
+      atLeastOne: 'Please select at least one section',
+      sharedSections: 'Shared sections',
     },
   };
 
@@ -141,6 +187,17 @@ const ShareLinkManager = () => {
     loadTokens();
   }, [user]);
 
+  const toggleSection = (section: SectionKey) => {
+    setSelectedSections(prev => 
+      prev.includes(section)
+        ? prev.filter(s => s !== section)
+        : [...prev, section]
+    );
+  };
+
+  const selectAllSections = () => setSelectedSections([...ALL_SECTIONS]);
+  const deselectAllSections = () => setSelectedSections([]);
+
   const createToken = async () => {
     if (!user) return;
     
@@ -149,15 +206,22 @@ const ShareLinkManager = () => {
       toast.error(texts.pinRequired);
       return;
     }
+
+    // Validate at least one section selected
+    if (selectedSections.length === 0) {
+      toast.error(texts.atLeastOne);
+      return;
+    }
     
     setCreating(true);
 
-    // First create the token
+    // First create the token with shared sections
     const { data, error } = await supabase
       .from('share_tokens')
       .insert({
         user_id: user.id,
         label: newLabel.trim() || null,
+        shared_sections: selectedSections,
       })
       .select()
       .single();
@@ -190,6 +254,7 @@ const ShareLinkManager = () => {
       setNewLabel('');
       setPIN('');
       setUsePIN(false);
+      setSelectedSections([...ALL_SECTIONS]);
       setDialogOpen(false);
     }
     setCreating(false);
@@ -242,7 +307,7 @@ const ShareLinkManager = () => {
               {texts.create}
             </Button>
           </DialogTrigger>
-          <DialogContent>
+          <DialogContent className="max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>{texts.create}</DialogTitle>
               <DialogDescription>
@@ -257,6 +322,58 @@ const ShareLinkManager = () => {
                   onChange={(e) => setNewLabel(e.target.value)}
                   placeholder={texts.labelPlaceholder}
                 />
+              </div>
+
+              {/* Section Selection */}
+              <div className="rounded-lg border border-border p-4 space-y-4">
+                <div className="space-y-1">
+                  <Label className="flex items-center gap-2">
+                    <Eye className="h-4 w-4" />
+                    {texts.selectSections}
+                  </Label>
+                  <p className="text-sm text-muted-foreground">{texts.selectSectionsDesc}</p>
+                </div>
+                
+                <div className="flex gap-2">
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    size="sm"
+                    onClick={selectAllSections}
+                  >
+                    {texts.selectAll}
+                  </Button>
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    size="sm"
+                    onClick={deselectAllSections}
+                  >
+                    {texts.selectNone}
+                  </Button>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  {ALL_SECTIONS.map((section) => (
+                    <label
+                      key={section}
+                      className={`flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-colors ${
+                        selectedSections.includes(section)
+                          ? 'border-primary bg-primary/5'
+                          : 'border-border hover:border-muted-foreground/50'
+                      }`}
+                    >
+                      <Checkbox
+                        checked={selectedSections.includes(section)}
+                        onCheckedChange={() => toggleSection(section)}
+                      />
+                      <span className="flex items-center gap-2 text-sm">
+                        {sectionIcons[section]}
+                        {sectionLabels[language][section]}
+                      </span>
+                    </label>
+                  ))}
+                </div>
               </div>
               
               {/* PIN Protection Toggle */}
@@ -296,7 +413,7 @@ const ShareLinkManager = () => {
                 )}
               </div>
               
-              <Button onClick={createToken} disabled={creating || (usePIN && pin.length !== 6)} className="w-full">
+              <Button onClick={createToken} disabled={creating || (usePIN && pin.length !== 6) || selectedSections.length === 0} className="w-full">
                 {creating ? '...' : texts.create}
               </Button>
             </div>
@@ -395,6 +512,10 @@ const ShareLinkManager = () => {
                         <ShieldX className="h-3 w-3" />
                         {texts.blocked} ({texts.blockedReason})
                       </span>
+                    ) : token.shared_sections && token.shared_sections.length < ALL_SECTIONS.length ? (
+                      <span className="inline-flex items-center gap-1 rounded-full bg-amber-light/50 px-2 py-0.5 text-xs font-medium text-amber">
+                        {token.shared_sections.length}/{ALL_SECTIONS.length} {texts.sharedSections}
+                      </span>
                     ) : isInactive ? (
                       <span className="inline-flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">
                         {texts.inactive}
@@ -406,6 +527,19 @@ const ShareLinkManager = () => {
                       </span>
                     ) : null}
                   </div>
+                  {token.shared_sections && token.shared_sections.length > 0 && (
+                    <div className="flex flex-wrap gap-1 mt-1">
+                      {token.shared_sections.map((section) => (
+                        <span 
+                          key={section}
+                          className="inline-flex items-center gap-1 text-xs text-muted-foreground bg-muted/50 px-1.5 py-0.5 rounded"
+                        >
+                          {sectionIcons[section as SectionKey]}
+                          {sectionLabels[language][section as SectionKey]}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                   <p className="text-sm text-muted-foreground">
                     {texts.createdAt} {formatDate(token.created_at)}
                   </p>
