@@ -12,7 +12,6 @@ interface Profile {
   partner_name: string | null;
   max_profiles: number;
   purchased_tier: string | null;
-  has_update_subscription: boolean;
 }
 
 interface AuthContextType {
