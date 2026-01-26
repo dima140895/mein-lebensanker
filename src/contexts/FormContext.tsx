@@ -161,6 +161,7 @@ export const FormProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const { isEncryptionEnabled, isUnlocked, encrypt, decrypt } = useEncryption();
   const [formData, setFormData] = useState<VorsorgeFormData>(defaultFormData);
   const [saving, setSaving] = useState(false);
+  const [isLoadingProfile, setIsLoadingProfile] = useState(false);
 
   const updateSection = <K extends keyof VorsorgeFormData>(
     section: K,
@@ -175,6 +176,12 @@ export const FormProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     // If encryption is enabled but not unlocked, don't allow saves
     if (isEncryptionEnabled && !isUnlocked) {
       logger.warn('Cannot save: encryption is enabled but not unlocked');
+      return;
+    }
+    
+    // Don't save while loading a different profile
+    if (isLoadingProfile) {
+      logger.warn('Cannot save: profile is being loaded');
       return;
     }
     
@@ -216,6 +223,11 @@ export const FormProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       return;
     }
 
+    setIsLoadingProfile(true);
+    
+    // CRITICAL: Reset form data immediately to prevent cross-contamination
+    setFormData(defaultFormData);
+
     try {
       const { data, error } = await supabase
         .from('vorsorge_data')
@@ -252,18 +264,26 @@ export const FormProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       }
     } catch (error) {
       logger.error('Error loading data:', error);
+    } finally {
+      setIsLoadingProfile(false);
     }
   }, [user, activeProfileId, isEncryptionEnabled, isUnlocked, decrypt]);
 
   // Reload data when active profile changes or encryption state changes
   useEffect(() => {
+    // Immediately reset to defaults when profile changes
+    setFormData(defaultFormData);
+    setIsLoadingProfile(true);
+    
     if (user && profile?.has_paid && activeProfileId) {
       // Only load if encryption is not enabled OR if it's unlocked
       if (!isEncryptionEnabled || isUnlocked) {
         loadAllData();
+      } else {
+        setIsLoadingProfile(false);
       }
     } else {
-      setFormData(defaultFormData);
+      setIsLoadingProfile(false);
     }
   }, [user, profile?.has_paid, activeProfileId, loadAllData, isEncryptionEnabled, isUnlocked]);
 

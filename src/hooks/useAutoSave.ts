@@ -2,6 +2,7 @@ import { useRef, useCallback } from 'react';
 import { useFormData, VorsorgeFormData } from '@/contexts/FormContext';
 import { useProfiles } from '@/contexts/ProfileContext';
 import { useAuth } from '@/contexts/AuthContext';
+import { useEncryption } from '@/contexts/EncryptionContext';
 import { logger } from '@/lib/logger';
 
 interface UseAutoSaveOptions {
@@ -14,11 +15,25 @@ export const useAutoSave = ({ section, syncToProfile = false }: UseAutoSaveOptio
   const { formData, saveSection } = useFormData();
   const { activeProfileId, updateProfile, loadProfiles } = useProfiles();
   const { profile } = useAuth();
+  const { isEncryptionEnabled, isUnlocked } = useEncryption();
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const lastSavedRef = useRef<string>('');
+  const lastProfileIdRef = useRef<string | null>(null);
 
   const triggerSave = useCallback(async () => {
     if (!profile?.has_paid || !activeProfileId) return;
+    
+    // If encryption is enabled but not unlocked, skip save
+    if (isEncryptionEnabled && !isUnlocked) {
+      logger.warn('Auto-save skipped: encryption locked');
+      return;
+    }
+    
+    // If profile changed, reset the hash to allow saving for new profile
+    if (lastProfileIdRef.current !== activeProfileId) {
+      lastSavedRef.current = '';
+      lastProfileIdRef.current = activeProfileId;
+    }
     
     // Create a hash of current data to avoid duplicate saves
     const currentDataHash = JSON.stringify(formData[section]);
@@ -44,7 +59,7 @@ export const useAutoSave = ({ section, syncToProfile = false }: UseAutoSaveOptio
     } catch (error) {
       logger.error(`Error auto-saving section ${section}:`, error);
     }
-  }, [profile?.has_paid, activeProfileId, formData, section, saveSection, syncToProfile, updateProfile, loadProfiles]);
+  }, [profile?.has_paid, activeProfileId, formData, section, saveSection, syncToProfile, updateProfile, loadProfiles, isEncryptionEnabled, isUnlocked]);
 
   const handleBlur = useCallback(() => {
     // Clear any pending timeout
