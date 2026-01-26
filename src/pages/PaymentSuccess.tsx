@@ -85,6 +85,11 @@ const PaymentSuccessContent = () => {
           }
           setMaxProfiles(profiles);
           
+          // Set flag for profile switcher tooltip for multi-profile packages
+          if (profiles > 1) {
+            localStorage.setItem('show_profile_tooltip_after_purchase', 'true');
+          }
+          
           // First show confirmation screen, then proceed to profile setup
           setShowConfirmation(true);
         } else {
