@@ -543,7 +543,12 @@ const RelativesSummary = ({ data, profiles, sharedSections, token }: RelativesSu
     }
   };
 
-  const hasContent = (sectionData: Record<string, unknown>): boolean => {
+  const hasContent = (sectionData: Record<string, unknown>, sectionKey?: string): boolean => {
+    // For documents section, always show if it's in shared sections (documents may be in storage)
+    if (sectionKey === 'documents' && sharedSections?.includes('documents')) {
+      return true;
+    }
+    
     return Object.values(sectionData).some(value => {
       if (Array.isArray(value)) {
         return value.some(item => 
@@ -555,19 +560,28 @@ const RelativesSummary = ({ data, profiles, sharedSections, token }: RelativesSu
   };
 
   const renderProfileData = (profileData: VorsorgeData[]) => {
-    // Filter out empty sections
-    const nonEmptyData = profileData.filter(item => hasContent(item.data));
+    // Filter out empty sections (but keep documents if shared - storage files may exist)
+    const nonEmptyData = profileData.filter(item => hasContent(item.data, item.section_key));
     
-    if (nonEmptyData.length === 0) {
+    // Also check if documents section should be shown even if not in vorsorge_data
+    const hasDocumentsSection = nonEmptyData.some(item => item.section_key === 'documents');
+    const shouldShowDocuments = sharedSections?.includes('documents') && !hasDocumentsSection;
+    
+    if (nonEmptyData.length === 0 && !shouldShowDocuments) {
       return (
         <div className="text-center py-8 text-muted-foreground">
           {texts.noInfo}
         </div>
       );
     }
+    
+    // If documents should be shown but isn't in data, add a placeholder entry
+    const displayData = shouldShowDocuments 
+      ? [...nonEmptyData, { section_key: 'documents', data: {}, is_for_partner: false, person_profile_id: null, profile_name: null }]
+      : nonEmptyData;
 
     const sectionOrder = ['personal', 'assets', 'digital', 'wishes', 'documents', 'contacts'];
-    const sortedData = nonEmptyData.sort((a, b) => 
+    const sortedData = displayData.sort((a, b) => 
       sectionOrder.indexOf(a.section_key) - sectionOrder.indexOf(b.section_key)
     );
 
