@@ -86,7 +86,24 @@ const DocumentUploadSection = ({ documentType, label, onDocumentsChange }: Docum
   const handleDownload = async (doc: UploadedDoc) => {
     const url = await getFileUrl(doc.path);
     if (url) {
-      window.open(url, '_blank');
+      // Create an anchor element for reliable downloads
+      const link = document.createElement('a');
+      link.href = url;
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      
+      // Get display name for download
+      const displayName = getDisplayName(doc.name);
+      
+      // Check if it's a PDF by extension - force download to avoid blank pages
+      const isPdf = displayName.toLowerCase().endsWith('.pdf');
+      if (isPdf) {
+        link.download = displayName;
+      }
+      
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     }
   };
 
