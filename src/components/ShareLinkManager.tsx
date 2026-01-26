@@ -233,15 +233,21 @@ const ShareLinkManager = () => {
       return;
     }
     
-    // If PIN is enabled, hash and update
+    // If PIN is enabled, generate salt, hash with secure function, and update
     if (usePIN && pin.length === 6 && data) {
+      // Generate a random salt for this token
+      const randomBytes = new Uint8Array(16);
+      crypto.getRandomValues(randomBytes);
+      const pinSalt = Array.from(randomBytes).map(b => b.toString(16).padStart(2, '0')).join('');
+      
+      // Use the secure hash function with salt
       const { data: hashData } = await supabase
-        .rpc('hash_pin', { _pin: pin });
+        .rpc('hash_pin_secure', { _pin: pin, _salt: pinSalt });
       
       if (hashData) {
         await supabase
           .from('share_tokens')
-          .update({ pin_hash: hashData })
+          .update({ pin_hash: hashData, pin_salt: pinSalt })
           .eq('id', data.id);
         
         data.pin_hash = hashData;

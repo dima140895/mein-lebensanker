@@ -125,6 +125,7 @@ export type Database = {
           is_active: boolean
           label: string | null
           pin_hash: string | null
+          pin_salt: string | null
           shared_sections: string[] | null
           token: string
           updated_at: string
@@ -138,6 +139,7 @@ export type Database = {
           is_active?: boolean
           label?: string | null
           pin_hash?: string | null
+          pin_salt?: string | null
           shared_sections?: string[] | null
           token?: string
           updated_at?: string
@@ -151,6 +153,7 @@ export type Database = {
           is_active?: boolean
           label?: string | null
           pin_hash?: string | null
+          pin_salt?: string | null
           shared_sections?: string[] | null
           token?: string
           updated_at?: string
@@ -271,6 +274,10 @@ export type Database = {
         Returns: boolean
       }
       hash_pin: { Args: { _pin: string }; Returns: string }
+      hash_pin_secure: {
+        Args: { _pin: string; _salt: string }
+        Returns: string
+      }
       user_has_access: { Args: { _user_id: string }; Returns: boolean }
       validate_share_token: {
         Args: { _token: string }
