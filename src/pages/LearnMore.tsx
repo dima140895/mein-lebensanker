@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { 
@@ -14,16 +15,20 @@ import {
   KeyRound,
   Eye,
   EyeOff,
-  RefreshCw
+  RefreshCw,
+  FileDown
 } from 'lucide-react';
 import encryptionDiagram from '@/assets/encryption-diagram.png';
 import Header from '@/components/Header';
 import Disclaimer from '@/components/Disclaimer';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { Button } from '@/components/ui/button';
+import SecurityDocDialog from '@/components/SecurityDocDialog';
 
 const LearnMore = () => {
   const navigate = useNavigate();
   const { language } = useLanguage();
+  const [securityDocOpen, setSecurityDocOpen] = useState(false);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -301,6 +306,14 @@ const LearnMore = () => {
                   : 'Your sensitive information is protected with state-of-the-art end-to-end encryption. Only you have access – even we cannot read your data.'
                 }
               </p>
+              <Button 
+                variant="outline" 
+                className="mt-6"
+                onClick={() => setSecurityDocOpen(true)}
+              >
+                <FileDown className="w-4 h-4 mr-2" />
+                {language === 'de' ? 'Sicherheits-Dokumentation als PDF' : 'Security Documentation as PDF'}
+              </Button>
             </motion.div>
 
             {/* Encryption Diagram */}
@@ -533,6 +546,11 @@ const LearnMore = () => {
       </main>
 
       <Disclaimer />
+      
+      <SecurityDocDialog 
+        open={securityDocOpen} 
+        onOpenChange={setSecurityDocOpen} 
+      />
     </div>
   );
 };
