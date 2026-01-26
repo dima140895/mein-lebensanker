@@ -48,6 +48,9 @@ const HeroSection = () => {
           src={heroImage} 
           alt="" 
           className="absolute inset-0 w-full h-full object-cover"
+          fetchPriority="high"
+          loading="eager"
+          decoding="async"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-background via-background/95 to-background/70" />
         <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/50" />
