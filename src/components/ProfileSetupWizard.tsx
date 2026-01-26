@@ -21,11 +21,12 @@ interface ProfileData {
 interface ProfileSetupWizardProps {
   maxProfiles: number;
   packageType: string;
+  onAllProfilesExist?: () => void;
 }
 
 const WIZARD_DRAFT_KEY = 'vorsorge_profile_wizard_draft';
 
-const ProfileSetupWizard = ({ maxProfiles, packageType }: ProfileSetupWizardProps) => {
+const ProfileSetupWizard = ({ maxProfiles, packageType, onAllProfilesExist }: ProfileSetupWizardProps) => {
   const { language } = useLanguage();
   const { user, refreshProfile } = useAuth();
   const { loadProfiles, setActiveProfileId: setActiveProfile } = useProfiles();
@@ -172,9 +173,16 @@ const ProfileSetupWizard = ({ maxProfiles, packageType }: ProfileSetupWizardProp
         const profilesToCreate = Math.max(0, maxProfiles - existingCount);
 
         if (profilesToCreate === 0) {
-          // All profiles already exist, go to dashboard
+          // All profiles already exist - notify parent or navigate to dashboard
           sessionStorage.removeItem(WIZARD_DRAFT_KEY);
-          setCompleted(true);
+          // Set flag for encryption reminder (30 seconds after completion)
+          sessionStorage.setItem('profile_setup_completed_time', Date.now().toString());
+          if (onAllProfilesExist) {
+            onAllProfilesExist();
+          } else {
+            navigate('/dashboard');
+          }
+          return;
         } else {
           // Build profile array from DB
           const profileData: ProfileData[] = [];
