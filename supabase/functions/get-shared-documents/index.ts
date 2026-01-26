@@ -103,10 +103,10 @@ serve(async (req) => {
       for (const file of validFiles) {
         const filePath = `${folderPath}/${file.name}`
         
-        // Create signed URL (valid for 1 hour)
+        // Create signed URL (valid for 15 minutes for security)
         const { data: signedUrlData, error: signedUrlError } = await supabase.storage
           .from('user-documents')
-          .createSignedUrl(filePath, 3600) // 1 hour
+          .createSignedUrl(filePath, 900) // 15 minutes - shorter for security
 
         if (signedUrlError) {
           console.error(`Error creating signed URL for ${filePath}:`, signedUrlError)
