@@ -4,7 +4,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
 // Allowed origins for CORS
 const ALLOWED_ORIGINS = [
-  "https://vorsorge.lovable.app",
+  "https://mein-lebensanker.lovable.app",
   "https://id-preview--3aceebdb-8fff-4d04-bf5f-d8b882169f3d.lovable.app",
 ];
 
