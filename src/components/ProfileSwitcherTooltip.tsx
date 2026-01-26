@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useLocation } from 'react-router-dom';
 import { X } from 'lucide-react';
@@ -15,6 +15,7 @@ export const ProfileSwitcherTooltip: React.FC<ProfileSwitcherTooltipProps> = ({ 
   const { language } = useLanguage();
   const location = useLocation();
   const [showTooltip, setShowTooltip] = useState(false);
+  const hasChecked = useRef(false);
 
   const t = {
     de: {
@@ -29,56 +30,50 @@ export const ProfileSwitcherTooltip: React.FC<ProfileSwitcherTooltipProps> = ({ 
 
   const texts = t[language];
 
-  const checkAndShowTooltip = useCallback(() => {
-    // Only show on dashboard
+  // Check on mount and on location changes with extended polling
+  useEffect(() => {
+    // Only run on dashboard
     if (!location.pathname.includes('/dashboard')) {
+      return;
+    }
+    
+    // Reset check flag when location changes
+    hasChecked.current = false;
+
+    const checkAndShow = () => {
+      const wasShown = localStorage.getItem(TOOLTIP_DISMISSED_KEY) === 'true';
+      const justCompletedSetup = sessionStorage.getItem(SETUP_COMPLETED_FLAG) === 'true';
+      
+      if (justCompletedSetup && !wasShown && !hasChecked.current) {
+        hasChecked.current = true;
+        setShowTooltip(true);
+        // Clear the session flag to prevent re-triggering
+        sessionStorage.removeItem(SETUP_COMPLETED_FLAG);
+        return true;
+      }
       return false;
-    }
+    };
+
+    // Initial check with small delay to ensure component is mounted
+    const initialTimer = setTimeout(() => {
+      if (checkAndShow()) return;
+    }, 100);
+
+    // Poll for the flag for a longer time (10 seconds) to catch delayed navigation
+    const interval = setInterval(() => {
+      checkAndShow();
+    }, 500);
     
-    const wasShown = localStorage.getItem(TOOLTIP_DISMISSED_KEY) === 'true';
-    const justCompletedSetup = sessionStorage.getItem(SETUP_COMPLETED_FLAG) === 'true';
+    const cleanup = setTimeout(() => {
+      clearInterval(interval);
+    }, 10000);
     
-    if (justCompletedSetup && !wasShown) {
-      setShowTooltip(true);
-      // Clear the session flag immediately to prevent re-triggering
-      sessionStorage.removeItem(SETUP_COMPLETED_FLAG);
-      return true;
-    }
-    return false;
+    return () => {
+      clearTimeout(initialTimer);
+      clearInterval(interval);
+      clearTimeout(cleanup);
+    };
   }, [location.pathname]);
-
-  useEffect(() => {
-    // Check on mount
-    const shown = checkAndShowTooltip();
-    
-    if (!shown) {
-      // Also set up interval check for when navigation happens
-      const interval = setInterval(() => {
-        checkAndShowTooltip();
-      }, 300);
-      
-      // Clean up after a reasonable time (5 seconds should be enough)
-      const timeout = setTimeout(() => {
-        clearInterval(interval);
-      }, 5000);
-      
-      return () => {
-        clearInterval(interval);
-        clearTimeout(timeout);
-      };
-    }
-  }, [checkAndShowTooltip]);
-
-  // Also check when location changes (navigation to dashboard)
-  useEffect(() => {
-    if (location.pathname.includes('/dashboard')) {
-      // Small delay to let the UI settle after navigation
-      const timer = setTimeout(() => {
-        checkAndShowTooltip();
-      }, 500);
-      return () => clearTimeout(timer);
-    }
-  }, [location.pathname, checkAndShowTooltip]);
 
   const handleDismiss = () => {
     localStorage.setItem(TOOLTIP_DISMISSED_KEY, 'true');
