@@ -82,9 +82,13 @@ serve(async (req) => {
     
     const allDocuments: DocumentInfo[] = []
 
+    console.log(`Fetching documents for user: ${userId}`)
+
     // List files for each document type
     for (const docType of documentTypes) {
       const folderPath = `${userId}/${docType}`
+      
+      console.log(`Checking folder: ${folderPath}`)
       
       const { data: files, error: listError } = await supabase.storage
         .from('user-documents')
@@ -95,13 +99,22 @@ serve(async (req) => {
         continue
       }
 
+      console.log(`Found ${files?.length || 0} files in ${docType}:`, files?.map(f => f.name))
+
       if (!files || files.length === 0) continue
 
-      // Filter out placeholder files
-      const validFiles = files.filter(f => f.name !== '.emptyFolderPlaceholder')
+      // Filter out placeholder files and .emptyFolderPlaceholder
+      const validFiles = files.filter(f => 
+        f.name !== '.emptyFolderPlaceholder' && 
+        !f.name.startsWith('.')
+      )
+
+      console.log(`Valid files in ${docType}: ${validFiles.length}`)
 
       for (const file of validFiles) {
         const filePath = `${folderPath}/${file.name}`
+        
+        console.log(`Creating signed URL for: ${filePath}`)
         
         // Create signed URL (valid for 15 minutes for security)
         const { data: signedUrlData, error: signedUrlError } = await supabase.storage
@@ -130,6 +143,8 @@ serve(async (req) => {
         })
       }
     }
+    
+    console.log(`Total documents found: ${allDocuments.length}`, allDocuments.map(d => ({ type: d.documentType, name: d.name })))
 
     return new Response(
       JSON.stringify({ documents: allDocuments }),
