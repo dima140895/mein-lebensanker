@@ -6,6 +6,14 @@ import { useEncryption } from './EncryptionContext';
 import { Json } from '@/integrations/supabase/types';
 import { logger } from '@/lib/logger';
 
+export interface Medication {
+  name: string;
+  dosage: string;
+  frequency: string;
+  timing: string;
+  notes: string;
+}
+
 export interface PersonalData {
   fullName: string;
   birthDate: string;
@@ -17,6 +25,7 @@ export interface PersonalData {
   trustedPerson2Phone: string;
   emergencyContact: string;
   emergencyPhone: string;
+  medications: Medication[];
   notes: string;
 }
 
@@ -89,6 +98,7 @@ const defaultPersonalData: PersonalData = {
   trustedPerson2Phone: '',
   emergencyContact: '',
   emergencyPhone: '',
+  medications: [],
   notes: '',
 };
 

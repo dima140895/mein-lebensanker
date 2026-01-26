@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Info } from 'lucide-react';
-import { useFormData, PersonalData } from '@/contexts/FormContext';
+import { Info, Plus, Trash2, Pill } from 'lucide-react';
+import { useFormData, PersonalData, Medication } from '@/contexts/FormContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useProfiles } from '@/contexts/ProfileContext';
@@ -9,6 +9,8 @@ import { useAutoSave } from '@/hooks/useAutoSave';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const PersonalForm = () => {
   const { formData, updateSection } = useFormData();
@@ -41,6 +43,37 @@ const PersonalForm = () => {
       phonePlaceholder: 'Telefon',
       notes: 'Zusätzliche Hinweise',
       disclaimer: 'Diese Angaben dienen nur der persönlichen Übersicht und haben keine rechtliche Verbindlichkeit. Änderungen werden automatisch gespeichert.',
+      medications: 'Aktuelle Medikation',
+      medicationsDesc: 'Übersicht der regelmäßig eingenommenen Medikamente',
+      medicationName: 'Medikament',
+      medicationNamePlaceholder: 'z.B. Aspirin, Metformin',
+      dosage: 'Dosis',
+      dosagePlaceholder: 'z.B. 100mg, 2 Tabletten',
+      frequency: 'Wie oft?',
+      timing: 'Wann einnehmen?',
+      medicationNotes: 'Hinweise',
+      medicationNotesPlaceholder: 'z.B. vor dem Essen, mit Wasser',
+      addMedication: 'Medikament hinzufügen',
+      removeMedication: 'Entfernen',
+      frequencyOptions: {
+        once: '1x täglich',
+        twice: '2x täglich',
+        thrice: '3x täglich',
+        fourTimes: '4x täglich',
+        asNeeded: 'Bei Bedarf',
+        weekly: 'Wöchentlich',
+        other: 'Andere',
+      },
+      timingOptions: {
+        morning: 'Morgens',
+        noon: 'Mittags',
+        evening: 'Abends',
+        night: 'Nachts',
+        beforeMeals: 'Vor dem Essen',
+        afterMeals: 'Nach dem Essen',
+        withMeals: 'Zum Essen',
+        other: 'Andere',
+      },
     },
     en: {
       title: 'Personal Information',
@@ -55,19 +88,75 @@ const PersonalForm = () => {
       phonePlaceholder: 'Phone',
       notes: 'Additional Notes',
       disclaimer: 'This information is for personal overview only and has no legal validity. Changes are saved automatically.',
+      medications: 'Current Medications',
+      medicationsDesc: 'Overview of regularly taken medications',
+      medicationName: 'Medication',
+      medicationNamePlaceholder: 'e.g. Aspirin, Metformin',
+      dosage: 'Dosage',
+      dosagePlaceholder: 'e.g. 100mg, 2 tablets',
+      frequency: 'How often?',
+      timing: 'When to take?',
+      medicationNotes: 'Notes',
+      medicationNotesPlaceholder: 'e.g. before meals, with water',
+      addMedication: 'Add medication',
+      removeMedication: 'Remove',
+      frequencyOptions: {
+        once: 'Once daily',
+        twice: 'Twice daily',
+        thrice: '3 times daily',
+        fourTimes: '4 times daily',
+        asNeeded: 'As needed',
+        weekly: 'Weekly',
+        other: 'Other',
+      },
+      timingOptions: {
+        morning: 'Morning',
+        noon: 'Noon',
+        evening: 'Evening',
+        night: 'Night',
+        beforeMeals: 'Before meals',
+        afterMeals: 'After meals',
+        withMeals: 'With meals',
+        other: 'Other',
+      },
     },
   };
 
   const texts = t[language];
 
-  const handleChange = (field: keyof PersonalData, value: string) => {
+  const handleChange = (field: keyof PersonalData, value: string | Medication[]) => {
     updateSection('personal', { ...data, [field]: value });
+  };
+
+  const handleMedicationChange = (index: number, field: keyof Medication, value: string) => {
+    const updatedMedications = [...(data.medications || [])];
+    updatedMedications[index] = { ...updatedMedications[index], [field]: value };
+    handleChange('medications', updatedMedications);
+  };
+
+  const addMedication = () => {
+    const newMedication: Medication = {
+      name: '',
+      dosage: '',
+      frequency: '',
+      timing: '',
+      notes: '',
+    };
+    handleChange('medications', [...(data.medications || []), newMedication]);
+  };
+
+  const removeMedication = (index: number) => {
+    const updatedMedications = (data.medications || []).filter((_, i) => i !== index);
+    handleChange('medications', updatedMedications);
+    handleBlur();
   };
 
   // Only show form for paid users
   if (!profile?.has_paid) {
     return null;
   }
+
+  const medications = data.medications || [];
 
   return (
     <motion.div
@@ -177,6 +266,118 @@ const PersonalForm = () => {
             onBlur={handleBlur}
             placeholder={texts.phonePlaceholder}
           />
+        </div>
+      </div>
+
+      {/* Medications Section */}
+      <div className="border-t border-border pt-6">
+        <div className="flex items-center gap-2 mb-2">
+          <Pill className="h-5 w-5 text-primary" />
+          <h3 className="font-medium text-foreground">{texts.medications}</h3>
+        </div>
+        <p className="text-sm text-muted-foreground mb-4">{texts.medicationsDesc}</p>
+
+        <div className="space-y-4">
+          {medications.map((med, index) => (
+            <div key={index} className="p-4 rounded-lg border border-border bg-card space-y-4">
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium text-muted-foreground">
+                  {texts.medicationName} {index + 1}
+                </span>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => removeMedication(index)}
+                  className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                >
+                  <Trash2 className="h-4 w-4 mr-1" />
+                  {texts.removeMedication}
+                </Button>
+              </div>
+              
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="space-y-2">
+                  <Label>{texts.medicationName}</Label>
+                  <Input
+                    value={med.name}
+                    onChange={(e) => handleMedicationChange(index, 'name', e.target.value)}
+                    onBlur={handleBlur}
+                    placeholder={texts.medicationNamePlaceholder}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>{texts.dosage}</Label>
+                  <Input
+                    value={med.dosage}
+                    onChange={(e) => handleMedicationChange(index, 'dosage', e.target.value)}
+                    onBlur={handleBlur}
+                    placeholder={texts.dosagePlaceholder}
+                  />
+                </div>
+              </div>
+
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="space-y-2">
+                  <Label>{texts.frequency}</Label>
+                  <Select
+                    value={med.frequency}
+                    onValueChange={(value) => {
+                      handleMedicationChange(index, 'frequency', value);
+                      handleBlur();
+                    }}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder={texts.frequency} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {Object.entries(texts.frequencyOptions).map(([key, label]) => (
+                        <SelectItem key={key} value={key}>{label}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label>{texts.timing}</Label>
+                  <Select
+                    value={med.timing}
+                    onValueChange={(value) => {
+                      handleMedicationChange(index, 'timing', value);
+                      handleBlur();
+                    }}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder={texts.timing} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {Object.entries(texts.timingOptions).map(([key, label]) => (
+                        <SelectItem key={key} value={key}>{label}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label>{texts.medicationNotes}</Label>
+                <Input
+                  value={med.notes}
+                  onChange={(e) => handleMedicationChange(index, 'notes', e.target.value)}
+                  onBlur={handleBlur}
+                  placeholder={texts.medicationNotesPlaceholder}
+                />
+              </div>
+            </div>
+          ))}
+
+          <Button
+            type="button"
+            variant="outline"
+            onClick={addMedication}
+            className="w-full"
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            {texts.addMedication}
+          </Button>
         </div>
       </div>
 
