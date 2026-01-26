@@ -130,8 +130,14 @@ export const useDocumentUpload = (options: UseDocumentUploadOptions = {}) => {
 
       if (error) throw error;
 
+      // Filter out placeholder files and folders (folders have id: null)
+      // Only include actual files that have a valid id
       return (data || [])
-        .filter(file => file.name !== '.emptyFolderPlaceholder')
+        .filter(file => 
+          file.name !== '.emptyFolderPlaceholder' && 
+          file.id !== null &&
+          !file.name.startsWith('.')
+        )
         .map(file => ({
           name: file.name,
           path: `${folderPath}/${file.name}`,
