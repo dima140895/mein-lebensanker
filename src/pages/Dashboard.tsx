@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { User, Wallet, Globe, Heart, FileText, ArrowLeft, Users, Phone, Info, Compass, MessageCircle, Link2, ClipboardCheck, Download } from 'lucide-react';
+import { User, Wallet, Globe, Heart, FileText, ArrowLeft, Phone, Info, Compass, MessageCircle, Link2, Download, CheckCircle } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useEncryption } from '@/contexts/EncryptionContext';
@@ -22,28 +22,34 @@ import AboutSection from '@/components/sections/AboutSection';
 import GuidanceSection from '@/components/sections/GuidanceSection';
 import DecisionAssistant from '@/components/sections/DecisionAssistant';
 import ShareLinkManager from '@/components/ShareLinkManager';
-import StatusCheck from '@/components/StatusCheck';
 import DataExport from '@/components/DataExport';
 import { useProfiles } from '@/contexts/ProfileContext';
 import { Button } from '@/components/ui/button';
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { EncryptionPasswordDialog } from '@/components/EncryptionPasswordDialog';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useSectionStatus } from '@/hooks/useSectionStatus';
+import { Progress } from '@/components/ui/progress';
 
-const sections = [
-  { key: 'about', icon: Info, color: 'bg-sage-light text-sage-dark', isInfo: true },
+// Data sections that can be tracked for completion
+const dataSections = [
   { key: 'personal', icon: User, color: 'bg-sage-light text-sage-dark' },
   { key: 'assets', icon: Wallet, color: 'bg-amber-light text-amber' },
   { key: 'digital', icon: Globe, color: 'bg-sage-light text-sage-dark' },
   { key: 'wishes', icon: Heart, color: 'bg-amber-light text-amber' },
   { key: 'documents', icon: FileText, color: 'bg-sage-light text-sage-dark' },
   { key: 'contacts', icon: Phone, color: 'bg-amber-light text-amber' },
+];
+
+// Info/utility sections (no completion tracking)
+const infoSections = [
+  { key: 'about', icon: Info, color: 'bg-sage-light text-sage-dark', isInfo: true },
   { key: 'guidance', icon: Compass, color: 'bg-sage-light text-sage-dark', isInfo: true },
   { key: 'decision', icon: MessageCircle, color: 'bg-amber-light text-amber', isInfo: true },
   { key: 'share', icon: Link2, color: 'bg-primary/20 text-primary', isInfo: true },
-  { key: 'status', icon: ClipboardCheck, color: 'bg-amber-light text-amber', isInfo: true },
   { key: 'export', icon: Download, color: 'bg-sage-light text-sage-dark', isInfo: true },
 ];
+
+const sections = [...dataSections, ...infoSections];
 
 const DashboardContent = () => {
   const { user, profile, loading } = useAuth();
@@ -55,6 +61,7 @@ const DashboardContent = () => {
   const [isPartnerView, setIsPartnerView] = useState(false);
   const [showUnlockDialog, setShowUnlockDialog] = useState(false);
   const isMobile = useIsMobile();
+  const { sectionStatus, progressPercent, filledCount, totalCount, isComplete } = useSectionStatus();
 
   // Show unlock dialog automatically when encryption is enabled but locked
   useEffect(() => {
@@ -112,13 +119,13 @@ const DashboardContent = () => {
       decisionDesc: 'Unterstützung bei schwierigen Fragen',
       share: 'Für Angehörige',
       shareDesc: 'Sicheren Zugangslink erstellen & verwalten',
-      status: 'Status-Check',
-      statusDesc: 'Was fehlt noch?',
       export: 'Daten-Export',
       exportDesc: 'Deine Daten herunterladen',
       you: 'Für mich',
       partner: 'Für Partner',
       notPaid: 'Um Deine Daten zu speichern, wähle ein Paket:',
+      progressLabel: 'Fortschritt',
+      complete: 'Vollständig!',
     },
     en: {
       title: 'Your Estate Planning Dashboard',
@@ -144,13 +151,13 @@ const DashboardContent = () => {
       decisionDesc: 'Support for difficult questions',
       share: 'For Relatives',
       shareDesc: 'Create & manage secure access link',
-      status: 'Status Check',
-      statusDesc: 'What\'s missing?',
       export: 'Data Export',
       exportDesc: 'Download your data',
       you: 'For Me',
       partner: 'For Partner',
       notPaid: 'To save your data, choose a package:',
+      progressLabel: 'Progress',
+      complete: 'Complete!',
     },
   };
 
@@ -184,7 +191,6 @@ const DashboardContent = () => {
       case 'guidance': return <GuidanceSection />;
       case 'decision': return <DecisionAssistant />;
       case 'share': return <ShareLinkManager />;
-      case 'status': return <StatusCheck />;
       case 'export': return <DataExport />;
       case 'upgrade': return <PackageManagement />;
       case 'payment': return <PackageManagement />;
@@ -198,8 +204,8 @@ const DashboardContent = () => {
     }
   };
 
-  const currentSection = sections.find(s => s.key === activeSection);
-  const isInfoSection = currentSection?.isInfo;
+  const currentSection = [...dataSections, ...infoSections].find(s => s.key === activeSection);
+  const isInfoSection = infoSections.some(s => s.key === activeSection);
 
   if (activeSection) {
     return (
@@ -254,38 +260,93 @@ const DashboardContent = () => {
   return (
     <>
       <div className="container mx-auto px-4 py-8">
-        <div className="text-center mb-8">
+        <div className="text-center mb-6">
           <h1 className="font-serif text-3xl font-bold text-foreground">{texts.title}</h1>
           <p className="mt-2 text-muted-foreground">{texts.subtitle}</p>
         </div>
 
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 max-w-4xl mx-auto">
-          {sections.map((section, i) => {
-            const Icon = section.icon;
-            const descKey = `${section.key}Desc` as keyof typeof texts;
-            return (
-              <motion.button
-                key={section.key}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.1 }}
-                onClick={() => handleSectionChange(section.key)}
-                className="flex items-start gap-4 p-6 rounded-xl border border-border bg-card shadow-card hover:shadow-elevated transition-all text-left"
-              >
-                <div className={`h-12 w-12 rounded-lg flex items-center justify-center flex-shrink-0 ${section.color}`}>
-                  <Icon className="h-6 w-6" />
-                </div>
-                <div className="flex flex-col gap-1">
-                  <span className="font-serif text-lg font-semibold text-foreground">
+        {/* Progress bar */}
+        <div className="max-w-4xl mx-auto mb-6">
+          <div className={`p-4 rounded-xl border ${isComplete ? 'border-primary bg-primary/5' : 'border-border bg-card'}`}>
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm font-medium text-foreground">{texts.progressLabel}</span>
+              <span className={`text-sm font-medium ${isComplete ? 'text-primary' : 'text-muted-foreground'}`}>
+                {isComplete ? texts.complete : `${filledCount}/${totalCount}`}
+              </span>
+            </div>
+            <Progress value={progressPercent} className="h-2" />
+          </div>
+        </div>
+
+        {/* Data sections with status indicators */}
+        <div className="max-w-4xl mx-auto mb-6">
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {dataSections.map((section, i) => {
+              const Icon = section.icon;
+              const descKey = `${section.key}Desc` as keyof typeof texts;
+              const isFilled = sectionStatus[section.key];
+              
+              return (
+                <motion.button
+                  key={section.key}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.05 }}
+                  onClick={() => handleSectionChange(section.key)}
+                  className={`relative flex items-start gap-4 p-5 rounded-xl border shadow-card hover:shadow-elevated transition-all text-left ${
+                    isFilled 
+                      ? 'border-primary/30 bg-primary/5' 
+                      : 'border-border bg-card'
+                  }`}
+                >
+                  {/* Status indicator */}
+                  {isFilled && (
+                    <div className="absolute top-3 right-3">
+                      <CheckCircle className="h-5 w-5 text-primary" />
+                    </div>
+                  )}
+                  
+                  <div className={`h-11 w-11 rounded-lg flex items-center justify-center flex-shrink-0 ${section.color}`}>
+                    <Icon className="h-5 w-5" />
+                  </div>
+                  <div className="flex flex-col gap-0.5 pr-6">
+                    <span className="font-serif text-base font-semibold text-foreground">
+                      {texts[section.key as keyof typeof texts]}
+                    </span>
+                    <span className="text-xs text-muted-foreground">
+                      {texts[descKey]}
+                    </span>
+                  </div>
+                </motion.button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Info/utility sections */}
+        <div className="max-w-4xl mx-auto">
+          <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-5">
+            {infoSections.map((section, i) => {
+              const Icon = section.icon;
+              return (
+                <motion.button
+                  key={section.key}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 + i * 0.05 }}
+                  onClick={() => handleSectionChange(section.key)}
+                  className="flex items-center gap-3 p-4 rounded-xl border border-border bg-card/50 hover:bg-card shadow-sm hover:shadow-card transition-all text-left"
+                >
+                  <div className={`h-9 w-9 rounded-lg flex items-center justify-center flex-shrink-0 ${section.color}`}>
+                    <Icon className="h-4 w-4" />
+                  </div>
+                  <span className="font-medium text-sm text-foreground">
                     {texts[section.key as keyof typeof texts]}
                   </span>
-                  <span className="text-sm text-muted-foreground">
-                    {texts[descKey]}
-                  </span>
-                </div>
-              </motion.button>
-            );
-          })}
+                </motion.button>
+              );
+            })}
+          </div>
         </div>
       </div>
 
