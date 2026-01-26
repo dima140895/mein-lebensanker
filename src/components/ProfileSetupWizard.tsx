@@ -287,8 +287,6 @@ const ProfileSetupWizard = ({ maxProfiles, packageType }: ProfileSetupWizardProp
         sessionStorage.setItem('profile_setup_just_completed', 'true');
       }
       
-      // Set flag for encryption reminder (30 seconds after setup)
-      sessionStorage.setItem('profile_setup_completed_time', Date.now().toString());
 
       setCompleted(true);
       toast.success(language === 'de' ? 'Profile erfolgreich gespeichert!' : 'Profiles saved successfully!');
@@ -331,7 +329,14 @@ const ProfileSetupWizard = ({ maxProfiles, packageType }: ProfileSetupWizardProp
           {texts.successTitle}
         </h2>
         <p className="text-muted-foreground mb-8">{texts.successDesc}</p>
-        <Button onClick={() => navigate('/dashboard')} size="lg">
+        <Button 
+          onClick={() => {
+            // Set flag for encryption reminder (30 seconds after clicking "Go to Dashboard")
+            sessionStorage.setItem('profile_setup_completed_time', Date.now().toString());
+            navigate('/dashboard');
+          }} 
+          size="lg"
+        >
           {texts.toDashboard}
         </Button>
       </motion.div>
