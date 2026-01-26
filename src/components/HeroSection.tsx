@@ -149,12 +149,12 @@ const HeroSection = () => {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-background/40 via-transparent to-transparent" />
                 
-                {/* Floating card overlay - positioned at top */}
+                {/* Floating card overlay */}
                 <motion.div
-                  initial={{ opacity: 0, y: -20 }}
+                  initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 1 }}
-                  className="absolute top-6 left-6 right-6 rounded-xl bg-white/90 backdrop-blur-md p-4 shadow-lg border border-white/50"
+                  className="absolute bottom-6 left-6 right-6 rounded-xl bg-white/90 backdrop-blur-md p-4 shadow-lg border border-white/50"
                 >
                   <div className="flex items-center gap-3">
                     <div className="flex h-10 w-10 items-center justify-center rounded-full bg-sage-light">
@@ -162,7 +162,7 @@ const HeroSection = () => {
                     </div>
                     <div>
                       <p className="font-medium text-foreground text-sm">
-                        {language === 'de' ? 'Für Dich und die Menschen, die Dir wichtig sind' : 'For you and the people who matter to you'}
+                        {language === 'de' ? 'Für die Menschen, die Dir wichtig sind' : 'For the people who matter to you'}
                       </p>
                       <p className="text-xs text-muted-foreground">
                         {language === 'de' ? 'Mein Lebensanker' : 'My Life Anchor'}
