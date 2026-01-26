@@ -106,8 +106,25 @@ const SharedDocuments = ({ token }: SharedDocumentsProps) => {
     return texts.documentTypes[key] || type;
   };
 
-  const handleOpenDocument = (url: string) => {
-    window.open(url, '_blank', 'noopener,noreferrer');
+  const handleOpenDocument = (doc: SharedDocument) => {
+    // For PDFs, use an anchor element with download attribute as fallback
+    // Some browsers show blank pages with window.open for signed URLs
+    const link = document.createElement('a');
+    link.href = doc.signedUrl;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    
+    // Check if it's a PDF by extension
+    const isPdf = doc.name.toLowerCase().endsWith('.pdf');
+    if (isPdf) {
+      // For PDFs, trigger download instead of opening in new tab
+      // as signed URLs with download headers often show blank pages
+      link.download = doc.name;
+    }
+    
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   if (loading) {
@@ -175,7 +192,7 @@ const SharedDocuments = ({ token }: SharedDocumentsProps) => {
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() => handleOpenDocument(doc.signedUrl)}
+                    onClick={() => handleOpenDocument(doc)}
                     className="flex-shrink-0 gap-1"
                   >
                     <ExternalLink className="h-4 w-4" />
