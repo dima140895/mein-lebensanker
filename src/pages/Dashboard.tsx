@@ -61,7 +61,7 @@ const DashboardContent = () => {
   const [isPartnerView, setIsPartnerView] = useState(false);
   const [showUnlockDialog, setShowUnlockDialog] = useState(false);
   const isMobile = useIsMobile();
-  const { sectionStatus, progressPercent, filledCount, totalCount, isComplete, allProfilesProgress, hasMultipleProfiles } = useSectionStatus();
+  const { sectionStatus, progressPercent, filledCount, totalCount, isComplete, allProfilesProgress, hasMultipleProfiles, refetch } = useSectionStatus();
 
   // Show unlock dialog automatically when encryption is enabled but locked
   useEffect(() => {
@@ -86,6 +86,10 @@ const DashboardContent = () => {
   }, [searchParams]);
 
   const handleSectionChange = (section: string | null) => {
+    // If navigating back to overview (from a section), refetch status
+    if (section === null && activeSection !== null) {
+      refetch();
+    }
     setActiveSection(section);
     if (section) {
       setSearchParams({ section });
