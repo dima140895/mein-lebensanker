@@ -406,6 +406,8 @@ const ProfileSetupWizard = ({ maxProfiles, packageType, onAllProfilesExist }: Pr
           onClick={() => {
             // Set flag for encryption reminder (30 seconds after clicking "Go to Dashboard")
             sessionStorage.setItem('profile_setup_completed_time', Date.now().toString());
+            // Trigger dashboard onboarding tour
+            sessionStorage.setItem('show_dashboard_tour', 'true');
             navigate('/dashboard');
           }} 
           size="lg"
