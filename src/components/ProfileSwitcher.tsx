@@ -85,9 +85,23 @@ const ProfileSwitcher = () => {
 
   const t = texts[language];
 
-  // Don't show if user only has 1 max profile (single package)
-  if (!profile?.has_paid || profile.max_profiles <= 1) {
+  // For single profile users, show a simple display (no dropdown)
+  // For multi-profile users, show the full switcher
+  if (!profile?.has_paid) {
     return null;
+  }
+
+  // Single profile package - show profile name without dropdown
+  if ((profile.max_profiles || 1) <= 1) {
+    const singleProfile = personProfiles.length > 0 ? personProfiles[0] : null;
+    if (!singleProfile) return null;
+    
+    return (
+      <div className="flex items-center gap-2 text-sm text-muted-foreground px-3 py-1.5 border rounded-md bg-background">
+        <User className="h-4 w-4" />
+        <span className="max-w-[120px] truncate">{singleProfile.name}</span>
+      </div>
+    );
   }
 
   const handleCreateProfile = async () => {

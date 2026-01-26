@@ -20,7 +20,10 @@ const PackageManagement = () => {
   const [additionalProfilesToAdd, setAdditionalProfilesToAdd] = useState<number>(1);
 
   const currentTier = (profile?.purchased_tier as PackageType) || 'single';
-  const currentMaxProfiles = profile?.max_profiles || 1;
+  // max_profiles defaults to 0 in DB, so use tier-based logic as fallback
+  const currentMaxProfiles = (profile?.max_profiles && profile.max_profiles > 0) 
+    ? profile.max_profiles 
+    : (currentTier === 'couple' ? 2 : currentTier === 'family' ? 4 : 1);
   const canAddMoreProfiles = currentTier === 'family' && currentMaxProfiles < PRICING.family.maxProfiles;
   const maxAdditionalProfiles = PRICING.family.maxProfiles - currentMaxProfiles;
 
