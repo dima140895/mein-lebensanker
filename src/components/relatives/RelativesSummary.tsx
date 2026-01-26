@@ -4,6 +4,7 @@ import { User, Wallet, Globe, Heart, FileText, Phone, Printer } from 'lucide-rea
 import { useReactToPrint } from 'react-to-print';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { supabase } from '@/integrations/supabase/browserClient';
+import { logger } from '@/lib/logger';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
@@ -75,7 +76,7 @@ const RelativesSummary = ({ data, profiles, sharedSections, sharedProfileSection
           })));
         }
       } catch (err) {
-        console.error('Error fetching shared documents:', err);
+        logger.error('Error fetching shared documents:', err);
       }
     };
 
@@ -84,7 +85,7 @@ const RelativesSummary = ({ data, profiles, sharedSections, sharedProfileSection
 
   const handlePrint = useReactToPrint({
     contentRef: printRef,
-    documentTitle: language === 'de' ? 'Vorsorge-Übersicht' : 'Care Planning Overview',
+    documentTitle: language === 'de' ? 'Mein-Lebensanker-Übersicht' : 'Mein Lebensanker Overview',
   });
 
   const t = {
