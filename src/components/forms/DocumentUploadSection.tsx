@@ -3,6 +3,7 @@ import { Upload, FileText, Trash2, Download, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useDocumentUpload } from '@/hooks/useDocumentUpload';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useProfiles } from '@/contexts/ProfileContext';
 
 interface UploadedDoc {
   name: string;
@@ -19,6 +20,7 @@ interface DocumentUploadSectionProps {
 
 const DocumentUploadSection = ({ documentType, label, onDocumentsChange }: DocumentUploadSectionProps) => {
   const { language } = useLanguage();
+  const { activeProfileId } = useProfiles();
   const { uploadFile, deleteFile, getFileUrl, listFiles, uploading } = useDocumentUpload();
   const [documents, setDocuments] = useState<UploadedDoc[]>([]);
   const [loading, setLoading] = useState(true);
@@ -45,9 +47,10 @@ const DocumentUploadSection = ({ documentType, label, onDocumentsChange }: Docum
 
   const texts = t[language];
 
+  // Reload documents when profile or document type changes
   useEffect(() => {
     loadDocuments();
-  }, [documentType]);
+  }, [documentType, activeProfileId]);
 
   const loadDocuments = async () => {
     setLoading(true);

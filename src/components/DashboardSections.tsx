@@ -130,15 +130,17 @@ const DashboardSections = () => {
     navigate(`/dashboard?section=${sectionKey}`);
   };
 
-  const SectionCard = ({ section, index }: { 
+  const SectionCard = ({ section, index, dataTourAttr }: { 
     section: typeof sections[0], 
-    index: number
+    index: number,
+    dataTourAttr?: string
   }) => {
     const Icon = section.icon;
     return (
       <div
         onClick={() => handleSectionClick(section.key)}
         className={`group relative cursor-pointer overflow-hidden rounded-2xl border border-border/50 bg-gradient-to-br ${section.gradient} p-6 shadow-sm hover-lift hover:shadow-xl ${section.accent} animate-stagger-fade-in ${getStaggerClass(index)}`}
+        data-tour={dataTourAttr}
       >
         {/* Decorative background element */}
         <div className="absolute -right-8 -top-8 h-24 w-24 rounded-full bg-white/20 blur-2xl transition-all duration-500 group-hover:scale-150 group-hover:bg-white/30" />
@@ -193,12 +195,14 @@ const DashboardSections = () => {
         <div 
           key={`main-${language}`}
           className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3"
+          data-tour="dashboard-tiles"
         >
           {sections.map((section, index) => (
             <SectionCard 
               key={`${language}-${section.key}`} 
               section={section} 
               index={index}
+              dataTourAttr={section.key === 'documents' ? 'documents-tile' : undefined}
             />
           ))}
         </div>
@@ -225,6 +229,7 @@ const DashboardSections = () => {
               key={`${language}-${section.key}`} 
               section={section} 
               index={index}
+              dataTourAttr={section.key === 'share' ? 'relatives-link' : undefined}
             />
           ))}
         </div>
