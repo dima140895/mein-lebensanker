@@ -48,79 +48,59 @@ export const EncryptionPasswordDialog: React.FC<EncryptionPasswordDialogProps> =
 
   const translations = {
     de: {
-      unlockTitle: 'Deine Daten sind geschützt',
-      unlockDescription: 'Bitte gib Dein persönliches Passwort ein, um Deine Daten zu öffnen.',
-      setupTitle: 'Schütze Deine Daten mit einem Passwort',
-      setupDescription: 'In 2 einfachen Schritten sind Deine Informationen sicher verschlüsselt.',
-      password: 'Dein Passwort',
-      confirmPassword: 'Passwort nochmal eingeben',
-      unlock: 'Öffnen',
+      unlockTitle: 'Daten entsperren',
+      unlockDescription: 'Gib Dein Passwort ein, um fortzufahren.',
+      setupTitle: 'Verschlüsselung aktivieren',
+      setupDescription: 'Schütze Deine Daten mit einem persönlichen Passwort.',
+      password: 'Passwort',
+      confirmPassword: 'Passwort bestätigen',
+      unlock: 'Entsperren',
       enable: 'Weiter',
-      wrongPassword: 'Das Passwort ist leider falsch. Bitte versuche es erneut.',
-      passwordMismatch: 'Die Passwörter stimmen nicht überein. Bitte prüfe beide Eingaben.',
-      passwordTooShort: 'Bitte wähle ein Passwort mit mindestens 8 Zeichen.',
-      warning: 'Wichtig: Merke Dir dieses Passwort gut! Es ist der Schlüssel zu Deinen Daten.',
+      wrongPassword: 'Falsches Passwort. Bitte erneut versuchen.',
+      passwordMismatch: 'Passwörter stimmen nicht überein.',
+      passwordTooShort: 'Mindestens 8 Zeichen erforderlich.',
+      warning: 'Merke Dir dieses Passwort gut – es ist der Schlüssel zu Deinen Daten.',
       cancel: 'Abbrechen',
-      success: 'Perfekt! Deine Daten sind jetzt geschützt.',
-      unlockSuccess: 'Deine Daten sind jetzt verfügbar.',
-      migrating: 'Deine Daten werden geschützt...',
-      migratingProgress: 'Verarbeite Eintrag',
+      success: 'Deine Daten sind jetzt geschützt.',
+      unlockSuccess: 'Entsperrt',
+      migrating: 'Wird verschlüsselt...',
+      migratingProgress: 'Eintrag',
       
-      // Simplified explanation - step by step
-      step1Title: 'Schritt 1: Passwort wählen',
-      step1Text: 'Wähle ein Passwort, das Du Dir gut merken kannst. Dieses Passwort schützt alle Deine Informationen.',
-      
-      whatHappens: 'Was passiert?',
-      whatHappensText: 'Deine Daten werden wie in einem Tresor verschlossen. Nur mit Deinem Passwort kannst Du den Tresor öffnen – selbst wir haben keinen Zugang.',
-      
-      tipTitle: 'Tipp für ein gutes Passwort:',
-      tipText: 'Denke an einen Satz, den Du Dir leicht merkst, z.B. "Mein Hund Max ist 7 Jahre alt!" → MHMi7Ja!',
-      
-      afterSetup: 'Im nächsten Schritt erhältst Du einen Ersatzschlüssel zum Aufschreiben.',
+      safeAnalogy: 'Deine Daten werden wie in einem Tresor gesichert. Nur Du hast den Schlüssel.',
+      tipText: 'Tipp: Nutze einen Satz wie "MeinHund7!" statt einzelner Wörter.',
+      afterSetup: 'Danach erhältst Du einen Ersatzschlüssel.',
       
       forgotPassword: 'Passwort vergessen?',
-      resetEncryption: 'Alles zurücksetzen',
-      resetHint: 'Kein Zugriff mehr möglich?',
+      resetHint: 'Kein Zugriff mehr?',
       
-      watchExplanation: 'Kurze Erklärung ansehen',
       howItWorksButton: 'Wie funktioniert das?',
     },
     en: {
-      unlockTitle: 'Your Data is Protected',
-      unlockDescription: 'Please enter your personal password to access your data.',
-      setupTitle: 'Protect Your Data with a Password',
-      setupDescription: 'In 2 simple steps, your information will be securely encrypted.',
-      password: 'Your Password',
-      confirmPassword: 'Enter password again',
-      unlock: 'Open',
+      unlockTitle: 'Unlock Data',
+      unlockDescription: 'Enter your password to continue.',
+      setupTitle: 'Enable Encryption',
+      setupDescription: 'Protect your data with a personal password.',
+      password: 'Password',
+      confirmPassword: 'Confirm Password',
+      unlock: 'Unlock',
       enable: 'Continue',
-      wrongPassword: 'The password is incorrect. Please try again.',
-      passwordMismatch: 'The passwords do not match. Please check both entries.',
-      passwordTooShort: 'Please choose a password with at least 8 characters.',
-      warning: 'Important: Remember this password well! It is the key to your data.',
+      wrongPassword: 'Wrong password. Please try again.',
+      passwordMismatch: 'Passwords do not match.',
+      passwordTooShort: 'At least 8 characters required.',
+      warning: 'Remember this password – it\'s the key to your data.',
       cancel: 'Cancel',
-      success: 'Perfect! Your data is now protected.',
-      unlockSuccess: 'Your data is now available.',
-      migrating: 'Your data is being protected...',
-      migratingProgress: 'Processing entry',
+      success: 'Your data is now protected.',
+      unlockSuccess: 'Unlocked',
+      migrating: 'Encrypting...',
+      migratingProgress: 'Entry',
       
-      // Simplified explanation - step by step
-      step1Title: 'Step 1: Choose a Password',
-      step1Text: 'Choose a password you can remember well. This password protects all your information.',
-      
-      whatHappens: 'What happens?',
-      whatHappensText: 'Your data is locked like in a safe. Only with your password can you open the safe – even we have no access.',
-      
-      tipTitle: 'Tip for a good password:',
-      tipText: 'Think of a sentence you can easily remember, e.g., "My dog Max is 7 years old!" → MdMi7yo!',
-      
-      afterSetup: 'In the next step, you will receive a backup key to write down.',
+      safeAnalogy: 'Your data is secured like in a safe. Only you have the key.',
+      tipText: 'Tip: Use a phrase like "MyDog7!" instead of single words.',
+      afterSetup: 'You\'ll receive a backup key afterwards.',
       
       forgotPassword: 'Forgot password?',
-      resetEncryption: 'Reset everything',
-      resetHint: 'No access possible anymore?',
+      resetHint: 'No access?',
       
-      watchExplanation: 'Watch short explanation',
       howItWorksButton: 'How does it work?',
     },
   };
@@ -247,47 +227,25 @@ export const EncryptionPasswordDialog: React.FC<EncryptionPasswordDialogProps> =
           {/* Scrollable content wrapper */}
           <div className="overflow-y-auto flex-1 space-y-5 -mx-6 px-6">
           {mode === 'setup' && !showVisualGuide && (
-            <div className="space-y-4">
-              {/* Watch explanation button */}
+            <div className="space-y-3">
+              {/* Compact explanation */}
+              <div className="flex items-start gap-3 p-3 rounded-lg bg-muted/50">
+                <Shield className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                <p className="text-sm text-muted-foreground">{t.safeAnalogy}</p>
+              </div>
+              
+              {/* Password tip - inline */}
+              <p className="text-xs text-muted-foreground">{t.tipText}</p>
+              
+              {/* How it works - collapsed by default */}
               <button
                 type="button"
                 onClick={() => setShowVisualGuide(true)}
-                className="w-full flex items-center justify-center gap-2 p-3 rounded-lg border-2 border-dashed border-primary/30 bg-primary/5 hover:bg-primary/10 transition-colors text-primary"
+                className="text-xs text-primary hover:underline flex items-center gap-1"
               >
-                <PlayCircle className="h-5 w-5" />
-                <span className="font-medium text-sm">{t.howItWorksButton}</span>
+                <PlayCircle className="h-3.5 w-3.5" />
+                {t.howItWorksButton}
               </button>
-              
-              {/* Step indicator */}
-              <div className="flex items-center gap-2 text-sm font-medium text-primary">
-                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs">
-                  1
-                </div>
-                {t.step1Title}
-              </div>
-              
-              {/* Simple explanation with safe analogy */}
-              <div className="rounded-lg border border-border bg-muted/50 p-4 space-y-3">
-                <div className="flex items-start gap-3">
-                  <Shield className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
-                  <div>
-                    <p className="font-medium text-sm">{t.whatHappens}</p>
-                    <p className="text-sm text-muted-foreground mt-1">{t.whatHappensText}</p>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Password tip */}
-              <div className="rounded-lg border border-primary/20 bg-primary/5 p-4">
-                <p className="font-medium text-sm text-primary">{t.tipTitle}</p>
-                <p className="text-sm text-muted-foreground mt-1">{t.tipText}</p>
-              </div>
-              
-              {/* Important warning - more friendly */}
-              <Alert className="border-amber-500 bg-amber-50 text-amber-900">
-                <AlertTriangle className="h-4 w-4" />
-                <AlertDescription className="text-sm">{t.warning}</AlertDescription>
-              </Alert>
             </div>
           )}
 
@@ -340,10 +298,10 @@ export const EncryptionPasswordDialog: React.FC<EncryptionPasswordDialogProps> =
               )}
 
               {mode === 'setup' && (
-                <div className="flex items-center gap-2 text-sm text-muted-foreground bg-muted/30 rounded-lg p-3">
-                  <CheckCircle2 className="h-4 w-4 text-primary flex-shrink-0" />
-                  <span>{t.afterSetup}</span>
-                </div>
+                <p className="text-xs text-muted-foreground flex items-center gap-1.5">
+                  <CheckCircle2 className="h-3.5 w-3.5 text-primary" />
+                  {t.afterSetup}
+                </p>
               )}
             </>
           )}
@@ -369,22 +327,22 @@ export const EncryptionPasswordDialog: React.FC<EncryptionPasswordDialogProps> =
           )}
 
           {mode === 'unlock' && (
-            <div className="space-y-3 pt-2 border-t border-border">
+            <div className="flex items-center justify-between pt-2 border-t border-border text-xs">
               <button
                 type="button"
                 onClick={() => setShowRecoveryDialog(true)}
-                className="text-sm text-primary hover:underline flex items-center gap-2"
+                className="text-primary hover:underline flex items-center gap-1"
               >
-                <Key className="h-4 w-4" />
+                <Key className="h-3.5 w-3.5" />
                 {t.forgotPassword}
               </button>
               
               <button
                 type="button"
                 onClick={() => setShowResetDialog(true)}
-                className="text-sm text-destructive hover:underline flex items-center gap-2"
+                className="text-muted-foreground hover:text-destructive flex items-center gap-1"
               >
-                <Trash2 className="h-4 w-4" />
+                <Trash2 className="h-3.5 w-3.5" />
                 {t.resetHint}
               </button>
             </div>
