@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Link2, Plus, Trash2, Copy, Check, ExternalLink, Shield, Lock, Share2, Eye, Info, ShieldX, User, Wallet, Smartphone, Heart, FileText, Users, UserCircle } from 'lucide-react';
+import { Link2, Plus, Trash2, Copy, Check, ExternalLink, Shield, Lock, Share2, Eye, Info, ShieldX, User, Wallet, Smartphone, Heart, FileText, Users, UserCircle, ChevronDown, ChevronRight } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useProfiles, PersonProfile } from '@/contexts/ProfileContext';
@@ -37,7 +37,11 @@ interface ShareToken {
   failed_attempts: number;
   shared_sections: string[] | null;
   shared_profile_ids: string[] | null;
+  shared_profile_sections: Record<string, string[]> | null;
 }
+
+// Per-profile section selection: { profileId: ['personal', 'assets', ...] }
+type ProfileSectionSelection = Record<string, SectionKey[]>;
 
 const ALL_SECTIONS = ['personal', 'assets', 'digital', 'wishes', 'documents', 'contacts'] as const;
 type SectionKey = typeof ALL_SECTIONS[number];
@@ -54,8 +58,10 @@ const ShareLinkManager = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [usePIN, setUsePIN] = useState(false);
   const [pin, setPIN] = useState('');
-  const [selectedSections, setSelectedSections] = useState<SectionKey[]>([...ALL_SECTIONS]);
-  const [selectedProfileIds, setSelectedProfileIds] = useState<string[]>([]);
+  // Per-profile section selection state
+  const [profileSections, setProfileSections] = useState<ProfileSectionSelection>({});
+  // Which profiles are expanded in the UI
+  const [expandedProfiles, setExpandedProfiles] = useState<string[]>([]);
 
   const sectionLabels = {
     de: {
@@ -201,34 +207,78 @@ const ShareLinkManager = () => {
     loadTokens();
   }, [user]);
 
-  // Initialize selected profiles when profiles load
+  // Initialize profile sections when profiles load or dialog opens
   useEffect(() => {
-    if (personProfiles.length > 0 && selectedProfileIds.length === 0) {
-      setSelectedProfileIds(personProfiles.map(p => p.id));
+    if (personProfiles.length > 0 && Object.keys(profileSections).length === 0) {
+      initializeProfileSections();
     }
   }, [personProfiles]);
 
-  const toggleProfileId = (profileId: string) => {
-    setSelectedProfileIds(prev => 
-      prev.includes(profileId)
+  const initializeProfileSections = () => {
+    const initial: ProfileSectionSelection = {};
+    personProfiles.forEach(p => {
+      initial[p.id] = [...ALL_SECTIONS];
+    });
+    setProfileSections(initial);
+    setExpandedProfiles(personProfiles.map(p => p.id));
+  };
+
+  const toggleProfileEnabled = (profileId: string) => {
+    setProfileSections(prev => {
+      const newState = { ...prev };
+      if (profileId in newState) {
+        delete newState[profileId];
+      } else {
+        newState[profileId] = [...ALL_SECTIONS];
+      }
+      return newState;
+    });
+  };
+
+  const toggleProfileSection = (profileId: string, section: SectionKey) => {
+    setProfileSections(prev => {
+      const current = prev[profileId] || [];
+      const updated = current.includes(section)
+        ? current.filter(s => s !== section)
+        : [...current, section];
+      return { ...prev, [profileId]: updated };
+    });
+  };
+
+  const selectAllSectionsForProfile = (profileId: string) => {
+    setProfileSections(prev => ({ ...prev, [profileId]: [...ALL_SECTIONS] }));
+  };
+
+  const deselectAllSectionsForProfile = (profileId: string) => {
+    setProfileSections(prev => ({ ...prev, [profileId]: [] }));
+  };
+
+  const toggleExpandProfile = (profileId: string) => {
+    setExpandedProfiles(prev => 
+      prev.includes(profileId) 
         ? prev.filter(id => id !== profileId)
         : [...prev, profileId]
     );
   };
 
-  const selectAllProfiles = () => setSelectedProfileIds(personProfiles.map(p => p.id));
-  const deselectAllProfiles = () => setSelectedProfileIds([]);
-
-  const toggleSection = (section: SectionKey) => {
-    setSelectedSections(prev => 
-      prev.includes(section)
-        ? prev.filter(s => s !== section)
-        : [...prev, section]
-    );
+  const selectAllProfiles = () => {
+    const all: ProfileSectionSelection = {};
+    personProfiles.forEach(p => {
+      all[p.id] = profileSections[p.id] || [...ALL_SECTIONS];
+    });
+    setProfileSections(all);
   };
 
-  const selectAllSections = () => setSelectedSections([...ALL_SECTIONS]);
-  const deselectAllSections = () => setSelectedSections([]);
+  const deselectAllProfiles = () => {
+    setProfileSections({});
+  };
+
+  // Check if any profile has at least one section selected
+  const hasValidSelection = () => {
+    const enabledProfiles = Object.keys(profileSections);
+    if (enabledProfiles.length === 0) return false;
+    return enabledProfiles.some(id => (profileSections[id] || []).length > 0);
+  };
 
   const createToken = async () => {
     if (!user) return;
@@ -239,32 +289,32 @@ const ShareLinkManager = () => {
       return;
     }
 
-    // Validate at least one section selected
-    if (selectedSections.length === 0) {
+    // Validate at least one profile with sections is selected
+    if (!hasValidSelection()) {
       toast.error(texts.atLeastOne);
-      return;
-    }
-
-    // Validate at least one profile selected (if profiles exist)
-    if (personProfiles.length > 0 && selectedProfileIds.length === 0) {
-      toast.error(texts.atLeastOneProfile);
       return;
     }
     
     setCreating(true);
 
-    // Determine shared profile IDs (null means all profiles)
-    const allProfilesSelected = personProfiles.length === 0 || selectedProfileIds.length === personProfiles.length;
-    const profileIdsToShare = allProfilesSelected ? null : selectedProfileIds;
+    // Build the shared_profile_sections object
+    const sharedProfileSections: Record<string, string[]> = {};
+    Object.entries(profileSections).forEach(([profileId, sections]) => {
+      if (sections.length > 0) {
+        sharedProfileSections[profileId] = sections;
+      }
+    });
 
-    // First create the token with shared sections and profiles
+    // Create the token with new per-profile sections structure
     const { data, error } = await supabase
       .from('share_tokens')
       .insert({
         user_id: user.id,
         label: newLabel.trim() || null,
-        shared_sections: selectedSections,
-        shared_profile_ids: profileIdsToShare,
+        shared_profile_sections: sharedProfileSections,
+        // Keep legacy columns null for new tokens using the new structure
+        shared_sections: null,
+        shared_profile_ids: null,
       })
       .select()
       .single();
@@ -303,8 +353,7 @@ const ShareLinkManager = () => {
       setNewLabel('');
       setPIN('');
       setUsePIN(false);
-      setSelectedSections([...ALL_SECTIONS]);
-      setSelectedProfileIds(personProfiles.map(p => p.id));
+      initializeProfileSections();
       setDialogOpen(false);
     }
     setCreating(false);
@@ -374,69 +423,17 @@ const ShareLinkManager = () => {
                 />
               </div>
 
-              {/* Section Selection */}
+              {/* Per-Profile Section Selection */}
               <div className="rounded-lg border border-border p-4 space-y-4">
                 <div className="space-y-1">
                   <Label className="flex items-center gap-2">
-                    <Eye className="h-4 w-4" />
-                    {texts.selectSections}
+                    <UserCircle className="h-4 w-4" />
+                    {texts.selectProfiles}
                   </Label>
-                  <p className="text-sm text-muted-foreground">{texts.selectSectionsDesc}</p>
+                  <p className="text-sm text-muted-foreground">{texts.selectProfilesDesc}</p>
                 </div>
                 
-                <div className="flex gap-2">
-                  <Button 
-                    type="button" 
-                    variant="outline" 
-                    size="sm"
-                    onClick={selectAllSections}
-                  >
-                    {texts.selectAll}
-                  </Button>
-                  <Button 
-                    type="button" 
-                    variant="outline" 
-                    size="sm"
-                    onClick={deselectAllSections}
-                  >
-                    {texts.selectNone}
-                  </Button>
-                </div>
-
-                <div className="grid grid-cols-2 gap-3">
-                  {ALL_SECTIONS.map((section) => (
-                    <label
-                      key={section}
-                      className={`flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-colors ${
-                        selectedSections.includes(section)
-                          ? 'border-primary bg-primary/5'
-                          : 'border-border hover:border-muted-foreground/50'
-                      }`}
-                    >
-                      <Checkbox
-                        checked={selectedSections.includes(section)}
-                        onCheckedChange={() => toggleSection(section)}
-                      />
-                      <span className="flex items-center gap-2 text-sm">
-                        {sectionIcons[section]}
-                        {sectionLabels[language][section]}
-                      </span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-
-              {/* Profile Selection - only show if multiple profiles exist */}
-              {personProfiles.length > 1 && (
-                <div className="rounded-lg border border-border p-4 space-y-4">
-                  <div className="space-y-1">
-                    <Label className="flex items-center gap-2">
-                      <UserCircle className="h-4 w-4" />
-                      {texts.selectProfiles}
-                    </Label>
-                    <p className="text-sm text-muted-foreground">{texts.selectProfilesDesc}</p>
-                  </div>
-                  
+                {personProfiles.length > 1 && (
                   <div className="flex gap-2">
                     <Button 
                       type="button" 
@@ -455,30 +452,106 @@ const ShareLinkManager = () => {
                       {texts.selectNone}
                     </Button>
                   </div>
+                )}
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {personProfiles.map((profile) => (
-                      <label
-                        key={profile.id}
-                        className={`flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-colors ${
-                          selectedProfileIds.includes(profile.id)
-                            ? 'border-primary bg-primary/5'
-                            : 'border-border hover:border-muted-foreground/50'
+                <div className="space-y-3">
+                  {personProfiles.map((profile) => {
+                    const isEnabled = profile.id in profileSections;
+                    const isExpanded = expandedProfiles.includes(profile.id);
+                    const selectedCount = (profileSections[profile.id] || []).length;
+                    
+                    return (
+                      <div 
+                        key={profile.id} 
+                        className={`rounded-lg border transition-colors ${
+                          isEnabled ? 'border-primary bg-primary/5' : 'border-border'
                         }`}
                       >
-                        <Checkbox
-                          checked={selectedProfileIds.includes(profile.id)}
-                          onCheckedChange={() => toggleProfileId(profile.id)}
-                        />
-                        <span className="flex items-center gap-2 text-sm">
-                          <UserCircle className="h-4 w-4" />
-                          {profile.name}
-                        </span>
-                      </label>
-                    ))}
-                  </div>
+                        {/* Profile Header */}
+                        <div 
+                          className="flex items-center justify-between p-3 cursor-pointer"
+                          onClick={() => isEnabled && toggleExpandProfile(profile.id)}
+                        >
+                          <div className="flex items-center gap-3">
+                            <Checkbox
+                              checked={isEnabled}
+                              onCheckedChange={() => toggleProfileEnabled(profile.id)}
+                              onClick={(e) => e.stopPropagation()}
+                            />
+                            <div className="flex items-center gap-2">
+                              <UserCircle className="h-4 w-4" />
+                              <span className="font-medium text-sm">{profile.name}</span>
+                              {isEnabled && (
+                                <span className="text-xs text-muted-foreground">
+                                  ({selectedCount}/{ALL_SECTIONS.length} {texts.sharedSections})
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                          {isEnabled && (
+                            <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
+                              {isExpanded ? (
+                                <ChevronDown className="h-4 w-4" />
+                              ) : (
+                                <ChevronRight className="h-4 w-4" />
+                              )}
+                            </Button>
+                          )}
+                        </div>
+                        
+                        {/* Section Selection (Expanded) */}
+                        {isEnabled && isExpanded && (
+                          <div className="px-3 pb-3 pt-0 space-y-3">
+                            <div className="flex gap-2">
+                              <Button 
+                                type="button" 
+                                variant="outline" 
+                                size="sm"
+                                onClick={() => selectAllSectionsForProfile(profile.id)}
+                              >
+                                {texts.selectAll}
+                              </Button>
+                              <Button 
+                                type="button" 
+                                variant="outline" 
+                                size="sm"
+                                onClick={() => deselectAllSectionsForProfile(profile.id)}
+                              >
+                                {texts.selectNone}
+                              </Button>
+                            </div>
+                            
+                            <div className="grid grid-cols-2 gap-2">
+                              {ALL_SECTIONS.map((section) => {
+                                const isSelected = (profileSections[profile.id] || []).includes(section);
+                                return (
+                                  <label
+                                    key={section}
+                                    className={`flex items-center gap-2 p-2 rounded-md border cursor-pointer transition-colors text-sm ${
+                                      isSelected
+                                        ? 'border-primary/50 bg-primary/10'
+                                        : 'border-border hover:border-muted-foreground/50'
+                                    }`}
+                                  >
+                                    <Checkbox
+                                      checked={isSelected}
+                                      onCheckedChange={() => toggleProfileSection(profile.id, section)}
+                                    />
+                                    <span className="flex items-center gap-1.5">
+                                      {sectionIcons[section]}
+                                      {sectionLabels[language][section]}
+                                    </span>
+                                  </label>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
-              )}
+              </div>
               
               {/* PIN Protection Toggle */}
               <div className="rounded-lg border border-border p-4 space-y-4">
@@ -517,7 +590,7 @@ const ShareLinkManager = () => {
                 )}
               </div>
               
-              <Button onClick={createToken} disabled={creating || (usePIN && pin.length !== 6) || selectedSections.length === 0 || (personProfiles.length > 0 && selectedProfileIds.length === 0)} className="w-full">
+              <Button onClick={createToken} disabled={creating || (usePIN && pin.length !== 6) || !hasValidSelection()} className="w-full">
                 {creating ? '...' : texts.create}
               </Button>
             </div>
@@ -616,10 +689,6 @@ const ShareLinkManager = () => {
                         <ShieldX className="h-3 w-3" />
                         {texts.blocked} ({texts.blockedReason})
                       </span>
-                    ) : token.shared_sections && token.shared_sections.length < ALL_SECTIONS.length ? (
-                      <span className="inline-flex items-center gap-1 rounded-full bg-amber-light/50 px-2 py-0.5 text-xs font-medium text-amber">
-                        {token.shared_sections.length}/{ALL_SECTIONS.length} {texts.sharedSections}
-                      </span>
                     ) : isInactive ? (
                       <span className="inline-flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">
                         {texts.inactive}
@@ -631,7 +700,36 @@ const ShareLinkManager = () => {
                       </span>
                     ) : null}
                   </div>
-                  {token.shared_sections && token.shared_sections.length > 0 && (
+                  
+                  {/* Show per-profile sections (new structure) */}
+                  {token.shared_profile_sections && Object.keys(token.shared_profile_sections).length > 0 && (
+                    <div className="space-y-1 mt-2">
+                      {Object.entries(token.shared_profile_sections).map(([profileId, sections]) => {
+                        const profile = personProfiles.find(p => p.id === profileId);
+                        if (!profile) return null;
+                        return (
+                          <div key={profileId} className="flex flex-wrap items-center gap-1">
+                            <span className="inline-flex items-center gap-1 text-xs font-medium text-foreground bg-primary/10 px-1.5 py-0.5 rounded">
+                              <UserCircle className="h-3 w-3" />
+                              {profile.name}:
+                            </span>
+                            {(sections as string[]).map((section) => (
+                              <span 
+                                key={section}
+                                className="inline-flex items-center gap-1 text-xs text-muted-foreground bg-muted/50 px-1.5 py-0.5 rounded"
+                              >
+                                {sectionIcons[section as SectionKey]}
+                                {sectionLabels[language][section as SectionKey]}
+                              </span>
+                            ))}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                  
+                  {/* Legacy: Show shared sections (old structure) */}
+                  {!token.shared_profile_sections && token.shared_sections && token.shared_sections.length > 0 && (
                     <div className="flex flex-wrap gap-1 mt-1">
                       {token.shared_sections.map((section) => (
                         <span 
@@ -644,8 +742,9 @@ const ShareLinkManager = () => {
                       ))}
                     </div>
                   )}
-                  {/* Show shared profiles */}
-                  {token.shared_profile_ids && token.shared_profile_ids.length > 0 && personProfiles.length > 1 && (
+                  
+                  {/* Legacy: Show shared profiles (old structure) */}
+                  {!token.shared_profile_sections && token.shared_profile_ids && token.shared_profile_ids.length > 0 && personProfiles.length > 1 && (
                     <div className="flex flex-wrap gap-1 mt-1">
                       <span className="text-xs text-muted-foreground mr-1">{texts.sharedProfiles}:</span>
                       {token.shared_profile_ids.map((profileId) => {
@@ -660,15 +759,6 @@ const ShareLinkManager = () => {
                           </span>
                         ) : null;
                       })}
-                    </div>
-                  )}
-                  {/* Show "All profiles" if no specific profiles selected */}
-                  {(!token.shared_profile_ids || token.shared_profile_ids.length === 0) && personProfiles.length > 1 && (
-                    <div className="flex flex-wrap gap-1 mt-1">
-                      <span className="inline-flex items-center gap-1 text-xs text-muted-foreground bg-primary/10 px-1.5 py-0.5 rounded">
-                        <UserCircle className="h-3 w-3" />
-                        {texts.allProfiles}
-                      </span>
                     </div>
                   )}
                   <p className="text-sm text-muted-foreground">
