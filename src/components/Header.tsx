@@ -1,10 +1,9 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { LogIn, UserPlus, Menu, Home, User, Info, ClipboardList, Wallet, Globe, ScrollText, FolderOpen, Phone, ChevronDown, Link2, CreditCard, Package, Key, LogOut, Shield, KeyRound, Lock, Unlock } from 'lucide-react';
+import { Anchor, LogIn, UserPlus, Menu, Home, User, Info, ClipboardList, Wallet, Globe, ScrollText, FolderOpen, Phone, ChevronDown, Link2, CreditCard, Package, Key, LogOut, Shield, KeyRound, Lock, Unlock } from 'lucide-react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import LanguageToggle from './LanguageToggle';
 import ProfileSwitcher from './ProfileSwitcher';
-import Logo from './Logo';
 
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
@@ -250,7 +249,9 @@ const Header = () => {
                 {/* Mobile Menu Header */}
                 <div className="flex items-center justify-between border-b border-border p-4">
                   <div className="flex items-center gap-2">
-                    <Logo iconOnly className="h-8 w-8 text-primary" />
+                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
+                      <Anchor className="h-4 w-4 text-primary-foreground" />
+                    </div>
                     <span className="font-serif text-lg font-semibold">Mein Lebensanker</span>
                   </div>
                 </div>
@@ -428,7 +429,12 @@ const Header = () => {
 
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-            <Logo className="h-9 w-auto text-primary" />
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
+              <Anchor className="h-5 w-5 text-primary-foreground" />
+            </div>
+            <span className="font-serif text-xl font-semibold text-foreground">
+              Mein Lebensanker
+            </span>
           </Link>
         </div>
         
