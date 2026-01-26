@@ -21,8 +21,30 @@ export interface ProfileProgress {
 const SECTIONS_TO_CHECK = ['personal', 'assets', 'digital', 'wishes', 'documents', 'contacts'];
 
 // Helper to check if section data has meaningful content
-const hasMeaningfulData = (data: any): boolean => {
+// For 'personal' section, we need MORE than just fullName (which comes from profile setup)
+const hasMeaningfulData = (data: any, sectionKey: string): boolean => {
   if (!data || typeof data !== 'object') return false;
+  
+  // For personal section: ignore fullName alone since it comes from profile setup wizard
+  // Only count as filled if there's OTHER data besides fullName
+  if (sectionKey === 'personal') {
+    const keysWithContent = Object.keys(data).filter(key => {
+      const value = data[key];
+      if (typeof value === 'string') return value.trim() !== '';
+      if (Array.isArray(value)) return value.length > 0 && value.some(v => v && v !== '');
+      return value !== null && value !== undefined;
+    });
+    
+    // If only fullName has content, don't count it
+    if (keysWithContent.length === 1 && keysWithContent[0] === 'fullName') {
+      return false;
+    }
+    // If fullName + birthDate only (both from profile setup), don't count it
+    if (keysWithContent.length <= 2 && 
+        keysWithContent.every(k => k === 'fullName' || k === 'birthDate')) {
+      return false;
+    }
+  }
   
   // Check each field in the data object
   for (const key of Object.keys(data)) {
@@ -88,7 +110,7 @@ export const useSectionStatus = () => {
         const sectionData = data?.find(
           d => d.section_key === key && d.person_profile_id === activeProfile.id
         );
-        activeStatuses[key] = !!(sectionData && hasMeaningfulData(sectionData.data));
+        activeStatuses[key] = !!(sectionData && hasMeaningfulData(sectionData.data, key));
       }
       setSectionStatus(activeStatuses);
 
@@ -99,7 +121,7 @@ export const useSectionStatus = () => {
           const sectionData = data?.find(
             d => d.section_key === key && d.person_profile_id === profile.id
           );
-          profileStatuses[key] = !!(sectionData && hasMeaningfulData(sectionData.data));
+          profileStatuses[key] = !!(sectionData && hasMeaningfulData(sectionData.data, key));
         }
         
         const filled = Object.values(profileStatuses).filter(Boolean).length;
