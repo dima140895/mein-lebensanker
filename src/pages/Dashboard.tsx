@@ -61,7 +61,7 @@ const DashboardContent = () => {
   const [isPartnerView, setIsPartnerView] = useState(false);
   const [showUnlockDialog, setShowUnlockDialog] = useState(false);
   const isMobile = useIsMobile();
-  const { sectionStatus, progressPercent, filledCount, totalCount, isComplete } = useSectionStatus();
+  const { sectionStatus, progressPercent, filledCount, totalCount, isComplete, allProfilesProgress, hasMultipleProfiles } = useSectionStatus();
 
   // Show unlock dialog automatically when encryption is enabled but locked
   useEffect(() => {
@@ -265,17 +265,53 @@ const DashboardContent = () => {
           <p className="mt-2 text-muted-foreground">{texts.subtitle}</p>
         </div>
 
-        {/* Progress bar */}
+        {/* Progress bar(s) */}
         <div className="max-w-4xl mx-auto mb-6">
-          <div className={`p-4 rounded-xl border ${isComplete ? 'border-primary bg-primary/5' : 'border-border bg-card'}`}>
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium text-foreground">{texts.progressLabel}</span>
-              <span className={`text-sm font-medium ${isComplete ? 'text-primary' : 'text-muted-foreground'}`}>
-                {isComplete ? texts.complete : `${filledCount}/${totalCount}`}
-              </span>
+          {hasMultipleProfiles ? (
+            <div className="grid gap-3 md:grid-cols-2">
+              {allProfilesProgress.map((profile) => (
+                <div 
+                  key={profile.profileId}
+                  className={`p-4 rounded-xl border transition-all ${
+                    profile.profileId === activeProfile?.id 
+                      ? 'border-primary bg-primary/5 ring-2 ring-primary/20' 
+                      : profile.isComplete 
+                        ? 'border-primary/30 bg-primary/5' 
+                        : 'border-border bg-card'
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <User className="h-4 w-4 text-muted-foreground" />
+                      <span className="text-sm font-medium text-foreground">{profile.profileName}</span>
+                      {profile.profileId === activeProfile?.id && (
+                        <span className="text-xs bg-primary/20 text-primary px-2 py-0.5 rounded-full">
+                          {language === 'de' ? 'Aktiv' : 'Active'}
+                        </span>
+                      )}
+                    </div>
+                    <span className={`text-sm font-medium ${profile.isComplete ? 'text-primary' : 'text-muted-foreground'}`}>
+                      {profile.isComplete ? (
+                        <CheckCircle className="h-4 w-4 inline mr-1" />
+                      ) : null}
+                      {profile.filledCount}/{profile.totalCount}
+                    </span>
+                  </div>
+                  <Progress value={profile.progressPercent} className="h-2" />
+                </div>
+              ))}
             </div>
-            <Progress value={progressPercent} className="h-2" />
-          </div>
+          ) : (
+            <div className={`p-4 rounded-xl border ${isComplete ? 'border-primary bg-primary/5' : 'border-border bg-card'}`}>
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm font-medium text-foreground">{texts.progressLabel}</span>
+                <span className={`text-sm font-medium ${isComplete ? 'text-primary' : 'text-muted-foreground'}`}>
+                  {isComplete ? texts.complete : `${filledCount}/${totalCount}`}
+                </span>
+              </div>
+              <Progress value={progressPercent} className="h-2" />
+            </div>
+          )}
         </div>
 
         {/* Data sections with status indicators */}
