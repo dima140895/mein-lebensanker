@@ -1,5 +1,5 @@
 import { forwardRef } from 'react';
-import { User, Wallet, Globe, Heart, FileText, Phone, Heart as HeartIcon } from 'lucide-react';
+import { Anchor, User, Wallet, Globe, Heart, FileText, Phone } from 'lucide-react';
 
 interface VorsorgeData {
   section_key: string;
@@ -837,9 +837,9 @@ const PrintableDataExport = forwardRef<HTMLDivElement, PrintableDataExportProps>
         <div className="print-header">
           <div className="print-logo">
             <div className="print-logo-icon">
-              <HeartIcon size={28} color="#ffffff" />
+              <Anchor size={28} color="#ffffff" />
             </div>
-            <span className="print-logo-text">Vorsorge</span>
+            <span className="print-logo-text">Mein Lebensanker</span>
           </div>
           <h1 className="print-title">{texts.title}</h1>
           <p className="print-date">{texts.generatedOn}: {currentDate}</p>

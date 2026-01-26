@@ -1,5 +1,5 @@
 import { forwardRef } from 'react';
-import { User, Wallet, Globe, Heart, FileText, Phone, Heart as HeartIcon } from 'lucide-react';
+import { Anchor, User, Wallet, Globe, Heart, FileText, Phone } from 'lucide-react';
 
 interface VorsorgeData {
   section_key: string;
@@ -33,7 +33,7 @@ const PrintableRelativesSummary = forwardRef<HTMLDivElement, PrintableRelativesS
   ({ data, profiles, language, sharedDocuments = [] }, ref) => {
     const t = {
       de: {
-        title: 'Übersicht zur Vorsorge',
+        title: 'Übersicht zur Orientierung',
         generatedOn: 'Erstellt am',
         personal: 'Persönliche Daten',
         assets: 'Vermögensübersicht',
@@ -845,9 +845,9 @@ const PrintableRelativesSummary = forwardRef<HTMLDivElement, PrintableRelativesS
         <div className="print-header">
           <div className="print-logo">
             <div className="print-logo-icon">
-              <HeartIcon size={28} color="#ffffff" />
+              <Anchor size={28} color="#ffffff" />
             </div>
-            <span className="print-logo-text">Vorsorge</span>
+            <span className="print-logo-text">Mein Lebensanker</span>
           </div>
           <h1 className="print-title">{texts.title}</h1>
           <p className="print-date">{texts.generatedOn}: {currentDate}</p>

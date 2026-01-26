@@ -5,6 +5,8 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 const ALLOWED_ORIGINS = [
   "https://mein-lebensanker.lovable.app",
   "https://id-preview--3aceebdb-8fff-4d04-bf5f-d8b882169f3d.lovable.app",
+  // Lovable preview origin can also be served from lovableproject.com
+  "https://3aceebdb-8fff-4d04-bf5f-d8b882169f3d.lovableproject.com",
 ];
 
 const getCorsHeaders = (origin: string | null) => {
@@ -14,6 +16,7 @@ const getCorsHeaders = (origin: string | null) => {
   return {
     "Access-Control-Allow-Origin": allowedOrigin,
     "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
   };
 };
 

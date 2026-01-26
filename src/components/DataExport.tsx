@@ -9,6 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { supabase } from '@/integrations/supabase/browserClient';
 import { toast } from 'sonner';
 import PrintableDataExport from './PrintableDataExport';
+import { logger } from '@/lib/logger';
 
 interface VorsorgeData {
   section_key: string;
@@ -36,7 +37,7 @@ const DataExport = () => {
   const t = {
     de: {
       title: 'Daten exportieren',
-      description: 'Lade Deine Vorsorge-Daten als druckbare Übersicht herunter.',
+      description: 'Lade Deine Daten als druckbare Übersicht herunter.',
       exportAll: 'Alle Profile drucken',
       exportProfile: 'Aktuelles Profil drucken',
       downloading: 'Wird vorbereitet...',
@@ -60,7 +61,7 @@ const DataExport = () => {
 
   const handlePrint = useReactToPrint({
     contentRef: printRef,
-    documentTitle: `Vorsorge-Export-${new Date().toISOString().split('T')[0]}`,
+    documentTitle: `${language === 'de' ? 'Mein-Lebensanker-Übersicht' : 'Mein-Lebensanker-Overview'}-${new Date().toISOString().split('T')[0]}`,
     onAfterPrint: () => {
       toast.success(texts.success);
       setLoading(false);
@@ -72,6 +73,10 @@ const DataExport = () => {
 
     setLoading(true);
     try {
+      const selectedProfiles = profileOnly && activeProfile
+        ? personProfiles.filter(p => p.id === activeProfile.id)
+        : personProfiles;
+
       let query = supabase
         .from('vorsorge_data')
         .select('section_key, data, person_profile_id')
@@ -95,42 +100,42 @@ const DataExport = () => {
       const documentTypes = ['testament', 'power-of-attorney', 'living-will', 'insurance', 'property', 'other'];
       const allDocuments: UploadedDocument[] = [];
 
-      for (const docType of documentTypes) {
-        const folderPath = `${user.id}/${docType}`;
-        const { data: files } = await supabase.storage
-          .from('user-documents')
-          .list(folderPath);
+      for (const profile of selectedProfiles) {
+        for (const docType of documentTypes) {
+          const folderPath = `${user.id}/${profile.id}/${docType}`;
+          const { data: files } = await supabase.storage
+            .from('user-documents')
+            .list(folderPath);
 
-        if (files) {
-          const validFiles = files.filter(f => 
-            f.name !== '.emptyFolderPlaceholder' && !f.name.startsWith('.')
-          );
+          if (files) {
+            const validFiles = files.filter(f => 
+              f.name !== '.emptyFolderPlaceholder' && 
+              !f.name.startsWith('.') &&
+              f.id !== null
+            );
 
-          for (const file of validFiles) {
-            // Get display name (remove timestamp prefix)
-            const parts = file.name.split('-');
-            let displayName = file.name;
-            if (parts.length > 1 && !isNaN(parseInt(parts[0]))) {
-              displayName = parts.slice(1).join('-');
+            for (const file of validFiles) {
+              // Get display name (remove timestamp prefix)
+              const parts = file.name.split('-');
+              let displayName = file.name;
+              if (parts.length > 1 && !isNaN(parseInt(parts[0]))) {
+                displayName = parts.slice(1).join('-');
+              }
+
+              allDocuments.push({
+                name: displayName,
+                path: `${folderPath}/${file.name}`,
+                size: file.metadata?.size || 0,
+                documentType: docType,
+              });
             }
-
-            allDocuments.push({
-              name: displayName,
-              path: `${folderPath}/${file.name}`,
-              size: file.metadata?.size || 0,
-              documentType: docType,
-            });
           }
         }
       }
 
       // Set data and profiles for printing
       setExportData(vorsorgeData as VorsorgeData[]);
-      setProfilesToExport(
-        profileOnly && activeProfile 
-          ? personProfiles.filter(p => p.id === activeProfile.id)
-          : personProfiles
-      );
+      setProfilesToExport(selectedProfiles);
       setUploadedDocuments(allDocuments);
 
       // Wait for state to update, then print
@@ -138,7 +143,7 @@ const DataExport = () => {
         handlePrint();
       }, 100);
     } catch (error) {
-      console.error('Export error:', error);
+      logger.error('Export error:', error);
       toast.error(texts.error);
       setLoading(false);
     }
