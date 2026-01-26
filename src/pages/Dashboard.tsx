@@ -335,12 +335,12 @@ const DashboardContent = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3 + i * 0.05 }}
                   onClick={() => handleSectionChange(section.key)}
-                  className="flex items-center gap-3 p-4 rounded-xl border border-border bg-card/50 hover:bg-card shadow-sm hover:shadow-card transition-all text-left min-w-0"
+                  className="flex items-center gap-2 p-3 rounded-xl border border-border bg-card/50 hover:bg-card shadow-sm hover:shadow-card transition-all text-left min-w-0"
                 >
-                  <div className={`h-8 w-8 rounded-lg flex items-center justify-center flex-shrink-0 ${section.color}`}>
-                    <Icon className="h-3.5 w-3.5" />
+                  <div className={`h-7 w-7 rounded-lg flex items-center justify-center flex-shrink-0 ${section.color}`}>
+                    <Icon className="h-3 w-3" />
                   </div>
-                  <span className="font-medium text-sm text-foreground leading-tight break-words overflow-hidden">
+                  <span className="font-medium text-xs text-foreground leading-tight whitespace-nowrap">
                     {texts[section.key as keyof typeof texts]}
                   </span>
                 </motion.button>
