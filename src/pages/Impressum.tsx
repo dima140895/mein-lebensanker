@@ -16,17 +16,17 @@ const Impressum = () => {
       sections: [
         {
           title: 'Angaben gemäß § 5 TMG',
-          content: `[Ihr Unternehmen / Ihr Name]
+          content: `Mein Lebensanker
 [Rechtsform, z.B. GmbH, UG, Einzelunternehmen]
 
 [Straße und Hausnummer]
 [PLZ und Ort]
-[Land]`,
+Deutschland`,
         },
         {
           title: 'Kontakt',
           content: `Telefon: [Ihre Telefonnummer]
-E-Mail: [ihre-email@beispiel.de]`,
+E-Mail: info@mein-lebensanker.de`,
         },
         {
           title: 'Vertreten durch',
@@ -83,17 +83,17 @@ Downloads und Kopien dieser Seite sind nur für den privaten, nicht kommerzielle
       sections: [
         {
           title: 'Information according to § 5 TMG',
-          content: `[Your Company / Your Name]
+          content: `Mein Lebensanker
 [Legal form, e.g. GmbH, UG, Sole proprietorship]
 
 [Street and Number]
 [Postal Code and City]
-[Country]`,
+Germany`,
         },
         {
           title: 'Contact',
           content: `Phone: [Your Phone Number]
-Email: [your-email@example.com]`,
+Email: info@mein-lebensanker.de`,
         },
         {
           title: 'Represented by',

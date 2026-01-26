@@ -19,12 +19,12 @@ const Datenschutz = () => {
           title: '1. Verantwortlicher',
           content: `Verantwortlich für die Datenverarbeitung auf dieser Website ist:
 
-[Ihr Unternehmen / Ihr Name]
+Mein Lebensanker
 [Straße und Hausnummer]
 [PLZ und Ort]
-[Land]
+Deutschland
 
-E-Mail: [ihre-email@beispiel.de]
+E-Mail: info@mein-lebensanker.de
 Telefon: [Ihre Telefonnummer]`,
         },
         {
@@ -70,7 +70,7 @@ Ihre personenbezogenen Daten werden verschlüsselt in einer sicheren Datenbank g
           title: '6. Kontakt',
           content: `Für Fragen zum Datenschutz können Sie sich jederzeit an uns wenden:
 
-E-Mail: [ihre-email@beispiel.de]`,
+E-Mail: datenschutz@mein-lebensanker.de`,
         },
       ],
       note: 'Hinweis: Dies ist ein Platzhalter. Bitte ersetzen Sie die Angaben durch Ihre tatsächlichen Unternehmensdaten und lassen Sie die Datenschutzerklärung rechtlich prüfen.',
@@ -84,12 +84,12 @@ E-Mail: [ihre-email@beispiel.de]`,
           title: '1. Data Controller',
           content: `The data controller for this website is:
 
-[Your Company / Your Name]
+Mein Lebensanker
 [Street and Number]
 [Postal Code and City]
-[Country]
+Germany
 
-Email: [your-email@example.com]
+Email: info@mein-lebensanker.de
 Phone: [Your Phone Number]`,
         },
         {
@@ -135,7 +135,7 @@ Your personal data is stored encrypted in a secure database.`,
           title: '6. Contact',
           content: `For questions about data protection, you can contact us at any time:
 
-Email: [your-email@example.com]`,
+Email: datenschutz@mein-lebensanker.de`,
         },
       ],
       note: 'Note: This is a placeholder. Please replace the information with your actual company data and have the privacy policy legally reviewed.',

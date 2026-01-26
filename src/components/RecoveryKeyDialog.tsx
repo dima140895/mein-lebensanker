@@ -80,7 +80,7 @@ export const RecoveryKeyDialog: React.FC<RecoveryKeyDialogProps> = ({
   const handleDownload = () => {
     const content = language === 'de' 
       ? `═══════════════════════════════════════
-    ERSATZSCHLÜSSEL FÜR VORSORGE
+    ERSATZSCHLÜSSEL FÜR MEIN LEBENSANKER
 ═══════════════════════════════════════
 
 Dein Ersatzschlüssel:
@@ -104,7 +104,7 @@ WICHTIGE HINWEISE:
 ═══════════════════════════════════════
 `
       : `═══════════════════════════════════════
-    BACKUP KEY FOR VORSORGE
+    BACKUP KEY FOR MEIN LEBENSANKER
 ═══════════════════════════════════════
 
 Your backup key:
@@ -132,7 +132,7 @@ IMPORTANT NOTES:
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = language === 'de' ? 'Vorsorge-Ersatzschluessel.txt' : 'Vorsorge-Backup-Key.txt';
+    a.download = language === 'de' ? 'MeinLebensanker-Ersatzschluessel.txt' : 'MeinLebensanker-Backup-Key.txt';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -144,7 +144,7 @@ IMPORTANT NOTES:
       ? `
         <html>
           <head>
-            <title>Ersatzschlüssel - Vorsorge</title>
+            <title>Ersatzschlüssel - Mein Lebensanker</title>
             <style>
               body { font-family: Arial, sans-serif; padding: 40px; }
               h1 { color: #333; border-bottom: 2px solid #333; padding-bottom: 10px; }
@@ -155,7 +155,7 @@ IMPORTANT NOTES:
             </style>
           </head>
           <body>
-            <h1>🔐 Ersatzschlüssel für Vorsorge</h1>
+            <h1>🔐 Ersatzschlüssel für Mein Lebensanker</h1>
             <div class="note">
               <strong>Wichtig:</strong> Mit diesem Schlüssel kannst Du Deine Daten wiederherstellen, falls Du Dein Passwort vergisst.
             </div>
@@ -174,7 +174,7 @@ IMPORTANT NOTES:
       : `
         <html>
           <head>
-            <title>Backup Key - Vorsorge</title>
+            <title>Backup Key - Mein Lebensanker</title>
             <style>
               body { font-family: Arial, sans-serif; padding: 40px; }
               h1 { color: #333; border-bottom: 2px solid #333; padding-bottom: 10px; }
@@ -185,7 +185,7 @@ IMPORTANT NOTES:
             </style>
           </head>
           <body>
-            <h1>🔐 Backup Key for Vorsorge</h1>
+            <h1>🔐 Backup Key for Mein Lebensanker</h1>
             <div class="note">
               <strong>Important:</strong> With this key you can recover your data if you forget your password.
             </div>
