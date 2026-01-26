@@ -1,8 +1,9 @@
-import { useRef } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { User, Wallet, Globe, Heart, FileText, Phone, Printer } from 'lucide-react';
 import { useReactToPrint } from 'react-to-print';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { supabase } from '@/integrations/supabase/browserClient';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
@@ -30,9 +31,43 @@ interface RelativesSummaryProps {
   token?: string;
 }
 
+interface SharedDocument {
+  name: string;
+  path: string;
+  size: number;
+  documentType: string;
+}
+
 const RelativesSummary = ({ data, profiles, sharedSections, token }: RelativesSummaryProps) => {
   const { language } = useLanguage();
   const printRef = useRef<HTMLDivElement>(null);
+  const [sharedDocuments, setSharedDocuments] = useState<SharedDocument[]>([]);
+
+  // Fetch shared documents for printing
+  useEffect(() => {
+    const fetchDocuments = async () => {
+      if (!token || !sharedSections?.includes('documents')) return;
+
+      try {
+        const { data: docData } = await supabase.functions.invoke('get-shared-documents', {
+          body: { token },
+        });
+
+        if (docData?.documents) {
+          setSharedDocuments(docData.documents.map((doc: { name: string; path: string; size: number; documentType: string }) => ({
+            name: doc.name,
+            path: doc.path,
+            size: doc.size,
+            documentType: doc.documentType,
+          })));
+        }
+      } catch (err) {
+        console.error('Error fetching shared documents:', err);
+      }
+    };
+
+    fetchDocuments();
+  }, [token, sharedSections]);
 
   const handlePrint = useReactToPrint({
     contentRef: printRef,
@@ -673,6 +708,7 @@ const RelativesSummary = ({ data, profiles, sharedSections, token }: RelativesSu
             data={data}
             profiles={profiles}
             language={language}
+            sharedDocuments={sharedDocuments}
           />
         </div>
       </>
@@ -718,6 +754,7 @@ const RelativesSummary = ({ data, profiles, sharedSections, token }: RelativesSu
           data={data}
           profiles={profiles}
           language={language}
+          sharedDocuments={sharedDocuments}
         />
       </div>
     </>

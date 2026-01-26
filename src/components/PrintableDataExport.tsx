@@ -13,14 +13,22 @@ interface PersonProfile {
   birth_date: string | null;
 }
 
+interface UploadedDocument {
+  name: string;
+  path: string;
+  size: number;
+  documentType: string;
+}
+
 interface PrintableDataExportProps {
   data: VorsorgeData[];
   profiles: PersonProfile[];
   language: 'de' | 'en';
+  uploadedDocuments?: UploadedDocument[];
 }
 
 const PrintableDataExport = forwardRef<HTMLDivElement, PrintableDataExportProps>(
-  ({ data, profiles, language }, ref) => {
+  ({ data, profiles, language, uploadedDocuments = [] }, ref) => {
     const t = {
       de: {
         title: 'Vorsorge-Übersicht',
@@ -96,6 +104,15 @@ const PrintableDataExport = forwardRef<HTMLDivElement, PrintableDataExportProps>
         insuranceDocs: 'Versicherungsunterlagen',
         propertyDocs: 'Immobilienunterlagen',
         otherDocs: 'Sonstige Dokumente',
+        uploadedDocuments: 'Hochgeladene Dokumente',
+        documentTypes: {
+          testament: 'Testament',
+          'power-of-attorney': 'Vorsorgevollmacht',
+          'living-will': 'Patientenverfügung',
+          insurance: 'Versicherungsunterlagen',
+          property: 'Immobilienunterlagen',
+          other: 'Sonstige Dokumente',
+        },
         personalContacts: 'Persönliche Kontakte',
         professionalContacts: 'Fachliche Kontakte',
         contactName: 'Name',
@@ -185,6 +202,15 @@ const PrintableDataExport = forwardRef<HTMLDivElement, PrintableDataExportProps>
         insuranceDocs: 'Insurance Documents',
         propertyDocs: 'Property Documents',
         otherDocs: 'Other Documents',
+        uploadedDocuments: 'Uploaded Documents',
+        documentTypes: {
+          testament: 'Will',
+          'power-of-attorney': 'Power of Attorney',
+          'living-will': 'Living Will',
+          insurance: 'Insurance Documents',
+          property: 'Property Documents',
+          other: 'Other Documents',
+        },
         personalContacts: 'Personal Contacts',
         professionalContacts: 'Professional Contacts',
         contactName: 'Name',
@@ -239,6 +265,17 @@ const PrintableDataExport = forwardRef<HTMLDivElement, PrintableDataExportProps>
       if (status === 'paid-off') return texts.financingPaidOff;
       if (status === 'financed') return texts.financingFinanced;
       return status;
+    };
+
+    const getDocumentTypeLabel = (type: string): string => {
+      const key = type as keyof typeof texts.documentTypes;
+      return texts.documentTypes[key] || type;
+    };
+
+    const formatFileSize = (bytes: number): string => {
+      if (bytes < 1024) return `${bytes} B`;
+      if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+      return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
     };
 
     const renderInfoItem = (label: string, value: unknown) => {
@@ -425,14 +462,63 @@ const PrintableDataExport = forwardRef<HTMLDivElement, PrintableDataExportProps>
           );
 
         case 'documents':
+          // Group uploaded documents by type for this section display
+          const documentTypeOrder = ['testament', 'power-of-attorney', 'living-will', 'insurance', 'property', 'other'];
+          const groupedUploadedDocs = documentTypeOrder.reduce((acc, type) => {
+            acc[type] = uploadedDocuments.filter(doc => doc.documentType === type);
+            return acc;
+          }, {} as Record<string, UploadedDocument[]>);
+
           return (
             <div className="print-section-content">
               {renderInfoItem(texts.testament, sectionData.testament)}
+              {groupedUploadedDocs['testament']?.length > 0 && (
+                <div className="print-uploaded-docs">
+                  {groupedUploadedDocs['testament'].map((doc, i) => (
+                    <div key={i} className="print-doc-item">📄 {doc.name} ({formatFileSize(doc.size)})</div>
+                  ))}
+                </div>
+              )}
               {renderInfoItem(texts.powerOfAttorney, sectionData.powerOfAttorney)}
+              {groupedUploadedDocs['power-of-attorney']?.length > 0 && (
+                <div className="print-uploaded-docs">
+                  {groupedUploadedDocs['power-of-attorney'].map((doc, i) => (
+                    <div key={i} className="print-doc-item">📄 {doc.name} ({formatFileSize(doc.size)})</div>
+                  ))}
+                </div>
+              )}
               {renderInfoItem(texts.livingWill, sectionData.livingWill)}
+              {groupedUploadedDocs['living-will']?.length > 0 && (
+                <div className="print-uploaded-docs">
+                  {groupedUploadedDocs['living-will'].map((doc, i) => (
+                    <div key={i} className="print-doc-item">📄 {doc.name} ({formatFileSize(doc.size)})</div>
+                  ))}
+                </div>
+              )}
               {renderInfoItem(texts.insuranceDocs, sectionData.insuranceDocs)}
+              {groupedUploadedDocs['insurance']?.length > 0 && (
+                <div className="print-uploaded-docs">
+                  {groupedUploadedDocs['insurance'].map((doc, i) => (
+                    <div key={i} className="print-doc-item">📄 {doc.name} ({formatFileSize(doc.size)})</div>
+                  ))}
+                </div>
+              )}
               {renderInfoItem(texts.propertyDocs, sectionData.propertyDocs)}
+              {groupedUploadedDocs['property']?.length > 0 && (
+                <div className="print-uploaded-docs">
+                  {groupedUploadedDocs['property'].map((doc, i) => (
+                    <div key={i} className="print-doc-item">📄 {doc.name} ({formatFileSize(doc.size)})</div>
+                  ))}
+                </div>
+              )}
               {renderInfoItem(texts.otherDocs, sectionData.otherDocs)}
+              {groupedUploadedDocs['other']?.length > 0 && (
+                <div className="print-uploaded-docs">
+                  {groupedUploadedDocs['other'].map((doc, i) => (
+                    <div key={i} className="print-doc-item">📄 {doc.name} ({formatFileSize(doc.size)})</div>
+                  ))}
+                </div>
+              )}
               {renderInfoItem(texts.notes, sectionData.notes)}
             </div>
           );
@@ -665,6 +751,27 @@ const PrintableDataExport = forwardRef<HTMLDivElement, PrintableDataExportProps>
           }
           .print-card:last-child {
             margin-bottom: 0;
+          }
+          .print-uploaded-docs {
+            margin: 8px 0 16px 0;
+            padding: 12px 16px;
+            background: linear-gradient(135deg, #f8faf8 0%, #f0f5f1 100%);
+            border-radius: 8px;
+            border: 1px dashed #c4d6c8;
+          }
+          .print-doc-item {
+            font-size: 13px;
+            color: #4a5d4d;
+            padding: 6px 0;
+            border-bottom: 1px solid #e8efe9;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+          }
+          .print-doc-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+          }
+          .print-doc-item:first-child {
+            padding-top: 0;
           }
           .print-disclaimer {
             margin-top: 48px;
