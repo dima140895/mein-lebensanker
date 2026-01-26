@@ -1,5 +1,5 @@
 import { motion, type Transition } from 'framer-motion';
-import { ArrowRight, Shield, Heart, FileCheck } from 'lucide-react';
+import { ArrowRight, Heart } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useNavigate } from 'react-router-dom';
 import heroImage from '@/assets/hero-illustration.jpg';
@@ -28,17 +28,6 @@ const HeroSection = () => {
     },
   };
 
-  const features = language === 'de' 
-    ? [
-        { icon: Shield, text: 'Sicher & privat' },
-        { icon: Heart, text: 'Für Deine Liebsten' },
-        { icon: FileCheck, text: 'Strukturiert & klar' },
-      ]
-    : [
-        { icon: Shield, text: 'Secure & private' },
-        { icon: Heart, text: 'For your loved ones' },
-        { icon: FileCheck, text: 'Structured & clear' },
-      ];
 
   return (
     <section className="relative min-h-[85vh] flex items-center overflow-hidden">
@@ -140,29 +129,6 @@ const HeroSection = () => {
               </button>
             </motion.div>
 
-            {/* Feature badges */}
-            <motion.div 
-              variants={itemVariants}
-              className="mt-10 flex flex-wrap items-center gap-5"
-            >
-              {features.map((feature, index) => {
-                const Icon = feature.icon;
-                return (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.8 + index * 0.1 }}
-                    className="flex items-center gap-2 text-sm text-muted-foreground"
-                  >
-                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-sage-light/80 backdrop-blur-sm">
-                      <Icon className="h-4 w-4 text-sage-dark" />
-                    </div>
-                    <span>{feature.text}</span>
-                  </motion.div>
-                );
-              })}
-            </motion.div>
           </motion.div>
 
           {/* Image highlight - Right side (visible on larger screens as decorative frame) */}
