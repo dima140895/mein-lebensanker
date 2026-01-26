@@ -25,6 +25,7 @@ interface ProfileSetupWizardProps {
 }
 
 const WIZARD_DRAFT_KEY = 'vorsorge_profile_wizard_draft';
+const PROFILE_SWITCHER_TOOLTIP_FLAG = 'profile_setup_just_completed';
 
 const ProfileSetupWizard = ({ maxProfiles, packageType, onAllProfilesExist }: ProfileSetupWizardProps) => {
   const { language } = useLanguage();
@@ -175,6 +176,10 @@ const ProfileSetupWizard = ({ maxProfiles, packageType, onAllProfilesExist }: Pr
         if (profilesToCreate === 0) {
           // All profiles already exist - notify parent or navigate to dashboard
           sessionStorage.removeItem(WIZARD_DRAFT_KEY);
+          // Still show the onboarding tooltip once (multi-profile packages)
+          if (maxProfiles > 1) {
+            sessionStorage.setItem(PROFILE_SWITCHER_TOOLTIP_FLAG, 'true');
+          }
           // Set flag for encryption reminder (30 seconds after completion)
           sessionStorage.setItem('profile_setup_completed_time', Date.now().toString());
           if (onAllProfilesExist) {
@@ -346,7 +351,7 @@ const ProfileSetupWizard = ({ maxProfiles, packageType, onAllProfilesExist }: Pr
       
       // Set flag for profile switcher tooltip (only for multi-profile packages)
       if (maxProfiles > 1) {
-        sessionStorage.setItem('profile_setup_just_completed', 'true');
+        sessionStorage.setItem(PROFILE_SWITCHER_TOOLTIP_FLAG, 'true');
       }
       
       // Clear the wizard draft since we're done
@@ -365,6 +370,10 @@ const ProfileSetupWizard = ({ maxProfiles, packageType, onAllProfilesExist }: Pr
   };
 
   const handleSkip = () => {
+    // If user skips setup, still show the onboarding tooltip on dashboard
+    if (maxProfiles > 1) {
+      sessionStorage.setItem(PROFILE_SWITCHER_TOOLTIP_FLAG, 'true');
+    }
     navigate('/dashboard');
   };
 
