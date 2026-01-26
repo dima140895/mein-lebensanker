@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Cookie, Shield, FileText, Lock, Database, AlertTriangle } from 'lucide-react';
+import { Cookie, Shield, FileText, Lock, AlertTriangle } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 const Footer = () => {
@@ -11,8 +11,7 @@ const Footer = () => {
       imprint: 'Impressum',
       cookies: 'Cookie-Einstellungen',
       copyright: '© 2026 Mein Lebensanker. Alle Rechte vorbehalten.',
-      security: 'Datensicherheit',
-      privacyShort: 'DSGVO-Kurzfassung',
+      security: 'Datensicherheit & DSGVO',
       securityLimits: 'Sicherheitsgrenzen',
     },
     en: {
@@ -20,8 +19,7 @@ const Footer = () => {
       imprint: 'Legal Notice',
       cookies: 'Cookie Settings',
       copyright: '© 2026 Mein Lebensanker. All rights reserved.',
-      security: 'Data Security',
-      privacyShort: 'Privacy Summary',
+      security: 'Data Security & GDPR',
       securityLimits: 'Security Limits',
     },
   };
@@ -70,13 +68,6 @@ const Footer = () => {
             >
               <Lock className="h-4 w-4" />
               {texts.security}
-            </Link>
-            <Link
-              to="/datenschutz-kurzfassung"
-              className="flex items-center gap-1.5 text-sm text-primary/80 transition-colors hover:text-primary"
-            >
-              <Database className="h-4 w-4" />
-              {texts.privacyShort}
             </Link>
             <Link
               to="/sicherheitsgrenzen"
