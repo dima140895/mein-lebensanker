@@ -122,6 +122,7 @@ export const EncryptionStatus: React.FC = () => {
             setShowPasswordDialog(true);
           }}
           className="gap-2 text-muted-foreground hover:text-foreground"
+          data-tour="encryption-status"
         >
           <Shield className="h-4 w-4" />
           <span className="hidden sm:inline">{t.enable}</span>
@@ -188,6 +189,7 @@ export const EncryptionStatus: React.FC = () => {
             variant="ghost"
             size="sm"
             className="gap-2 text-primary hover:text-primary"
+            data-tour="encryption-status"
           >
             <ShieldCheck className="h-4 w-4" />
             <Badge variant="outline" className="hidden sm:flex border-primary/30 bg-primary/10 text-primary text-xs">

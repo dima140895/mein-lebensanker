@@ -221,6 +221,7 @@ const ProfileSwitcher = () => {
               variant="outline" 
               size="sm" 
               className="gap-2"
+              data-tour="profile-switcher"
             >
               <User className="h-4 w-4" />
               <span className="max-w-[100px] truncate">
