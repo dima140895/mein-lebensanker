@@ -64,6 +64,15 @@ const DashboardContent = () => {
   const isMobile = useIsMobile();
   const { sectionStatus, progressPercent, filledCount, totalCount, isComplete, allProfilesProgress, hasMultipleProfiles, refetch, loading: statusLoading } = useSectionStatus();
   const hasShownConfetti = useRef(false);
+  const previousProfileId = useRef<string | null>(null);
+
+  // Refetch when active profile changes
+  useEffect(() => {
+    if (activeProfile?.id && previousProfileId.current !== activeProfile.id) {
+      previousProfileId.current = activeProfile.id;
+      refetch();
+    }
+  }, [activeProfile?.id, refetch]);
 
   // Trigger confetti when all sections are complete
   useEffect(() => {
