@@ -8,8 +8,9 @@ const HeroSection = () => {
   const { t, language } = useLanguage();
   const navigate = useNavigate();
 
+  // Animation variants - hidden state still shows content to prevent blank screens during language switch
   const containerVariants = {
-    hidden: { opacity: 0 },
+    hidden: { opacity: 1 },
     visible: {
       opacity: 1,
       transition: {
@@ -20,7 +21,7 @@ const HeroSection = () => {
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 30 },
+    hidden: { opacity: 1, y: 0 },
     visible: {
       opacity: 1,
       y: 0,
@@ -49,15 +50,15 @@ const HeroSection = () => {
       {/* Decorative elements - smaller on mobile */}
       <div className="absolute inset-0 pointer-events-none">
         <motion.div 
-          initial={{ opacity: 0, scale: 0.8 }}
+          key={`deco1-${language}`}
+          initial={{ opacity: 0.6, scale: 1 }}
           animate={{ opacity: 0.6, scale: 1 }}
-          transition={{ duration: 1.5, ease: "easeOut" }}
           className="absolute top-10 md:top-20 left-[5%] w-32 md:w-64 h-32 md:h-64 rounded-full bg-sage/20 blur-3xl"
         />
         <motion.div 
-          initial={{ opacity: 0, scale: 0.8 }}
+          key={`deco2-${language}`}
+          initial={{ opacity: 0.4, scale: 1 }}
           animate={{ opacity: 0.4, scale: 1 }}
-          transition={{ duration: 1.5, delay: 0.3, ease: "easeOut" }}
           className="absolute bottom-20 md:bottom-32 left-[15%] w-24 md:w-48 h-24 md:h-48 rounded-full bg-amber/20 blur-3xl"
         />
       </div>
@@ -66,6 +67,7 @@ const HeroSection = () => {
         <div className="grid lg:grid-cols-2 gap-8 md:gap-12 items-center">
           {/* Content - Left side */}
           <motion.div
+            key={`hero-content-${language}`}
             variants={containerVariants}
             initial="hidden"
             animate="visible"
@@ -133,6 +135,7 @@ const HeroSection = () => {
 
           {/* Image highlight - Right side (visible on larger screens as decorative frame) */}
           <motion.div
+            key={`hero-image-${language}`}
             initial={{ opacity: 0, x: 40 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
@@ -151,9 +154,9 @@ const HeroSection = () => {
                 
                 {/* Floating card overlay */}
                 <motion.div
-                  initial={{ opacity: 0, y: 20 }}
+                  key={`floating-card-${language}`}
+                  initial={{ opacity: 1, y: 0 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 1 }}
                   className="absolute bottom-6 left-6 right-6 rounded-xl bg-white/90 backdrop-blur-md p-4 shadow-lg border border-white/50"
                 >
                   <div className="flex items-center gap-3">
