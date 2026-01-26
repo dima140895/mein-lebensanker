@@ -90,7 +90,6 @@ serve(async (req) => {
       const tier = paymentType || session.metadata?.payment_type || "single";
       const isAddingProfiles = session.metadata?.is_adding_profiles === "true";
       const metadataMaxProfiles = session.metadata?.max_profiles ? parseInt(session.metadata.max_profiles) : null;
-      const hasUpdateService = session.metadata?.include_update_service === "true";
 
       // For adding profiles to family, use the new max from metadata
       // Otherwise use the tier default or metadata value
@@ -111,7 +110,6 @@ serve(async (req) => {
           payment_type: tier,
           purchased_tier: tier,
           max_profiles: maxProfiles,
-          has_update_subscription: hasUpdateService,
         })
         .eq("user_id", authenticatedUserId);
 

@@ -49,7 +49,6 @@ export type Database = {
           encryption_salt: string | null
           full_name: string | null
           has_paid: boolean | null
-          has_update_subscription: boolean | null
           id: string
           is_encrypted: boolean | null
           max_profiles: number | null
@@ -66,7 +65,6 @@ export type Database = {
           encryption_salt?: string | null
           full_name?: string | null
           has_paid?: boolean | null
-          has_update_subscription?: boolean | null
           id?: string
           is_encrypted?: boolean | null
           max_profiles?: number | null
@@ -83,7 +81,6 @@ export type Database = {
           encryption_salt?: string | null
           full_name?: string | null
           has_paid?: boolean | null
-          has_update_subscription?: boolean | null
           id?: string
           is_encrypted?: boolean | null
           max_profiles?: number | null
