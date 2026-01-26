@@ -128,9 +128,9 @@ export const useSectionStatus = () => {
   }, [checkSections]);
 
   const filledCount = Object.values(sectionStatus).filter(Boolean).length;
-  const totalCount = Object.keys(sectionStatus).length;
-  const progressPercent = totalCount > 0 ? (filledCount / totalCount) * 100 : 0;
-  const isComplete = filledCount === totalCount && totalCount > 0;
+  const totalCount = SECTIONS_TO_CHECK.length; // Always use constant total for consistent progress display
+  const progressPercent = (filledCount / totalCount) * 100;
+  const isComplete = filledCount === totalCount;
 
   return {
     sectionStatus,
