@@ -20,7 +20,7 @@ const Datensicherheit = () => {
           title: 'Clientseitige Ende-zu-Ende-Verschlüsselung',
           content: `Alle sensiblen Inhalte werden ausschließlich in Ihrem Browser verschlüsselt, bevor sie gespeichert oder übertragen werden. Die Entschlüsselung erfolgt ebenfalls nur lokal auf Ihrem Endgerät.
 
-Unsere Systeme sind nach dem technischen Design nicht in der Lage, Ihre Inhalte im Klartext zu verarbeiten oder einzusehen.`,
+Nach unserem technischen Design sind unsere Systeme nicht in der Lage, Ihre Inhalte im Klartext zu verarbeiten oder einzusehen.`,
         },
         {
           icon: 'key',
@@ -29,21 +29,21 @@ Unsere Systeme sind nach dem technischen Design nicht in der Lage, Ihre Inhalte 
 • Schlüsselableitung: PBKDF2 (SHA-256, 100.000 Iterationen)
 • Individueller Salt und Initialisierungsvektor pro Datensatz
 
-Das von Ihnen gewählte Verschlüsselungspasswort wird niemals an unsere Server übertragen oder dort gespeichert.`,
+Nach unserem technischen Design ist eine Übertragung oder Speicherung Ihres Verschlüsselungspassworts auf unseren Servern nicht vorgesehen.`,
         },
         {
           icon: 'eye',
           title: 'Zero-Knowledge-Prinzip',
-          content: `• Wir haben keinen Zugriff auf Ihre unverschlüsselten Inhalte
-• Eine Wiederherstellung Ihrer Daten ohne Passwort oder Ersatzschlüssel ist technisch nicht möglich
-• Auch im Support-Fall können Inhalte nicht eingesehen werden`,
+          content: `• Nach unserem technischen Design haben wir keinen Zugriff auf Ihre unverschlüsselten Inhalte
+• Eine Wiederherstellung Ihrer Daten ohne Passwort oder Ersatzschlüssel ist nach aktuellem Stand der Technik nicht vorgesehen
+• Auch im Support-Fall ist eine Einsicht in Ihre Inhalte nach unserem Design nicht möglich`,
         },
         {
           icon: 'shield',
           title: 'Ersatzschlüssel (Recovery-Key)',
           content: `Bei Aktivierung der Verschlüsselung erhalten Sie einen einmaligen Ersatzschlüssel. Dieser dient ausschließlich dazu, im Falle eines Passwortverlusts wieder Zugang zu Ihren Daten zu erhalten.
 
-Ohne Passwort und ohne Ersatzschlüssel sind Ihre verschlüsselten Daten dauerhaft nicht wiederherstellbar.`,
+Ohne Passwort und ohne Ersatzschlüssel sind Ihre verschlüsselten Daten nach aktuellem Stand der Technik nicht wiederherstellbar.`,
         },
       ],
     },
@@ -57,7 +57,7 @@ Ohne Passwort und ohne Ersatzschlüssel sind Ihre verschlüsselten Daten dauerha
           title: 'Client-Side End-to-End Encryption',
           content: `All sensitive content is encrypted exclusively in your browser before it is stored or transmitted. Decryption also takes place only locally on your device.
 
-By technical design, our systems are not able to process or view your content in plain text.`,
+By technical design, our systems are not intended to process or view your content in plain text.`,
         },
         {
           icon: 'key',
@@ -66,21 +66,21 @@ By technical design, our systems are not able to process or view your content in
 • Key derivation: PBKDF2 (SHA-256, 100,000 iterations)
 • Individual salt and initialization vector per data record
 
-The encryption password you choose is never transmitted to or stored on our servers.`,
+By technical design, transmission or storage of your encryption password on our servers is not intended.`,
         },
         {
           icon: 'eye',
           title: 'Zero-Knowledge Principle',
-          content: `• We have no access to your unencrypted content
-• Recovery of your data without password or recovery key is technically impossible
-• Even in support cases, content cannot be viewed`,
+          content: `• By technical design, we do not have access to your unencrypted content
+• Recovery of your data without password or recovery key is not intended by design
+• Even in support cases, viewing your content is not possible by our design`,
         },
         {
           icon: 'shield',
           title: 'Recovery Key',
           content: `When you activate encryption, you receive a one-time recovery key. This is solely intended to regain access to your data in case of password loss.
 
-Without password and without recovery key, your encrypted data is permanently unrecoverable.`,
+Without password and without recovery key, your encrypted data is not recoverable by current technical standards.`,
         },
       ],
     },
