@@ -282,63 +282,6 @@ const PersonalForm = () => {
         />
       </div>
 
-      <div className="border-t border-border pt-6">
-        <h3 className="font-medium text-foreground mb-4">{texts.trustedPerson1}</h3>
-        <div className="grid gap-4 md:grid-cols-2">
-          <Input
-            value={data.trustedPerson1}
-            onChange={(e) => handleChange('trustedPerson1', e.target.value)}
-            onBlur={handleBlur}
-            placeholder={texts.fullName}
-          />
-          <Input
-            type="tel"
-            value={data.trustedPerson1Phone}
-            onChange={(e) => handleChange('trustedPerson1Phone', e.target.value)}
-            onBlur={handleBlur}
-            placeholder={texts.phonePlaceholder}
-          />
-        </div>
-      </div>
-
-      <div className="border-t border-border pt-6">
-        <h3 className="font-medium text-foreground mb-4">{texts.trustedPerson2}</h3>
-        <div className="grid gap-4 md:grid-cols-2">
-          <Input
-            value={data.trustedPerson2}
-            onChange={(e) => handleChange('trustedPerson2', e.target.value)}
-            onBlur={handleBlur}
-            placeholder={texts.fullName}
-          />
-          <Input
-            type="tel"
-            value={data.trustedPerson2Phone}
-            onChange={(e) => handleChange('trustedPerson2Phone', e.target.value)}
-            onBlur={handleBlur}
-            placeholder={texts.phonePlaceholder}
-          />
-        </div>
-      </div>
-
-      <div className="border-t border-border pt-6">
-        <h3 className="font-medium text-foreground mb-4">{texts.emergencyContact}</h3>
-        <div className="grid gap-4 md:grid-cols-2">
-          <Input
-            value={data.emergencyContact}
-            onChange={(e) => handleChange('emergencyContact', e.target.value)}
-            onBlur={handleBlur}
-            placeholder={texts.fullName}
-          />
-          <Input
-            type="tel"
-            value={data.emergencyPhone}
-            onChange={(e) => handleChange('emergencyPhone', e.target.value)}
-            onBlur={handleBlur}
-            placeholder={texts.phonePlaceholder}
-          />
-        </div>
-      </div>
-
       {/* Medications Section */}
       <div className="border-t border-border pt-6">
         <div className="flex items-center gap-2 mb-2">
@@ -560,6 +503,65 @@ const PersonalForm = () => {
             <Plus className="h-4 w-4 mr-2" />
             {texts.addAllergy}
           </Button>
+        </div>
+      </div>
+
+      {/* Emergency Contact */}
+      <div className="border-t border-border pt-6">
+        <h3 className="font-medium text-foreground mb-4">{texts.emergencyContact}</h3>
+        <div className="grid gap-4 md:grid-cols-2">
+          <Input
+            value={data.emergencyContact}
+            onChange={(e) => handleChange('emergencyContact', e.target.value)}
+            onBlur={handleBlur}
+            placeholder={texts.fullName}
+          />
+          <Input
+            type="tel"
+            value={data.emergencyPhone}
+            onChange={(e) => handleChange('emergencyPhone', e.target.value)}
+            onBlur={handleBlur}
+            placeholder={texts.phonePlaceholder}
+          />
+        </div>
+      </div>
+
+      {/* Trusted Persons */}
+      <div className="border-t border-border pt-6">
+        <h3 className="font-medium text-foreground mb-4">{texts.trustedPerson1}</h3>
+        <div className="grid gap-4 md:grid-cols-2">
+          <Input
+            value={data.trustedPerson1}
+            onChange={(e) => handleChange('trustedPerson1', e.target.value)}
+            onBlur={handleBlur}
+            placeholder={texts.fullName}
+          />
+          <Input
+            type="tel"
+            value={data.trustedPerson1Phone}
+            onChange={(e) => handleChange('trustedPerson1Phone', e.target.value)}
+            onBlur={handleBlur}
+            placeholder={texts.phonePlaceholder}
+          />
+        </div>
+      </div>
+
+      <div className="border-t border-border pt-6">
+        <h3 className="font-medium text-foreground mb-4">{texts.trustedPerson2}</h3>
+        <div className="grid gap-4 md:grid-cols-2">
+          <Input
+            value={data.trustedPerson2}
+            onChange={(e) => handleChange('trustedPerson2', e.target.value)}
+            onBlur={handleBlur}
+            placeholder={texts.fullName}
+          />
+          <Input
+            type="tel"
+            value={data.trustedPerson2Phone}
+            onChange={(e) => handleChange('trustedPerson2Phone', e.target.value)}
+            onBlur={handleBlur}
+            placeholder={texts.phonePlaceholder}
+          />
         </div>
       </div>
 
