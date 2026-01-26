@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Check, Crown, Users, Home, ArrowUp, Settings, CreditCard, Plus, Minus } from 'lucide-react';
+import { Check, Crown, Users, Home, ArrowUp, Plus, Minus } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
@@ -20,7 +20,6 @@ const PackageManagement = () => {
   const [additionalProfilesToAdd, setAdditionalProfilesToAdd] = useState<number>(1);
 
   const currentTier = (profile?.purchased_tier as PackageType) || 'single';
-  const hasUpdateSubscription = profile?.has_update_subscription || false;
   const currentMaxProfiles = profile?.max_profiles || 1;
   const canAddMoreProfiles = currentTier === 'family' && currentMaxProfiles < PRICING.family.maxProfiles;
   const maxAdditionalProfiles = PRICING.family.maxProfiles - currentMaxProfiles;
@@ -42,12 +41,6 @@ const PackageManagement = () => {
       upgrade: 'Jetzt upgraden',
       noUpgrade: 'Du hast bereits das größte Paket!',
       processing: 'Wird verarbeitet...',
-      subscription: 'Update-Service',
-      subscriptionActive: 'Aktiv',
-      subscriptionInactive: 'Nicht aktiv',
-      subscriptionDesc: 'Jährlicher Update-Service für €12/Jahr',
-      manageSubscription: 'Abo verwalten',
-      addSubscription: 'Hinzufügen',
       featuresList: [
         'Alle Vorsorge-Bereiche',
         'Dokumente hochladen',
@@ -85,12 +78,6 @@ const PackageManagement = () => {
       upgrade: 'Upgrade now',
       noUpgrade: 'You already have the largest package!',
       processing: 'Processing...',
-      subscription: 'Update Service',
-      subscriptionActive: 'Active',
-      subscriptionInactive: 'Not active',
-      subscriptionDesc: 'Annual update service for €12/year',
-      manageSubscription: 'Manage subscription',
-      addSubscription: 'Add',
       featuresList: [
         'All planning sections',
         'Document uploads',
@@ -150,51 +137,6 @@ const PackageManagement = () => {
     } catch (error: any) {
       logger.error('Upgrade error:', error);
       toast.error(error.message || (language === 'de' ? 'Fehler beim Upgrade' : 'Upgrade error'));
-    } finally {
-      setLoading(null);
-    }
-  };
-
-  const handleManageSubscription = async () => {
-    if (!user) return;
-
-    setLoading('subscription');
-
-    try {
-      const { data, error } = await supabase.functions.invoke('customer-portal', {});
-
-      if (error) throw error;
-      if (data?.url) {
-        window.open(data.url, '_blank');
-      }
-    } catch (error: any) {
-      logger.error('Portal error:', error);
-      toast.error(error.message || (language === 'de' ? 'Fehler beim Öffnen' : 'Error opening portal'));
-    } finally {
-      setLoading(null);
-    }
-  };
-
-  const handleAddSubscription = async () => {
-    if (!user) return;
-
-    setLoading('add-subscription');
-
-    try {
-      const { data, error } = await supabase.functions.invoke('create-payment', {
-        body: {
-          paymentType: currentTier,
-          includeUpdateService: true,
-        },
-      });
-
-      if (error) throw error;
-      if (data?.url) {
-        window.location.href = data.url;
-      }
-    } catch (error: any) {
-      logger.error('Subscription error:', error);
-      toast.error(error.message || (language === 'de' ? 'Fehler' : 'Error'));
     } finally {
       setLoading(null);
     }
@@ -292,53 +234,6 @@ const PackageManagement = () => {
           </CardContent>
         </Card>
       </motion.div>
-
-      {/* Update Service Section */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1 }}
-      >
-        <Card>
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <div className="h-12 w-12 rounded-lg bg-muted flex items-center justify-center">
-                  <CreditCard className="h-6 w-6 text-foreground" />
-                </div>
-                <div>
-                  <CardTitle className="text-lg">{texts.subscription}</CardTitle>
-                  <CardDescription>{texts.subscriptionDesc}</CardDescription>
-                </div>
-              </div>
-              <Badge variant={hasUpdateSubscription ? 'default' : 'secondary'}>
-                {hasUpdateSubscription ? texts.subscriptionActive : texts.subscriptionInactive}
-              </Badge>
-            </div>
-          </CardHeader>
-          <CardContent>
-            {hasUpdateSubscription ? (
-              <Button
-                variant="outline"
-                onClick={handleManageSubscription}
-                disabled={loading === 'subscription'}
-              >
-                <Settings className="h-4 w-4 mr-2" />
-                {loading === 'subscription' ? texts.processing : texts.manageSubscription}
-              </Button>
-            ) : (
-              <Button
-                variant="outline"
-                onClick={handleAddSubscription}
-                disabled={loading === 'add-subscription'}
-              >
-                {loading === 'add-subscription' ? texts.processing : texts.addSubscription}
-              </Button>
-            )}
-          </CardContent>
-        </Card>
-      </motion.div>
-
       {/* Expand Family Package Section - for existing family tier users */}
       {canAddMoreProfiles && (
         <motion.div

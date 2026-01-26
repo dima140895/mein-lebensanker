@@ -1,21 +1,18 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Check, CreditCard, User, Users, Home, Bell, ArrowUp, Minus, Plus } from 'lucide-react';
+import { Check, CreditCard, User, Users, Home, ArrowUp, Minus, Plus } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { supabase } from '@/integrations/supabase/browserClient';
 import { Button } from '@/components/ui/button';
-import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import { logger } from '@/lib/logger';
 import { PRICING, getUpgradePrice, canUpgrade, calculateFamilyPrice, type PackageType } from '@/lib/pricing';
 
 const PaymentOptions = () => {
-  const { user, profile, refreshProfile } = useAuth();
+  const { user, profile } = useAuth();
   const { language } = useLanguage();
   const [loading, setLoading] = useState<string | null>(null);
-  const [includeUpdateService, setIncludeUpdateService] = useState(false);
   const [familyProfileCount, setFamilyProfileCount] = useState<number>(PRICING.family.minProfiles);
 
   const currentTier = profile?.purchased_tier as PackageType | null;
@@ -45,9 +42,6 @@ const PaymentOptions = () => {
         'Export- / Download-Funktion',
         'DSGVO-konforme Speicherung',
       ],
-      updateService: 'Jährlicher Update-Service',
-      updateServiceDesc: 'Erinnerungen zur Aktualisierung, fortlaufender Zugriff',
-      updateServicePrice: '+12 €/Jahr',
       inclVat: 'inkl. MwSt.',
       select: 'Auswählen',
       upgrade: 'Upgrade',
@@ -80,9 +74,6 @@ const PaymentOptions = () => {
         'Export / download function',
         'GDPR-compliant storage',
       ],
-      updateService: 'Annual Update Service',
-      updateServiceDesc: 'Update reminders, continuous access',
-      updateServicePrice: '+€12/year',
       inclVat: 'incl. VAT',
       select: 'Select',
       upgrade: 'Upgrade',
@@ -110,7 +101,6 @@ const PaymentOptions = () => {
           paymentType: type,
           isUpgrade,
           currentTier: currentTier || undefined,
-          includeUpdateService: !isUpgrade && includeUpdateService,
           familyProfileCount: type === 'family' ? familyProfileCount : undefined,
         },
       });
@@ -300,43 +290,6 @@ const PaymentOptions = () => {
           );
         })}
       </div>
-
-      {/* Update Service Addon */}
-      {!hasPaid && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="mt-8 max-w-2xl mx-auto"
-        >
-          <div className="rounded-xl border border-border bg-card p-6 shadow-card">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-lg bg-amber-light flex items-center justify-center">
-                  <Bell className="h-5 w-5 text-amber" />
-                </div>
-                <div>
-                  <h4 className="font-medium text-foreground">{texts.updateService}</h4>
-                  <p className="text-sm text-muted-foreground">{texts.updateServiceDesc}</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-4">
-                <span className="font-mono text-lg font-semibold text-primary">
-                  {texts.updateServicePrice}
-                </span>
-                <Switch
-                  id="update-service"
-                  checked={includeUpdateService}
-                  onCheckedChange={setIncludeUpdateService}
-                />
-                <Label htmlFor="update-service" className="sr-only">
-                  {texts.updateService}
-                </Label>
-              </div>
-            </div>
-          </div>
-        </motion.div>
-      )}
 
       {/* Feature List */}
       <div className="mt-8 max-w-2xl mx-auto text-center">
