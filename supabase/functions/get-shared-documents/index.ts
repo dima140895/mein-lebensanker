@@ -58,19 +58,35 @@ serve(async (req) => {
 
     const userId = validation.user_id
 
-    // Check if 'documents' section is in shared_sections
+    // Check if 'documents' section is in shared_sections (supports both legacy and new structure)
     const { data: sharedSections, error: sectionsError } = await supabase
       .rpc('get_shared_sections_by_token', { _token: token })
 
-    if (sectionsError) {
-      console.error('Error getting shared sections:', sectionsError)
+    // Also get per-profile sections for new structure
+    const { data: profileSections, error: profileSectionsError } = await supabase
+      .rpc('get_shared_profile_sections_by_token', { _token: token })
+
+    if (sectionsError && profileSectionsError) {
+      console.error('Error getting shared sections:', sectionsError, profileSectionsError)
       return new Response(
         JSON.stringify({ error: 'Failed to get shared sections' }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       )
     }
 
-    if (!sharedSections || !sharedSections.includes('documents')) {
+    // Check if documents is shared via new per-profile structure
+    let documentsSharedViaProfile = false
+    if (profileSections && typeof profileSections === 'object' && Object.keys(profileSections).length > 0) {
+      documentsSharedViaProfile = Object.values(profileSections as Record<string, string[]>).some(
+        (sections: string[]) => sections?.includes('documents')
+      )
+    }
+
+    // Check if documents is shared via legacy structure or new structure
+    const documentsSharedViaLegacy = sharedSections?.includes('documents') ?? false
+    const isDocumentsShared = documentsSharedViaProfile || documentsSharedViaLegacy
+
+    if (!isDocumentsShared) {
       return new Response(
         JSON.stringify({ error: 'Documents section is not shared', documents: [] }),
         { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
