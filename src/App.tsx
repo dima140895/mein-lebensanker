@@ -17,7 +17,6 @@ import ResetPassword from "./pages/ResetPassword";
 import Datenschutz from "./pages/Datenschutz";
 import Impressum from "./pages/Impressum";
 import Datensicherheit from "./pages/Datensicherheit";
-import DatenschutzKurzfassung from "./pages/DatenschutzKurzfassung";
 import Sicherheitsgrenzen from "./pages/Sicherheitsgrenzen";
 import NotFound from "./pages/NotFound";
 import CookieConsent from "./components/CookieConsent";
@@ -45,7 +44,6 @@ const App = () => (
                     <Route path="/datenschutz" element={<Datenschutz />} />
                     <Route path="/impressum" element={<Impressum />} />
                     <Route path="/datensicherheit" element={<Datensicherheit />} />
-                    <Route path="/datenschutz-kurzfassung" element={<DatenschutzKurzfassung />} />
                     <Route path="/sicherheitsgrenzen" element={<Sicherheitsgrenzen />} />
                     <Route path="/fuer-angehoerige/:token" element={<RelativesView />} />
                     <Route path="*" element={<NotFound />} />
