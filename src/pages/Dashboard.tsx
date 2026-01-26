@@ -143,7 +143,8 @@ const DashboardContent = () => {
 
   const texts = t[language];
 
-  if (loading) {
+  // Show loading while auth or profile is still loading
+  if (loading || (user && profile === null)) {
     return <div className="flex items-center justify-center min-h-[50vh]">{language === 'de' ? 'Laden...' : 'Loading...'}</div>;
   }
 
