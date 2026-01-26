@@ -14,6 +14,14 @@ export interface Medication {
   notes: string;
 }
 
+export interface Allergy {
+  name: string;
+  type: string; // 'food' | 'medication' | 'environmental' | 'other'
+  severity: string; // 'mild' | 'moderate' | 'severe'
+  reaction: string;
+  notes: string;
+}
+
 export interface PersonalData {
   fullName: string;
   birthDate: string;
@@ -26,6 +34,7 @@ export interface PersonalData {
   emergencyContact: string;
   emergencyPhone: string;
   medications: Medication[];
+  allergies: Allergy[];
   notes: string;
 }
 
@@ -99,6 +108,7 @@ const defaultPersonalData: PersonalData = {
   emergencyContact: '',
   emergencyPhone: '',
   medications: [],
+  allergies: [],
   notes: '',
 };
 
