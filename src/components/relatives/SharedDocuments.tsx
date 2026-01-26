@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { FileText, Download, Loader2, ExternalLink } from 'lucide-react';
+import { FileText, Download, Loader2, ExternalLink, User } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/browserClient';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
@@ -11,6 +11,8 @@ interface SharedDocument {
   uploadedAt: string;
   signedUrl: string;
   documentType: string;
+  profileId: string;
+  profileName: string;
 }
 
 interface SharedDocumentsProps {
@@ -106,22 +108,12 @@ const SharedDocuments = ({ token }: SharedDocumentsProps) => {
     return texts.documentTypes[key] || type;
   };
 
-  const handleOpenDocument = (doc: SharedDocument) => {
-    // For PDFs, use an anchor element with download attribute as fallback
-    // Some browsers show blank pages with window.open for signed URLs
+  const handleDownload = (doc: SharedDocument) => {
     const link = document.createElement('a');
     link.href = doc.signedUrl;
+    link.download = doc.name;
     link.target = '_blank';
     link.rel = 'noopener noreferrer';
-    
-    // Check if it's a PDF by extension
-    const isPdf = doc.name.toLowerCase().endsWith('.pdf');
-    if (isPdf) {
-      // For PDFs, trigger download instead of opening in new tab
-      // as signed URLs with download headers often show blank pages
-      link.download = doc.name;
-    }
-    
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -129,16 +121,16 @@ const SharedDocuments = ({ token }: SharedDocumentsProps) => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-6 text-muted-foreground">
+      <div className="flex items-center justify-center py-8 text-muted-foreground">
         <Loader2 className="h-5 w-5 animate-spin mr-2" />
-        <span>{texts.loading}</span>
+        <span className="text-sm">{texts.loading}</span>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="text-sm text-destructive py-4 text-center">
+      <div className="text-sm text-destructive py-6 text-center bg-destructive/5 rounded-lg border border-destructive/20">
         {error}
       </div>
     );
@@ -146,63 +138,91 @@ const SharedDocuments = ({ token }: SharedDocumentsProps) => {
 
   if (documents.length === 0) {
     return (
-      <div className="text-sm text-muted-foreground py-4 text-center">
+      <div className="text-sm text-muted-foreground py-6 text-center bg-muted/30 rounded-lg border border-border/50">
         {texts.noDocuments}
       </div>
     );
   }
 
-  // Group documents by type
-  const groupedDocs = documents.reduce((acc, doc) => {
-    if (!acc[doc.documentType]) {
-      acc[doc.documentType] = [];
+  // Group documents by profile first, then by type
+  const groupedByProfile = documents.reduce((acc, doc) => {
+    if (!acc[doc.profileId]) {
+      acc[doc.profileId] = {
+        profileName: doc.profileName,
+        documents: {}
+      };
     }
-    acc[doc.documentType].push(doc);
+    if (!acc[doc.profileId].documents[doc.documentType]) {
+      acc[doc.profileId].documents[doc.documentType] = [];
+    }
+    acc[doc.profileId].documents[doc.documentType].push(doc);
     return acc;
-  }, {} as Record<string, SharedDocument[]>);
+  }, {} as Record<string, { profileName: string; documents: Record<string, SharedDocument[]> }>);
 
   const documentTypeOrder = ['testament', 'power-of-attorney', 'living-will', 'insurance', 'property', 'other'];
+  const profileEntries = Object.entries(groupedByProfile);
 
   return (
-    <div className="space-y-4 pt-4 border-t border-border/50 mt-4">
-      <h4 className="text-sm font-medium text-foreground">{texts.title}</h4>
+    <div className="space-y-6">
+      <h4 className="text-lg font-semibold text-foreground flex items-center gap-2">
+        <FileText className="h-5 w-5 text-primary" />
+        {texts.title}
+      </h4>
       
-      <div className="space-y-3">
-        {documentTypeOrder.map((docType) => {
-          const docs = groupedDocs[docType];
-          if (!docs || docs.length === 0) return null;
+      <div className="space-y-6">
+        {profileEntries.map(([profileId, profileData]) => (
+          <div key={profileId} className="space-y-4">
+            {/* Profile header - only show if multiple profiles */}
+            {profileEntries.length > 1 && (
+              <div className="flex items-center gap-2 pb-2 border-b border-border/50">
+                <User className="h-4 w-4 text-primary" />
+                <span className="font-medium text-foreground">{profileData.profileName}</span>
+              </div>
+            )}
+            
+            <div className="space-y-4">
+              {documentTypeOrder.map((docType) => {
+                const docs = profileData.documents[docType];
+                if (!docs || docs.length === 0) return null;
 
-          return (
-            <div key={docType} className="space-y-2">
-              <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                {getDocumentTypeLabel(docType)}
-              </span>
-              {docs.map((doc, idx) => (
-                <div
-                  key={`${doc.path}-${idx}`}
-                  className="flex items-center justify-between p-3 rounded-lg bg-background/50 border border-border/50"
-                >
-                  <div className="flex items-center gap-3 min-w-0 flex-1">
-                    <FileText className="h-5 w-5 text-primary flex-shrink-0" />
-                    <div className="min-w-0 flex-1">
-                      <p className="text-sm font-medium text-foreground truncate">{doc.name}</p>
-                      <p className="text-xs text-muted-foreground">{formatFileSize(doc.size)}</p>
+                return (
+                  <div key={docType} className="space-y-2">
+                    <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                      {getDocumentTypeLabel(docType)}
+                    </span>
+                    <div className="space-y-2">
+                      {docs.map((doc, idx) => (
+                        <div
+                          key={`${doc.path}-${idx}`}
+                          className="flex items-center justify-between p-4 rounded-xl bg-card border border-border shadow-sm hover:shadow-md transition-shadow"
+                        >
+                          <div className="flex items-center gap-3 min-w-0 flex-1">
+                            <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                              <FileText className="h-5 w-5 text-primary" />
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <p className="text-sm font-medium text-foreground truncate">{doc.name}</p>
+                              <p className="text-xs text-muted-foreground">{formatFileSize(doc.size)}</p>
+                            </div>
+                          </div>
+                          <Button
+                            variant="default"
+                            size="sm"
+                            onClick={() => handleDownload(doc)}
+                            className="flex-shrink-0 gap-2"
+                          >
+                            <Download className="h-4 w-4" />
+                            <span className="hidden sm:inline">{texts.download}</span>
+                          </Button>
+                        </div>
+                      ))}
                     </div>
                   </div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => handleOpenDocument(doc)}
-                    className="flex-shrink-0 gap-1"
-                  >
-                    <ExternalLink className="h-4 w-4" />
-                    <span className="hidden sm:inline">{texts.open}</span>
-                  </Button>
-                </div>
-              ))}
+                );
+              })}
             </div>
-          );
-        })}
+          </div>
+        ))}
       </div>
     </div>
   );

@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { useProfiles } from '@/contexts/ProfileContext';
 import { toast } from 'sonner';
 
 interface UploadedDocument {
@@ -18,6 +19,7 @@ interface UseDocumentUploadOptions {
 
 export const useDocumentUpload = (options: UseDocumentUploadOptions = {}) => {
   const { user } = useAuth();
+  const { activeProfileId } = useProfiles();
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   
@@ -30,6 +32,11 @@ export const useDocumentUpload = (options: UseDocumentUploadOptions = {}) => {
   const uploadFile = useCallback(async (file: File, documentType: string): Promise<UploadedDocument | null> => {
     if (!user) {
       toast.error('Bitte melden Sie sich an.');
+      return null;
+    }
+
+    if (!activeProfileId) {
+      toast.error('Bitte wählen Sie ein Profil aus.');
       return null;
     }
 
@@ -50,10 +57,10 @@ export const useDocumentUpload = (options: UseDocumentUploadOptions = {}) => {
     setUploadProgress(0);
 
     try {
-      // Create unique file path: userId/documentType/timestamp-filename
+      // Create unique file path: userId/profileId/documentType/timestamp-filename
       const timestamp = Date.now();
       const sanitizedFileName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
-      const filePath = `${user.id}/${documentType}/${timestamp}-${sanitizedFileName}`;
+      const filePath = `${user.id}/${activeProfileId}/${documentType}/${timestamp}-${sanitizedFileName}`;
 
       const { data, error } = await supabase.storage
         .from('user-documents')
@@ -83,7 +90,7 @@ export const useDocumentUpload = (options: UseDocumentUploadOptions = {}) => {
       setUploading(false);
       setUploadProgress(0);
     }
-  }, [user, allowedTypes, maxFileSizeMB]);
+  }, [user, activeProfileId, allowedTypes, maxFileSizeMB]);
 
   const deleteFile = useCallback(async (filePath: string): Promise<boolean> => {
     if (!user) return false;
@@ -119,10 +126,13 @@ export const useDocumentUpload = (options: UseDocumentUploadOptions = {}) => {
   }, []);
 
   const listFiles = useCallback(async (documentType?: string): Promise<UploadedDocument[]> => {
-    if (!user) return [];
+    if (!user || !activeProfileId) return [];
 
     try {
-      const folderPath = documentType ? `${user.id}/${documentType}` : user.id;
+      // Profile-specific path: userId/profileId/documentType
+      const folderPath = documentType 
+        ? `${user.id}/${activeProfileId}/${documentType}` 
+        : `${user.id}/${activeProfileId}`;
       
       const { data, error } = await supabase.storage
         .from('user-documents')
@@ -148,7 +158,7 @@ export const useDocumentUpload = (options: UseDocumentUploadOptions = {}) => {
       console.error('List files error:', error);
       return [];
     }
-  }, [user]);
+  }, [user, activeProfileId]);
 
   return {
     uploadFile,
