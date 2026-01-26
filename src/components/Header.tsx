@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { motion } from 'framer-motion';
 import { LogIn, UserPlus, Menu, Home, User, Info, ClipboardList, Wallet, Globe, ScrollText, FolderOpen, Phone, ChevronDown, Link2, CreditCard, Package, Key, LogOut, Shield, KeyRound, Lock, Unlock } from 'lucide-react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import LanguageToggle from './LanguageToggle';
@@ -229,12 +228,8 @@ const Header = () => {
   );
 
   return (
-    <motion.header
-      initial={{ opacity: 0, y: -20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="sticky top-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-md"
-    >
-      <div className="container mx-auto flex items-center justify-between px-4 py-4">
+    <header className="sticky top-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-md animate-fade-in">
+      <div className="container mx-auto flex items-center justify-between px-4 py-3 md:py-4">
         {/* Left side: Burger Menu + Logo */}
         <div className="flex items-center gap-3">
           {/* Mobile Burger Menu */}
@@ -691,7 +686,7 @@ const Header = () => {
         open={recoveryKeyRecoveryOpen} 
         onOpenChange={setRecoveryKeyRecoveryOpen}
       />
-    </motion.header>
+    </header>
   );
 };
 

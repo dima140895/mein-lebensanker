@@ -1,43 +1,35 @@
-import { motion } from 'framer-motion';
+import { forwardRef } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 
-const LanguageToggle = () => {
+const LanguageToggle = forwardRef<HTMLDivElement>((_, ref) => {
   const { language, setLanguage } = useLanguage();
 
   return (
-    <div className="flex items-center gap-1 rounded-full bg-secondary p-1">
+    <div ref={ref} className="flex items-center gap-1 rounded-full bg-secondary p-1">
       <button
         onClick={() => setLanguage('de')}
-        className={`relative px-3 py-1.5 text-sm font-medium transition-colors ${
-          language === 'de' ? 'text-primary-foreground' : 'text-muted-foreground hover:text-foreground'
+        className={`relative px-3 py-1.5 text-sm font-medium transition-all duration-200 rounded-full ${
+          language === 'de' 
+            ? 'bg-primary text-primary-foreground' 
+            : 'text-muted-foreground hover:text-foreground'
         }`}
       >
-        {language === 'de' && (
-          <motion.div
-            layoutId="language-toggle"
-            className="absolute inset-0 rounded-full bg-primary"
-            transition={{ type: 'spring', duration: 0.4 }}
-          />
-        )}
-        <span className="relative z-10">DE</span>
+        DE
       </button>
       <button
         onClick={() => setLanguage('en')}
-        className={`relative px-3 py-1.5 text-sm font-medium transition-colors ${
-          language === 'en' ? 'text-primary-foreground' : 'text-muted-foreground hover:text-foreground'
+        className={`relative px-3 py-1.5 text-sm font-medium transition-all duration-200 rounded-full ${
+          language === 'en' 
+            ? 'bg-primary text-primary-foreground' 
+            : 'text-muted-foreground hover:text-foreground'
         }`}
       >
-        {language === 'en' && (
-          <motion.div
-            layoutId="language-toggle"
-            className="absolute inset-0 rounded-full bg-primary"
-            transition={{ type: 'spring', duration: 0.4 }}
-          />
-        )}
-        <span className="relative z-10">EN</span>
+        EN
       </button>
     </div>
   );
-};
+});
+
+LanguageToggle.displayName = 'LanguageToggle';
 
 export default LanguageToggle;
