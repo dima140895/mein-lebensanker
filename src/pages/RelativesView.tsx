@@ -39,6 +39,7 @@ const RelativesViewContent = () => {
   const [error, setError] = useState<string | null>(null);
   const [vorsorgeData, setVorsorgeData] = useState<VorsorgeData[]>([]);
   const [profiles, setProfiles] = useState<PersonProfile[]>([]);
+  const [sharedSections, setSharedSections] = useState<string[]>([]);
   const [requiresPIN, setRequiresPIN] = useState(false);
   const [pinVerified, setPINVerified] = useState(false);
   const [remainingAttempts, setRemainingAttempts] = useState(3);
@@ -167,11 +168,17 @@ const RelativesViewContent = () => {
     if (!token) return;
 
     try {
-      // Get profiles and vorsorge data in parallel
-      const [profilesResult, dataResult] = await Promise.all([
+      // Get profiles, vorsorge data, and shared sections in parallel
+      const [profilesResult, dataResult, sectionsResult] = await Promise.all([
         supabase.rpc('get_profiles_by_token', { _token: token }),
         supabase.rpc('get_vorsorge_data_by_token', { _token: token }),
+        supabase.rpc('get_shared_sections_by_token', { _token: token }),
       ]);
+
+      // Store shared sections
+      if (sectionsResult.data) {
+        setSharedSections(sectionsResult.data as string[]);
+      }
 
       if (profilesResult.data) {
         const transformedProfiles: PersonProfile[] = (profilesResult.data || []).map((p: { profile_id: string; profile_name: string; birth_date: string | null }) => ({
@@ -362,6 +369,8 @@ const RelativesViewContent = () => {
           <RelativesSummary 
             data={vorsorgeData} 
             profiles={profiles}
+            sharedSections={sharedSections}
+            token={token}
           />
         ) : (
           <div className="rounded-xl border border-border bg-card p-8 text-center">

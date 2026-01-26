@@ -125,6 +125,7 @@ export type Database = {
           is_active: boolean
           label: string | null
           pin_hash: string | null
+          shared_sections: string[] | null
           token: string
           updated_at: string
           user_id: string
@@ -137,6 +138,7 @@ export type Database = {
           is_active?: boolean
           label?: string | null
           pin_hash?: string | null
+          shared_sections?: string[] | null
           token?: string
           updated_at?: string
           user_id: string
@@ -149,6 +151,7 @@ export type Database = {
           is_active?: boolean
           label?: string | null
           pin_hash?: string | null
+          shared_sections?: string[] | null
           token?: string
           updated_at?: string
           user_id?: string
@@ -245,6 +248,10 @@ export type Database = {
           profile_id: string
           profile_name: string
         }[]
+      }
+      get_shared_sections_by_token: {
+        Args: { _token: string }
+        Returns: string[]
       }
       get_vorsorge_data_by_token: {
         Args: { _token: string }

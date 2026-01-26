@@ -25,9 +25,11 @@ interface PersonProfile {
 interface RelativesSummaryProps {
   data: VorsorgeData[];
   profiles: PersonProfile[];
+  sharedSections?: string[];
+  token?: string;
 }
 
-const RelativesSummary = ({ data, profiles }: RelativesSummaryProps) => {
+const RelativesSummary = ({ data, profiles, sharedSections, token }: RelativesSummaryProps) => {
   const { language } = useLanguage();
   const printRef = useRef<HTMLDivElement>(null);
 
