@@ -75,10 +75,23 @@ export const EncryptionReminder: React.FC = () => {
       return;
     }
 
-    // Show reminder after 30 seconds to let users orient themselves first
+    // Check if profile setup was just completed
+    const setupCompletedTime = sessionStorage.getItem('profile_setup_completed_time');
+    if (!setupCompletedTime) {
+      // No profile setup completed in this session, don't show reminder
+      return;
+    }
+
+    const completedAt = parseInt(setupCompletedTime, 10);
+    const timeSinceSetup = Date.now() - completedAt;
+    const remainingDelay = Math.max(0, 30000 - timeSinceSetup);
+
+    // Show reminder 30 seconds after profile setup completion
     const timer = setTimeout(() => {
       setShowReminder(true);
-    }, 30000);
+      // Clear the setup time flag after showing
+      sessionStorage.removeItem('profile_setup_completed_time');
+    }, remainingDelay);
 
     return () => clearTimeout(timer);
   }, [user, isLoading, isEncryptionEnabled]);

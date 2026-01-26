@@ -286,6 +286,9 @@ const ProfileSetupWizard = ({ maxProfiles, packageType }: ProfileSetupWizardProp
       if (maxProfiles > 1) {
         sessionStorage.setItem('profile_setup_just_completed', 'true');
       }
+      
+      // Set flag for encryption reminder (30 seconds after setup)
+      sessionStorage.setItem('profile_setup_completed_time', Date.now().toString());
 
       setCompleted(true);
       toast.success(language === 'de' ? 'Profile erfolgreich gespeichert!' : 'Profiles saved successfully!');
