@@ -104,7 +104,8 @@ const infoSections = [
 
 // Simple fade animation - starts visible to prevent flicker
 const containerVariants = {
-  hidden: { opacity: 0 },
+  // IMPORTANT: keep content visible even if animations fail to start (e.g. during language re-renders)
+  hidden: { opacity: 1 },
   visible: {
     opacity: 1,
     transition: {
@@ -115,9 +116,10 @@ const containerVariants = {
 };
 
 const fadeInVariants = {
-  hidden: { 
-    opacity: 0, 
-    y: 15,
+  // IMPORTANT: keep tiles visible even if a variant gets stuck
+  hidden: {
+    opacity: 1,
+    y: 0,
   },
   visible: { 
     opacity: 1, 
@@ -202,9 +204,9 @@ const DashboardSections = () => {
       <div className="container mx-auto px-4">
         {/* Main Sections Header */}
         <motion.div
+          key={`main-header-${language}`}
           initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           className="mb-16 text-center"
         >
@@ -237,9 +239,9 @@ const DashboardSections = () => {
 
         {/* Info & Tools Sections */}
         <motion.div
+          key={`tools-header-${language}`}
           initial={{ opacity: 0, x: 30 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
+          animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
           className="mb-10 mt-20 text-center"
         >
