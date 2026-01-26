@@ -59,7 +59,6 @@ const ProfileSetupWizard = ({ maxProfiles, packageType }: ProfileSetupWizardProp
   const [completed, setCompleted] = useState(false);
   const [loading, setLoading] = useState(true);
   const [existingProfileCount, setExistingProfileCount] = useState(0);
-  const [draftLoaded, setDraftLoaded] = useState(false);
 
   const t = {
     de: {
@@ -137,6 +136,26 @@ const ProfileSetupWizard = ({ maxProfiles, packageType }: ProfileSetupWizardProp
         return;
       }
 
+      // First check if we have a valid draft - if so, use it and skip DB load
+      const draft = sessionStorage.getItem(WIZARD_DRAFT_KEY);
+      if (draft) {
+        try {
+          const parsed = JSON.parse(draft);
+          // Only use draft if it matches current setup (same number of profiles)
+          if (parsed.profiles && parsed.profiles.length === maxProfiles) {
+            logger.info('Restoring wizard draft from sessionStorage');
+            setProfiles(parsed.profiles);
+            setCurrentStep(parsed.currentStep || 0);
+            setExistingProfileCount(parsed.existingProfileCount || 0);
+            setLoading(false);
+            return;
+          }
+        } catch (error) {
+          logger.error('Error parsing wizard draft:', error);
+          // Continue with normal flow if draft is invalid
+        }
+      }
+
       try {
         const { data: existingProfiles, error } = await supabase
           .from('person_profiles')
@@ -157,23 +176,7 @@ const ProfileSetupWizard = ({ maxProfiles, packageType }: ProfileSetupWizardProp
           sessionStorage.removeItem(WIZARD_DRAFT_KEY);
           setCompleted(true);
         } else {
-          // Check if we have a valid draft
-          const draft = sessionStorage.getItem(WIZARD_DRAFT_KEY);
-          if (draft && !draftLoaded) {
-            try {
-              const parsed = JSON.parse(draft);
-              // Only use draft if it matches current setup (same number of profiles)
-              if (parsed.profiles && parsed.profiles.length === maxProfiles) {
-                setProfiles(parsed.profiles);
-                setCurrentStep(parsed.currentStep || existingCount);
-                setDraftLoaded(true);
-                setLoading(false);
-                return;
-              }
-            } catch { /* ignore invalid draft */ }
-          }
-
-          // No valid draft - build fresh from DB
+          // Build profile array from DB
           const profileData: ProfileData[] = [];
           
           // Add existing profiles
@@ -202,7 +205,7 @@ const ProfileSetupWizard = ({ maxProfiles, packageType }: ProfileSetupWizardProp
     };
 
     loadExistingProfiles();
-  }, [user, maxProfiles, draftLoaded]);
+  }, [user, maxProfiles]);
 
   const handleProfileChange = (index: number, field: keyof ProfileData, value: string) => {
     const updated = [...profiles];
