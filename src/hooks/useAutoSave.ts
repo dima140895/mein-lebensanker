@@ -4,14 +4,17 @@ import { useProfiles } from '@/contexts/ProfileContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useEncryption } from '@/contexts/EncryptionContext';
 import { logger } from '@/lib/logger';
+import { sectionStatusEvents } from './useSectionStatusRefresh';
 
 interface UseAutoSaveOptions {
   section: keyof VorsorgeFormData;
   /** If true, syncs fullName/birthDate to person_profiles after saving 'personal' section */
   syncToProfile?: boolean;
+  /** Callback to trigger after successful save (e.g., to refresh progress status) */
+  onSaveComplete?: () => void;
 }
 
-export const useAutoSave = ({ section, syncToProfile = false }: UseAutoSaveOptions) => {
+export const useAutoSave = ({ section, syncToProfile = false, onSaveComplete }: UseAutoSaveOptions) => {
   const { formData, saveSection } = useFormData();
   const { activeProfileId, updateProfile, loadProfiles } = useProfiles();
   const { profile } = useAuth();
@@ -55,11 +58,17 @@ export const useAutoSave = ({ section, syncToProfile = false }: UseAutoSaveOptio
         }
       }
       
+      // Trigger global refresh of section status (updates progress bar)
+      sectionStatusEvents.emit();
+      
+      // Trigger optional callback after successful save
+      onSaveComplete?.();
+      
       logger.debug(`Auto-saved section: ${section}`);
     } catch (error) {
       logger.error(`Error auto-saving section ${section}:`, error);
     }
-  }, [profile?.has_paid, activeProfileId, formData, section, saveSection, syncToProfile, updateProfile, loadProfiles, isEncryptionEnabled, isUnlocked]);
+  }, [profile?.has_paid, activeProfileId, formData, section, saveSection, syncToProfile, updateProfile, loadProfiles, isEncryptionEnabled, isUnlocked, onSaveComplete]);
 
   const handleBlur = useCallback(() => {
     // Clear any pending timeout
