@@ -26,7 +26,7 @@ export const EncryptionVisualGuide: React.FC<EncryptionVisualGuideProps> = ({
       step1Text: 'Nur Du kennst dieses Passwort. Es ist wie der Schlüssel zu Deinem persönlichen Tresor.',
       
       step2Title: 'Deine Daten werden verschlüsselt',
-      step2Text: 'Alle Informationen werden in einen geheimen Code umgewandelt. Ohne Passwort ist der Code unleserlich – selbst für uns.',
+      step2Text: 'Alle Informationen werden in einen geheimen Code umgewandelt. Ohne Passwort ist der Code nach unserem Design nicht lesbar – auch nicht für unsere Systeme.',
       
       step3Title: 'Du erhältst einen Ersatzschlüssel',
       step3Text: 'Falls Du Dein Passwort vergisst, kannst Du mit diesem Ersatzschlüssel Deine Daten wiederherstellen. Bewahre ihn sicher auf!',
@@ -50,7 +50,7 @@ export const EncryptionVisualGuide: React.FC<EncryptionVisualGuideProps> = ({
       step1Text: 'Only you know this password. It\'s like the key to your personal safe.',
       
       step2Title: 'Your Data Gets Encrypted',
-      step2Text: 'All information is converted into a secret code. Without the password, the code is unreadable – even for us.',
+      step2Text: 'All information is converted into a secret code. Without the password, the code is designed to be unreadable – including by our systems.',
       
       step3Title: 'You Receive a Backup Key',
       step3Text: 'If you forget your password, you can use this backup key to recover your data. Keep it safe!',

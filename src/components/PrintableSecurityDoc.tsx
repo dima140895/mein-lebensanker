@@ -12,7 +12,7 @@ const PrintableSecurityDoc = forwardRef<HTMLDivElement>((_, ref) => {
       intro: 'Diese Dokumentation erklärt die technischen Sicherheitsmaßnahmen, die zum Schutz Ihrer persönlichen Daten eingesetzt werden.',
       
       section1Title: 'Ende-zu-Ende-Verschlüsselung (E2EE)',
-      section1Desc: 'Ihre Daten werden ausschließlich auf Ihrem Gerät ver- und entschlüsselt. Der Server sieht niemals Ihre unverschlüsselten Informationen.',
+      section1Desc: 'Nach unserem technischen Design werden Ihre Daten ausschließlich auf Ihrem Gerät ver- und entschlüsselt. Der Server ist nicht dafür vorgesehen, unverschlüsselte Inhalte zu verarbeiten.',
       
       howItWorks: 'So funktioniert es',
       step1Title: 'Passwort-Eingabe',
@@ -23,10 +23,10 @@ const PrintableSecurityDoc = forwardRef<HTMLDivElement>((_, ref) => {
       step3Desc: 'Alle sensiblen Daten werden mit AES-256-GCM verschlüsselt, bevor sie gespeichert werden.',
       
       section2Title: 'Zero-Knowledge-Architektur',
-      section2Desc: 'Wir können Ihre Daten nicht lesen – selbst wenn wir wollten.',
-      zeroKnowledge1: 'Ihr Passwort wird niemals an unsere Server übertragen',
-      zeroKnowledge2: 'Verschlüsselung erfolgt vollständig in Ihrem Browser',
-      zeroKnowledge3: 'Nur Sie besitzen den Schlüssel zu Ihren Daten',
+      section2Desc: 'Nach unserem Design sind unsere Systeme nicht in der Lage, Ihre Daten im Klartext einzusehen.',
+      zeroKnowledge1: 'Ihr Passwort ist nicht für eine Übertragung an unsere Server vorgesehen',
+      zeroKnowledge2: 'Die Verschlüsselung erfolgt clientseitig in Ihrem Browser',
+      zeroKnowledge3: 'Der Schlüssel zu Ihren Daten verbleibt bei Ihnen',
       
       section3Title: 'Der Ersatzschlüssel',
       section3Desc: 'Ihr Sicherheitsnetz bei Passwortverlust',
@@ -75,7 +75,7 @@ const PrintableSecurityDoc = forwardRef<HTMLDivElement>((_, ref) => {
       intro: 'This documentation explains the technical security measures used to protect your personal data.',
       
       section1Title: 'End-to-End Encryption (E2EE)',
-      section1Desc: 'Your data is encrypted and decrypted exclusively on your device. The server never sees your unencrypted information.',
+      section1Desc: 'By design, your data is encrypted and decrypted exclusively on your device. The server is not intended to process unencrypted content.',
       
       howItWorks: 'How It Works',
       step1Title: 'Password Entry',
@@ -86,10 +86,10 @@ const PrintableSecurityDoc = forwardRef<HTMLDivElement>((_, ref) => {
       step3Desc: 'All sensitive data is encrypted with AES-256-GCM before being stored.',
       
       section2Title: 'Zero-Knowledge Architecture',
-      section2Desc: 'We cannot read your data – even if we wanted to.',
-      zeroKnowledge1: 'Your password is never transmitted to our servers',
-      zeroKnowledge2: 'Encryption happens entirely in your browser',
-      zeroKnowledge3: 'Only you possess the key to your data',
+      section2Desc: 'By design, our systems are not able to access your data in plain text.',
+      zeroKnowledge1: 'Your password is not intended to be transmitted to our servers',
+      zeroKnowledge2: 'Encryption happens client-side in your browser',
+      zeroKnowledge3: 'The key to your data remains with you',
       
       section3Title: 'The Recovery Key',
       section3Desc: 'Your safety net for password loss',
