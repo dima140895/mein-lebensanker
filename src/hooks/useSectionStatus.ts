@@ -70,6 +70,8 @@ export const useSectionStatus = () => {
       return;
     }
 
+    setLoading(true); // Always set loading at start of fetch
+
     try {
       // Fetch data for all profiles at once
       const { data, error } = await supabase
@@ -119,7 +121,7 @@ export const useSectionStatus = () => {
     } finally {
       setLoading(false);
     }
-  }, [user, activeProfile, personProfiles]);
+  }, [user, activeProfile?.id, personProfiles]); // Use activeProfile.id for more precise dependency
 
   useEffect(() => {
     checkSections();
