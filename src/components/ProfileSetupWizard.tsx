@@ -23,20 +23,43 @@ interface ProfileSetupWizardProps {
   packageType: string;
 }
 
+const WIZARD_DRAFT_KEY = 'vorsorge_profile_wizard_draft';
+
 const ProfileSetupWizard = ({ maxProfiles, packageType }: ProfileSetupWizardProps) => {
   const { language } = useLanguage();
   const { user, refreshProfile } = useAuth();
   const { loadProfiles, setActiveProfileId: setActiveProfile } = useProfiles();
   const navigate = useNavigate();
   
-  const [currentStep, setCurrentStep] = useState(0);
-  const [profiles, setProfiles] = useState<ProfileData[]>(
-    Array.from({ length: maxProfiles }, () => ({ name: '', birthDate: '' }))
-  );
+  const [currentStep, setCurrentStep] = useState(() => {
+    // Restore step from sessionStorage
+    const draft = sessionStorage.getItem(WIZARD_DRAFT_KEY);
+    if (draft) {
+      try {
+        const parsed = JSON.parse(draft);
+        return parsed.currentStep || 0;
+      } catch { /* ignore */ }
+    }
+    return 0;
+  });
+  const [profiles, setProfiles] = useState<ProfileData[]>(() => {
+    // Restore profiles from sessionStorage
+    const draft = sessionStorage.getItem(WIZARD_DRAFT_KEY);
+    if (draft) {
+      try {
+        const parsed = JSON.parse(draft);
+        if (parsed.profiles && Array.isArray(parsed.profiles)) {
+          return parsed.profiles;
+        }
+      } catch { /* ignore */ }
+    }
+    return Array.from({ length: maxProfiles }, () => ({ name: '', birthDate: '' }));
+  });
   const [saving, setSaving] = useState(false);
   const [completed, setCompleted] = useState(false);
   const [loading, setLoading] = useState(true);
   const [existingProfileCount, setExistingProfileCount] = useState(0);
+  const [draftLoaded, setDraftLoaded] = useState(false);
 
   const t = {
     de: {
@@ -95,6 +118,17 @@ const ProfileSetupWizard = ({ maxProfiles, packageType }: ProfileSetupWizardProp
     family: texts.family,
   };
 
+  // Save draft to sessionStorage whenever profiles or step changes
+  useEffect(() => {
+    if (!loading && !completed) {
+      sessionStorage.setItem(WIZARD_DRAFT_KEY, JSON.stringify({
+        profiles,
+        currentStep,
+        existingProfileCount,
+      }));
+    }
+  }, [profiles, currentStep, loading, completed, existingProfileCount]);
+
   // Load existing profiles on mount
   useEffect(() => {
     const loadExistingProfiles = async () => {
@@ -120,9 +154,26 @@ const ProfileSetupWizard = ({ maxProfiles, packageType }: ProfileSetupWizardProp
 
         if (profilesToCreate === 0) {
           // All profiles already exist, go to dashboard
+          sessionStorage.removeItem(WIZARD_DRAFT_KEY);
           setCompleted(true);
         } else {
-          // Pre-fill with existing profiles and add empty slots for new ones
+          // Check if we have a valid draft
+          const draft = sessionStorage.getItem(WIZARD_DRAFT_KEY);
+          if (draft && !draftLoaded) {
+            try {
+              const parsed = JSON.parse(draft);
+              // Only use draft if it matches current setup (same number of profiles)
+              if (parsed.profiles && parsed.profiles.length === maxProfiles) {
+                setProfiles(parsed.profiles);
+                setCurrentStep(parsed.currentStep || existingCount);
+                setDraftLoaded(true);
+                setLoading(false);
+                return;
+              }
+            } catch { /* ignore invalid draft */ }
+          }
+
+          // No valid draft - build fresh from DB
           const profileData: ProfileData[] = [];
           
           // Add existing profiles
@@ -151,7 +202,7 @@ const ProfileSetupWizard = ({ maxProfiles, packageType }: ProfileSetupWizardProp
     };
 
     loadExistingProfiles();
-  }, [user, maxProfiles]);
+  }, [user, maxProfiles, draftLoaded]);
 
   const handleProfileChange = (index: number, field: keyof ProfileData, value: string) => {
     const updated = [...profiles];
@@ -287,6 +338,8 @@ const ProfileSetupWizard = ({ maxProfiles, packageType }: ProfileSetupWizardProp
         sessionStorage.setItem('profile_setup_just_completed', 'true');
       }
       
+      // Clear the wizard draft since we're done
+      sessionStorage.removeItem(WIZARD_DRAFT_KEY);
 
       setCompleted(true);
       toast.success(language === 'de' ? 'Profile erfolgreich gespeichert!' : 'Profiles saved successfully!');
