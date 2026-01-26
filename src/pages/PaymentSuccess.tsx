@@ -24,6 +24,7 @@ const PaymentSuccessContent = () => {
   const [hasVerified, setHasVerified] = useState(false);
   const [maxProfiles, setMaxProfiles] = useState(1);
   const [showProfileSetup, setShowProfileSetup] = useState(false);
+  const [showConfirmation, setShowConfirmation] = useState(false);
 
   useEffect(() => {
     const verifyPayment = async () => {
@@ -84,12 +85,8 @@ const PaymentSuccessContent = () => {
           }
           setMaxProfiles(profiles);
           
-          // Show profile setup for:
-          // 1. New purchases (not an upgrade)
-          // 2. Adding additional profiles to family package
-          // 3. Tier upgrades that increase profile slots (e.g., Single→Couple, Single→Family)
-          // The wizard will detect existing profiles and only show slots for new ones
-          setShowProfileSetup(true);
+          // First show confirmation screen, then proceed to profile setup
+          setShowConfirmation(true);
         } else {
           setVerificationStatus('error');
           setErrorMessage(language === 'de' 
@@ -121,6 +118,10 @@ const PaymentSuccessContent = () => {
       upgradeDesc: 'Dein Paket wurde erweitert.',
       addProfilesSuccess: 'Profile hinzugefügt!',
       addProfilesDesc: 'Du kannst jetzt weitere Profile anlegen.',
+      confirmTitle: 'Zahlung bestätigt!',
+      confirmSubtitle: 'Deine Zahlung wurde erfolgreich verarbeitet.',
+      confirmDescription: 'Im nächsten Schritt richtest Du Dein Profil ein, um mit der Dateneingabe zu beginnen.',
+      confirmCta: 'Weiter zur Einrichtung',
     },
     en: {
       title: 'Payment Successful!',
@@ -134,6 +135,10 @@ const PaymentSuccessContent = () => {
       upgradeDesc: 'Your package has been upgraded.',
       addProfilesSuccess: 'Profiles Added!',
       addProfilesDesc: 'You can now create additional profiles.',
+      confirmTitle: 'Payment Confirmed!',
+      confirmSubtitle: 'Your payment has been successfully processed.',
+      confirmDescription: 'In the next step, you will set up your profile to start entering your data.',
+      confirmCta: 'Continue to Setup',
     },
   };
 
@@ -184,6 +189,32 @@ const PaymentSuccessContent = () => {
               {texts.cta}
             </Button>
           </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Payment confirmation screen - user must click to proceed
+  if (showConfirmation && !showProfileSetup) {
+    const handleContinueToSetup = () => {
+      setShowConfirmation(false);
+      setShowProfileSetup(true);
+    };
+
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background p-4">
+        <div className="text-center max-w-md">
+          <div className="mx-auto mb-6 h-20 w-20 rounded-full bg-sage-light flex items-center justify-center">
+            <CheckCircle className="h-10 w-10 text-sage-dark" />
+          </div>
+          <h1 className="font-serif text-3xl font-bold text-foreground mb-2">
+            {texts.confirmTitle}
+          </h1>
+          <p className="text-xl text-sage-dark mb-4">{texts.confirmSubtitle}</p>
+          <p className="text-muted-foreground mb-8">{texts.confirmDescription}</p>
+          <Button onClick={handleContinueToSetup} size="lg">
+            {texts.confirmCta}
+          </Button>
         </div>
       </div>
     );
