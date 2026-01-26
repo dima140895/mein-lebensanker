@@ -340,7 +340,7 @@ const DashboardContent = () => {
                   <div className={`h-9 w-9 rounded-lg flex items-center justify-center flex-shrink-0 ${section.color}`}>
                     <Icon className="h-4 w-4" />
                   </div>
-                  <span className="font-medium text-sm text-foreground leading-tight">
+                  <span className="font-medium text-sm text-foreground leading-tight break-words overflow-hidden">
                     {texts[section.key as keyof typeof texts]}
                   </span>
                 </motion.button>
