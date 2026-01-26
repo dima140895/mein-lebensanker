@@ -27,9 +27,9 @@ const ValuePropositions = () => {
     <section id="value" className="bg-cream-dark/30 py-16 md:py-20">
       <div className="container mx-auto px-4">
         <motion.div
+          key={`value-header-${language}`}
           initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
           className="mb-12 text-center"
         >
@@ -49,10 +49,9 @@ const ValuePropositions = () => {
             const Icon = value.icon;
             return (
               <motion.div
-                key={value.key}
+                key={`${language}-${value.key}`}
                 initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
+                animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
                 className="group rounded-xl border border-border bg-card p-6 shadow-card transition-all hover:shadow-elevated"
               >
