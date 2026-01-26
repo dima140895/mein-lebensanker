@@ -136,22 +136,59 @@ serve(async (req) => {
       if (!profileInfo.hasDocuments) continue
 
       for (const docType of documentTypes) {
-        // New path structure: userId/profileId/documentType
-        const folderPath = `${userId}/${profileId}/${docType}`
+        // Check BOTH new and legacy paths
+        const newPath = `${userId}/${profileId}/${docType}`
+        const legacyPath = `${userId}/${docType}`
         
-        const { data: files, error: listError } = await supabase.storage
+        // Try new path structure first: userId/profileId/documentType
+        const { data: newFiles } = await supabase.storage
           .from('user-documents')
-          .list(folderPath)
+          .list(newPath)
 
-        if (listError) {
-          // Try legacy path structure: userId/documentType (for backward compatibility)
-          const legacyPath = `${userId}/${docType}`
+        if (newFiles && newFiles.length > 0) {
+          const validFiles = newFiles.filter(f => 
+            f.name !== '.emptyFolderPlaceholder' && 
+            !f.name.startsWith('.') &&
+            f.id !== null
+          )
+
+          for (const file of validFiles) {
+            const filePath = `${newPath}/${file.name}`
+            
+            const { data: signedUrlData, error: signedUrlError } = await supabase.storage
+              .from('user-documents')
+              .createSignedUrl(filePath, 900)
+
+            if (signedUrlError) continue
+
+            const parts = file.name.split('-')
+            let displayName = file.name
+            if (parts.length > 1 && !isNaN(parseInt(parts[0]))) {
+              displayName = parts.slice(1).join('-')
+            }
+
+            allDocuments.push({
+              name: displayName,
+              path: filePath,
+              size: file.metadata?.size || 0,
+              uploadedAt: file.created_at || '',
+              signedUrl: signedUrlData.signedUrl,
+              documentType: docType,
+              profileId: profileId,
+              profileName: profileInfo.name,
+            })
+          }
+        }
+
+        // Also check legacy path structure: userId/documentType (for backward compatibility)
+        // Only for the first profile to avoid duplicate documents
+        const isFirstProfile = Array.from(profileMap.keys())[0] === profileId
+        if (isFirstProfile) {
           const { data: legacyFiles } = await supabase.storage
             .from('user-documents')
             .list(legacyPath)
           
           if (legacyFiles && legacyFiles.length > 0) {
-            // Process legacy files
             const validFiles = legacyFiles.filter(f => 
               f.name !== '.emptyFolderPlaceholder' && 
               !f.name.startsWith('.') &&
@@ -160,6 +197,10 @@ serve(async (req) => {
 
             for (const file of validFiles) {
               const filePath = `${legacyPath}/${file.name}`
+              
+              // Check if this file was already added from new path (avoid duplicates)
+              const alreadyAdded = allDocuments.some(d => d.name === file.name.split('-').slice(1).join('-') || d.name === file.name)
+              if (alreadyAdded) continue
               
               const { data: signedUrlData, error: signedUrlError } = await supabase.storage
                 .from('user-documents')
@@ -185,45 +226,6 @@ serve(async (req) => {
               })
             }
           }
-          continue
-        }
-
-        if (!files || files.length === 0) continue
-
-        // Filter out placeholder files and folders
-        const validFiles = files.filter(f => 
-          f.name !== '.emptyFolderPlaceholder' && 
-          !f.name.startsWith('.') &&
-          f.id !== null
-        )
-
-        for (const file of validFiles) {
-          const filePath = `${folderPath}/${file.name}`
-          
-          // Create signed URL (valid for 15 minutes for security)
-          const { data: signedUrlData, error: signedUrlError } = await supabase.storage
-            .from('user-documents')
-            .createSignedUrl(filePath, 900)
-
-          if (signedUrlError) continue
-
-          // Get display name (remove timestamp prefix)
-          const parts = file.name.split('-')
-          let displayName = file.name
-          if (parts.length > 1 && !isNaN(parseInt(parts[0]))) {
-            displayName = parts.slice(1).join('-')
-          }
-
-          allDocuments.push({
-            name: displayName,
-            path: filePath,
-            size: file.metadata?.size || 0,
-            uploadedAt: file.created_at || '',
-            signedUrl: signedUrlData.signedUrl,
-            documentType: docType,
-            profileId: profileId,
-            profileName: profileInfo.name,
-          })
         }
       }
     }
