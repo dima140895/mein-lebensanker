@@ -40,6 +40,7 @@ const RelativesViewContent = () => {
   const [vorsorgeData, setVorsorgeData] = useState<VorsorgeData[]>([]);
   const [profiles, setProfiles] = useState<PersonProfile[]>([]);
   const [sharedSections, setSharedSections] = useState<string[]>([]);
+  const [sharedProfileSections, setSharedProfileSections] = useState<Record<string, string[]> | null>(null);
   const [requiresPIN, setRequiresPIN] = useState(false);
   const [pinVerified, setPINVerified] = useState(false);
   const [remainingAttempts, setRemainingAttempts] = useState(3);
@@ -168,16 +169,22 @@ const RelativesViewContent = () => {
     if (!token) return;
 
     try {
-      // Get profiles, vorsorge data, and shared sections in parallel
-      const [profilesResult, dataResult, sectionsResult] = await Promise.all([
+      // Get profiles, vorsorge data, shared sections, and per-profile sections in parallel
+      const [profilesResult, dataResult, sectionsResult, profileSectionsResult] = await Promise.all([
         supabase.rpc('get_profiles_by_token', { _token: token }),
         supabase.rpc('get_vorsorge_data_by_token', { _token: token }),
         supabase.rpc('get_shared_sections_by_token', { _token: token }),
+        supabase.rpc('get_shared_profile_sections_by_token', { _token: token }),
       ]);
 
-      // Store shared sections
+      // Store shared sections (legacy)
       if (sectionsResult.data) {
         setSharedSections(sectionsResult.data as string[]);
+      }
+      
+      // Store per-profile sections (new structure)
+      if (profileSectionsResult.data && typeof profileSectionsResult.data === 'object') {
+        setSharedProfileSections(profileSectionsResult.data as Record<string, string[]>);
       }
 
       if (profilesResult.data) {
@@ -370,6 +377,7 @@ const RelativesViewContent = () => {
             data={vorsorgeData} 
             profiles={profiles}
             sharedSections={sharedSections}
+            sharedProfileSections={sharedProfileSections}
             token={token}
           />
         ) : (

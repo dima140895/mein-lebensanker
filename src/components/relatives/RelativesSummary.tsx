@@ -28,6 +28,7 @@ interface RelativesSummaryProps {
   data: VorsorgeData[];
   profiles: PersonProfile[];
   sharedSections?: string[];
+  sharedProfileSections?: Record<string, string[]> | null;
   token?: string;
 }
 
@@ -38,15 +39,27 @@ interface SharedDocument {
   documentType: string;
 }
 
-const RelativesSummary = ({ data, profiles, sharedSections, token }: RelativesSummaryProps) => {
+const RelativesSummary = ({ data, profiles, sharedSections, sharedProfileSections, token }: RelativesSummaryProps) => {
   const { language } = useLanguage();
   const printRef = useRef<HTMLDivElement>(null);
   const [sharedDocuments, setSharedDocuments] = useState<SharedDocument[]>([]);
 
+  // Check if documents section is shared (either via legacy or new structure)
+  const isDocumentsSectionShared = (): boolean => {
+    // Check new per-profile sections structure first
+    if (sharedProfileSections && Object.keys(sharedProfileSections).length > 0) {
+      return Object.values(sharedProfileSections).some(sections => 
+        sections?.includes('documents')
+      );
+    }
+    // Fall back to legacy shared sections
+    return sharedSections?.includes('documents') ?? false;
+  };
+
   // Fetch shared documents for printing
   useEffect(() => {
     const fetchDocuments = async () => {
-      if (!token || !sharedSections?.includes('documents')) return;
+      if (!token || !isDocumentsSectionShared()) return;
 
       try {
         const { data: docData } = await supabase.functions.invoke('get-shared-documents', {
@@ -67,7 +80,7 @@ const RelativesSummary = ({ data, profiles, sharedSections, token }: RelativesSu
     };
 
     fetchDocuments();
-  }, [token, sharedSections]);
+  }, [token, sharedSections, sharedProfileSections]);
 
   const handlePrint = useReactToPrint({
     contentRef: printRef,
