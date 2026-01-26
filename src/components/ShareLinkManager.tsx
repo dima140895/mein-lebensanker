@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Link2, Plus, Trash2, Copy, Check, ExternalLink, Shield, Lock, Share2, Eye, Info, ShieldX, User, Wallet, Smartphone, Heart, FileText, Users } from 'lucide-react';
+import { Link2, Plus, Trash2, Copy, Check, ExternalLink, Shield, Lock, Share2, Eye, Info, ShieldX, User, Wallet, Smartphone, Heart, FileText, Users, UserCircle } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
+import { useProfiles, PersonProfile } from '@/contexts/ProfileContext';
 import { supabase } from '@/integrations/supabase/browserClient';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -35,6 +36,7 @@ interface ShareToken {
   pin_hash: string | null;
   failed_attempts: number;
   shared_sections: string[] | null;
+  shared_profile_ids: string[] | null;
 }
 
 const ALL_SECTIONS = ['personal', 'assets', 'digital', 'wishes', 'documents', 'contacts'] as const;
@@ -43,6 +45,7 @@ type SectionKey = typeof ALL_SECTIONS[number];
 const ShareLinkManager = () => {
   const { user } = useAuth();
   const { language } = useLanguage();
+  const { personProfiles } = useProfiles();
   const [tokens, setTokens] = useState<ShareToken[]>([]);
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
@@ -52,6 +55,7 @@ const ShareLinkManager = () => {
   const [usePIN, setUsePIN] = useState(false);
   const [pin, setPIN] = useState('');
   const [selectedSections, setSelectedSections] = useState<SectionKey[]>([...ALL_SECTIONS]);
+  const [selectedProfileIds, setSelectedProfileIds] = useState<string[]>([]);
 
   const sectionLabels = {
     de: {
@@ -122,6 +126,11 @@ const ShareLinkManager = () => {
       selectNone: 'Alle abwählen',
       atLeastOne: 'Bitte wähle mindestens einen Bereich aus',
       sharedSections: 'Geteilte Bereiche',
+      selectProfiles: 'Profile auswählen',
+      selectProfilesDesc: 'Wähle aus, für welche Profile die Daten geteilt werden sollen.',
+      allProfiles: 'Alle Profile',
+      atLeastOneProfile: 'Bitte wähle mindestens ein Profil aus',
+      sharedProfiles: 'Geteilte Profile',
     },
     en: {
       title: 'Relatives Access',
@@ -163,6 +172,11 @@ const ShareLinkManager = () => {
       selectNone: 'Deselect all',
       atLeastOne: 'Please select at least one section',
       sharedSections: 'Shared sections',
+      selectProfiles: 'Select Profiles',
+      selectProfilesDesc: 'Choose which profiles\' data you want to share.',
+      allProfiles: 'All profiles',
+      atLeastOneProfile: 'Please select at least one profile',
+      sharedProfiles: 'Shared profiles',
     },
   };
 
@@ -186,6 +200,24 @@ const ShareLinkManager = () => {
   useEffect(() => {
     loadTokens();
   }, [user]);
+
+  // Initialize selected profiles when profiles load
+  useEffect(() => {
+    if (personProfiles.length > 0 && selectedProfileIds.length === 0) {
+      setSelectedProfileIds(personProfiles.map(p => p.id));
+    }
+  }, [personProfiles]);
+
+  const toggleProfileId = (profileId: string) => {
+    setSelectedProfileIds(prev => 
+      prev.includes(profileId)
+        ? prev.filter(id => id !== profileId)
+        : [...prev, profileId]
+    );
+  };
+
+  const selectAllProfiles = () => setSelectedProfileIds(personProfiles.map(p => p.id));
+  const deselectAllProfiles = () => setSelectedProfileIds([]);
 
   const toggleSection = (section: SectionKey) => {
     setSelectedSections(prev => 
@@ -212,16 +244,27 @@ const ShareLinkManager = () => {
       toast.error(texts.atLeastOne);
       return;
     }
+
+    // Validate at least one profile selected (if profiles exist)
+    if (personProfiles.length > 0 && selectedProfileIds.length === 0) {
+      toast.error(texts.atLeastOneProfile);
+      return;
+    }
     
     setCreating(true);
 
-    // First create the token with shared sections
+    // Determine shared profile IDs (null means all profiles)
+    const allProfilesSelected = personProfiles.length === 0 || selectedProfileIds.length === personProfiles.length;
+    const profileIdsToShare = allProfilesSelected ? null : selectedProfileIds;
+
+    // First create the token with shared sections and profiles
     const { data, error } = await supabase
       .from('share_tokens')
       .insert({
         user_id: user.id,
         label: newLabel.trim() || null,
         shared_sections: selectedSections,
+        shared_profile_ids: profileIdsToShare,
       })
       .select()
       .single();
@@ -261,6 +304,7 @@ const ShareLinkManager = () => {
       setPIN('');
       setUsePIN(false);
       setSelectedSections([...ALL_SECTIONS]);
+      setSelectedProfileIds(personProfiles.map(p => p.id));
       setDialogOpen(false);
     }
     setCreating(false);
@@ -381,6 +425,60 @@ const ShareLinkManager = () => {
                   ))}
                 </div>
               </div>
+
+              {/* Profile Selection - only show if multiple profiles exist */}
+              {personProfiles.length > 1 && (
+                <div className="rounded-lg border border-border p-4 space-y-4">
+                  <div className="space-y-1">
+                    <Label className="flex items-center gap-2">
+                      <UserCircle className="h-4 w-4" />
+                      {texts.selectProfiles}
+                    </Label>
+                    <p className="text-sm text-muted-foreground">{texts.selectProfilesDesc}</p>
+                  </div>
+                  
+                  <div className="flex gap-2">
+                    <Button 
+                      type="button" 
+                      variant="outline" 
+                      size="sm"
+                      onClick={selectAllProfiles}
+                    >
+                      {texts.selectAll}
+                    </Button>
+                    <Button 
+                      type="button" 
+                      variant="outline" 
+                      size="sm"
+                      onClick={deselectAllProfiles}
+                    >
+                      {texts.selectNone}
+                    </Button>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {personProfiles.map((profile) => (
+                      <label
+                        key={profile.id}
+                        className={`flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-colors ${
+                          selectedProfileIds.includes(profile.id)
+                            ? 'border-primary bg-primary/5'
+                            : 'border-border hover:border-muted-foreground/50'
+                        }`}
+                      >
+                        <Checkbox
+                          checked={selectedProfileIds.includes(profile.id)}
+                          onCheckedChange={() => toggleProfileId(profile.id)}
+                        />
+                        <span className="flex items-center gap-2 text-sm">
+                          <UserCircle className="h-4 w-4" />
+                          {profile.name}
+                        </span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              )}
               
               {/* PIN Protection Toggle */}
               <div className="rounded-lg border border-border p-4 space-y-4">
@@ -419,7 +517,7 @@ const ShareLinkManager = () => {
                 )}
               </div>
               
-              <Button onClick={createToken} disabled={creating || (usePIN && pin.length !== 6) || selectedSections.length === 0} className="w-full">
+              <Button onClick={createToken} disabled={creating || (usePIN && pin.length !== 6) || selectedSections.length === 0 || (personProfiles.length > 0 && selectedProfileIds.length === 0)} className="w-full">
                 {creating ? '...' : texts.create}
               </Button>
             </div>
@@ -544,6 +642,33 @@ const ShareLinkManager = () => {
                           {sectionLabels[language][section as SectionKey]}
                         </span>
                       ))}
+                    </div>
+                  )}
+                  {/* Show shared profiles */}
+                  {token.shared_profile_ids && token.shared_profile_ids.length > 0 && personProfiles.length > 1 && (
+                    <div className="flex flex-wrap gap-1 mt-1">
+                      <span className="text-xs text-muted-foreground mr-1">{texts.sharedProfiles}:</span>
+                      {token.shared_profile_ids.map((profileId) => {
+                        const profile = personProfiles.find(p => p.id === profileId);
+                        return profile ? (
+                          <span 
+                            key={profileId}
+                            className="inline-flex items-center gap-1 text-xs text-muted-foreground bg-primary/10 px-1.5 py-0.5 rounded"
+                          >
+                            <UserCircle className="h-3 w-3" />
+                            {profile.name}
+                          </span>
+                        ) : null;
+                      })}
+                    </div>
+                  )}
+                  {/* Show "All profiles" if no specific profiles selected */}
+                  {(!token.shared_profile_ids || token.shared_profile_ids.length === 0) && personProfiles.length > 1 && (
+                    <div className="flex flex-wrap gap-1 mt-1">
+                      <span className="inline-flex items-center gap-1 text-xs text-muted-foreground bg-primary/10 px-1.5 py-0.5 rounded">
+                        <UserCircle className="h-3 w-3" />
+                        {texts.allProfiles}
+                      </span>
                     </div>
                   )}
                   <p className="text-sm text-muted-foreground">
