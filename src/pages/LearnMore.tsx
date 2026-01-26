@@ -126,7 +126,7 @@ const LearnMore = () => {
     },
     {
       question: 'Wer kann meine Daten sehen?',
-      answer: 'Nur Du selbst – und Personen, denen Du einen speziellen Zugangslink gibst. Du hast volle Kontrolle darüber, was geteilt wird.',
+      answer: 'Nach unserem Design nur Du selbst – und Personen, denen Du einen speziellen Zugangslink gibst. Du hast die Kontrolle darüber, was geteilt wird.',
     },
     {
       question: 'Was kostet die Nutzung?',
@@ -143,7 +143,7 @@ const LearnMore = () => {
     },
     {
       question: 'Who can see my data?',
-      answer: 'Only you – and people you give a special access link to. You have full control over what is shared.',
+      answer: 'By design, only you – and people you give a special access link to. You have control over what is shared.',
     },
     {
       question: 'What does it cost?',
@@ -435,7 +435,7 @@ const LearnMore = () => {
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle className="h-4 w-4 text-sage flex-shrink-0 mt-0.5" />
-                        {language === 'de' ? 'Selbst wir haben keinen Zugriff auf Deine Daten' : 'Even we have no access to your data'}
+                        {language === 'de' ? 'Nach unserem Design haben unsere Systeme keinen Zugriff auf Deine Klartextdaten' : 'By design, our systems cannot access your plaintext data'}
                       </li>
                     </ul>
                   </div>
@@ -461,8 +461,8 @@ const LearnMore = () => {
                     <div className="mt-4 p-3 bg-amber-light/30 rounded-lg">
                       <p className="text-xs text-amber font-medium">
                         {language === 'de' 
-                          ? '⚠️ Ohne Passwort UND Recovery Key ist kein Zugriff möglich!'
-                          : '⚠️ Without password AND recovery key, no access is possible!'
+                          ? '⚠️ Ohne Passwort UND Recovery Key ist nach unserem Design kein Zugriff auf verschlüsselte Daten vorgesehen.'
+                          : '⚠️ By design, access to encrypted data is not possible without password AND recovery key.'
                         }
                       </p>
                     </div>
