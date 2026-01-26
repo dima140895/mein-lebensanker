@@ -54,6 +54,15 @@ const HeroSection = () => {
         />
         <div className="absolute inset-0 bg-gradient-to-r from-background via-background/95 to-background/70" />
         <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/50" />
+        
+        {/* Slogan overlay on image */}
+        <div className="absolute top-8 left-1/2 -translate-x-1/2 text-center pointer-events-none hidden lg:block">
+          <p className="font-serif text-sm md:text-base text-cream/80 tracking-wide">
+            {language === 'de' 
+              ? 'Für sich vorsorgen. Für andere vorsorgen. Einfach geregelt.'
+              : 'Plan for yourself. Plan for others. Simply organized.'}
+          </p>
+        </div>
       </div>
 
       {/* Decorative elements */}
