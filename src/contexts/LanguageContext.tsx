@@ -17,7 +17,7 @@ const translations = {
     
     // Hero Section
     'hero.tagline': 'Ordnung für den Fall der Fälle',
-    'hero.subtitle': 'Für Dich und die Menschen, die Dir wichtig sind.',
+    'hero.subtitle': 'Damit Angehörige nicht im Chaos stehen.',
     'hero.description': 'Strukturiere Deine persönlichen, finanziellen und organisatorischen Informationen – damit Deine Liebsten im Ernstfall entlastet werden.',
     'hero.cta': 'Jetzt starten',
     'hero.learnMore': 'Mehr erfahren',
@@ -91,7 +91,7 @@ const translations = {
     
     // Hero Section
     'hero.tagline': 'Order for Peace of Mind',
-    'hero.subtitle': 'For you and the people who matter to you.',
+    'hero.subtitle': "So your loved ones aren't left in chaos.",
     'hero.description': 'Structure your personal, financial, and organizational information - to ease the burden on those you care about.',
     'hero.cta': 'Get Started',
     'hero.learnMore': 'Learn More',
