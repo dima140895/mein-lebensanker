@@ -126,6 +126,7 @@ export type Database = {
           label: string | null
           pin_hash: string | null
           pin_salt: string | null
+          shared_profile_ids: string[] | null
           shared_sections: string[] | null
           token: string
           updated_at: string
@@ -140,6 +141,7 @@ export type Database = {
           label?: string | null
           pin_hash?: string | null
           pin_salt?: string | null
+          shared_profile_ids?: string[] | null
           shared_sections?: string[] | null
           token?: string
           updated_at?: string
@@ -154,6 +156,7 @@ export type Database = {
           label?: string | null
           pin_hash?: string | null
           pin_salt?: string | null
+          shared_profile_ids?: string[] | null
           shared_sections?: string[] | null
           token?: string
           updated_at?: string
