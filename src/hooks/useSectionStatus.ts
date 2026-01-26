@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useProfiles, PersonProfile } from '@/contexts/ProfileContext';
 import { supabase } from '@/integrations/supabase/browserClient';
+import { sectionStatusEvents } from './useSectionStatusRefresh';
 
 export interface SectionStatus {
   [key: string]: boolean;
@@ -125,6 +126,14 @@ export const useSectionStatus = () => {
 
   useEffect(() => {
     checkSections();
+  }, [checkSections]);
+
+  // Subscribe to global refresh events (triggered after auto-save)
+  useEffect(() => {
+    const unsubscribe = sectionStatusEvents.subscribe(() => {
+      checkSections();
+    });
+    return unsubscribe;
   }, [checkSections]);
 
   const filledCount = Object.values(sectionStatus).filter(Boolean).length;
