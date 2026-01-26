@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { User, Wallet, Globe, Heart, FileText, ArrowLeft, Users, Phone, Info, Compass, MessageCircle, Link2 } from 'lucide-react';
+import { User, Wallet, Globe, Heart, FileText, ArrowLeft, Users, Phone, Info, Compass, MessageCircle, Link2, ClipboardCheck, Download } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useEncryption } from '@/contexts/EncryptionContext';
@@ -22,6 +22,8 @@ import AboutSection from '@/components/sections/AboutSection';
 import GuidanceSection from '@/components/sections/GuidanceSection';
 import DecisionAssistant from '@/components/sections/DecisionAssistant';
 import ShareLinkManager from '@/components/ShareLinkManager';
+import StatusCheck from '@/components/StatusCheck';
+import DataExport from '@/components/DataExport';
 import { useProfiles } from '@/contexts/ProfileContext';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -39,6 +41,8 @@ const sections = [
   { key: 'guidance', icon: Compass, color: 'bg-sage-light text-sage-dark', isInfo: true },
   { key: 'decision', icon: MessageCircle, color: 'bg-amber-light text-amber', isInfo: true },
   { key: 'share', icon: Link2, color: 'bg-primary/20 text-primary', isInfo: true },
+  { key: 'status', icon: ClipboardCheck, color: 'bg-amber-light text-amber', isInfo: true },
+  { key: 'export', icon: Download, color: 'bg-sage-light text-sage-dark', isInfo: true },
 ];
 
 const DashboardContent = () => {
@@ -108,6 +112,10 @@ const DashboardContent = () => {
       decisionDesc: 'Unterstützung bei schwierigen Fragen',
       share: 'Für Angehörige',
       shareDesc: 'Sicheren Zugangslink erstellen & verwalten',
+      status: 'Status-Check',
+      statusDesc: 'Was fehlt noch?',
+      export: 'Daten-Export',
+      exportDesc: 'Deine Daten herunterladen',
       you: 'Für mich',
       partner: 'Für Partner',
       notPaid: 'Um Deine Daten zu speichern, wähle ein Paket:',
@@ -136,6 +144,10 @@ const DashboardContent = () => {
       decisionDesc: 'Support for difficult questions',
       share: 'For Relatives',
       shareDesc: 'Create & manage secure access link',
+      status: 'Status Check',
+      statusDesc: 'What\'s missing?',
+      export: 'Data Export',
+      exportDesc: 'Download your data',
       you: 'For Me',
       partner: 'For Partner',
       notPaid: 'To save your data, choose a package:',
@@ -172,6 +184,8 @@ const DashboardContent = () => {
       case 'guidance': return <GuidanceSection />;
       case 'decision': return <DecisionAssistant />;
       case 'share': return <ShareLinkManager />;
+      case 'status': return <StatusCheck />;
+      case 'export': return <DataExport />;
       case 'upgrade': return <PackageManagement />;
       case 'payment': return <PackageManagement />;
       case 'personal': return <PersonalForm />;
