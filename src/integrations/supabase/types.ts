@@ -127,6 +127,7 @@ export type Database = {
           pin_hash: string | null
           pin_salt: string | null
           shared_profile_ids: string[] | null
+          shared_profile_sections: Json | null
           shared_sections: string[] | null
           token: string
           updated_at: string
@@ -142,6 +143,7 @@ export type Database = {
           pin_hash?: string | null
           pin_salt?: string | null
           shared_profile_ids?: string[] | null
+          shared_profile_sections?: Json | null
           shared_sections?: string[] | null
           token?: string
           updated_at?: string
@@ -157,6 +159,7 @@ export type Database = {
           pin_hash?: string | null
           pin_salt?: string | null
           shared_profile_ids?: string[] | null
+          shared_profile_sections?: Json | null
           shared_sections?: string[] | null
           token?: string
           updated_at?: string
@@ -254,6 +257,10 @@ export type Database = {
           profile_id: string
           profile_name: string
         }[]
+      }
+      get_shared_profile_sections_by_token: {
+        Args: { _token: string }
+        Returns: Json
       }
       get_shared_sections_by_token: {
         Args: { _token: string }
