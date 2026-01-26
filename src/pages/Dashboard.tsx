@@ -27,6 +27,7 @@ import DataExport from '@/components/DataExport';
 import { useProfiles } from '@/contexts/ProfileContext';
 import { Button } from '@/components/ui/button';
 import { EncryptionPasswordDialog } from '@/components/EncryptionPasswordDialog';
+import { DashboardOnboardingTour } from '@/components/DashboardOnboardingTour';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useSectionStatus } from '@/hooks/useSectionStatus';
 import { Progress } from '@/components/ui/progress';
@@ -420,6 +421,9 @@ const DashboardContent = () => {
         mode="unlock"
         preventClose
       />
+
+      {/* Dashboard Onboarding Tour */}
+      <DashboardOnboardingTour />
     </>
   );
 };
