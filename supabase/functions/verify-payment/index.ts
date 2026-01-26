@@ -2,9 +2,20 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+// Allowed origins for CORS
+const ALLOWED_ORIGINS = [
+  "https://vorsorge.lovable.app",
+  "https://id-preview--3aceebdb-8fff-4d04-bf5f-d8b882169f3d.lovable.app",
+];
+
+const getCorsHeaders = (origin: string | null) => {
+  const allowedOrigin = origin && ALLOWED_ORIGINS.some(o => origin.startsWith(o.replace(/\/$/, ''))) 
+    ? origin 
+    : ALLOWED_ORIGINS[0];
+  return {
+    "Access-Control-Allow-Origin": allowedOrigin,
+    "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  };
 };
 
 const DEFAULT_MAX_PROFILES: Record<string, number> = {
@@ -14,6 +25,8 @@ const DEFAULT_MAX_PROFILES: Record<string, number> = {
 };
 
 serve(async (req) => {
+  const corsHeaders = getCorsHeaders(req.headers.get("origin"));
+  
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
@@ -60,7 +73,7 @@ serve(async (req) => {
 
     // Security check: Verify the authenticated user matches the claimed userId
     if (userId && userId !== authenticatedUserId) {
-      return new Response(JSON.stringify({ error: "Forbidden: User mismatch" }), {
+      return new Response(JSON.stringify({ error: "Forbidden" }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 403,
       });
@@ -74,7 +87,7 @@ serve(async (req) => {
 
     // Security check: Verify the Stripe session belongs to the authenticated user
     if (session.metadata?.user_id && session.metadata.user_id !== authenticatedUserId) {
-      return new Response(JSON.stringify({ error: "Forbidden: Session does not belong to user" }), {
+      return new Response(JSON.stringify({ error: "Forbidden" }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 403,
       });
@@ -114,7 +127,7 @@ serve(async (req) => {
         .eq("user_id", authenticatedUserId);
 
       if (error) {
-        console.error("Error updating profile:", error);
+        console.error("Profile update failed");
         return new Response(JSON.stringify({ error: "Failed to update payment status" }), {
           headers: { ...corsHeaders, "Content-Type": "application/json" },
           status: 500,
@@ -140,8 +153,7 @@ serve(async (req) => {
       status: 200,
     });
   } catch (error: unknown) {
-    const errorMessage = error instanceof Error ? error.message : "Unknown error";
-    console.error("Verification error:", errorMessage);
+    console.error("Verification error occurred");
     return new Response(JSON.stringify({ error: "Verification failed" }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 500,
