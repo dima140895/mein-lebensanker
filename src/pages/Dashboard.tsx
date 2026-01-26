@@ -356,7 +356,7 @@ const DashboardContent = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.05 }}
                   onClick={() => handleSectionChange(section.key)}
-                  className={`relative flex items-start gap-4 p-5 rounded-xl border shadow-card hover:shadow-elevated transition-all text-left ${
+                  className={`relative flex items-start gap-4 p-5 rounded-xl border shadow-card hover:shadow-elevated transition-all text-left h-full min-h-[100px] ${
                     isFilled 
                       ? 'border-primary/30 bg-primary/5' 
                       : 'border-border bg-card'
@@ -372,11 +372,11 @@ const DashboardContent = () => {
                   <div className={`h-11 w-11 rounded-lg flex items-center justify-center flex-shrink-0 ${section.color}`}>
                     <Icon className="h-5 w-5" />
                   </div>
-                  <div className="flex flex-col gap-0.5 pr-6">
+                  <div className="flex flex-col gap-0.5 pr-6 flex-1">
                     <span className="font-serif text-base font-semibold text-foreground">
                       {texts[section.key as keyof typeof texts]}
                     </span>
-                    <span className="text-xs text-muted-foreground">
+                    <span className="text-xs text-muted-foreground line-clamp-2">
                       {texts[descKey]}
                     </span>
                   </div>
