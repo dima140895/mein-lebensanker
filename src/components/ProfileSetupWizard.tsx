@@ -282,6 +282,11 @@ const ProfileSetupWizard = ({ maxProfiles, packageType }: ProfileSetupWizardProp
         setActiveProfile(firstProfileWithName.id);
       }
       
+      // Set flag for profile switcher tooltip (only for multi-profile packages)
+      if (maxProfiles > 1) {
+        sessionStorage.setItem('profile_setup_just_completed', 'true');
+      }
+
       setCompleted(true);
       toast.success(language === 'de' ? 'Profile erfolgreich gespeichert!' : 'Profiles saved successfully!');
     } catch (error: any) {

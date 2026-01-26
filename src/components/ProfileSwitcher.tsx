@@ -24,6 +24,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import { Json } from '@/integrations/supabase/types';
+import { ProfileSwitcherTooltip } from './ProfileSwitcherTooltip';
 
 const ProfileSwitcher = () => {
   const { language } = useLanguage();
@@ -199,68 +200,70 @@ const ProfileSwitcher = () => {
 
   return (
     <>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button 
-            variant="outline" 
-            size="sm" 
-            className="gap-2"
-          >
-            <User className="h-4 w-4" />
-            <span className="max-w-[100px] truncate">
-              {activeProfile?.name || t.switchProfile}
-            </span>
-            <ChevronDown className="h-3 w-3" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-64 bg-popover">
-          <div className="px-2 py-1.5 text-xs font-medium text-muted-foreground">
-            {t.profiles} ({personProfiles.length}/{profile?.max_profiles})
-          </div>
-          <DropdownMenuSeparator />
-          
-          {personProfiles.map((p) => (
-            <DropdownMenuItem
-              key={p.id}
-              className="flex items-center justify-between group"
-              onClick={() => setActiveProfileId(p.id)}
+      <ProfileSwitcherTooltip>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="gap-2"
             >
-              <div className="flex items-center gap-2">
-                {p.id === activeProfileId && (
-                  <Check className="h-4 w-4 text-primary" />
-                )}
-                {p.id !== activeProfileId && (
-                  <div className="w-4" />
-                )}
-                <span className={p.id === activeProfileId ? 'font-medium' : ''}>
-                  {p.name}
-                </span>
-              </div>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-6 w-6 opacity-0 group-hover:opacity-100"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  openEditDialog(p.id);
-                }}
+              <User className="h-4 w-4" />
+              <span className="max-w-[100px] truncate">
+                {activeProfile?.name || t.switchProfile}
+              </span>
+              <ChevronDown className="h-3 w-3" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-64 bg-popover">
+            <div className="px-2 py-1.5 text-xs font-medium text-muted-foreground">
+              {t.profiles} ({personProfiles.length}/{profile?.max_profiles})
+            </div>
+            <DropdownMenuSeparator />
+            
+            {personProfiles.map((p) => (
+              <DropdownMenuItem
+                key={p.id}
+                className="flex items-center justify-between group"
+                onClick={() => setActiveProfileId(p.id)}
               >
-                <Pencil className="h-3 w-3" />
-              </Button>
-            </DropdownMenuItem>
-          ))}
-          
-          {canAddProfile && (
-            <>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={openCreateDialog}>
-                <Plus className="mr-2 h-4 w-4" />
-                {t.addProfile}
+                <div className="flex items-center gap-2">
+                  {p.id === activeProfileId && (
+                    <Check className="h-4 w-4 text-primary" />
+                  )}
+                  {p.id !== activeProfileId && (
+                    <div className="w-4" />
+                  )}
+                  <span className={p.id === activeProfileId ? 'font-medium' : ''}>
+                    {p.name}
+                  </span>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-6 w-6 opacity-0 group-hover:opacity-100"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    openEditDialog(p.id);
+                  }}
+                >
+                  <Pencil className="h-3 w-3" />
+                </Button>
               </DropdownMenuItem>
-            </>
-          )}
-        </DropdownMenuContent>
-      </DropdownMenu>
+            ))}
+            
+            {canAddProfile && (
+              <>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={openCreateDialog}>
+                  <Plus className="mr-2 h-4 w-4" />
+                  {t.addProfile}
+                </DropdownMenuItem>
+              </>
+            )}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </ProfileSwitcherTooltip>
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="sm:max-w-md">
