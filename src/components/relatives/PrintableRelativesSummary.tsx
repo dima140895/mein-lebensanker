@@ -1,5 +1,5 @@
 import { forwardRef } from 'react';
-import { User, Wallet, Globe, Heart, FileText, Phone } from 'lucide-react';
+import { User, Wallet, Globe, Heart, FileText, Phone, Heart as HeartIcon } from 'lucide-react';
 
 interface VorsorgeData {
   section_key: string;
@@ -107,6 +107,11 @@ const PrintableRelativesSummary = forwardRef<HTMLDivElement, PrintableRelativesS
         professionalType: 'Fachrichtung',
         notes: 'Hinweise',
         disclaimer: 'Diese Übersicht dient ausschließlich der persönlichen Orientierung und hat keinerlei rechtliche Wirkung. Sie ersetzt keine rechtliche, notarielle, medizinische oder steuerliche Beratung.',
+        footerCopyright: `© ${new Date().getFullYear()} Vorsorge`,
+        footerImprint: 'Impressum',
+        footerPrivacy: 'Datenschutz',
+        footerWebsite: 'vorsorge.lovable.app',
+        footerNote: 'Erstellt mit Vorsorge – Dein digitaler Vorsorge-Assistent',
       },
       en: {
         title: 'Care Planning Overview',
@@ -191,6 +196,11 @@ const PrintableRelativesSummary = forwardRef<HTMLDivElement, PrintableRelativesS
         professionalType: 'Profession',
         notes: 'Notes',
         disclaimer: 'This overview is for personal orientation only and has no legal effect. It does not replace legal, notarial, medical, or tax advice.',
+        footerCopyright: `© ${new Date().getFullYear()} Vorsorge`,
+        footerImprint: 'Imprint',
+        footerPrivacy: 'Privacy Policy',
+        footerWebsite: 'vorsorge.lovable.app',
+        footerNote: 'Created with Vorsorge – Your digital estate planning assistant',
       },
     };
 
@@ -509,7 +519,7 @@ const PrintableRelativesSummary = forwardRef<HTMLDivElement, PrintableRelativesS
       <div ref={ref} className="print-container">
         <style>{`
           .print-container {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: 'Georgia', 'Times New Roman', serif;
             color: #1a1a1a;
             background: white;
             padding: 40px;
@@ -518,96 +528,129 @@ const PrintableRelativesSummary = forwardRef<HTMLDivElement, PrintableRelativesS
           }
           .print-header {
             text-align: center;
-            margin-bottom: 32px;
+            margin-bottom: 40px;
             padding-bottom: 24px;
-            border-bottom: 2px solid #e5e5e5;
+            border-bottom: 3px solid #7c9a82;
+          }
+          .print-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 20px;
+          }
+          .print-logo-icon {
+            width: 48px;
+            height: 48px;
+            background: #7c9a82;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+          .print-logo-text {
+            font-size: 32px;
+            font-weight: 600;
+            color: #1a1a1a;
+            letter-spacing: -0.5px;
           }
           .print-title {
-            font-size: 28px;
-            font-weight: 700;
+            font-size: 24px;
+            font-weight: 400;
             margin-bottom: 8px;
-            color: #1a1a1a;
+            color: #4a4a4a;
           }
           .print-date {
             font-size: 14px;
-            color: #666;
+            color: #888;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
           }
           .print-profile {
-            margin-bottom: 40px;
+            margin-bottom: 48px;
             page-break-inside: avoid;
           }
           .print-profile-header {
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding: 16px;
-            background: #f5f5f5;
-            border-radius: 8px;
-            margin-bottom: 20px;
+            gap: 16px;
+            padding: 20px;
+            background: linear-gradient(135deg, #f0f5f1 0%, #e8f0ea 100%);
+            border-radius: 12px;
+            margin-bottom: 24px;
+            border-left: 4px solid #7c9a82;
           }
           .print-profile-icon {
-            width: 40px;
-            height: 40px;
-            background: #e0e0e0;
+            width: 48px;
+            height: 48px;
+            background: #7c9a82;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
           }
           .print-profile-name {
-            font-size: 20px;
+            font-size: 22px;
             font-weight: 600;
+            color: #2a3d2e;
           }
           .print-section {
-            margin-bottom: 24px;
+            margin-bottom: 28px;
             page-break-inside: avoid;
           }
           .print-section-header {
             display: flex;
             align-items: center;
-            gap: 10px;
-            padding: 12px 16px;
-            background: #fafafa;
-            border: 1px solid #e5e5e5;
-            border-radius: 8px 8px 0 0;
+            gap: 12px;
+            padding: 14px 18px;
+            background: linear-gradient(135deg, #f8faf8 0%, #f0f5f1 100%);
+            border: 1px solid #d4e0d6;
+            border-radius: 10px 10px 0 0;
           }
           .print-section-icon {
-            width: 28px;
-            height: 28px;
+            width: 32px;
+            height: 32px;
+            background: #7c9a82;
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
           }
           .print-section-title {
-            font-size: 16px;
+            font-size: 17px;
             font-weight: 600;
+            color: #2a3d2e;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
           }
           .print-section-content {
-            padding: 16px;
-            border: 1px solid #e5e5e5;
+            padding: 20px;
+            border: 1px solid #d4e0d6;
             border-top: none;
-            border-radius: 0 0 8px 8px;
+            border-radius: 0 0 10px 10px;
+            background: #fefefe;
           }
           .print-info-item {
-            padding: 8px 0;
-            border-bottom: 1px solid #f0f0f0;
+            padding: 10px 0;
+            border-bottom: 1px solid #eef3ef;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
           }
           .print-info-item:last-child {
             border-bottom: none;
           }
           .print-label {
             font-size: 13px;
-            color: #666;
+            color: #6a7d6d;
             margin-right: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
           }
           .print-value {
-            font-size: 14px;
+            font-size: 15px;
             color: #1a1a1a;
           }
           .print-subsection {
-            margin-top: 16px;
-            padding-top: 12px;
-            border-top: 1px dashed #e5e5e5;
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px dashed #d4e0d6;
           }
           .print-subsection:first-child {
             margin-top: 0;
@@ -617,26 +660,63 @@ const PrintableRelativesSummary = forwardRef<HTMLDivElement, PrintableRelativesS
           .print-subsection-title {
             font-size: 14px;
             font-weight: 600;
-            color: #333;
-            margin-bottom: 12px;
+            color: #4a5d4d;
+            margin-bottom: 14px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
           }
           .print-card {
-            background: #fafafa;
-            padding: 12px;
-            border-radius: 6px;
-            margin-bottom: 8px;
+            background: linear-gradient(135deg, #f8faf8 0%, #f5f8f5 100%);
+            padding: 14px 16px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #e8efe9;
           }
           .print-card:last-child {
             margin-bottom: 0;
           }
           .print-disclaimer {
-            margin-top: 40px;
-            padding: 16px;
-            background: #f5f5f5;
-            border-radius: 8px;
+            margin-top: 48px;
+            padding: 20px;
+            background: linear-gradient(135deg, #f5f8f5 0%, #eef3ef 100%);
+            border-radius: 10px;
             font-size: 12px;
-            color: #666;
+            color: #6a7d6d;
             text-align: center;
+            border: 1px solid #d4e0d6;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+          }
+          .print-footer {
+            margin-top: 48px;
+            padding-top: 24px;
+            border-top: 2px solid #d4e0d6;
+            text-align: center;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+          }
+          .print-footer-note {
+            font-size: 13px;
+            color: #7c9a82;
+            margin-bottom: 16px;
+            font-style: italic;
+          }
+          .print-footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin-bottom: 12px;
+            font-size: 12px;
+            color: #888;
+          }
+          .print-footer-links span {
+            color: #d4e0d6;
+          }
+          .print-footer-copyright {
+            font-size: 12px;
+            color: #aaa;
+          }
+          .print-footer-website {
+            font-size: 13px;
+            color: #7c9a82;
+            margin-top: 8px;
           }
           @media print {
             .print-container {
@@ -648,19 +728,30 @@ const PrintableRelativesSummary = forwardRef<HTMLDivElement, PrintableRelativesS
             .print-section {
               page-break-inside: avoid;
             }
+            .print-footer {
+              page-break-inside: avoid;
+            }
           }
         `}</style>
 
+        {/* Header with Logo */}
         <div className="print-header">
+          <div className="print-logo">
+            <div className="print-logo-icon">
+              <HeartIcon size={28} color="#ffffff" />
+            </div>
+            <span className="print-logo-text">Vorsorge</span>
+          </div>
           <h1 className="print-title">{texts.title}</h1>
           <p className="print-date">{texts.generatedOn}: {currentDate}</p>
         </div>
 
+        {/* Profile Sections */}
         {dataByProfile.map(({ profile, data: profileData }) => (
           <div key={profile.profile_id} className="print-profile">
             <div className="print-profile-header">
               <div className="print-profile-icon">
-                <User size={20} color="#666" />
+                <User size={24} color="#ffffff" />
               </div>
               <span className="print-profile-name">{profile.profile_name || texts.unknownProfile}</span>
             </div>
@@ -671,7 +762,7 @@ const PrintableRelativesSummary = forwardRef<HTMLDivElement, PrintableRelativesS
                 <div key={item.section_key} className="print-section">
                   <div className="print-section-header">
                     <div className="print-section-icon">
-                      <Icon size={18} color="#666" />
+                      <Icon size={16} color="#ffffff" />
                     </div>
                     <span className="print-section-title">{sectionNames[item.section_key]}</span>
                   </div>
@@ -682,8 +773,21 @@ const PrintableRelativesSummary = forwardRef<HTMLDivElement, PrintableRelativesS
           </div>
         ))}
 
+        {/* Disclaimer */}
         <div className="print-disclaimer">
           {texts.disclaimer}
+        </div>
+
+        {/* Footer with Imprint */}
+        <div className="print-footer">
+          <p className="print-footer-note">{texts.footerNote}</p>
+          <div className="print-footer-links">
+            <span>{texts.footerImprint}</span>
+            <span>•</span>
+            <span>{texts.footerPrivacy}</span>
+          </div>
+          <p className="print-footer-website">{texts.footerWebsite}</p>
+          <p className="print-footer-copyright">{texts.footerCopyright}</p>
         </div>
       </div>
     );
