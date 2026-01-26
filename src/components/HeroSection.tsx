@@ -198,7 +198,7 @@ const HeroSection = () => {
                         {language === 'de' ? 'Für die Menschen, die Dir wichtig sind' : 'For the people who matter to you'}
                       </p>
                       <p className="text-xs text-muted-foreground">
-                        {language === 'de' ? 'Vorsorge mit Herz' : 'Caring for tomorrow'}
+                        {language === 'de' ? 'Mein Lebensanker' : 'My Life Anchor'}
                       </p>
                     </div>
                   </div>

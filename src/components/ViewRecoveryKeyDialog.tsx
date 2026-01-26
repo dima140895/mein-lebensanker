@@ -195,7 +195,7 @@ export const ViewRecoveryKeyDialog: React.FC<ViewRecoveryKeyDialogProps> = ({
     const formattedKey = formatRecoveryKey(newRecoveryKey);
     const content = language === 'de'
       ? `═══════════════════════════════════════
-    NEUER ERSATZSCHLÜSSEL FÜR VORSORGE
+    NEUER ERSATZSCHLÜSSEL FÜR MEIN LEBENSANKER
 ═══════════════════════════════════════
 
 Dein neuer Ersatzschlüssel:
@@ -219,7 +219,7 @@ WICHTIGE HINWEISE:
 ═══════════════════════════════════════
 `
       : `═══════════════════════════════════════
-    NEW BACKUP KEY FOR VORSORGE
+    NEW BACKUP KEY FOR MEIN LEBENSANKER
 ═══════════════════════════════════════
 
 Your new backup key:
@@ -247,7 +247,7 @@ IMPORTANT NOTES:
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = language === 'de' ? 'Vorsorge-Neuer-Ersatzschluessel.txt' : 'Vorsorge-New-Backup-Key.txt';
+    a.download = language === 'de' ? 'MeinLebensanker-Neuer-Ersatzschluessel.txt' : 'MeinLebensanker-New-Backup-Key.txt';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -261,7 +261,7 @@ IMPORTANT NOTES:
       ? `
         <html>
           <head>
-            <title>Neuer Ersatzschlüssel - Vorsorge</title>
+            <title>Neuer Ersatzschlüssel - Mein Lebensanker</title>
             <style>
               body { font-family: Arial, sans-serif; padding: 40px; }
               h1 { color: #333; border-bottom: 2px solid #333; padding-bottom: 10px; }
@@ -273,7 +273,7 @@ IMPORTANT NOTES:
             </style>
           </head>
           <body>
-            <h1>🔐 Neuer Ersatzschlüssel für Vorsorge</h1>
+            <h1>🔐 Neuer Ersatzschlüssel für Mein Lebensanker</h1>
             <div class="warning">
               <strong>Wichtig:</strong> Der alte Ersatzschlüssel ist nicht mehr gültig!
             </div>
@@ -292,7 +292,7 @@ IMPORTANT NOTES:
       : `
         <html>
           <head>
-            <title>New Backup Key - Vorsorge</title>
+            <title>New Backup Key - Mein Lebensanker</title>
             <style>
               body { font-family: Arial, sans-serif; padding: 40px; }
               h1 { color: #333; border-bottom: 2px solid #333; padding-bottom: 10px; }
@@ -304,7 +304,7 @@ IMPORTANT NOTES:
             </style>
           </head>
           <body>
-            <h1>🔐 New Backup Key for Vorsorge</h1>
+            <h1>🔐 New Backup Key for Mein Lebensanker</h1>
             <div class="warning">
               <strong>Important:</strong> The old backup key is no longer valid!
             </div>

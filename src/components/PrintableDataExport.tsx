@@ -31,7 +31,7 @@ const PrintableDataExport = forwardRef<HTMLDivElement, PrintableDataExportProps>
   ({ data, profiles, language, uploadedDocuments = [] }, ref) => {
     const t = {
       de: {
-        title: 'Vorsorge-Übersicht',
+        title: 'Lebensanker-Übersicht',
         generatedOn: 'Erstellt am',
         personal: 'Persönliche Daten',
         assets: 'Vermögensübersicht',
@@ -122,11 +122,11 @@ const PrintableDataExport = forwardRef<HTMLDivElement, PrintableDataExportProps>
         professionalType: 'Fachrichtung',
         notes: 'Hinweise',
         disclaimer: 'Diese Übersicht dient ausschließlich der persönlichen Orientierung und hat keinerlei rechtliche Wirkung. Sie ersetzt keine rechtliche, notarielle, medizinische oder steuerliche Beratung.',
-        footerCopyright: `© ${new Date().getFullYear()} Vorsorge`,
+        footerCopyright: `© ${new Date().getFullYear()} Mein Lebensanker`,
         footerImprint: 'Impressum',
         footerPrivacy: 'Datenschutz',
-        footerWebsite: 'vorsorge.lovable.app',
-        footerNote: 'Erstellt mit Vorsorge – Dein digitaler Vorsorge-Assistent',
+        footerWebsite: 'mein-lebensanker.de',
+        footerNote: 'Erstellt mit Mein Lebensanker – Dein digitaler Vorsorge-Assistent',
       },
       en: {
         title: 'Care Planning Overview',
@@ -220,11 +220,11 @@ const PrintableDataExport = forwardRef<HTMLDivElement, PrintableDataExportProps>
         professionalType: 'Profession',
         notes: 'Notes',
         disclaimer: 'This overview is for personal orientation only and has no legal effect. It does not replace legal, notarial, medical, or tax advice.',
-        footerCopyright: `© ${new Date().getFullYear()} Vorsorge`,
+        footerCopyright: `© ${new Date().getFullYear()} Mein Lebensanker`,
         footerImprint: 'Imprint',
         footerPrivacy: 'Privacy Policy',
-        footerWebsite: 'vorsorge.lovable.app',
-        footerNote: 'Created with Vorsorge – Your digital estate planning assistant',
+        footerWebsite: 'mein-lebensanker.de',
+        footerNote: 'Created with Mein Lebensanker – Your digital estate planning assistant',
       },
     };
 

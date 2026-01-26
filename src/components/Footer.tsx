@@ -10,13 +10,13 @@ const Footer = () => {
       privacy: 'Datenschutz',
       imprint: 'Impressum',
       cookies: 'Cookie-Einstellungen',
-      copyright: '© 2026 Vorsorge. Alle Rechte vorbehalten.',
+      copyright: '© 2026 Mein Lebensanker. Alle Rechte vorbehalten.',
     },
     en: {
       privacy: 'Privacy Policy',
       imprint: 'Legal Notice',
       cookies: 'Cookie Settings',
-      copyright: '© 2026 Vorsorge. All rights reserved.',
+      copyright: '© 2026 Mein Lebensanker. All rights reserved.',
     },
   };
 
