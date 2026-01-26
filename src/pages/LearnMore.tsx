@@ -302,8 +302,8 @@ const LearnMore = () => {
               </h2>
               <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
                 {language === 'de' 
-                  ? 'Deine sensiblen Informationen werden mit modernster End-to-End-Verschlüsselung geschützt. Nur Du hast Zugriff – selbst wir können Deine Daten nicht lesen.'
-                  : 'Your sensitive information is protected with state-of-the-art end-to-end encryption. Only you have access – even we cannot read your data.'
+                  ? 'Nach unserem technischen Design werden Deine sensiblen Informationen mit End-to-End-Verschlüsselung geschützt. Die Verschlüsselung erfolgt clientseitig, sodass unsere Systeme keine Inhalte im Klartext verarbeiten können.'
+                  : 'By design, your sensitive information is protected with end-to-end encryption. Encryption happens client-side, meaning our systems cannot process content in plain text.'
                 }
               </p>
               <Button 
@@ -378,8 +378,8 @@ const LearnMore = () => {
                     </h3>
                     <p className="text-muted-foreground text-sm leading-relaxed">
                       {language === 'de' 
-                        ? 'Beim Aktivieren der Verschlüsselung wählst Du ein persönliches Passwort. Dieses Passwort wird verwendet, um alle Deine sensiblen Daten zu verschlüsseln. Das Passwort verlässt niemals Deinen Browser – wir speichern es nicht und können es nicht wiederherstellen.'
-                        : 'When activating encryption, you choose a personal password. This password is used to encrypt all your sensitive data. The password never leaves your browser – we don\'t store it and cannot recover it.'
+                        ? 'Beim Aktivieren der Verschlüsselung wählst Du ein persönliches Passwort. Dieses Passwort wird verwendet, um alle Deine sensiblen Daten zu verschlüsseln. Nach unserem technischen Design verbleibt das Passwort in Deinem Browser – eine serverseitige Speicherung oder Wiederherstellung ist nicht vorgesehen.'
+                        : 'When activating encryption, you choose a personal password. This password is used to encrypt all your sensitive data. By design, the password remains in your browser – server-side storage or recovery is not implemented.'
                       }
                     </p>
                     <div className="mt-4 flex items-center gap-2 text-xs text-muted-foreground">
