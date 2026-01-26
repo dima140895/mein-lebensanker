@@ -3,7 +3,7 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
 // Allowed origins for CORS
 const ALLOWED_ORIGINS = [
-  "https://vorsorge.lovable.app",
+  "https://mein-lebensanker.lovable.app",
   "https://id-preview--3aceebdb-8fff-4d04-bf5f-d8b882169f3d.lovable.app",
 ];
 
@@ -24,6 +24,8 @@ interface DocumentInfo {
   uploadedAt: string;
   signedUrl: string;
   documentType: string;
+  profileId: string;
+  profileName: string;
 }
 
 serve(async (req) => {
@@ -35,7 +37,7 @@ serve(async (req) => {
   }
 
   try {
-    const { token, profileId } = await req.json()
+    const { token } = await req.json()
 
     if (!token) {
       return new Response(
@@ -71,15 +73,15 @@ serve(async (req) => {
 
     const userId = validation.user_id
 
-    // Check if 'documents' section is in shared_sections (supports both legacy and new structure)
-    const { data: sharedSections, error: sectionsError } = await supabase
-      .rpc('get_shared_sections_by_token', { _token: token })
-
-    // Also get per-profile sections for new structure
+    // Get per-profile sections for new structure
     const { data: profileSections, error: profileSectionsError } = await supabase
       .rpc('get_shared_profile_sections_by_token', { _token: token })
 
-    if (sectionsError && profileSectionsError) {
+    // Also get legacy shared sections
+    const { data: sharedSections, error: sectionsError } = await supabase
+      .rpc('get_shared_sections_by_token', { _token: token })
+
+    if (profileSectionsError && sectionsError) {
       console.error('Section retrieval failed')
       return new Response(
         JSON.stringify({ error: 'Failed to get shared sections' }),
@@ -87,19 +89,37 @@ serve(async (req) => {
       )
     }
 
-    // Check if documents is shared via new per-profile structure
-    let documentsSharedViaProfile = false
-    if (profileSections && typeof profileSections === 'object' && Object.keys(profileSections).length > 0) {
-      documentsSharedViaProfile = Object.values(profileSections as Record<string, string[]>).some(
-        (sections: string[]) => sections?.includes('documents')
+    // Get profiles shared via this token
+    const { data: sharedProfiles, error: profilesError } = await supabase
+      .rpc('get_profiles_by_token', { _token: token })
+
+    if (profilesError) {
+      console.error('Failed to get profiles')
+      return new Response(
+        JSON.stringify({ error: 'Failed to get profiles' }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       )
     }
 
-    // Check if documents is shared via legacy structure or new structure
-    const documentsSharedViaLegacy = sharedSections?.includes('documents') ?? false
-    const isDocumentsShared = documentsSharedViaProfile || documentsSharedViaLegacy
+    // Build a map of profileId -> profileName and check which profiles have documents shared
+    const profileMap = new Map<string, { name: string; hasDocuments: boolean }>()
+    
+    if (profileSections && typeof profileSections === 'object' && Object.keys(profileSections).length > 0) {
+      // New per-profile structure
+      for (const profile of sharedProfiles || []) {
+        const sections = (profileSections as Record<string, string[]>)[profile.profile_id]
+        if (sections?.includes('documents')) {
+          profileMap.set(profile.profile_id, { name: profile.profile_name, hasDocuments: true })
+        }
+      }
+    } else if (sharedSections?.includes('documents')) {
+      // Legacy structure - all shared profiles have documents access
+      for (const profile of sharedProfiles || []) {
+        profileMap.set(profile.profile_id, { name: profile.profile_name, hasDocuments: true })
+      }
+    }
 
-    if (!isDocumentsShared) {
+    if (profileMap.size === 0) {
       return new Response(
         JSON.stringify({ error: 'Documents section is not shared', documents: [] }),
         { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -111,53 +131,100 @@ serve(async (req) => {
     
     const allDocuments: DocumentInfo[] = []
 
-    // List files for each document type
-    for (const docType of documentTypes) {
-      const folderPath = `${userId}/${docType}`
-      
-      const { data: files, error: listError } = await supabase.storage
-        .from('user-documents')
-        .list(folderPath)
+    // List files for each profile that has documents shared
+    for (const [profileId, profileInfo] of profileMap) {
+      if (!profileInfo.hasDocuments) continue
 
-      if (listError) {
-        continue
-      }
-
-      if (!files || files.length === 0) continue
-
-      // Filter out placeholder files and .emptyFolderPlaceholder
-      const validFiles = files.filter(f => 
-        f.name !== '.emptyFolderPlaceholder' && 
-        !f.name.startsWith('.')
-      )
-
-      for (const file of validFiles) {
-        const filePath = `${folderPath}/${file.name}`
+      for (const docType of documentTypes) {
+        // New path structure: userId/profileId/documentType
+        const folderPath = `${userId}/${profileId}/${docType}`
         
-        // Create signed URL (valid for 15 minutes for security)
-        const { data: signedUrlData, error: signedUrlError } = await supabase.storage
+        const { data: files, error: listError } = await supabase.storage
           .from('user-documents')
-          .createSignedUrl(filePath, 900) // 15 minutes - shorter for security
+          .list(folderPath)
 
-        if (signedUrlError) {
+        if (listError) {
+          // Try legacy path structure: userId/documentType (for backward compatibility)
+          const legacyPath = `${userId}/${docType}`
+          const { data: legacyFiles } = await supabase.storage
+            .from('user-documents')
+            .list(legacyPath)
+          
+          if (legacyFiles && legacyFiles.length > 0) {
+            // Process legacy files
+            const validFiles = legacyFiles.filter(f => 
+              f.name !== '.emptyFolderPlaceholder' && 
+              !f.name.startsWith('.') &&
+              f.id !== null
+            )
+
+            for (const file of validFiles) {
+              const filePath = `${legacyPath}/${file.name}`
+              
+              const { data: signedUrlData, error: signedUrlError } = await supabase.storage
+                .from('user-documents')
+                .createSignedUrl(filePath, 900)
+
+              if (signedUrlError) continue
+
+              const parts = file.name.split('-')
+              let displayName = file.name
+              if (parts.length > 1 && !isNaN(parseInt(parts[0]))) {
+                displayName = parts.slice(1).join('-')
+              }
+
+              allDocuments.push({
+                name: displayName,
+                path: filePath,
+                size: file.metadata?.size || 0,
+                uploadedAt: file.created_at || '',
+                signedUrl: signedUrlData.signedUrl,
+                documentType: docType,
+                profileId: profileId,
+                profileName: profileInfo.name,
+              })
+            }
+          }
           continue
         }
 
-        // Get display name (remove timestamp prefix)
-        const parts = file.name.split('-')
-        let displayName = file.name
-        if (parts.length > 1 && !isNaN(parseInt(parts[0]))) {
-          displayName = parts.slice(1).join('-')
-        }
+        if (!files || files.length === 0) continue
 
-        allDocuments.push({
-          name: displayName,
-          path: filePath,
-          size: file.metadata?.size || 0,
-          uploadedAt: file.created_at || '',
-          signedUrl: signedUrlData.signedUrl,
-          documentType: docType,
-        })
+        // Filter out placeholder files and folders
+        const validFiles = files.filter(f => 
+          f.name !== '.emptyFolderPlaceholder' && 
+          !f.name.startsWith('.') &&
+          f.id !== null
+        )
+
+        for (const file of validFiles) {
+          const filePath = `${folderPath}/${file.name}`
+          
+          // Create signed URL (valid for 15 minutes for security)
+          const { data: signedUrlData, error: signedUrlError } = await supabase.storage
+            .from('user-documents')
+            .createSignedUrl(filePath, 900)
+
+          if (signedUrlError) continue
+
+          // Get display name (remove timestamp prefix)
+          const parts = file.name.split('-')
+          let displayName = file.name
+          if (parts.length > 1 && !isNaN(parseInt(parts[0]))) {
+            displayName = parts.slice(1).join('-')
+          }
+
+          allDocuments.push({
+            name: displayName,
+            path: filePath,
+            size: file.metadata?.size || 0,
+            uploadedAt: file.created_at || '',
+            signedUrl: signedUrlData.signedUrl,
+            documentType: docType,
+            profileId: profileId,
+            profileName: profileInfo.name,
+          })
+        }
       }
     }
 
