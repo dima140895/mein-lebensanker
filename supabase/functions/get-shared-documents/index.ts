@@ -1,10 +1,21 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-}
+// Allowed origins for CORS
+const ALLOWED_ORIGINS = [
+  "https://vorsorge.lovable.app",
+  "https://id-preview--3aceebdb-8fff-4d04-bf5f-d8b882169f3d.lovable.app",
+];
+
+const getCorsHeaders = (origin: string | null) => {
+  const allowedOrigin = origin && ALLOWED_ORIGINS.some(o => origin.startsWith(o.replace(/\/$/, ''))) 
+    ? origin 
+    : ALLOWED_ORIGINS[0];
+  return {
+    "Access-Control-Allow-Origin": allowedOrigin,
+    "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  };
+};
 
 interface DocumentInfo {
   name: string;
@@ -16,6 +27,8 @@ interface DocumentInfo {
 }
 
 serve(async (req) => {
+  const corsHeaders = getCorsHeaders(req.headers.get("origin"));
+  
   // Handle CORS preflight
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders })
@@ -67,7 +80,7 @@ serve(async (req) => {
       .rpc('get_shared_profile_sections_by_token', { _token: token })
 
     if (sectionsError && profileSectionsError) {
-      console.error('Error getting shared sections:', sectionsError, profileSectionsError)
+      console.error('Section retrieval failed')
       return new Response(
         JSON.stringify({ error: 'Failed to get shared sections' }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -98,24 +111,17 @@ serve(async (req) => {
     
     const allDocuments: DocumentInfo[] = []
 
-    console.log(`Fetching documents for user: ${userId}`)
-
     // List files for each document type
     for (const docType of documentTypes) {
       const folderPath = `${userId}/${docType}`
-      
-      console.log(`Checking folder: ${folderPath}`)
       
       const { data: files, error: listError } = await supabase.storage
         .from('user-documents')
         .list(folderPath)
 
       if (listError) {
-        console.error(`Error listing ${docType} files:`, listError)
         continue
       }
-
-      console.log(`Found ${files?.length || 0} files in ${docType}:`, files?.map(f => f.name))
 
       if (!files || files.length === 0) continue
 
@@ -125,12 +131,8 @@ serve(async (req) => {
         !f.name.startsWith('.')
       )
 
-      console.log(`Valid files in ${docType}: ${validFiles.length}`)
-
       for (const file of validFiles) {
         const filePath = `${folderPath}/${file.name}`
-        
-        console.log(`Creating signed URL for: ${filePath}`)
         
         // Create signed URL (valid for 15 minutes for security)
         const { data: signedUrlData, error: signedUrlError } = await supabase.storage
@@ -138,7 +140,6 @@ serve(async (req) => {
           .createSignedUrl(filePath, 900) // 15 minutes - shorter for security
 
         if (signedUrlError) {
-          console.error(`Error creating signed URL for ${filePath}:`, signedUrlError)
           continue
         }
 
@@ -159,8 +160,6 @@ serve(async (req) => {
         })
       }
     }
-    
-    console.log(`Total documents found: ${allDocuments.length}`, allDocuments.map(d => ({ type: d.documentType, name: d.name })))
 
     return new Response(
       JSON.stringify({ documents: allDocuments }),
@@ -168,7 +167,7 @@ serve(async (req) => {
     )
 
   } catch (error) {
-    console.error('Error:', error)
+    console.error('Document retrieval error occurred')
     return new Response(
       JSON.stringify({ error: 'Internal server error' }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
