@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 
 const TOOLTIP_DISMISSED_KEY = 'vorsorge_profile_switcher_tooltip_shown';
 const SETUP_COMPLETED_FLAG = 'profile_setup_just_completed';
+const PURCHASE_TOOLTIP_FLAG = 'show_profile_tooltip_after_purchase';
 
 interface ProfileSwitcherTooltipProps {
   children: React.ReactNode;
@@ -43,12 +44,15 @@ export const ProfileSwitcherTooltip: React.FC<ProfileSwitcherTooltipProps> = ({ 
     const checkAndShow = () => {
       const wasShown = localStorage.getItem(TOOLTIP_DISMISSED_KEY) === 'true';
       const justCompletedSetup = sessionStorage.getItem(SETUP_COMPLETED_FLAG) === 'true';
+      const showAfterPurchase = localStorage.getItem(PURCHASE_TOOLTIP_FLAG) === 'true';
       
-      if (justCompletedSetup && !wasShown && !hasChecked.current) {
+      // Show tooltip if either: setup just completed OR first login after multi-profile purchase
+      if ((justCompletedSetup || showAfterPurchase) && !wasShown && !hasChecked.current) {
         hasChecked.current = true;
         setShowTooltip(true);
-        // Clear the session flag to prevent re-triggering
+        // Clear the flags to prevent re-triggering
         sessionStorage.removeItem(SETUP_COMPLETED_FLAG);
+        localStorage.removeItem(PURCHASE_TOOLTIP_FLAG);
         return true;
       }
       return false;
