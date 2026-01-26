@@ -1,4 +1,3 @@
-import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { 
   User, 
@@ -102,40 +101,15 @@ const infoSections = [
   },
 ];
 
-// Simple fade animation - starts visible to prevent flicker
-const containerVariants = {
-  // IMPORTANT: keep content visible even if animations fail to start (e.g. during language re-renders)
-  hidden: { opacity: 1 },
-  visible: {
-    opacity: 1,
-    transition: {
-      duration: 0.3,
-      staggerChildren: 0.05,
-    },
-  },
-};
-
-const fadeInVariants = {
-  // IMPORTANT: keep tiles visible even if a variant gets stuck
-  hidden: {
-    opacity: 1,
-    y: 0,
-  },
-  visible: { 
-    opacity: 1, 
-    y: 0,
-    transition: {
-      duration: 0.3,
-      ease: "easeOut" as const,
-    },
-  },
+// Get stagger delay class based on index
+const getStaggerClass = (index: number) => {
+  const delays = ['stagger-delay-1', 'stagger-delay-2', 'stagger-delay-3', 'stagger-delay-4', 'stagger-delay-5', 'stagger-delay-6'];
+  return delays[index % delays.length];
 };
 
 const DashboardSections = () => {
   const { t, language } = useLanguage();
   const navigate = useNavigate();
-  
-  // Force re-animation when language changes by using language as key
 
   const texts = {
     de: {
@@ -162,11 +136,9 @@ const DashboardSections = () => {
   }) => {
     const Icon = section.icon;
     return (
-      <motion.div
-        variants={fadeInVariants}
-        whileHover={{ y: -4, transition: { duration: 0.2 } }}
+      <div
         onClick={() => handleSectionClick(section.key)}
-        className={`group relative cursor-pointer overflow-hidden rounded-2xl border border-border/50 bg-gradient-to-br ${section.gradient} p-6 shadow-sm transition-all duration-300 hover:shadow-xl ${section.accent}`}
+        className={`group relative cursor-pointer overflow-hidden rounded-2xl border border-border/50 bg-gradient-to-br ${section.gradient} p-6 shadow-sm hover-lift hover:shadow-xl ${section.accent} animate-stagger-fade-in ${getStaggerClass(index)}`}
       >
         {/* Decorative background element */}
         <div className="absolute -right-8 -top-8 h-24 w-24 rounded-full bg-white/20 blur-2xl transition-all duration-500 group-hover:scale-150 group-hover:bg-white/30" />
@@ -195,7 +167,7 @@ const DashboardSections = () => {
             <Sparkles className="h-3.5 w-3.5 text-foreground/40 opacity-0 transition-opacity group-hover:opacity-100" />
           </div>
         </div>
-      </motion.div>
+      </div>
     );
   };
 
@@ -203,12 +175,9 @@ const DashboardSections = () => {
     <section id="sections" className="relative pt-8 pb-20 md:pt-12 md:pb-28 overflow-hidden bg-background">
       <div className="container mx-auto px-4">
         {/* Main Sections Header */}
-        <motion.div
+        <div
           key={`main-header-${language}`}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="mb-16 text-center"
+          className="mb-16 text-center animate-fade-in-up"
         >
           <span className="inline-block rounded-full bg-sage-light px-4 py-1.5 text-sm font-medium text-sage-dark mb-4">
             {tx.badge}
@@ -219,31 +188,25 @@ const DashboardSections = () => {
           <p className="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-muted-foreground">
             {tx.description}
           </p>
-        </motion.div>
+        </div>
 
-        <motion.div 
+        <div 
           key={`main-${language}`}
           className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3"
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
         >
           {sections.map((section, index) => (
             <SectionCard 
-              key={section.key} 
+              key={`${language}-${section.key}`} 
               section={section} 
               index={index}
             />
           ))}
-        </motion.div>
+        </div>
 
         {/* Info & Tools Sections */}
-        <motion.div
+        <div
           key={`tools-header-${language}`}
-          initial={{ opacity: 0, x: 30 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5 }}
-          className="mb-10 mt-20 text-center"
+          className="mb-10 mt-20 text-center animate-fade-in-up"
         >
           <span className="inline-block rounded-full bg-muted px-4 py-1.5 text-sm font-medium text-muted-foreground">
             {t('dashboard.helpfulTools')}
@@ -251,23 +214,20 @@ const DashboardSections = () => {
           <h3 className="mt-4 font-serif text-2xl font-bold text-foreground md:text-3xl">
             {t('dashboard.orientationSupport')}
           </h3>
-        </motion.div>
+        </div>
 
-        <motion.div 
+        <div 
           key={`info-${language}`}
           className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4"
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
         >
           {infoSections.map((section, index) => (
             <SectionCard 
-              key={section.key} 
+              key={`${language}-${section.key}`} 
               section={section} 
               index={index}
             />
           ))}
-        </motion.div>
+        </div>
       </div>
     </section>
   );
