@@ -132,6 +132,8 @@ const fadeInVariants = {
 const DashboardSections = () => {
   const { t, language } = useLanguage();
   const navigate = useNavigate();
+  
+  // Force re-animation when language changes by using language as key
 
   const texts = {
     de: {
@@ -218,11 +220,11 @@ const DashboardSections = () => {
         </motion.div>
 
         <motion.div 
+          key={`main-${language}`}
           className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3"
           variants={containerVariants}
           initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
+          animate="visible"
         >
           {sections.map((section, index) => (
             <SectionCard 
@@ -250,11 +252,11 @@ const DashboardSections = () => {
         </motion.div>
 
         <motion.div 
+          key={`info-${language}`}
           className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4"
           variants={containerVariants}
           initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
+          animate="visible"
         >
           {infoSections.map((section, index) => (
             <SectionCard 
