@@ -295,12 +295,27 @@ const PersonalForm = () => {
       <div className="grid gap-6 md:grid-cols-2">
         <div className="space-y-2">
           <Label>{texts.bloodType}</Label>
-          <Input
+          <Select
             value={data.bloodType || ''}
-            onChange={(e) => handleChange('bloodType', e.target.value)}
-            onBlur={handleBlur}
-            placeholder={texts.bloodTypePlaceholder}
-          />
+            onValueChange={(value) => {
+              handleChange('bloodType', value);
+              handleBlur();
+            }}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder={texts.bloodTypePlaceholder} />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="A+">A+</SelectItem>
+              <SelectItem value="A-">A-</SelectItem>
+              <SelectItem value="B+">B+</SelectItem>
+              <SelectItem value="B-">B-</SelectItem>
+              <SelectItem value="AB+">AB+</SelectItem>
+              <SelectItem value="AB-">AB-</SelectItem>
+              <SelectItem value="0+">0+</SelectItem>
+              <SelectItem value="0-">0-</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </div>
 
