@@ -7,6 +7,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import PrintableRelativesSummary from './PrintableRelativesSummary';
+import SharedDocuments from './SharedDocuments';
 
 interface VorsorgeData {
   section_key: string;
@@ -523,6 +524,8 @@ const RelativesSummary = ({ data, profiles, sharedSections, token }: RelativesSu
             {renderInfoItem(texts.propertyDocs, sectionData.propertyDocsLocation)}
             {renderInfoItem(texts.otherDocs, sectionData.otherDocsLocation)}
             {renderInfoItem(texts.notes, sectionData.notes)}
+            {/* Show uploaded documents from storage */}
+            {token && <SharedDocuments token={token} />}
           </div>
         );
 
