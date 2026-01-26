@@ -162,7 +162,7 @@ const HeroSection = () => {
                     </div>
                     <div>
                       <p className="font-medium text-foreground text-sm">
-                        {language === 'de' ? 'Für die Menschen, die Dir wichtig sind' : 'For the people who matter to you'}
+                        {language === 'de' ? 'Für Dich und die Menschen, die Dir wichtig sind' : 'For you and the people who matter to you'}
                       </p>
                       <p className="text-xs text-muted-foreground">
                         {language === 'de' ? 'Mein Lebensanker' : 'My Life Anchor'}
