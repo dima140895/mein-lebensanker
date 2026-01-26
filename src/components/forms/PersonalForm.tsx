@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Info, Plus, Trash2, Pill } from 'lucide-react';
-import { useFormData, PersonalData, Medication } from '@/contexts/FormContext';
+import { Info, Plus, Trash2, Pill, AlertTriangle } from 'lucide-react';
+import { useFormData, PersonalData, Medication, Allergy } from '@/contexts/FormContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useProfiles } from '@/contexts/ProfileContext';
@@ -74,6 +74,29 @@ const PersonalForm = () => {
         withMeals: 'Zum Essen',
         other: 'Andere',
       },
+      allergies: 'Allergien & Unverträglichkeiten',
+      allergiesDesc: 'Wichtige Informationen für medizinische Notfälle',
+      allergyName: 'Allergen / Auslöser',
+      allergyNamePlaceholder: 'z.B. Penicillin, Erdnüsse, Pollen',
+      allergyType: 'Art',
+      allergySeverity: 'Schweregrad',
+      allergyReaction: 'Reaktion / Symptome',
+      allergyReactionPlaceholder: 'z.B. Hautausschlag, Atemnot, Schwellungen',
+      allergyNotes: 'Hinweise',
+      allergyNotesPlaceholder: 'z.B. Notfallmedikament, Arzt informieren',
+      addAllergy: 'Allergie hinzufügen',
+      removeAllergy: 'Entfernen',
+      allergyTypeOptions: {
+        medication: 'Medikament',
+        food: 'Lebensmittel',
+        environmental: 'Umwelt (Pollen, Staub, etc.)',
+        other: 'Sonstige',
+      },
+      allergySeverityOptions: {
+        mild: 'Leicht',
+        moderate: 'Mittel',
+        severe: 'Schwer (lebensbedrohlich)',
+      },
     },
     en: {
       title: 'Personal Information',
@@ -119,12 +142,35 @@ const PersonalForm = () => {
         withMeals: 'With meals',
         other: 'Other',
       },
+      allergies: 'Allergies & Intolerances',
+      allergiesDesc: 'Important information for medical emergencies',
+      allergyName: 'Allergen / Trigger',
+      allergyNamePlaceholder: 'e.g. Penicillin, Peanuts, Pollen',
+      allergyType: 'Type',
+      allergySeverity: 'Severity',
+      allergyReaction: 'Reaction / Symptoms',
+      allergyReactionPlaceholder: 'e.g. Rash, difficulty breathing, swelling',
+      allergyNotes: 'Notes',
+      allergyNotesPlaceholder: 'e.g. Emergency medication, notify doctor',
+      addAllergy: 'Add allergy',
+      removeAllergy: 'Remove',
+      allergyTypeOptions: {
+        medication: 'Medication',
+        food: 'Food',
+        environmental: 'Environmental (pollen, dust, etc.)',
+        other: 'Other',
+      },
+      allergySeverityOptions: {
+        mild: 'Mild',
+        moderate: 'Moderate',
+        severe: 'Severe (life-threatening)',
+      },
     },
   };
 
   const texts = t[language];
 
-  const handleChange = (field: keyof PersonalData, value: string | Medication[]) => {
+  const handleChange = (field: keyof PersonalData, value: string | Medication[] | Allergy[]) => {
     updateSection('personal', { ...data, [field]: value });
   };
 
@@ -151,12 +197,36 @@ const PersonalForm = () => {
     handleBlur();
   };
 
+  const handleAllergyChange = (index: number, field: keyof Allergy, value: string) => {
+    const updatedAllergies = [...(data.allergies || [])];
+    updatedAllergies[index] = { ...updatedAllergies[index], [field]: value };
+    handleChange('allergies', updatedAllergies);
+  };
+
+  const addAllergy = () => {
+    const newAllergy: Allergy = {
+      name: '',
+      type: '',
+      severity: '',
+      reaction: '',
+      notes: '',
+    };
+    handleChange('allergies', [...(data.allergies || []), newAllergy]);
+  };
+
+  const removeAllergy = (index: number) => {
+    const updatedAllergies = (data.allergies || []).filter((_, i) => i !== index);
+    handleChange('allergies', updatedAllergies);
+    handleBlur();
+  };
+
   // Only show form for paid users
   if (!profile?.has_paid) {
     return null;
   }
 
   const medications = data.medications || [];
+  const allergies = data.allergies || [];
 
   return (
     <motion.div
@@ -377,6 +447,118 @@ const PersonalForm = () => {
           >
             <Plus className="h-4 w-4 mr-2" />
             {texts.addMedication}
+          </Button>
+        </div>
+      </div>
+
+      {/* Allergies Section */}
+      <div className="border-t border-border pt-6">
+        <div className="flex items-center gap-2 mb-2">
+          <AlertTriangle className="h-5 w-5 text-amber" />
+          <h3 className="font-medium text-foreground">{texts.allergies}</h3>
+        </div>
+        <p className="text-sm text-muted-foreground mb-4">{texts.allergiesDesc}</p>
+
+        <div className="space-y-4">
+          {allergies.map((allergy, index) => (
+            <div key={index} className="p-4 rounded-lg border border-amber/30 bg-amber-light/20 space-y-4">
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium text-muted-foreground">
+                  {texts.allergyName} {index + 1}
+                </span>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => removeAllergy(index)}
+                  className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                >
+                  <Trash2 className="h-4 w-4 mr-1" />
+                  {texts.removeAllergy}
+                </Button>
+              </div>
+              
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="space-y-2">
+                  <Label>{texts.allergyName}</Label>
+                  <Input
+                    value={allergy.name}
+                    onChange={(e) => handleAllergyChange(index, 'name', e.target.value)}
+                    onBlur={handleBlur}
+                    placeholder={texts.allergyNamePlaceholder}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>{texts.allergyType}</Label>
+                  <Select
+                    value={allergy.type}
+                    onValueChange={(value) => {
+                      handleAllergyChange(index, 'type', value);
+                      handleBlur();
+                    }}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder={texts.allergyType} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {Object.entries(texts.allergyTypeOptions).map(([key, label]) => (
+                        <SelectItem key={key} value={key}>{label}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="space-y-2">
+                  <Label>{texts.allergySeverity}</Label>
+                  <Select
+                    value={allergy.severity}
+                    onValueChange={(value) => {
+                      handleAllergyChange(index, 'severity', value);
+                      handleBlur();
+                    }}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder={texts.allergySeverity} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {Object.entries(texts.allergySeverityOptions).map(([key, label]) => (
+                        <SelectItem key={key} value={key}>{label}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label>{texts.allergyReaction}</Label>
+                  <Input
+                    value={allergy.reaction}
+                    onChange={(e) => handleAllergyChange(index, 'reaction', e.target.value)}
+                    onBlur={handleBlur}
+                    placeholder={texts.allergyReactionPlaceholder}
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label>{texts.allergyNotes}</Label>
+                <Input
+                  value={allergy.notes}
+                  onChange={(e) => handleAllergyChange(index, 'notes', e.target.value)}
+                  onBlur={handleBlur}
+                  placeholder={texts.allergyNotesPlaceholder}
+                />
+              </div>
+            </div>
+          ))}
+
+          <Button
+            type="button"
+            variant="outline"
+            onClick={addAllergy}
+            className="w-full border-amber/50 hover:bg-amber-light/30"
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            {texts.addAllergy}
           </Button>
         </div>
       </div>
