@@ -30,40 +30,40 @@ const HeroSection = () => {
 
 
   return (
-    <section className="relative min-h-[85vh] flex items-center overflow-hidden">
-      {/* Background image with overlay */}
+    <section className="relative min-h-[80vh] md:min-h-[85vh] flex items-center overflow-hidden">
+      {/* Background image with overlay - adjusted for mobile */}
       <div className="absolute inset-0">
         <img 
           src={heroImage} 
           alt="" 
-          className="absolute inset-0 w-full h-full object-cover"
+          className="absolute inset-0 w-full h-full object-cover object-center"
           fetchPriority="high"
           loading="eager"
           decoding="async"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/95 to-background/70" />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/50" />
-        
+        {/* Stronger overlay on mobile for better text readability */}
+        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/98 to-background/80 md:from-background md:via-background/95 md:to-background/70" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-background/60 md:from-background md:via-transparent md:to-background/50" />
       </div>
 
-      {/* Decorative elements */}
+      {/* Decorative elements - smaller on mobile */}
       <div className="absolute inset-0 pointer-events-none">
         <motion.div 
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 0.6, scale: 1 }}
           transition={{ duration: 1.5, ease: "easeOut" }}
-          className="absolute top-20 left-[5%] w-64 h-64 rounded-full bg-sage/20 blur-3xl"
+          className="absolute top-10 md:top-20 left-[5%] w-32 md:w-64 h-32 md:h-64 rounded-full bg-sage/20 blur-3xl"
         />
         <motion.div 
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 0.4, scale: 1 }}
           transition={{ duration: 1.5, delay: 0.3, ease: "easeOut" }}
-          className="absolute bottom-32 left-[15%] w-48 h-48 rounded-full bg-amber/20 blur-3xl"
+          className="absolute bottom-20 md:bottom-32 left-[15%] w-24 md:w-48 h-24 md:h-48 rounded-full bg-amber/20 blur-3xl"
         />
       </div>
 
-      <div className="container relative mx-auto px-4 py-20">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
+      <div className="container relative mx-auto px-4 py-12 md:py-20">
+        <div className="grid lg:grid-cols-2 gap-8 md:gap-12 items-center">
           {/* Content - Left side */}
           <motion.div
             variants={containerVariants}
@@ -71,50 +71,50 @@ const HeroSection = () => {
             animate="visible"
             className="max-w-xl"
           >
-            {/* Badge */}
+            {/* Badge - smaller on mobile */}
             <motion.div
               variants={itemVariants}
-              className="mb-6 inline-flex items-center gap-2 rounded-full border border-sage/20 bg-white/80 backdrop-blur-sm px-4 py-2 text-sm font-medium text-sage-dark shadow-sm"
+              className="mb-4 md:mb-6 inline-flex items-center gap-2 rounded-full border border-sage/20 bg-white/80 backdrop-blur-sm px-3 md:px-4 py-1.5 md:py-2 text-xs md:text-sm font-medium text-sage-dark shadow-sm"
             >
-              <span className="relative flex h-2 w-2">
+              <span className="relative flex h-1.5 md:h-2 w-1.5 md:w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sage opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-sage"></span>
+                <span className="relative inline-flex rounded-full h-1.5 md:h-2 w-1.5 md:w-2 bg-sage"></span>
               </span>
               {t('disclaimer.short')}
             </motion.div>
 
-            {/* Main heading */}
+            {/* Main heading - responsive sizing */}
             <motion.h1
               variants={itemVariants}
-              className="font-serif text-4xl font-bold leading-[1.1] text-foreground md:text-5xl lg:text-6xl"
+              className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-[1.15] text-foreground"
             >
               {t('hero.tagline')}
             </motion.h1>
 
-            {/* Subtitle */}
+            {/* Subtitle - responsive */}
             <motion.p
               variants={itemVariants}
-              className="mt-5 font-serif text-xl text-sage-dark md:text-2xl"
+              className="mt-3 md:mt-5 font-serif text-lg sm:text-xl md:text-2xl text-sage-dark"
             >
               {t('hero.subtitle')}
             </motion.p>
 
-            {/* Description */}
+            {/* Description - responsive */}
             <motion.p
               variants={itemVariants}
-              className="mt-5 text-lg leading-relaxed text-muted-foreground"
+              className="mt-3 md:mt-5 text-base md:text-lg leading-relaxed text-muted-foreground"
             >
               {t('hero.description')}
             </motion.p>
 
-            {/* CTA Buttons */}
+            {/* CTA Buttons - full width on mobile */}
             <motion.div 
               variants={itemVariants} 
-              className="mt-8 flex flex-col sm:flex-row items-start gap-4"
+              className="mt-6 md:mt-8 flex flex-col sm:flex-row items-stretch sm:items-start gap-3 md:gap-4"
             >
               <button
                 onClick={() => navigate('/dashboard')}
-                className="group relative inline-flex items-center gap-2 rounded-full bg-primary px-7 py-3.5 font-medium text-primary-foreground shadow-lg transition-all hover:shadow-xl hover:scale-[1.02] active:scale-[0.98]"
+                className="group relative inline-flex items-center justify-center gap-2 rounded-full bg-primary px-6 md:px-7 py-3 md:py-3.5 font-medium text-primary-foreground shadow-lg transition-all hover:shadow-xl active:scale-[0.98]"
               >
                 <span className="absolute inset-0 rounded-full bg-gradient-to-r from-primary to-sage-dark opacity-0 transition-opacity group-hover:opacity-100" />
                 <span className="relative">{t('hero.cta')}</span>
@@ -123,7 +123,7 @@ const HeroSection = () => {
               
               <button
                 onClick={() => navigate('/mehr-erfahren')}
-                className="inline-flex items-center gap-2 rounded-full border border-border bg-white/70 backdrop-blur-sm px-7 py-3.5 font-medium text-foreground transition-all hover:bg-white hover:shadow-md"
+                className="inline-flex items-center justify-center gap-2 rounded-full border border-border bg-white/70 backdrop-blur-sm px-6 md:px-7 py-3 md:py-3.5 font-medium text-foreground transition-all hover:bg-white hover:shadow-md"
               >
                 {t('hero.learnMore')}
               </button>
