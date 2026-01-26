@@ -43,6 +43,9 @@ const EncryptionContext = createContext<EncryptionContextType | undefined>(undef
 
 // Session storage key for the encryption password (cleared on tab close)
 const SESSION_PASSWORD_KEY = 'vorsorge_encryption_key';
+const SESSION_LAST_ACTIVITY_KEY = 'vorsorge_encryption_last_activity';
+// Auto-lock after 30 minutes of inactivity for security
+const INACTIVITY_TIMEOUT_MS = 30 * 60 * 1000;
 
 export const EncryptionProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const { user, profile } = useAuth();
@@ -105,26 +108,80 @@ export const EncryptionProvider: React.FC<{ children: ReactNode }> = ({ children
     loadEncryptionSettings();
   }, [user]);
 
-  // Check session storage for existing password on mount
+  // Check session storage for existing password on mount and verify inactivity timeout
   useEffect(() => {
     if (isEncryptionEnabled && encryptionSalt && passwordVerifier) {
       const storedPassword = sessionStorage.getItem(SESSION_PASSWORD_KEY);
+      const lastActivity = sessionStorage.getItem(SESSION_LAST_ACTIVITY_KEY);
+      
       if (storedPassword) {
+        // Check if session has expired due to inactivity
+        if (lastActivity) {
+          const lastActivityTime = parseInt(lastActivity, 10);
+          const now = Date.now();
+          if (now - lastActivityTime > INACTIVITY_TIMEOUT_MS) {
+            // Session expired - clear and require re-authentication
+            sessionStorage.removeItem(SESSION_PASSWORD_KEY);
+            sessionStorage.removeItem(SESSION_LAST_ACTIVITY_KEY);
+            return;
+          }
+        }
+        
         verifyPassword(passwordVerifier, storedPassword, encryptionSalt)
           .then((isValid) => {
             if (isValid) {
               setCurrentPassword(storedPassword);
               setIsUnlocked(true);
+              // Update last activity on successful unlock
+              sessionStorage.setItem(SESSION_LAST_ACTIVITY_KEY, Date.now().toString());
             } else {
               sessionStorage.removeItem(SESSION_PASSWORD_KEY);
+              sessionStorage.removeItem(SESSION_LAST_ACTIVITY_KEY);
             }
           })
           .catch(() => {
             sessionStorage.removeItem(SESSION_PASSWORD_KEY);
+            sessionStorage.removeItem(SESSION_LAST_ACTIVITY_KEY);
           });
       }
     }
   }, [isEncryptionEnabled, encryptionSalt, passwordVerifier]);
+
+  // Inactivity timeout - auto-lock after 30 minutes of no activity
+  useEffect(() => {
+    if (!isUnlocked || !isEncryptionEnabled) return;
+
+    const updateActivity = () => {
+      sessionStorage.setItem(SESSION_LAST_ACTIVITY_KEY, Date.now().toString());
+    };
+
+    const checkInactivity = () => {
+      const lastActivity = sessionStorage.getItem(SESSION_LAST_ACTIVITY_KEY);
+      if (lastActivity) {
+        const lastActivityTime = parseInt(lastActivity, 10);
+        const now = Date.now();
+        if (now - lastActivityTime > INACTIVITY_TIMEOUT_MS) {
+          // Auto-lock due to inactivity
+          lock();
+        }
+      }
+    };
+
+    // Update activity on user interactions
+    const events = ['mousedown', 'keydown', 'scroll', 'touchstart'];
+    events.forEach(event => window.addEventListener(event, updateActivity, { passive: true }));
+
+    // Check inactivity every minute
+    const intervalId = setInterval(checkInactivity, 60000);
+
+    // Initial activity timestamp
+    updateActivity();
+
+    return () => {
+      events.forEach(event => window.removeEventListener(event, updateActivity));
+      clearInterval(intervalId);
+    };
+  }, [isUnlocked, isEncryptionEnabled]);
 
   const enableEncryption = useCallback(async (password: string): Promise<{ success: boolean; recoveryKey?: string }> => {
     if (!user) return { success: false };
@@ -216,8 +273,9 @@ export const EncryptionProvider: React.FC<{ children: ReactNode }> = ({ children
       setEncryptedPasswordRecovery(encryptedPassword);
       setGeneratedRecoveryKey(recoveryKey);
       
-      // Store password in session
+      // Store password in session with activity timestamp
       sessionStorage.setItem(SESSION_PASSWORD_KEY, password);
+      sessionStorage.setItem(SESSION_LAST_ACTIVITY_KEY, Date.now().toString());
 
       return { success: true, recoveryKey };
     } catch (error) {
@@ -237,6 +295,7 @@ export const EncryptionProvider: React.FC<{ children: ReactNode }> = ({ children
         setCurrentPassword(password);
         setIsUnlocked(true);
         sessionStorage.setItem(SESSION_PASSWORD_KEY, password);
+        sessionStorage.setItem(SESSION_LAST_ACTIVITY_KEY, Date.now().toString());
         return true;
       }
       
@@ -251,6 +310,7 @@ export const EncryptionProvider: React.FC<{ children: ReactNode }> = ({ children
     setCurrentPassword(null);
     setIsUnlocked(false);
     sessionStorage.removeItem(SESSION_PASSWORD_KEY);
+    sessionStorage.removeItem(SESSION_LAST_ACTIVITY_KEY);
   }, []);
 
   const encrypt = useCallback(async <T,>(data: T): Promise<string | T> => {
@@ -337,6 +397,7 @@ export const EncryptionProvider: React.FC<{ children: ReactNode }> = ({ children
         setCurrentPassword(password);
         setIsUnlocked(true);
         sessionStorage.setItem(SESSION_PASSWORD_KEY, password);
+        sessionStorage.setItem(SESSION_LAST_ACTIVITY_KEY, Date.now().toString());
         return true;
       }
       
