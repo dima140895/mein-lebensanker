@@ -116,8 +116,10 @@ const DashboardContent = () => {
       setActiveSection(sectionFromUrl);
     } else {
       setActiveSection(null);
+      // Refetch status when entering dashboard overview
+      refetch();
     }
-  }, [searchParams]);
+  }, [searchParams, refetch]);
 
   const handleSectionChange = (section: string | null) => {
     // If navigating back to overview (from a section), refetch status
