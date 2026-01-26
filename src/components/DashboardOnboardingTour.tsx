@@ -136,28 +136,24 @@ export const DashboardOnboardingTour: React.FC = () => {
       return;
     }
 
-    const checkAndShowTour = () => {
-      const tourCompleted = localStorage.getItem(TOUR_COMPLETED_KEY) === 'true';
-      const shouldShowTour = sessionStorage.getItem(TOUR_TRIGGER_FLAG) === 'true';
+    const tourCompleted = localStorage.getItem(TOUR_COMPLETED_KEY) === 'true';
+    const shouldShowTour = sessionStorage.getItem(TOUR_TRIGGER_FLAG) === 'true';
 
-      if (shouldShowTour && !tourCompleted) {
-        // Delay to let page elements render
-        const timer = setTimeout(() => {
-          setShowTour(true);
-          sessionStorage.removeItem(TOUR_TRIGGER_FLAG);
-        }, 1000);
+    // Debug logging
+    console.log('[Tour] Checking tour trigger:', { tourCompleted, shouldShowTour, path: location.pathname });
 
-        return () => clearTimeout(timer);
-      }
-    };
+    if (shouldShowTour && !tourCompleted) {
+      // Clear the flag immediately to prevent multiple triggers
+      sessionStorage.removeItem(TOUR_TRIGGER_FLAG);
+      
+      // Delay to let page elements render fully
+      const timer = setTimeout(() => {
+        console.log('[Tour] Showing tour now');
+        setShowTour(true);
+      }, 1200);
 
-    // Check immediately
-    checkAndShowTour();
-    
-    // Also check after a short delay in case navigation timing causes issues
-    const fallbackTimer = setTimeout(checkAndShowTour, 500);
-    
-    return () => clearTimeout(fallbackTimer);
+      return () => clearTimeout(timer);
+    }
   }, [location.pathname, location.key]);
 
   useEffect(() => {
