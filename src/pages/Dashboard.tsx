@@ -62,7 +62,7 @@ const DashboardContent = () => {
   const [isPartnerView, setIsPartnerView] = useState(false);
   const [showUnlockDialog, setShowUnlockDialog] = useState(false);
   const isMobile = useIsMobile();
-  const { sectionStatus, progressPercent, filledCount, totalCount, isComplete, allProfilesProgress, hasMultipleProfiles, refetch } = useSectionStatus();
+  const { sectionStatus, progressPercent, filledCount, totalCount, isComplete, allProfilesProgress, hasMultipleProfiles, refetch, loading: statusLoading } = useSectionStatus();
   const hasShownConfetti = useRef(false);
 
   // Trigger confetti when all sections are complete
@@ -307,14 +307,28 @@ const DashboardContent = () => {
 
         {/* Progress bar */}
         <div className="max-w-4xl mx-auto mb-6">
-          <div className={`p-4 rounded-xl border ${isComplete ? 'border-primary bg-primary/5' : 'border-border bg-card'}`}>
+          <div className={`p-4 rounded-xl border transition-all duration-300 ${isComplete ? 'border-primary bg-primary/5' : 'border-border bg-card'}`}>
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm font-medium text-foreground">{texts.progressLabel}</span>
-              <span className={`text-sm font-medium ${isComplete ? 'text-primary' : 'text-muted-foreground'}`}>
-                {isComplete ? texts.complete : `${filledCount}/${totalCount}`}
-              </span>
+              {statusLoading ? (
+                <span className="text-sm font-medium text-muted-foreground animate-pulse">...</span>
+              ) : (
+                <span className={`text-sm font-medium ${isComplete ? 'text-primary' : 'text-muted-foreground'}`}>
+                  {isComplete ? texts.complete : `${filledCount}/${totalCount}`}
+                </span>
+              )}
             </div>
-            <Progress value={progressPercent} className="h-2" />
+            <div className="relative">
+              {statusLoading && (
+                <div className="absolute inset-0 bg-secondary rounded-full overflow-hidden">
+                  <div className="h-full w-1/3 bg-primary/30 rounded-full animate-[pulse_1s_ease-in-out_infinite]" />
+                </div>
+              )}
+              <Progress 
+                value={statusLoading ? 0 : progressPercent} 
+                className={`h-2 transition-all duration-500 ${statusLoading ? 'opacity-0' : 'opacity-100'}`} 
+              />
+            </div>
           </div>
         </div>
 
