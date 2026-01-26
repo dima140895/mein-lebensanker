@@ -37,6 +37,11 @@ const PersonalForm = () => {
       birthDate: 'Geburtsdatum',
       address: 'Anschrift',
       phone: 'Telefonnummer',
+      bloodType: 'Blutgruppe',
+      bloodTypePlaceholder: 'z.B. A+, B-, 0+, AB+',
+      preExistingConditions: 'Wichtige Vorerkrankungen',
+      preExistingConditionsPlaceholder: 'z.B. Diabetes, Bluthochdruck, Herzerkrankung',
+      preExistingConditionsDesc: 'Chronische Erkrankungen oder relevante Diagnosen',
       trustedPerson1: 'Vertrauensperson 1',
       trustedPerson2: 'Vertrauensperson 2',
       emergencyContact: 'Notfallkontakt',
@@ -105,6 +110,11 @@ const PersonalForm = () => {
       birthDate: 'Date of Birth',
       address: 'Address',
       phone: 'Phone Number',
+      bloodType: 'Blood Type',
+      bloodTypePlaceholder: 'e.g. A+, B-, O+, AB+',
+      preExistingConditions: 'Pre-existing Conditions',
+      preExistingConditionsPlaceholder: 'e.g. Diabetes, hypertension, heart disease',
+      preExistingConditionsDesc: 'Chronic conditions or relevant diagnoses',
       trustedPerson1: 'Trusted Person 1',
       trustedPerson2: 'Trusted Person 2',
       emergencyContact: 'Emergency Contact',
@@ -279,6 +289,30 @@ const PersonalForm = () => {
           onChange={(e) => handleChange('phone', e.target.value)}
           onBlur={handleBlur}
           placeholder={texts.phone}
+        />
+      </div>
+
+      <div className="grid gap-6 md:grid-cols-2">
+        <div className="space-y-2">
+          <Label>{texts.bloodType}</Label>
+          <Input
+            value={data.bloodType || ''}
+            onChange={(e) => handleChange('bloodType', e.target.value)}
+            onBlur={handleBlur}
+            placeholder={texts.bloodTypePlaceholder}
+          />
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        <Label>{texts.preExistingConditions}</Label>
+        <p className="text-sm text-muted-foreground mb-2">{texts.preExistingConditionsDesc}</p>
+        <Textarea
+          value={data.preExistingConditions || ''}
+          onChange={(e) => handleChange('preExistingConditions', e.target.value)}
+          onBlur={handleBlur}
+          placeholder={texts.preExistingConditionsPlaceholder}
+          rows={3}
         />
       </div>
 

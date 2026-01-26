@@ -27,6 +27,8 @@ export interface PersonalData {
   birthDate: string;
   address: string;
   phone: string;
+  bloodType: string;
+  preExistingConditions: string;
   trustedPerson1: string;
   trustedPerson1Phone: string;
   trustedPerson2: string;
@@ -101,6 +103,8 @@ const defaultPersonalData: PersonalData = {
   birthDate: '',
   address: '',
   phone: '',
+  bloodType: '',
+  preExistingConditions: '',
   trustedPerson1: '',
   trustedPerson1Phone: '',
   trustedPerson2: '',
