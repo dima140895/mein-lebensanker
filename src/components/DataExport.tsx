@@ -16,6 +16,13 @@ interface VorsorgeData {
   person_profile_id: string | null;
 }
 
+interface UploadedDocument {
+  name: string;
+  path: string;
+  size: number;
+  documentType: string;
+}
+
 const DataExport = () => {
   const { user } = useAuth();
   const { language } = useLanguage();
@@ -23,6 +30,7 @@ const DataExport = () => {
   const [loading, setLoading] = useState(false);
   const [exportData, setExportData] = useState<VorsorgeData[]>([]);
   const [profilesToExport, setProfilesToExport] = useState<typeof personProfiles>([]);
+  const [uploadedDocuments, setUploadedDocuments] = useState<UploadedDocument[]>([]);
   const printRef = useRef<HTMLDivElement>(null);
 
   const t = {
@@ -83,6 +91,39 @@ const DataExport = () => {
         return;
       }
 
+      // Fetch uploaded documents from storage
+      const documentTypes = ['testament', 'power-of-attorney', 'living-will', 'insurance', 'property', 'other'];
+      const allDocuments: UploadedDocument[] = [];
+
+      for (const docType of documentTypes) {
+        const folderPath = `${user.id}/${docType}`;
+        const { data: files } = await supabase.storage
+          .from('user-documents')
+          .list(folderPath);
+
+        if (files) {
+          const validFiles = files.filter(f => 
+            f.name !== '.emptyFolderPlaceholder' && !f.name.startsWith('.')
+          );
+
+          for (const file of validFiles) {
+            // Get display name (remove timestamp prefix)
+            const parts = file.name.split('-');
+            let displayName = file.name;
+            if (parts.length > 1 && !isNaN(parseInt(parts[0]))) {
+              displayName = parts.slice(1).join('-');
+            }
+
+            allDocuments.push({
+              name: displayName,
+              path: `${folderPath}/${file.name}`,
+              size: file.metadata?.size || 0,
+              documentType: docType,
+            });
+          }
+        }
+      }
+
       // Set data and profiles for printing
       setExportData(vorsorgeData as VorsorgeData[]);
       setProfilesToExport(
@@ -90,6 +131,7 @@ const DataExport = () => {
           ? personProfiles.filter(p => p.id === activeProfile.id)
           : personProfiles
       );
+      setUploadedDocuments(allDocuments);
 
       // Wait for state to update, then print
       setTimeout(() => {
@@ -155,6 +197,7 @@ const DataExport = () => {
           data={exportData}
           profiles={profilesToExport}
           language={language}
+          uploadedDocuments={uploadedDocuments}
         />
       </div>
     </>
