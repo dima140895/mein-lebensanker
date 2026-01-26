@@ -22,7 +22,7 @@ import AboutSection from '@/components/sections/AboutSection';
 import GuidanceSection from '@/components/sections/GuidanceSection';
 import DecisionAssistant from '@/components/sections/DecisionAssistant';
 import ShareLinkManager from '@/components/ShareLinkManager';
-import ProfileSwitcher from '@/components/ProfileSwitcher';
+import { useProfiles } from '@/contexts/ProfileContext';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { EncryptionPasswordDialog } from '@/components/EncryptionPasswordDialog';
@@ -45,6 +45,7 @@ const DashboardContent = () => {
   const { user, profile, loading } = useAuth();
   const { language } = useLanguage();
   const { isEncryptionEnabled, isUnlocked, isLoading: encryptionLoading } = useEncryption();
+  const { activeProfile } = useProfiles();
   const [searchParams, setSearchParams] = useSearchParams();
   const [activeSection, setActiveSection] = useState<string | null>(null);
   const [isPartnerView, setIsPartnerView] = useState(false);
@@ -198,17 +199,27 @@ const DashboardContent = () => {
                 <span className="hidden sm:inline">{texts.back}</span>
                 <span className="sm:hidden">{language === 'de' ? 'Zurück' : 'Back'}</span>
               </Button>
-              {/* Mobile: Show ProfileSwitcher next to back button */}
-              {isMobile && <ProfileSwitcher />}
+              {/* Mobile: Show active profile name */}
+              {isMobile && activeProfile && (
+                <span className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                  <User className="h-4 w-4" />
+                  {activeProfile.name}
+                </span>
+              )}
             </div>
             
             <h2 className="font-serif text-xl font-semibold text-foreground text-center md:absolute md:left-1/2 md:-translate-x-1/2">
               {texts[activeSection as keyof typeof texts]}
             </h2>
             
-            {/* Desktop: ProfileSwitcher on the right */}
+            {/* Desktop: Show active profile name on the right */}
             <div className="hidden md:flex md:w-[140px] md:justify-end">
-              <ProfileSwitcher />
+              {activeProfile && (
+                <span className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                  <User className="h-4 w-4" />
+                  {activeProfile.name}
+                </span>
+              )}
             </div>
           </div>
 
