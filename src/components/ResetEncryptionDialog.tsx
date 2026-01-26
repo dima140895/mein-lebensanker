@@ -82,7 +82,7 @@ export const ResetEncryptionDialog: React.FC<ResetEncryptionDialogProps> = ({
     setIsLoading(true);
     
     try {
-      // 1. Delete all vorsorge_data for this user (encrypted data)
+      // 1. Delete all vorsorge_data for this user (encrypted personal data)
       const { error: deleteDataError } = await supabase
         .from('vorsorge_data')
         .delete()
@@ -90,13 +90,33 @@ export const ResetEncryptionDialog: React.FC<ResetEncryptionDialogProps> = ({
       
       if (deleteDataError) throw deleteDataError;
 
-      // 2. Reset encryption settings in profile
+      // 2. Delete all share_tokens (relative access links)
+      const { error: deleteTokensError } = await supabase
+        .from('share_tokens')
+        .delete()
+        .eq('user_id', user.id);
+      
+      if (deleteTokensError) throw deleteTokensError;
+
+      // 3. Delete all person_profiles (names, birth dates)
+      // This removes personal identifiers but preserves the profile count setting
+      const { error: deleteProfilesError } = await supabase
+        .from('person_profiles')
+        .delete()
+        .eq('user_id', user.id);
+      
+      if (deleteProfilesError) throw deleteProfilesError;
+
+      // 4. Reset encryption settings and personal info in main profile
+      // Preserve: has_paid, payment_type, purchased_tier, max_profiles, has_update_subscription
       const { error: profileError } = await supabase
         .from('profiles')
         .update({
           is_encrypted: false,
           encryption_salt: null,
           encrypted_password_recovery: null,
+          full_name: null,
+          partner_name: null,
         })
         .eq('user_id', user.id);
 
