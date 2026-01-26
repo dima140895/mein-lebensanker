@@ -1,4 +1,3 @@
-import { motion, type Transition } from 'framer-motion';
 import { ArrowRight, Heart } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useNavigate } from 'react-router-dom';
@@ -7,28 +6,6 @@ import heroImage from '@/assets/hero-illustration.jpg';
 const HeroSection = () => {
   const { t, language } = useLanguage();
   const navigate = useNavigate();
-
-  // Animation variants - hidden state still shows content to prevent blank screens during language switch
-  const containerVariants = {
-    hidden: { opacity: 1 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.12,
-        delayChildren: 0.1,
-      } as Transition,
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 1, y: 0 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.6, ease: [0.25, 0.1, 0.25, 1] } as Transition,
-    },
-  };
-
 
   return (
     <section className="relative min-h-[80vh] md:min-h-[85vh] flex items-center overflow-hidden">
@@ -49,71 +26,43 @@ const HeroSection = () => {
 
       {/* Decorative elements - smaller on mobile */}
       <div className="absolute inset-0 pointer-events-none">
-        <motion.div 
-          key={`deco1-${language}`}
-          initial={{ opacity: 0.6, scale: 1 }}
-          animate={{ opacity: 0.6, scale: 1 }}
-          className="absolute top-10 md:top-20 left-[5%] w-32 md:w-64 h-32 md:h-64 rounded-full bg-sage/20 blur-3xl"
-        />
-        <motion.div 
-          key={`deco2-${language}`}
-          initial={{ opacity: 0.4, scale: 1 }}
-          animate={{ opacity: 0.4, scale: 1 }}
-          className="absolute bottom-20 md:bottom-32 left-[15%] w-24 md:w-48 h-24 md:h-48 rounded-full bg-amber/20 blur-3xl"
-        />
+        <div className="absolute top-10 md:top-20 left-[5%] w-32 md:w-64 h-32 md:h-64 rounded-full bg-sage/20 blur-3xl opacity-60" />
+        <div className="absolute bottom-20 md:bottom-32 left-[15%] w-24 md:w-48 h-24 md:h-48 rounded-full bg-amber/20 blur-3xl opacity-40" />
       </div>
 
       <div className="container relative mx-auto px-4 py-12 md:py-20">
         <div className="grid lg:grid-cols-2 gap-8 md:gap-12 items-center">
           {/* Content - Left side */}
-          <motion.div
+          <div
             key={`hero-content-${language}`}
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-            className="max-w-xl"
+            className="max-w-xl animate-fade-in-up"
           >
             {/* Badge - smaller on mobile */}
-            <motion.div
-              variants={itemVariants}
-              className="mb-4 md:mb-6 inline-flex items-center gap-2 rounded-full border border-sage/20 bg-white/80 backdrop-blur-sm px-3 md:px-4 py-1.5 md:py-2 text-xs md:text-sm font-medium text-sage-dark shadow-sm"
-            >
+            <div className="mb-4 md:mb-6 inline-flex items-center gap-2 rounded-full border border-sage/20 bg-white/80 backdrop-blur-sm px-3 md:px-4 py-1.5 md:py-2 text-xs md:text-sm font-medium text-sage-dark shadow-sm">
               <span className="relative flex h-1.5 md:h-2 w-1.5 md:w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sage opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-1.5 md:h-2 w-1.5 md:w-2 bg-sage"></span>
               </span>
               {t('disclaimer.short')}
-            </motion.div>
+            </div>
 
             {/* Main heading - responsive sizing */}
-            <motion.h1
-              variants={itemVariants}
-              className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-[1.15] text-foreground"
-            >
+            <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-[1.15] text-foreground">
               {t('hero.tagline')}
-            </motion.h1>
+            </h1>
 
             {/* Subtitle - responsive */}
-            <motion.p
-              variants={itemVariants}
-              className="mt-3 md:mt-5 font-serif text-lg sm:text-xl md:text-2xl text-sage-dark"
-            >
+            <p className="mt-3 md:mt-5 font-serif text-lg sm:text-xl md:text-2xl text-sage-dark">
               {t('hero.subtitle')}
-            </motion.p>
+            </p>
 
             {/* Description - responsive */}
-            <motion.p
-              variants={itemVariants}
-              className="mt-3 md:mt-5 text-base md:text-lg leading-relaxed text-muted-foreground"
-            >
+            <p className="mt-3 md:mt-5 text-base md:text-lg leading-relaxed text-muted-foreground">
               {t('hero.description')}
-            </motion.p>
+            </p>
 
             {/* CTA Buttons - full width on mobile */}
-            <motion.div 
-              variants={itemVariants} 
-              className="mt-6 md:mt-8 flex flex-col sm:flex-row items-stretch sm:items-start gap-3 md:gap-4"
-            >
+            <div className="mt-6 md:mt-8 flex flex-col sm:flex-row items-stretch sm:items-start gap-3 md:gap-4">
               <button
                 onClick={() => navigate('/dashboard')}
                 className="group relative inline-flex items-center justify-center gap-2 rounded-full bg-primary px-6 md:px-7 py-3 md:py-3.5 font-medium text-primary-foreground shadow-lg transition-all hover:shadow-xl active:scale-[0.98]"
@@ -129,17 +78,14 @@ const HeroSection = () => {
               >
                 {t('hero.learnMore')}
               </button>
-            </motion.div>
+            </div>
 
-          </motion.div>
+          </div>
 
           {/* Image highlight - Right side (visible on larger screens as decorative frame) */}
-          <motion.div
+          <div
             key={`hero-image-${language}`}
-            initial={{ opacity: 0, x: 40 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            className="hidden lg:block relative"
+            className="hidden lg:block relative animate-fade-in-right"
           >
             <div className="relative">
               {/* Decorative frame */}
@@ -153,10 +99,7 @@ const HeroSection = () => {
                 <div className="absolute inset-0 bg-gradient-to-t from-background/40 via-transparent to-transparent" />
                 
                 {/* Floating card overlay */}
-                <motion.div
-                  key={`floating-card-${language}`}
-                  initial={{ opacity: 1, y: 0 }}
-                  animate={{ opacity: 1, y: 0 }}
+                <div
                   className="absolute bottom-6 left-6 right-6 rounded-xl bg-white/90 backdrop-blur-md p-4 shadow-lg border border-white/50"
                 >
                   <div className="flex items-center gap-3">
@@ -172,10 +115,10 @@ const HeroSection = () => {
                       </p>
                     </div>
                   </div>
-                </motion.div>
+                </div>
               </div>
             </div>
-          </motion.div>
+          </div>
         </div>
 
       </div>

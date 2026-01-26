@@ -155,3 +155,80 @@
     box-shadow: var(--shadow-elevated);
   }
 }
+
+/* CSS-based animations for better performance */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInRight {
+  from {
+    opacity: 0;
+    transform: translateX(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes staggerFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Animation classes */
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+.animate-fade-in-right {
+  animation: fadeInRight 0.8s ease-out forwards;
+}
+
+.animate-stagger-fade-in {
+  animation: staggerFadeIn 0.4s ease-out forwards;
+}
+
+/* Stagger delay utilities */
+.stagger-delay-1 { animation-delay: 0.05s; opacity: 0; }
+.stagger-delay-2 { animation-delay: 0.1s; opacity: 0; }
+.stagger-delay-3 { animation-delay: 0.15s; opacity: 0; }
+.stagger-delay-4 { animation-delay: 0.2s; opacity: 0; }
+.stagger-delay-5 { animation-delay: 0.25s; opacity: 0; }
+.stagger-delay-6 { animation-delay: 0.3s; opacity: 0; }
+
+/* Hover lift effect */
+.hover-lift {
+  transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+}
+
+.hover-lift:hover {
+  transform: translateY(-4px);
+}
