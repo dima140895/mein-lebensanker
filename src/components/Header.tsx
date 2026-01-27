@@ -69,23 +69,20 @@ const Header = () => {
     }
   };
 
-  // Handle verified=true query param - show success toast and open login
+  // Handle verified=true query param - show success toast (user is already logged in after verification)
   useEffect(() => {
     const isVerified = searchParams.get('verified');
     if (isVerified === 'true') {
-      // Show success toast
+      // Show success toast - user is already logged in after email verification
       toast.success(
         language === 'de' ? 'E-Mail erfolgreich bestätigt!' : 'Email verified successfully!',
         {
           description: language === 'de' 
-            ? 'Du kannst Dich jetzt anmelden.' 
-            : 'You can now sign in.',
+            ? 'Du bist jetzt angemeldet.' 
+            : 'You are now signed in.',
         }
       );
-      // Open login dialog
-      setAuthMode('login');
-      setAuthOpen(true);
-      // Clear the query param from URL
+      // Clear the query param from URL (don't open login dialog - user is already logged in)
       navigate('/', { replace: true });
     }
   }, [searchParams, language, navigate]);
