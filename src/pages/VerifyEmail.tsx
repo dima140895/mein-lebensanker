@@ -48,46 +48,65 @@ const VerifyEmail = () => {
   useEffect(() => {
     const verifyEmail = async () => {
       try {
-        // Get token parameters from URL
-        const token_hash = searchParams.get('token_hash');
-        const type = searchParams.get('type');
+        // Supabase sends tokens either as query params or in the URL fragment (hash)
+        // First check query params
+        let token_hash = searchParams.get('token_hash');
+        let type = searchParams.get('type');
+        let access_token = searchParams.get('access_token');
+        let refresh_token = searchParams.get('refresh_token');
 
-        if (!token_hash || type !== 'email') {
-          // Check if this is a Supabase magic link callback
-          const access_token = searchParams.get('access_token');
-          const refresh_token = searchParams.get('refresh_token');
+        // If not in query params, check URL fragment (hash)
+        if (!token_hash && !access_token) {
+          const hash = window.location.hash.substring(1);
+          if (hash) {
+            const hashParams = new URLSearchParams(hash);
+            token_hash = hashParams.get('token_hash');
+            type = hashParams.get('type');
+            access_token = hashParams.get('access_token');
+            refresh_token = hashParams.get('refresh_token');
+          }
+        }
+
+        // Handle access_token/refresh_token (magic link callback)
+        if (access_token && refresh_token) {
+          const { error } = await supabase.auth.setSession({
+            access_token,
+            refresh_token,
+          });
           
-          if (access_token && refresh_token) {
-            // Set the session from the tokens
-            const { error } = await supabase.auth.setSession({
-              access_token,
-              refresh_token,
-            });
-            
-            if (error) {
-              throw error;
-            }
-            
-            setStatus('success');
-            return;
+          if (error) {
+            throw error;
           }
           
-          setStatus('error');
-          setErrorMessage(texts.errorDesc);
+          setStatus('success');
           return;
         }
 
-        // Verify the email using Supabase
-        const { error } = await supabase.auth.verifyOtp({
-          token_hash,
-          type: 'email',
-        });
+        // Handle token_hash verification
+        if (token_hash && type === 'email') {
+          const { error } = await supabase.auth.verifyOtp({
+            token_hash,
+            type: 'email',
+          });
 
-        if (error) {
-          throw error;
+          if (error) {
+            throw error;
+          }
+
+          setStatus('success');
+          return;
         }
 
-        setStatus('success');
+        // No valid tokens found - check if Supabase already handled the verification
+        // by checking if we have a session
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session) {
+          setStatus('success');
+          return;
+        }
+
+        setStatus('error');
+        setErrorMessage(texts.errorDesc);
       } catch (err) {
         console.error('Email verification error:', err);
         setStatus('error');
