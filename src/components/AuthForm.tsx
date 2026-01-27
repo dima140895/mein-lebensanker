@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Mail, Lock, Eye, EyeOff, ArrowLeft } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, ArrowLeft, Loader2 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { supabase } from '@/integrations/supabase/browserClient';
@@ -8,6 +8,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
+
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || "https://mkwnlztpyzjjhzfxgixx.supabase.co";
 
 interface AuthFormProps {
   onSuccess?: () => void;
@@ -84,6 +86,29 @@ const AuthForm = ({ onSuccess, defaultMode = 'login' }: AuthFormProps) => {
 
   const texts = t[language];
 
+  const sendVerificationEmail = async (userEmail: string) => {
+    try {
+      const confirmationUrl = `${window.location.origin}/verify-email`;
+      
+      const response = await fetch(`${SUPABASE_URL}/functions/v1/send-verification-email`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: userEmail,
+          confirmationUrl,
+        }),
+      });
+
+      if (!response.ok) {
+        console.error('Failed to send verification email');
+      }
+    } catch (err) {
+      console.error('Error sending verification email:', err);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -91,14 +116,26 @@ const AuthForm = ({ onSuccess, defaultMode = 'login' }: AuthFormProps) => {
     try {
       if (mode === 'login') {
         const { error } = await signIn(email, password);
-        if (error) throw error;
+        if (error) {
+          // Check if email is not confirmed
+          if (error.message.includes('Email not confirmed')) {
+            toast.error(texts.emailNotConfirmed);
+            setMode('verify');
+            return;
+          }
+          throw error;
+        }
         toast.success(texts.welcomeBack);
         onSuccess?.();
       } else if (mode === 'register') {
         const { error } = await signUp(email, password);
         if (error) throw error;
+        
+        // Send custom verification email via Resend
+        await sendVerificationEmail(email);
+        
         toast.success(texts.accountCreated);
-        setMode('verify'); // Show verification screen instead of calling onSuccess
+        setMode('verify');
       }
     } catch (error) {
       toast.error(texts.error, { 
@@ -138,15 +175,8 @@ const AuthForm = ({ onSuccess, defaultMode = 'login' }: AuthFormProps) => {
   const handleResendEmail = async () => {
     setLoading(true);
     try {
-      const { error } = await supabase.auth.resend({
-        type: 'signup',
-        email,
-        options: {
-          emailRedirectTo: window.location.origin,
-        },
-      });
-      
-      if (error) throw error;
+      // Resend using our custom edge function
+      await sendVerificationEmail(email);
       toast.success(texts.emailResent);
     } catch (error) {
       toast.error(texts.error, {

@@ -14,6 +14,7 @@ import LearnMore from "./pages/LearnMore";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import RelativesView from "./pages/RelativesView";
 import ResetPassword from "./pages/ResetPassword";
+import VerifyEmail from "./pages/VerifyEmail";
 import Datenschutz from "./pages/Datenschutz";
 import Impressum from "./pages/Impressum";
 import Datensicherheit from "./pages/Datensicherheit";
@@ -41,6 +42,7 @@ const App = () => (
                     <Route path="/dashboard" element={<Dashboard />} />
                     <Route path="/payment-success" element={<PaymentSuccess />} />
                     <Route path="/reset-password" element={<ResetPassword />} />
+                    <Route path="/verify-email" element={<VerifyEmail />} />
                     <Route path="/datenschutz" element={<Datenschutz />} />
                     <Route path="/impressum" element={<Impressum />} />
                     <Route path="/datensicherheit" element={<Datensicherheit />} />
