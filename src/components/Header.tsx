@@ -48,6 +48,7 @@ const Header = () => {
   const [searchParams] = useSearchParams();
   const [authOpen, setAuthOpen] = useState(false);
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
+  const [isVerifyMode, setIsVerifyMode] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [pricingOpen, setPricingOpen] = useState(false);
   const [changePasswordOpen, setChangePasswordOpen] = useState(false);
@@ -55,6 +56,17 @@ const Header = () => {
   const [encryptionUnlockOpen, setEncryptionUnlockOpen] = useState(false);
   const [recoveryKeyDialogOpen, setRecoveryKeyDialogOpen] = useState(false);
   const [recoveryKeyRecoveryOpen, setRecoveryKeyRecoveryOpen] = useState(false);
+
+  // Prevent closing dialog when in verify mode
+  const handleAuthOpenChange = (open: boolean) => {
+    if (!open && isVerifyMode) {
+      return; // Block closing
+    }
+    setAuthOpen(open);
+    if (!open) {
+      setIsVerifyMode(false);
+    }
+  };
 
   const currentSection = searchParams.get('section');
 
@@ -598,7 +610,7 @@ const Header = () => {
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <Dialog open={authOpen} onOpenChange={setAuthOpen}>
+            <Dialog open={authOpen} onOpenChange={handleAuthOpenChange}>
               <DialogTrigger asChild>
                 <Button
                   variant="ghost"
@@ -618,8 +630,8 @@ const Header = () => {
                   {tx.register}
                 </Button>
               </DialogTrigger>
-              <DialogContent className="sm:max-w-md">
-                <AuthForm onSuccess={handleAuthSuccess} defaultMode={authMode} />
+              <DialogContent className="sm:max-w-md" hideCloseButton={isVerifyMode} onPointerDownOutside={(e) => isVerifyMode && e.preventDefault()} onEscapeKeyDown={(e) => isVerifyMode && e.preventDefault()}>
+                <AuthForm onSuccess={handleAuthSuccess} defaultMode={authMode} onVerifyModeChange={setIsVerifyMode} />
               </DialogContent>
             </Dialog>
           )}
@@ -652,9 +664,9 @@ const Header = () => {
       />
 
       {/* Auth Dialog for mobile (triggered from menu) */}
-      <Dialog open={authOpen} onOpenChange={setAuthOpen}>
-        <DialogContent className="sm:max-w-md">
-          <AuthForm onSuccess={handleAuthSuccess} defaultMode={authMode} />
+      <Dialog open={authOpen} onOpenChange={handleAuthOpenChange}>
+        <DialogContent className="sm:max-w-md" hideCloseButton={isVerifyMode} onPointerDownOutside={(e) => isVerifyMode && e.preventDefault()} onEscapeKeyDown={(e) => isVerifyMode && e.preventDefault()}>
+          <AuthForm onSuccess={handleAuthSuccess} defaultMode={authMode} onVerifyModeChange={setIsVerifyMode} />
         </DialogContent>
       </Dialog>
 
