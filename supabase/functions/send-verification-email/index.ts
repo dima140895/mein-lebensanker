@@ -1,5 +1,4 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
 
@@ -10,9 +9,13 @@ const ALLOWED_ORIGINS = [
 ];
 
 const getCorsHeaders = (origin: string | null) => {
-  const allowedOrigin = origin && ALLOWED_ORIGINS.some(o => origin.startsWith(o.replace(/\/$/, ''))) 
+  // Allow lovableproject.com origins for preview environments
+  const isLovablePreview = origin && origin.includes('.lovableproject.com');
+  const allowedOrigin = isLovablePreview 
     ? origin 
-    : ALLOWED_ORIGINS[0];
+    : (origin && ALLOWED_ORIGINS.some(o => origin.startsWith(o.replace(/\/$/, ''))) 
+      ? origin 
+      : ALLOWED_ORIGINS[0]);
   return {
     "Access-Control-Allow-Origin": allowedOrigin,
     "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
@@ -34,31 +37,6 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    // Validate authentication
-    const authHeader = req.headers.get("Authorization");
-    if (!authHeader?.startsWith("Bearer ")) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), {
-        status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
-    const supabase = createClient(
-      Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_ANON_KEY") ?? "",
-      { global: { headers: { Authorization: authHeader } } }
-    );
-
-    const token = authHeader.replace("Bearer ", "");
-    const { data: authData, error: authError } = await supabase.auth.getUser(token);
-    
-    if (authError || !authData.user) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), {
-        status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
     const { email, confirmationUrl, userName }: VerificationRequest = await req.json();
 
     // Validate required fields
@@ -78,6 +56,21 @@ const handler = async (req: Request): Promise<Response> => {
       });
     }
 
+    // Validate confirmation URL
+    const validUrlPrefixes = [
+      "https://mein-lebensanker.lovable.app",
+      "https://id-preview--3aceebdb-8fff-4d04-bf5f-d8b882169f3d.lovable.app",
+    ];
+    const isValidUrl = validUrlPrefixes.some(prefix => confirmationUrl.startsWith(prefix)) ||
+                       confirmationUrl.includes('.lovableproject.com');
+    
+    if (!isValidUrl) {
+      return new Response(JSON.stringify({ error: "Invalid confirmation URL" }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const displayName = userName || "Nutzer";
 
     const emailResponse = await fetch("https://api.resend.com/emails", {
@@ -87,7 +80,7 @@ const handler = async (req: Request): Promise<Response> => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        from: "Mein Lebensanker <noreply@mein-lebensanker.de>", // Replace with your verified domain
+        from: "Mein Lebensanker <noreply@mein-lebensanker.de>",
         to: [email],
         subject: "Bestätigen Sie Ihre E-Mail-Adresse",
         html: `
