@@ -1,6 +1,9 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
+const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
+const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
 // Allowed origins for CORS
 const ALLOWED_ORIGINS = [
@@ -71,6 +74,36 @@ const handler = async (req: Request): Promise<Response> => {
       });
     }
 
+    // Create Supabase admin client
+    const supabaseAdmin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false,
+      },
+    });
+
+    // Use Supabase's built-in resend confirmation to get a fresh token
+    // This uses the 'magiclink' type which works for email verification
+    const { data: linkData, error: linkError } = await supabaseAdmin.auth.admin.generateLink({
+      type: 'magiclink',
+      email: email,
+      options: {
+        redirectTo: confirmationUrl,
+      },
+    });
+
+    let fullConfirmationUrl = confirmationUrl;
+    
+    if (linkError) {
+      console.error("Error generating verification link:", linkError);
+      // If we can't generate a link (user might not exist yet), just use the base URL
+      // The verification will need to be done via Supabase's built-in flow
+    } else if (linkData?.properties?.hashed_token) {
+      // Extract the token_hash and build the verification URL
+      const verificationToken = linkData.properties.hashed_token;
+      fullConfirmationUrl = `${confirmationUrl}?token_hash=${verificationToken}&type=magiclink`;
+    }
+
     const displayName = userName || "Nutzer";
 
     const emailResponse = await fetch("https://api.resend.com/emails", {
@@ -114,7 +147,7 @@ const handler = async (req: Request): Promise<Response> => {
                         <table role="presentation" style="margin: 30px 0;">
                           <tr>
                             <td align="center">
-                              <a href="${confirmationUrl}" style="display: inline-block; padding: 16px 32px; background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%); color: #ffffff; text-decoration: none; font-size: 16px; font-weight: 600; border-radius: 8px; box-shadow: 0 4px 12px rgba(30, 58, 95, 0.3);">
+                              <a href="${fullConfirmationUrl}" style="display: inline-block; padding: 16px 32px; background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%); color: #ffffff; text-decoration: none; font-size: 16px; font-weight: 600; border-radius: 8px; box-shadow: 0 4px 12px rgba(30, 58, 95, 0.3);">
                                 E-Mail-Adresse bestätigen
                               </a>
                             </td>
@@ -125,7 +158,7 @@ const handler = async (req: Request): Promise<Response> => {
                           Falls der Button nicht funktioniert, kopieren Sie diesen Link in Ihren Browser:
                         </p>
                         <p style="margin: 10px 0 0 0; color: #1e3a5f; font-size: 14px; word-break: break-all;">
-                          ${confirmationUrl}
+                          ${fullConfirmationUrl}
                         </p>
                         
                         <hr style="margin: 30px 0; border: none; border-top: 1px solid #eeeeee;">
@@ -174,7 +207,7 @@ const handler = async (req: Request): Promise<Response> => {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (error: unknown) {
-    console.error("Error sending verification email");
+    console.error("Error sending verification email:", error);
     return new Response(
       JSON.stringify({ error: "Failed to send verification email" }),
       {
