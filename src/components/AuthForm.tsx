@@ -14,12 +14,19 @@ const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || "https://mkwnlztpyzjjh
 interface AuthFormProps {
   onSuccess?: () => void;
   defaultMode?: 'login' | 'register';
+  onVerifyModeChange?: (isVerifying: boolean) => void;
 }
 
-const AuthForm = ({ onSuccess, defaultMode = 'login' }: AuthFormProps) => {
+const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange }: AuthFormProps) => {
   const { signUp, signIn } = useAuth();
   const { language } = useLanguage();
   const [mode, setMode] = useState<'login' | 'register' | 'forgot' | 'verify'>(defaultMode);
+
+  // Notify parent when verify mode changes
+  const handleModeChange = (newMode: 'login' | 'register' | 'forgot' | 'verify') => {
+    setMode(newMode);
+    onVerifyModeChange?.(newMode === 'verify');
+  };
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -120,7 +127,7 @@ const AuthForm = ({ onSuccess, defaultMode = 'login' }: AuthFormProps) => {
           // Check if email is not confirmed
           if (error.message.includes('Email not confirmed')) {
             toast.error(texts.emailNotConfirmed);
-            setMode('verify');
+            handleModeChange('verify');
             return;
           }
           throw error;
@@ -135,7 +142,7 @@ const AuthForm = ({ onSuccess, defaultMode = 'login' }: AuthFormProps) => {
         await sendVerificationEmail(email);
         
         toast.success(texts.accountCreated);
-        setMode('verify');
+        handleModeChange('verify');
       }
     } catch (error) {
       toast.error(texts.error, { 
@@ -162,7 +169,7 @@ const AuthForm = ({ onSuccess, defaultMode = 'login' }: AuthFormProps) => {
       });
       
       // Go back to login after sending
-      setMode('login');
+      handleModeChange('login');
     } catch (error) {
       toast.error(texts.error, {
         description: error instanceof Error ? error.message : 'Unknown error',
@@ -228,14 +235,6 @@ const AuthForm = ({ onSuccess, defaultMode = 'login' }: AuthFormProps) => {
               {loading ? '...' : texts.resendEmail}
             </Button>
             
-            <button
-              type="button"
-              onClick={() => setMode('login')}
-              className="flex items-center justify-center text-sm text-muted-foreground hover:text-foreground mx-auto"
-            >
-              <ArrowLeft className="h-4 w-4 mr-1" />
-              {texts.backToLogin}
-            </button>
           </div>
         </div>
       </motion.div>
@@ -253,7 +252,7 @@ const AuthForm = ({ onSuccess, defaultMode = 'login' }: AuthFormProps) => {
         <div className="rounded-xl border border-border bg-card p-8 shadow-elevated">
           <button
             type="button"
-            onClick={() => setMode('login')}
+            onClick={() => handleModeChange('login')}
             className="flex items-center text-sm text-muted-foreground hover:text-foreground mb-4"
           >
             <ArrowLeft className="h-4 w-4 mr-1" />
@@ -334,7 +333,7 @@ const AuthForm = ({ onSuccess, defaultMode = 'login' }: AuthFormProps) => {
               {mode === 'login' && (
                 <button
                   type="button"
-                  onClick={() => setMode('forgot')}
+                  onClick={() => handleModeChange('forgot')}
                   className="text-xs text-primary hover:underline"
                 >
                   {texts.forgotPassword}
@@ -372,7 +371,7 @@ const AuthForm = ({ onSuccess, defaultMode = 'login' }: AuthFormProps) => {
           {mode === 'login' ? texts.noAccount : texts.hasAccount}{' '}
           <button
             type="button"
-            onClick={() => setMode(mode === 'login' ? 'register' : 'login')}
+            onClick={() => handleModeChange(mode === 'login' ? 'register' : 'login')}
             className="text-primary font-medium hover:underline"
           >
             {mode === 'login' ? texts.createAccount : texts.loginNow}
