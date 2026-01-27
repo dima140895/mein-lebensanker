@@ -6,18 +6,23 @@ import { supabase } from '@/integrations/supabase/browserClient';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 
+const REDIRECT_DELAY = 5;
+
 const VerifyEmail = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { language } = useLanguage();
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
   const [errorMessage, setErrorMessage] = useState('');
+  const [countdown, setCountdown] = useState(REDIRECT_DELAY);
 
   const t = {
     de: {
       verifying: 'E-Mail wird verifiziert...',
       success: 'E-Mail erfolgreich bestätigt!',
       successDesc: 'Dein Konto ist jetzt aktiviert. Du kannst Dich jetzt anmelden.',
+      redirecting: 'Weiterleitung zur Anmeldung in',
+      seconds: 'Sekunden',
       error: 'Verifizierung fehlgeschlagen',
       errorDesc: 'Der Bestätigungslink ist ungültig oder abgelaufen.',
       loginNow: 'Jetzt anmelden',
@@ -28,6 +33,8 @@ const VerifyEmail = () => {
       verifying: 'Verifying email...',
       success: 'Email verified successfully!',
       successDesc: 'Your account is now activated. You can now sign in.',
+      redirecting: 'Redirecting to login in',
+      seconds: 'seconds',
       error: 'Verification failed',
       errorDesc: 'The confirmation link is invalid or has expired.',
       loginNow: 'Sign in now',
@@ -91,6 +98,22 @@ const VerifyEmail = () => {
     verifyEmail();
   }, [searchParams, texts.errorDesc]);
 
+  // Countdown timer for auto-redirect after success
+  useEffect(() => {
+    if (status !== 'success') return;
+
+    if (countdown <= 0) {
+      navigate('/?login=true');
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      setCountdown((prev) => prev - 1);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [status, countdown, navigate]);
+
   const handleLoginClick = () => {
     navigate('/?login=true');
   };
@@ -130,9 +153,13 @@ const VerifyEmail = () => {
               <h2 className="font-serif text-2xl font-bold text-foreground mb-2">
                 {texts.success}
               </h2>
-              <p className="text-muted-foreground mb-6">
+              <p className="text-muted-foreground mb-4">
                 {texts.successDesc}
               </p>
+              <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground mb-6">
+                <Loader2 className="h-4 w-4 animate-spin" />
+                <span>{texts.redirecting} {countdown} {texts.seconds}...</span>
+              </div>
               <Button onClick={handleLoginClick} className="w-full">
                 {texts.loginNow}
               </Button>
