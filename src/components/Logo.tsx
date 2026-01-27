@@ -4,43 +4,53 @@ interface LogoProps {
   className?: string;
 }
 
-// Custom Anchor-Heart SVG icon - unified design where anchor bottom IS the heart bottom
+// Custom Anchor-Heart SVG icon - exact match to brand design
 const AnchorHeartIcon = ({ className }: { className?: string }) => (
   <svg
-    viewBox="0 0 48 48"
+    viewBox="0 0 100 100"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     className={className}
   >
-    {/* Left heart lobe - stops at anchor fluke level */}
+    {/* Left heart lobe flowing into left anchor fluke */}
     <path
-      d="M24 12C22 8 18 4 12 4C6 4 2 9 2 15C2 22 8 30 14 36"
+      d="M50 22
+         C45 14, 36 8, 26 8
+         C14 8, 6 18, 6 28
+         C6 42, 18 54, 28 66
+         L20 72 L28 68 L24 80
+         C32 72, 42 60, 50 48"
       stroke="currentColor"
-      strokeWidth="3"
+      strokeWidth="5"
       strokeLinecap="round"
       strokeLinejoin="round"
       fill="none"
     />
-    {/* Right heart lobe - stops at anchor fluke level */}
+    {/* Right heart lobe flowing into right anchor fluke */}
     <path
-      d="M24 12C26 8 30 4 36 4C42 4 46 9 46 15C46 22 40 30 34 36"
+      d="M50 22
+         C55 14, 64 8, 74 8
+         C86 8, 94 18, 94 28
+         C94 42, 82 54, 72 66
+         L80 72 L72 68 L76 80
+         C68 72, 58 60, 50 48"
       stroke="currentColor"
-      strokeWidth="3"
+      strokeWidth="5"
       strokeLinecap="round"
       strokeLinejoin="round"
       fill="none"
     />
-    {/* Anchor ring at top */}
-    <circle cx="24" cy="16" r="4" stroke="currentColor" strokeWidth="2.5" fill="none" />
-    {/* Anchor vertical shaft */}
-    <line x1="24" y1="20" x2="24" y2="42" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
-    {/* Anchor horizontal bar */}
-    <line x1="16" y1="26" x2="32" y2="26" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
-    {/* Anchor flukes - connect to heart lobes */}
+    {/* Anchor ring */}
+    <circle cx="50" cy="30" r="8" stroke="currentColor" strokeWidth="5" fill="none" />
+    {/* Anchor shaft */}
+    <line x1="50" y1="38" x2="50" y2="92" stroke="currentColor" strokeWidth="5" strokeLinecap="round" />
+    {/* Anchor crossbar */}
+    <line x1="34" y1="50" x2="66" y2="50" stroke="currentColor" strokeWidth="5" strokeLinecap="round" />
+    {/* Bottom fluke curve connecting to arrow tips */}
     <path
-      d="M14 36C14 40 18.5 42 24 42C29.5 42 34 40 34 36"
+      d="M24 80 C30 88, 40 92, 50 92 C60 92, 70 88, 76 80"
       stroke="currentColor"
-      strokeWidth="2.5"
+      strokeWidth="5"
       strokeLinecap="round"
       fill="none"
     />
