@@ -4,7 +4,7 @@ interface LogoProps {
   className?: string;
 }
 
-// Custom Anchor-Heart SVG icon - seamless design
+// Custom Anchor-Heart SVG icon - heart with inward arrows + anchor with outward arrows
 const AnchorHeartIcon = ({ className }: { className?: string }) => (
   <svg
     viewBox="0 0 100 100"
@@ -12,44 +12,71 @@ const AnchorHeartIcon = ({ className }: { className?: string }) => (
     xmlns="http://www.w3.org/2000/svg"
     className={className}
   >
-    {/* Left side: heart lobe curves down and becomes fluke with arrow tip - one continuous path */}
+    {/* Heart shape - curves down and ends with inward-pointing arrow tips */}
+    {/* Left heart lobe with inward arrow */}
     <path
-      d="M50 20
-         C44 12, 34 6, 24 6
-         C12 6, 4 16, 4 28
-         C4 44, 16 58, 30 74
-         C32 76, 32 80, 28 82
-         L18 76
-         L22 86
-         C30 82, 40 90, 50 92"
+      d="M50 18
+         C44 10, 34 4, 22 4
+         C10 4, 2 14, 2 26
+         C2 40, 12 54, 26 68
+         L18 62
+         L22 72
+         L32 64"
       stroke="currentColor"
       strokeWidth="5"
       strokeLinecap="round"
       strokeLinejoin="round"
       fill="none"
     />
-    {/* Right side: heart lobe curves down and becomes fluke with arrow tip - one continuous path */}
+    {/* Right heart lobe with inward arrow */}
     <path
-      d="M50 20
-         C56 12, 66 6, 76 6
-         C88 6, 96 16, 96 28
-         C96 44, 84 58, 70 74
-         C68 76, 68 80, 72 82
-         L82 76
-         L78 86
-         C70 82, 60 90, 50 92"
+      d="M50 18
+         C56 10, 66 4, 78 4
+         C90 4, 98 14, 98 26
+         C98 40, 88 54, 74 68
+         L82 62
+         L78 72
+         L68 64"
       stroke="currentColor"
       strokeWidth="5"
       strokeLinecap="round"
       strokeLinejoin="round"
       fill="none"
     />
+    
+    {/* Anchor - separate element */}
     {/* Anchor ring */}
-    <circle cx="50" cy="28" r="8" stroke="currentColor" strokeWidth="5" fill="none" />
+    <circle cx="50" cy="32" r="8" stroke="currentColor" strokeWidth="5" fill="none" />
     {/* Anchor shaft */}
-    <line x1="50" y1="36" x2="50" y2="92" stroke="currentColor" strokeWidth="5" strokeLinecap="round" />
+    <line x1="50" y1="40" x2="50" y2="84" stroke="currentColor" strokeWidth="5" strokeLinecap="round" />
     {/* Anchor crossbar */}
-    <line x1="34" y1="48" x2="66" y2="48" stroke="currentColor" strokeWidth="5" strokeLinecap="round" />
+    <line x1="36" y1="52" x2="64" y2="52" stroke="currentColor" strokeWidth="5" strokeLinecap="round" />
+    {/* Left fluke with outward arrow */}
+    <path
+      d="M50 84
+         C42 84, 34 80, 30 74
+         L24 80
+         L26 70
+         L36 74"
+      stroke="currentColor"
+      strokeWidth="5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      fill="none"
+    />
+    {/* Right fluke with outward arrow */}
+    <path
+      d="M50 84
+         C58 84, 66 80, 70 74
+         L76 80
+         L74 70
+         L64 74"
+      stroke="currentColor"
+      strokeWidth="5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      fill="none"
+    />
   </svg>
 );
 
