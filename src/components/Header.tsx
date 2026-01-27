@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { LogIn, UserPlus, Menu, Home, User, Info, ClipboardList, Wallet, Globe, ScrollText, FolderOpen, Phone, ChevronDown, Link2, CreditCard, Package, Key, LogOut, Shield, KeyRound, Lock, Unlock } from 'lucide-react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import LanguageToggle from './LanguageToggle';
@@ -7,6 +7,7 @@ import ProfileSwitcher from './ProfileSwitcher';
 
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
+import { toast } from 'sonner';
 import { useEncryption } from '@/contexts/EncryptionContext';
 import { Button } from '@/components/ui/button';
 import {
@@ -67,6 +68,27 @@ const Header = () => {
       setIsVerifyMode(false);
     }
   };
+
+  // Handle verified=true query param - show success toast and open login
+  useEffect(() => {
+    const isVerified = searchParams.get('verified');
+    if (isVerified === 'true') {
+      // Show success toast
+      toast.success(
+        language === 'de' ? 'E-Mail erfolgreich bestätigt!' : 'Email verified successfully!',
+        {
+          description: language === 'de' 
+            ? 'Du kannst Dich jetzt anmelden.' 
+            : 'You can now sign in.',
+        }
+      );
+      // Open login dialog
+      setAuthMode('login');
+      setAuthOpen(true);
+      // Clear the query param from URL
+      navigate('/', { replace: true });
+    }
+  }, [searchParams, language, navigate]);
 
   const currentSection = searchParams.get('section');
 

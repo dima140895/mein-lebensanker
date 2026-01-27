@@ -103,7 +103,7 @@ const VerifyEmail = () => {
     if (status !== 'success') return;
 
     if (countdown <= 0) {
-      navigate('/?login=true');
+      navigate('/?verified=true');
       return;
     }
 
@@ -115,7 +115,7 @@ const VerifyEmail = () => {
   }, [status, countdown, navigate]);
 
   const handleLoginClick = () => {
-    navigate('/?login=true');
+    navigate('/?verified=true');
   };
 
   return (
