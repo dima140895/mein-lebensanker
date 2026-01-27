@@ -82,11 +82,11 @@ const VerifyEmail = () => {
           return;
         }
 
-        // Handle token_hash verification
-        if (token_hash && type === 'email') {
+        // Handle token_hash verification (works for both 'email' and 'magiclink' types)
+        if (token_hash && (type === 'email' || type === 'magiclink')) {
           const { error } = await supabase.auth.verifyOtp({
             token_hash,
-            type: 'email',
+            type: type as 'email' | 'magiclink',
           });
 
           if (error) {
