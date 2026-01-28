@@ -33,6 +33,7 @@ import ChangePasswordDialog from './ChangePasswordDialog';
 import { EncryptionPasswordDialog } from './EncryptionPasswordDialog';
 import { ViewRecoveryKeyDialog } from './ViewRecoveryKeyDialog';
 import { RecoveryKeyRecoveryDialog } from './RecoveryKeyRecoveryDialog';
+import { ChangeEncryptionPasswordWithCurrentDialog } from './ChangeEncryptionPasswordWithCurrentDialog';
 
 interface MenuItem {
   label: string;
@@ -57,6 +58,7 @@ const Header = () => {
   const [encryptionUnlockOpen, setEncryptionUnlockOpen] = useState(false);
   const [recoveryKeyDialogOpen, setRecoveryKeyDialogOpen] = useState(false);
   const [recoveryKeyRecoveryOpen, setRecoveryKeyRecoveryOpen] = useState(false);
+  const [changeEncryptionPasswordOpen, setChangeEncryptionPasswordOpen] = useState(false);
 
   // Prevent closing dialog when in verify mode
   const handleAuthOpenChange = (open: boolean) => {
@@ -137,7 +139,8 @@ const Header = () => {
       encryptionLocked: 'Daten gesperrt',
       unlockData: 'Daten entsperren',
       lockData: 'Daten sperren',
-      recoveryKey: 'Recovery-Schlüssel neu generieren',
+      recoveryKey: 'Ersatzschlüssel neu generieren',
+      changeEncryptionPassword: 'Verschlüsselungs-Passwort ändern',
       forgotPassword: 'Passwort vergessen?',
     },
     en: {
@@ -172,6 +175,7 @@ const Header = () => {
       unlockData: 'Unlock Data',
       lockData: 'Lock Data',
       recoveryKey: 'Regenerate Recovery Key',
+      changeEncryptionPassword: 'Change Encryption Password',
       forgotPassword: 'Forgot password?',
     },
   };
@@ -592,6 +596,13 @@ const Header = () => {
                           {tx.lockData}
                         </DropdownMenuItem>
                         <DropdownMenuItem 
+                          onClick={() => setChangeEncryptionPasswordOpen(true)}
+                          className="cursor-pointer"
+                        >
+                          <KeyRound className="mr-2 h-4 w-4" />
+                          {tx.changeEncryptionPassword}
+                        </DropdownMenuItem>
+                        <DropdownMenuItem 
                           onClick={() => setRecoveryKeyDialogOpen(true)}
                           className="cursor-pointer"
                         >
@@ -716,6 +727,12 @@ const Header = () => {
       <RecoveryKeyRecoveryDialog 
         open={recoveryKeyRecoveryOpen} 
         onOpenChange={setRecoveryKeyRecoveryOpen}
+      />
+
+      {/* Change Encryption Password Dialog */}
+      <ChangeEncryptionPasswordWithCurrentDialog 
+        open={changeEncryptionPasswordOpen} 
+        onOpenChange={setChangeEncryptionPasswordOpen}
       />
     </header>
   );
