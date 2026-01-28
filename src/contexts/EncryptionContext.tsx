@@ -250,16 +250,20 @@ export const EncryptionProvider: React.FC<{ children: ReactNode }> = ({ children
 
       if (profileError) throw profileError;
 
-      // Store the password verifier
+      // Store the password verifier - first try to delete any existing one, then insert
+      await supabase
+        .from('vorsorge_data')
+        .delete()
+        .eq('user_id', user.id)
+        .eq('section_key', '_encryption_verifier');
+        
       const { error: verifierError } = await supabase
         .from('vorsorge_data')
-        .upsert({
+        .insert({
           user_id: user.id,
           section_key: '_encryption_verifier',
           data: verifier,
           person_profile_id: null,
-        }, {
-          onConflict: 'user_id,section_key,person_profile_id'
         });
 
       if (verifierError) throw verifierError;
