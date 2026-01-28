@@ -57,6 +57,7 @@ export const EncryptionPasswordDialog: React.FC<EncryptionPasswordDialogProps> =
       unlock: 'Entsperren',
       enable: 'Weiter',
       wrongPassword: 'Falsches Passwort. Bitte erneut versuchen.',
+      setupError: 'Die Verschlüsselung konnte nicht aktiviert werden. Bitte versuche es erneut.',
       passwordMismatch: 'Passwörter stimmen nicht überein.',
       passwordTooShort: 'Mindestens 8 Zeichen erforderlich.',
       warning: 'Merke Dir dieses Passwort gut – es ist der Schlüssel zu Deinen Daten.',
@@ -85,6 +86,7 @@ export const EncryptionPasswordDialog: React.FC<EncryptionPasswordDialogProps> =
       unlock: 'Unlock',
       enable: 'Continue',
       wrongPassword: 'Wrong password. Please try again.',
+      setupError: 'Could not enable encryption. Please try again.',
       passwordMismatch: 'Passwords do not match.',
       passwordTooShort: 'At least 8 characters required.',
       warning: 'Remember this password – it\'s the key to your data.',
@@ -132,7 +134,7 @@ export const EncryptionPasswordDialog: React.FC<EncryptionPasswordDialogProps> =
           setPassword('');
           setConfirmPassword('');
         } else {
-          setError(t.wrongPassword);
+          setError(t.setupError);
         }
       } else {
         const success = await unlock(password);
