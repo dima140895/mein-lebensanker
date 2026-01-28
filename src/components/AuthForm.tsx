@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Mail, Lock, Eye, EyeOff, ArrowLeft, Loader2 } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, ArrowLeft, Loader2, Check, X } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { supabase } from '@/integrations/supabase/browserClient';
@@ -64,6 +64,7 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange }: Auth
       emailNotConfirmed: 'Bitte bestätige zuerst Deine E-Mail-Adresse.',
       confirmPassword: 'Passwort bestätigen',
       passwordMismatch: 'Passwörter stimmen nicht überein',
+      passwordsMatch: 'Passwörter stimmen überein',
     },
     en: {
       login: 'Sign In',
@@ -94,6 +95,7 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange }: Auth
       emailNotConfirmed: 'Please confirm your email address first.',
       confirmPassword: 'Confirm Password',
       passwordMismatch: 'Passwords do not match',
+      passwordsMatch: 'Passwords match',
     },
   };
 
@@ -400,6 +402,26 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange }: Auth
                   {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
+              {/* Real-time password match indicator */}
+              {confirmPassword && (
+                <div className={`flex items-center gap-1.5 text-xs mt-1.5 ${
+                  password === confirmPassword 
+                    ? 'text-green-600 dark:text-green-400' 
+                    : 'text-destructive'
+                }`}>
+                  {password === confirmPassword ? (
+                    <>
+                      <Check className="h-3.5 w-3.5" />
+                      <span>{texts.passwordsMatch}</span>
+                    </>
+                  ) : (
+                    <>
+                      <X className="h-3.5 w-3.5" />
+                      <span>{texts.passwordMismatch}</span>
+                    </>
+                  )}
+                </div>
+              )}
             </div>
           )}
 
