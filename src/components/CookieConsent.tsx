@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, forwardRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Cookie, Settings, Check, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -21,7 +21,7 @@ interface CookiePreferences {
 const COOKIE_CONSENT_KEY = 'cookie-consent';
 const COOKIE_PREFERENCES_KEY = 'cookie-preferences';
 
-const CookieConsent = () => {
+const CookieConsent = forwardRef<HTMLDivElement>((_, ref) => {
   const { language } = useLanguage();
   const [showBanner, setShowBanner] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
@@ -207,6 +207,8 @@ const CookieConsent = () => {
       </Dialog>
     </>
   );
-};
+});
+
+CookieConsent.displayName = 'CookieConsent';
 
 export default CookieConsent;
