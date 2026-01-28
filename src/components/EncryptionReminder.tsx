@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, forwardRef } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useEncryption } from '@/contexts/EncryptionContext';
 import { useAuth } from '@/contexts/AuthContext';
@@ -13,13 +13,13 @@ import {
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
-import { Shield, Lock, Eye, EyeOff } from 'lucide-react';
+import { Shield, Lock } from 'lucide-react';
 import { EncryptionPasswordDialog } from './EncryptionPasswordDialog';
 
 const SESSION_DISMISSED_KEY = 'vorsorge_encryption_reminder_dismissed';
 const PERMANENT_DISMISSED_KEY = 'vorsorge_encryption_reminder_never_show';
 
-export const EncryptionReminder: React.FC = () => {
+export const EncryptionReminder = forwardRef<HTMLDivElement>((_, ref) => {
   const { language } = useLanguage();
   const { user } = useAuth();
   const { isEncryptionEnabled, isLoading } = useEncryption();
@@ -173,4 +173,6 @@ export const EncryptionReminder: React.FC = () => {
       />
     </>
   );
-};
+});
+
+EncryptionReminder.displayName = 'EncryptionReminder';
