@@ -29,7 +29,9 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange }: Auth
   };
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const t = {
@@ -60,6 +62,8 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange }: Auth
       resendEmail: 'Erneut senden',
       emailResent: 'E-Mail erneut gesendet!',
       emailNotConfirmed: 'Bitte bestätige zuerst Deine E-Mail-Adresse.',
+      confirmPassword: 'Passwort bestätigen',
+      passwordMismatch: 'Passwörter stimmen nicht überein',
     },
     en: {
       login: 'Sign In',
@@ -88,6 +92,8 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange }: Auth
       resendEmail: 'Resend Email',
       emailResent: 'Email resent!',
       emailNotConfirmed: 'Please confirm your email address first.',
+      confirmPassword: 'Confirm Password',
+      passwordMismatch: 'Passwords do not match',
     },
   };
 
@@ -135,6 +141,13 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange }: Auth
         toast.success(texts.welcomeBack);
         onSuccess?.();
       } else if (mode === 'register') {
+        // Validate passwords match
+        if (password !== confirmPassword) {
+          toast.error(texts.passwordMismatch);
+          setLoading(false);
+          return;
+        }
+        
         const { error } = await signUp(email, password);
         if (error) throw error;
         
@@ -361,6 +374,34 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange }: Auth
               </button>
             </div>
           </div>
+
+          {mode === 'register' && (
+            <div className="space-y-2">
+              <Label htmlFor="confirmPassword" className="text-sm font-medium">
+                {texts.confirmPassword}
+              </Label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  id="confirmPassword"
+                  type={showConfirmPassword ? 'text' : 'password'}
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  className="pl-10 pr-10"
+                  placeholder="••••••••"
+                  required
+                  minLength={6}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                >
+                  {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </button>
+              </div>
+            </div>
+          )}
 
           <Button type="submit" className="w-full" disabled={loading}>
             {loading ? '...' : mode === 'login' ? texts.login : texts.register}
