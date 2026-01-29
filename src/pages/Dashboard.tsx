@@ -260,25 +260,25 @@ const DashboardContent = () => {
   if (activeSection) {
     return (
       <>
-        <div className="container mx-auto px-4 py-8">
+        <div className="container mx-auto px-4 py-4 md:py-8">
           {/* Mobile: Stack vertically with proper spacing */}
-          <div className="flex flex-col gap-4 mb-6 md:flex-row md:items-center md:justify-between md:gap-0">
+          <div className="flex flex-col gap-2 mb-4 md:flex-row md:items-center md:justify-between md:gap-0 md:mb-6">
             <div className="flex items-center justify-between">
-              <Button variant="ghost" onClick={() => handleSectionChange(null)} className="flex-shrink-0">
-                <ArrowLeft className="mr-2 h-4 w-4" /> 
+              <Button variant="ghost" size="sm" onClick={() => handleSectionChange(null)} className="flex-shrink-0 -ml-2">
+                <ArrowLeft className="mr-1.5 h-4 w-4" /> 
                 <span className="hidden sm:inline">{texts.back}</span>
-                <span className="sm:hidden">{language === 'de' ? 'Zurück' : 'Back'}</span>
+                <span className="sm:hidden text-sm">{language === 'de' ? 'Zurück' : 'Back'}</span>
               </Button>
               {/* Mobile: Show active profile name */}
               {isMobile && activeProfile && (
-                <span className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                  <User className="h-4 w-4" />
+                <span className="text-xs font-medium text-muted-foreground flex items-center gap-1.5">
+                  <User className="h-3.5 w-3.5" />
                   {activeProfile.name}
                 </span>
               )}
             </div>
             
-            <h2 className="font-serif text-xl font-semibold text-foreground text-center md:absolute md:left-1/2 md:-translate-x-1/2">
+            <h2 className="font-serif text-lg md:text-xl font-semibold text-foreground text-center md:absolute md:left-1/2 md:-translate-x-1/2">
               {texts[activeSection as keyof typeof texts]}
             </h2>
             
@@ -309,21 +309,21 @@ const DashboardContent = () => {
 
   return (
     <>
-      <div className="container mx-auto px-4 py-8">
-        <div className="text-center mb-6">
-          <h1 className="font-serif text-3xl font-bold text-foreground">{texts.title}</h1>
-          <p className="mt-2 text-muted-foreground">{texts.subtitle}</p>
+      <div className="container mx-auto px-4 py-4 md:py-8">
+        <div className="text-center mb-4 md:mb-6">
+          <h1 className="font-serif text-2xl md:text-3xl font-bold text-foreground">{texts.title}</h1>
+          <p className="mt-1 md:mt-2 text-sm md:text-base text-muted-foreground">{texts.subtitle}</p>
         </div>
 
         {/* Progress bar */}
-        <div className="max-w-4xl mx-auto mb-6">
-          <div className={`p-4 rounded-xl border transition-all duration-300 ${isComplete ? 'border-primary bg-primary/5' : 'border-border bg-card'}`}>
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium text-foreground">{texts.progressLabel}</span>
+        <div className="max-w-4xl mx-auto mb-4 md:mb-6">
+          <div className={`p-3 md:p-4 rounded-xl border transition-all duration-300 ${isComplete ? 'border-primary bg-primary/5' : 'border-border bg-card'}`}>
+            <div className="flex items-center justify-between mb-1.5 md:mb-2">
+              <span className="text-xs md:text-sm font-medium text-foreground">{texts.progressLabel}</span>
               {statusLoading ? (
-                <span className="text-sm font-medium text-muted-foreground animate-pulse">...</span>
+                <span className="text-xs md:text-sm font-medium text-muted-foreground animate-pulse">...</span>
               ) : (
-                <span className={`text-sm font-medium ${isComplete ? 'text-primary' : 'text-muted-foreground'}`}>
+                <span className={`text-xs md:text-sm font-medium ${isComplete ? 'text-primary' : 'text-muted-foreground'}`}>
                   {isComplete ? texts.complete : `${filledCount}/${totalCount}`}
                 </span>
               )}
@@ -336,15 +336,15 @@ const DashboardContent = () => {
               )}
               <Progress 
                 value={statusLoading ? 0 : progressPercent} 
-                className={`h-2 transition-all duration-500 ${statusLoading ? 'opacity-0' : 'opacity-100'}`} 
+                className={`h-1.5 md:h-2 transition-all duration-500 ${statusLoading ? 'opacity-0' : 'opacity-100'}`} 
               />
             </div>
           </div>
         </div>
 
         {/* Data sections with status indicators */}
-        <div className="max-w-4xl mx-auto mb-6">
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <div className="max-w-4xl mx-auto mb-4 md:mb-6">
+          <div className="grid gap-2.5 md:gap-4 grid-cols-2 lg:grid-cols-3">
             {dataSections.map((section, i) => {
               const Icon = section.icon;
               const descKey = `${section.key}Desc` as keyof typeof texts;
@@ -357,7 +357,7 @@ const DashboardContent = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.05 }}
                   onClick={() => handleSectionChange(section.key)}
-                  className={`relative flex items-start gap-4 p-5 rounded-xl border shadow-card hover:shadow-elevated transition-all text-left h-full min-h-[100px] ${
+                  className={`relative flex flex-col md:flex-row md:items-start gap-2 md:gap-4 p-3 md:p-5 rounded-xl border shadow-card hover:shadow-elevated transition-all text-left h-full min-h-[80px] md:min-h-[100px] ${
                     isFilled 
                       ? 'border-primary/30 bg-primary/5' 
                       : 'border-border bg-card'
@@ -365,19 +365,19 @@ const DashboardContent = () => {
                 >
                   {/* Status indicator */}
                   {isFilled && (
-                    <div className="absolute top-3 right-3">
-                      <CheckCircle className="h-5 w-5 text-primary" />
+                    <div className="absolute top-2 right-2 md:top-3 md:right-3">
+                      <CheckCircle className="h-4 w-4 md:h-5 md:w-5 text-primary" />
                     </div>
                   )}
                   
-                  <div className={`h-11 w-11 rounded-lg flex items-center justify-center flex-shrink-0 ${section.color}`}>
-                    <Icon className="h-5 w-5" />
+                  <div className={`h-9 w-9 md:h-11 md:w-11 rounded-lg flex items-center justify-center flex-shrink-0 ${section.color}`}>
+                    <Icon className="h-4 w-4 md:h-5 md:w-5" />
                   </div>
-                  <div className="flex flex-col gap-0.5 pr-6 flex-1">
-                    <span className="font-serif text-base font-semibold text-foreground">
+                  <div className="flex flex-col gap-0.5 pr-5 md:pr-6 flex-1">
+                    <span className="font-serif text-sm md:text-base font-semibold text-foreground leading-tight">
                       {texts[section.key as keyof typeof texts]}
                     </span>
-                    <span className="text-xs text-muted-foreground line-clamp-2">
+                    <span className="text-[10px] md:text-xs text-muted-foreground line-clamp-2 leading-relaxed">
                       {texts[descKey]}
                     </span>
                   </div>
@@ -389,7 +389,7 @@ const DashboardContent = () => {
 
         {/* Info/utility sections */}
         <div className="max-w-4xl mx-auto">
-          <div className="grid gap-2 md:grid-cols-2 lg:grid-cols-5">
+          <div className="grid gap-2 grid-cols-3 md:grid-cols-2 lg:grid-cols-5">
             {infoSections.map((section, i) => {
               const Icon = section.icon;
               return (
@@ -399,12 +399,12 @@ const DashboardContent = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3 + i * 0.05 }}
                   onClick={() => handleSectionChange(section.key)}
-                  className="flex items-center gap-2 p-3 rounded-xl border border-border bg-card/50 hover:bg-card shadow-sm hover:shadow-card transition-all text-left min-w-0"
+                  className="flex flex-col md:flex-row items-center gap-1.5 md:gap-2 p-2.5 md:p-3 rounded-xl border border-border bg-card/50 hover:bg-card shadow-sm hover:shadow-card transition-all text-center md:text-left min-w-0"
                 >
-                  <div className={`h-7 w-7 rounded-lg flex items-center justify-center flex-shrink-0 ${section.color}`}>
+                  <div className={`h-6 w-6 md:h-7 md:w-7 rounded-lg flex items-center justify-center flex-shrink-0 ${section.color}`}>
                     <Icon className="h-3 w-3" />
                   </div>
-                  <span className="font-medium text-xs text-foreground leading-tight whitespace-nowrap">
+                  <span className="font-medium text-[10px] md:text-xs text-foreground leading-tight">
                     {texts[section.key as keyof typeof texts]}
                   </span>
                 </motion.button>
