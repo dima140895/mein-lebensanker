@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { User, Plus, ChevronDown, Check, Pencil, Trash2 } from 'lucide-react';
+import { User, Plus, ChevronDown, Pencil, Trash2 } from 'lucide-react';
 import { useProfiles } from '@/contexts/ProfileContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -236,22 +236,19 @@ const ProfileSwitcher = () => {
             </div>
             <DropdownMenuSeparator />
             
-            {personProfiles.map((p) => (
-              <DropdownMenuItem
-                key={p.id}
-                onClick={() => setActiveProfileId(p.id)}
-              >
-                {p.id === activeProfileId && (
-                  <Check className="mr-2 h-4 w-4 text-primary" />
-                )}
-                {p.id !== activeProfileId && (
-                  <div className="mr-2 w-4" />
-                )}
-                <span className={p.id === activeProfileId ? 'font-medium' : ''}>
+            {personProfiles.map((p) => {
+              const isActive = p.id === activeProfileId;
+              return (
+                <DropdownMenuItem
+                  key={p.id}
+                  onClick={() => setActiveProfileId(p.id)}
+                  className={isActive ? 'bg-primary text-primary-foreground font-medium' : ''}
+                >
+                  <User className="mr-2 h-4 w-4" />
                   {p.name}
-                </span>
-              </DropdownMenuItem>
-            ))}
+                </DropdownMenuItem>
+              );
+            })}
             
             {personProfiles.length > 0 && (
               <>
