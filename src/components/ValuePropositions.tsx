@@ -29,38 +29,38 @@ const ValuePropositions = () => {
   const tx = texts[language];
 
   return (
-    <section id="value" className="bg-cream-dark/30 py-16 md:py-20">
+    <section id="value" className="bg-cream-dark/30 py-10 md:py-16 lg:py-20">
       <div className="container mx-auto px-4">
         <div
           key={`value-header-${language}`}
-          className="mb-12 text-center animate-fade-in-up"
+          className="mb-8 md:mb-12 text-center animate-fade-in-up"
         >
-          <span className="inline-block rounded-full bg-amber-light px-4 py-1.5 text-sm font-medium text-amber mb-4">
+          <span className="inline-block rounded-full bg-amber-light px-3 py-1 md:px-4 md:py-1.5 text-xs md:text-sm font-medium text-amber mb-3 md:mb-4">
             {tx.badge}
           </span>
-          <h2 className="font-serif text-3xl font-bold text-foreground md:text-4xl">
+          <h2 className="font-serif text-2xl md:text-3xl lg:text-4xl font-bold text-foreground">
             {t('encourage.title')}
           </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
+          <p className="mx-auto mt-3 md:mt-4 max-w-2xl text-sm md:text-base lg:text-lg text-muted-foreground px-2">
             {t('encourage.text')}
           </p>
         </div>
 
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-3 md:gap-6 grid-cols-2 lg:grid-cols-4">
           {values.map((value, index) => {
             const Icon = value.icon;
             return (
               <div
                 key={`${language}-${value.key}`}
-                className={`group rounded-xl border border-border bg-card p-6 shadow-card transition-all hover:shadow-elevated hover-lift animate-stagger-fade-in ${getStaggerClass(index)}`}
+                className={`group rounded-xl border border-border bg-card p-4 md:p-6 shadow-card transition-all hover:shadow-elevated hover-lift animate-stagger-fade-in ${getStaggerClass(index)}`}
               >
-                <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-lg bg-sage-light text-sage-dark">
-                  <Icon className="h-6 w-6" />
+                <div className="mb-2 md:mb-4 inline-flex h-10 w-10 md:h-12 md:w-12 items-center justify-center rounded-lg bg-sage-light text-sage-dark">
+                  <Icon className="h-5 w-5 md:h-6 md:w-6" />
                 </div>
-                <h3 className="mb-2 font-serif text-xl font-semibold text-foreground">
+                <h3 className="mb-1 md:mb-2 font-serif text-base md:text-xl font-semibold text-foreground">
                   {t(`value.${value.key}`)}
                 </h3>
-                <p className="text-muted-foreground">
+                <p className="text-xs md:text-sm text-muted-foreground leading-relaxed">
                   {t(`value.${value.key}Desc`)}
                 </p>
               </div>
