@@ -678,136 +678,161 @@ const PrintableDataExport = forwardRef<HTMLDivElement, PrintableDataExportProps>
       <div ref={ref} className="print-container">
         <style>{`
           .print-container {
-            font-family: Georgia, 'Times New Roman', serif;
-            max-width: 800px;
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, 'Helvetica Neue', sans-serif;
+            max-width: 850px;
             margin: 0 auto;
-            padding: 40px;
+            padding: 48px 56px;
             background: #ffffff;
             color: #1a1a1a;
+            line-height: 1.6;
           }
           .print-header {
             text-align: center;
-            margin-bottom: 40px;
-            padding-bottom: 30px;
-            border-bottom: 2px solid #7c9a82;
+            margin-bottom: 48px;
+            padding-bottom: 32px;
+            border-bottom: 3px solid #7c9a82;
+            position: relative;
+          }
+          .print-header::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, #5a7a60 0%, #7c9a82 50%, #5a7a60 100%);
           }
           .print-logo {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 12px;
-            margin-bottom: 20px;
+            gap: 14px;
+            margin-bottom: 24px;
           }
           .print-logo-icon {
-            width: 48px;
-            height: 48px;
-            background: linear-gradient(135deg, #7c9a82 0%, #5a7a60 100%);
-            border-radius: 12px;
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(145deg, #7c9a82 0%, #5a7a60 100%);
+            border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
+            box-shadow: 0 4px 12px rgba(124, 154, 130, 0.3);
           }
           .print-logo-text {
-            font-size: 28px;
-            font-weight: 600;
-            color: #7c9a82;
-            font-family: Georgia, serif;
-          }
-          .print-title {
             font-size: 32px;
             font-weight: 600;
-            color: #2a3d2e;
-            margin: 0 0 10px 0;
+            color: #5a7a60;
             font-family: Georgia, serif;
+            letter-spacing: -0.5px;
+          }
+          .print-title {
+            font-size: 28px;
+            font-weight: 500;
+            color: #2a3d2e;
+            margin: 0 0 12px 0;
+            font-family: Georgia, serif;
+            letter-spacing: 0.5px;
           }
           .print-date {
             font-size: 14px;
-            color: #6a7d6d;
+            color: #7a8a7d;
+            font-weight: 400;
           }
           .print-profile {
-            margin-bottom: 40px;
+            margin-bottom: 48px;
           }
           .print-profile-header {
             display: flex;
             align-items: center;
-            gap: 14px;
-            padding: 18px 22px;
-            background: linear-gradient(135deg, #7c9a82 0%, #5a7a60 100%);
-            border-radius: 12px;
-            margin-bottom: 24px;
+            gap: 16px;
+            padding: 20px 24px;
+            background: linear-gradient(145deg, #7c9a82 0%, #5a7a60 100%);
+            border-radius: 16px;
+            margin-bottom: 28px;
+            box-shadow: 0 4px 16px rgba(124, 154, 130, 0.25);
           }
           .print-profile-icon {
-            width: 42px;
-            height: 42px;
+            width: 48px;
+            height: 48px;
             background: rgba(255, 255, 255, 0.2);
-            border-radius: 10px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
+            backdrop-filter: blur(4px);
           }
           .print-profile-name {
-            font-size: 22px;
+            font-size: 24px;
             font-weight: 600;
             color: #ffffff;
             font-family: Georgia, serif;
+            letter-spacing: 0.3px;
           }
           .print-section {
-            margin-bottom: 24px;
+            margin-bottom: 28px;
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
           }
           .print-section-header {
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding: 14px 18px;
-            background: linear-gradient(135deg, #f8faf8 0%, #f0f5f1 100%);
-            border: 1px solid #d4e0d6;
-            border-radius: 10px 10px 0 0;
+            gap: 14px;
+            padding: 16px 20px;
+            background: linear-gradient(135deg, #f5f8f5 0%, #eef3ef 100%);
+            border: 1px solid #d8e5da;
+            border-bottom: none;
           }
           .print-section-icon {
-            width: 32px;
-            height: 32px;
-            background: #7c9a82;
-            border-radius: 8px;
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(145deg, #7c9a82 0%, #5a7a60 100%);
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
+            box-shadow: 0 2px 6px rgba(124, 154, 130, 0.2);
           }
           .print-section-title {
-            font-size: 17px;
+            font-size: 18px;
             font-weight: 600;
             color: #2a3d2e;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: Georgia, serif;
           }
           .print-section-content {
-            padding: 20px;
-            border: 1px solid #d4e0d6;
+            padding: 24px;
+            border: 1px solid #d8e5da;
             border-top: none;
-            border-radius: 0 0 10px 10px;
             background: #fefefe;
           }
           .print-info-item {
-            padding: 10px 0;
+            display: flex;
+            flex-direction: column;
+            padding: 12px 0;
             border-bottom: 1px solid #eef3ef;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
           }
           .print-info-item:last-child {
             border-bottom: none;
           }
           .print-label {
-            font-size: 13px;
-            color: #6a7d6d;
-            margin-right: 8px;
+            font-size: 12px;
+            color: #7a8a7d;
+            margin-bottom: 4px;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.8px;
+            font-weight: 500;
           }
           .print-value {
             font-size: 15px;
             color: #1a1a1a;
+            font-weight: 400;
           }
           .print-subsection {
-            margin-top: 20px;
-            padding-top: 16px;
-            border-top: 1px dashed #d4e0d6;
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 2px dashed #d8e5da;
           }
           .print-subsection:first-child {
             margin-top: 0;
@@ -815,35 +840,56 @@ const PrintableDataExport = forwardRef<HTMLDivElement, PrintableDataExportProps>
             border-top: none;
           }
           .print-subsection-title {
-            font-size: 14px;
+            font-size: 15px;
             font-weight: 600;
             color: #4a5d4d;
-            margin-bottom: 14px;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+          }
+          .print-subsection-title::before {
+            content: '';
+            width: 4px;
+            height: 16px;
+            background: linear-gradient(180deg, #7c9a82 0%, #5a7a60 100%);
+            border-radius: 2px;
           }
           .print-card {
-            background: linear-gradient(135deg, #f8faf8 0%, #f5f8f5 100%);
-            padding: 14px 16px;
-            border-radius: 8px;
-            margin-bottom: 10px;
+            background: linear-gradient(135deg, #fafcfa 0%, #f5f8f5 100%);
+            padding: 18px 20px;
+            border-radius: 12px;
+            margin-bottom: 12px;
             border: 1px solid #e8efe9;
+            transition: box-shadow 0.2s ease;
           }
           .print-card:last-child {
             margin-bottom: 0;
           }
+          .print-card .print-info-item {
+            padding: 8px 0;
+          }
+          .print-card .print-info-item:first-child {
+            padding-top: 0;
+          }
+          .print-card .print-info-item:last-child {
+            padding-bottom: 0;
+          }
           .print-uploaded-docs {
-            margin: 8px 0 16px 0;
-            padding: 12px 16px;
+            margin: 12px 0 20px 0;
+            padding: 16px 20px;
             background: linear-gradient(135deg, #f8faf8 0%, #f0f5f1 100%);
-            border-radius: 8px;
-            border: 1px dashed #c4d6c8;
+            border-radius: 10px;
+            border: 1px dashed #b8cebb;
           }
           .print-doc-item {
-            font-size: 13px;
+            font-size: 14px;
             color: #4a5d4d;
-            padding: 6px 0;
+            padding: 8px 0;
             border-bottom: 1px solid #e8efe9;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            display: flex;
+            align-items: center;
+            gap: 8px;
           }
           .print-doc-item:last-child {
             border-bottom: none;
@@ -853,58 +899,77 @@ const PrintableDataExport = forwardRef<HTMLDivElement, PrintableDataExportProps>
             padding-top: 0;
           }
           .print-disclaimer {
-            margin-top: 48px;
-            padding: 20px;
-            background: linear-gradient(135deg, #f5f8f5 0%, #eef3ef 100%);
-            border-radius: 10px;
-            font-size: 12px;
+            margin-top: 56px;
+            padding: 24px 28px;
+            background: linear-gradient(135deg, #f8faf8 0%, #f0f5f1 100%);
+            border-radius: 14px;
+            font-size: 13px;
             color: #6a7d6d;
             text-align: center;
-            border: 1px solid #d4e0d6;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            border: 1px solid #d8e5da;
+            line-height: 1.7;
+            font-style: italic;
           }
           .print-footer {
             margin-top: 48px;
-            padding-top: 24px;
-            border-top: 2px solid #d4e0d6;
+            padding-top: 28px;
+            border-top: 2px solid #d8e5da;
             text-align: center;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
           }
           .print-footer-note {
-            font-size: 13px;
+            font-size: 14px;
             color: #7c9a82;
-            margin-bottom: 16px;
+            margin-bottom: 20px;
             font-style: italic;
+            font-weight: 500;
           }
           .print-footer-links {
             display: flex;
             justify-content: center;
-            gap: 24px;
-            margin-bottom: 12px;
-            font-size: 12px;
-            color: #888;
+            gap: 28px;
+            margin-bottom: 16px;
+            font-size: 13px;
+            color: #9aa59c;
           }
           .print-footer-links span {
-            color: #d4e0d6;
+            color: #d8e5da;
           }
           .print-footer-copyright {
             font-size: 12px;
-            color: #aaa;
+            color: #b0b8b2;
           }
           .print-footer-website {
-            font-size: 13px;
+            font-size: 14px;
             color: #7c9a82;
-            margin-top: 8px;
+            margin-top: 10px;
+            font-weight: 500;
           }
           @media print {
             .print-container {
-              padding: 20px;
+              padding: 24px;
+              max-width: 100%;
             }
             .print-profile {
               page-break-before: auto;
             }
             .print-section {
               page-break-inside: avoid;
+              box-shadow: none;
+            }
+            .print-profile-header {
+              box-shadow: none;
+              -webkit-print-color-adjust: exact;
+              print-color-adjust: exact;
+            }
+            .print-logo-icon {
+              box-shadow: none;
+              -webkit-print-color-adjust: exact;
+              print-color-adjust: exact;
+            }
+            .print-section-icon {
+              box-shadow: none;
+              -webkit-print-color-adjust: exact;
+              print-color-adjust: exact;
             }
             .print-footer {
               page-break-inside: avoid;
