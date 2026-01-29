@@ -23,8 +23,14 @@ export const useAutoSave = ({ section, syncToProfile = false, onSaveComplete }: 
   const lastSavedRef = useRef<string>('');
   const lastProfileIdRef = useRef<string | null>(null);
 
+  // Store activeProfileId in a ref to capture it at the time of blur
+  const capturedProfileIdRef = useRef<string | null>(null);
+
   const triggerSave = useCallback(async () => {
-    if (!profile?.has_paid || !activeProfileId) return;
+    // Use captured profile ID to ensure we save for the profile that was active when blur occurred
+    const profileIdToSave = capturedProfileIdRef.current || activeProfileId;
+    
+    if (!profile?.has_paid || !profileIdToSave) return;
     
     // If encryption is enabled but not unlocked, skip save
     if (isEncryptionEnabled && !isUnlocked) {
@@ -32,15 +38,23 @@ export const useAutoSave = ({ section, syncToProfile = false, onSaveComplete }: 
       return;
     }
     
+    // If profile changed between blur and save, abort to prevent cross-contamination
+    if (profileIdToSave !== activeProfileId) {
+      logger.warn('Auto-save aborted: profile changed during debounce');
+      capturedProfileIdRef.current = null;
+      return;
+    }
+    
     // If profile changed, reset the hash to allow saving for new profile
-    if (lastProfileIdRef.current !== activeProfileId) {
+    if (lastProfileIdRef.current !== profileIdToSave) {
       lastSavedRef.current = '';
-      lastProfileIdRef.current = activeProfileId;
+      lastProfileIdRef.current = profileIdToSave;
     }
     
     // Create a hash of current data to avoid duplicate saves
     const currentDataHash = JSON.stringify(formData[section]);
     if (currentDataHash === lastSavedRef.current) {
+      capturedProfileIdRef.current = null;
       return; // No changes, skip save
     }
     
@@ -53,7 +67,7 @@ export const useAutoSave = ({ section, syncToProfile = false, onSaveComplete }: 
         const personalData = formData.personal;
         if (personalData.fullName || personalData.birthDate) {
           const profileName = personalData.fullName?.trim() || 'Unbenannt';
-          await updateProfile(activeProfileId, profileName, personalData.birthDate || undefined);
+          await updateProfile(profileIdToSave, profileName, personalData.birthDate || undefined);
           await loadProfiles();
         }
       }
@@ -67,10 +81,15 @@ export const useAutoSave = ({ section, syncToProfile = false, onSaveComplete }: 
       logger.debug(`Auto-saved section: ${section}`);
     } catch (error) {
       logger.error(`Error auto-saving section ${section}:`, error);
+    } finally {
+      capturedProfileIdRef.current = null;
     }
   }, [profile?.has_paid, activeProfileId, formData, section, saveSection, syncToProfile, updateProfile, loadProfiles, isEncryptionEnabled, isUnlocked, onSaveComplete]);
 
   const handleBlur = useCallback(() => {
+    // Capture the current profile ID at the moment of blur
+    capturedProfileIdRef.current = activeProfileId;
+    
     // Clear any pending timeout
     if (saveTimeoutRef.current) {
       clearTimeout(saveTimeoutRef.current);
@@ -80,11 +99,17 @@ export const useAutoSave = ({ section, syncToProfile = false, onSaveComplete }: 
     saveTimeoutRef.current = setTimeout(() => {
       triggerSave();
     }, 300);
-  }, [triggerSave]);
+  }, [triggerSave, activeProfileId]);
 
   // Reset the last saved hash when profile changes (to allow saving for new profile)
   const resetSaveState = useCallback(() => {
     lastSavedRef.current = '';
+    capturedProfileIdRef.current = null;
+    // Cancel any pending save when profile changes
+    if (saveTimeoutRef.current) {
+      clearTimeout(saveTimeoutRef.current);
+      saveTimeoutRef.current = null;
+    }
   }, []);
 
   return {
