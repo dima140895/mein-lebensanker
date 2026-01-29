@@ -47,6 +47,10 @@ const PrintableRelativesSummary = forwardRef<HTMLDivElement, PrintableRelativesS
         birthDate: 'Geburtsdatum',
         address: 'Adresse',
         phone: 'Telefon',
+        bloodType: 'Blutgruppe',
+        preExistingConditions: 'Vorerkrankungen',
+        medications: 'Medikation',
+        allergies: 'Allergien & Unverträglichkeiten',
         trustedPersons: 'Vertrauenspersonen',
         emergencyContact: 'Notfallkontakt',
         bankAccounts: 'Bankkonten',
@@ -145,6 +149,10 @@ const PrintableRelativesSummary = forwardRef<HTMLDivElement, PrintableRelativesS
         birthDate: 'Date of Birth',
         address: 'Address',
         phone: 'Phone',
+        bloodType: 'Blood Type',
+        preExistingConditions: 'Pre-existing Conditions',
+        medications: 'Medications',
+        allergies: 'Allergies & Intolerances',
         trustedPersons: 'Trusted Persons',
         emergencyContact: 'Emergency Contact',
         bankAccounts: 'Bank Accounts',
@@ -304,6 +312,56 @@ const PrintableRelativesSummary = forwardRef<HTMLDivElement, PrintableRelativesS
               {renderInfoItem(texts.birthDate, sectionData.birthDate)}
               {renderInfoItem(texts.address, sectionData.address)}
               {renderInfoItem(texts.phone, sectionData.phone)}
+              {renderInfoItem(texts.bloodType, sectionData.bloodType)}
+              {renderInfoItem(texts.preExistingConditions, sectionData.preExistingConditions)}
+
+              {Array.isArray(sectionData.medications) && (sectionData.medications as Array<Record<string, unknown>>).some(m =>
+                Object.values(m || {}).some(v => typeof v === 'string' ? v.trim() !== '' : v != null)
+              ) && (
+                <div className="print-subsection">
+                  <div className="print-subsection-title">{texts.medications}</div>
+                  {renderArrayItems(sectionData.medications as Array<Record<string, unknown>>, (m, i) => {
+                    const name = (m.name as string | undefined)?.trim();
+                    const dosage = (m.dosage as string | undefined)?.trim();
+                    const frequency = (m.frequency as string | undefined)?.trim();
+                    const timing = (m.timing as string | undefined)?.trim();
+                    const notes = (m.notes as string | undefined)?.trim();
+                    const meta = [dosage, frequency, timing].filter(Boolean).join(' · ');
+                    return (
+                      <div key={i} className="print-card">
+                        {name && <div className="print-info-item"><span className="print-label">{texts.name}:</span> <span className="print-value">{name}</span></div>}
+                        {meta && <div className="print-info-item"><span className="print-label">Info:</span> <span className="print-value">{meta}</span></div>}
+                        {notes && <div className="print-info-item"><span className="print-label">{texts.notes}:</span> <span className="print-value">{notes}</span></div>}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+
+              {Array.isArray(sectionData.allergies) && (sectionData.allergies as Array<Record<string, unknown>>).some(a =>
+                Object.values(a || {}).some(v => typeof v === 'string' ? v.trim() !== '' : v != null)
+              ) && (
+                <div className="print-subsection">
+                  <div className="print-subsection-title">{texts.allergies}</div>
+                  {renderArrayItems(sectionData.allergies as Array<Record<string, unknown>>, (a, i) => {
+                    const name = (a.name as string | undefined)?.trim();
+                    const type = (a.type as string | undefined)?.trim();
+                    const severity = (a.severity as string | undefined)?.trim();
+                    const reaction = (a.reaction as string | undefined)?.trim();
+                    const notes = (a.notes as string | undefined)?.trim();
+                    const meta = [type, severity].filter(Boolean).join(' · ');
+                    return (
+                      <div key={i} className="print-card">
+                        {name && <div className="print-info-item"><span className="print-label">{texts.name}:</span> <span className="print-value">{name}</span></div>}
+                        {meta && <div className="print-info-item"><span className="print-label">Info:</span> <span className="print-value">{meta}</span></div>}
+                        {reaction && <div className="print-info-item"><span className="print-label">Reaktion:</span> <span className="print-value">{reaction}</span></div>}
+                        {notes && <div className="print-info-item"><span className="print-label">{texts.notes}:</span> <span className="print-value">{notes}</span></div>}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+
               {(sectionData.trustedPerson1 || sectionData.trustedPerson2) && (
                 <div className="print-subsection">
                   <div className="print-subsection-title">{texts.trustedPersons}</div>

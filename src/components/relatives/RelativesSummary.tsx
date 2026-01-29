@@ -107,6 +107,10 @@ const RelativesSummary = ({ data, profiles, sharedSections, sharedProfileSection
       birthDate: 'Geburtsdatum',
       address: 'Adresse',
       phone: 'Telefon',
+      bloodType: 'Blutgruppe',
+      preExistingConditions: 'Vorerkrankungen',
+      medications: 'Medikation',
+      allergies: 'Allergien & Unverträglichkeiten',
       trustedPersons: 'Vertrauenspersonen',
       emergencyContact: 'Notfallkontakt',
       
@@ -205,6 +209,10 @@ const RelativesSummary = ({ data, profiles, sharedSections, sharedProfileSection
       birthDate: 'Date of Birth',
       address: 'Address',
       phone: 'Phone',
+      bloodType: 'Blood Type',
+      preExistingConditions: 'Pre-existing Conditions',
+      medications: 'Medications',
+      allergies: 'Allergies & Intolerances',
       trustedPersons: 'Trusted Persons',
       emergencyContact: 'Emergency Contact',
       
@@ -316,6 +324,140 @@ const RelativesSummary = ({ data, profiles, sharedSections, sharedProfileSection
         <p className="text-foreground mt-0.5">{String(value)}</p>
       </div>
     );
+  };
+
+  const medicationFrequencyLabels = {
+    de: {
+      once: '1x täglich',
+      twice: '2x täglich',
+      thrice: '3x täglich',
+      fourTimes: '4x täglich',
+      asNeeded: 'Bei Bedarf',
+      weekly: 'Wöchentlich',
+      other: 'Andere',
+    },
+    en: {
+      once: 'Once daily',
+      twice: 'Twice daily',
+      thrice: '3 times daily',
+      fourTimes: '4 times daily',
+      asNeeded: 'As needed',
+      weekly: 'Weekly',
+      other: 'Other',
+    },
+  } as const;
+
+  const medicationTimingLabels = {
+    de: {
+      morning: 'Morgens',
+      noon: 'Mittags',
+      evening: 'Abends',
+      night: 'Nachts',
+      beforeMeals: 'Vor dem Essen',
+      afterMeals: 'Nach dem Essen',
+      withMeals: 'Zum Essen',
+      other: 'Andere',
+    },
+    en: {
+      morning: 'Morning',
+      noon: 'Noon',
+      evening: 'Evening',
+      night: 'Night',
+      beforeMeals: 'Before meals',
+      afterMeals: 'After meals',
+      withMeals: 'With meals',
+      other: 'Other',
+    },
+  } as const;
+
+  const renderMedications = (medications: unknown) => {
+    if (!Array.isArray(medications)) return null;
+    const valid = medications
+      .filter((m) => m && typeof m === 'object')
+      .map((m) => m as Record<string, unknown>)
+      .filter((m) => Object.values(m).some((v) => typeof v === 'string' ? v.trim() !== '' : v != null));
+
+    if (valid.length === 0) return null;
+
+    return (
+      <div className="pt-4 space-y-2">
+        <span className="text-sm font-medium text-foreground">{texts.medications}</span>
+        <div className="space-y-2">
+          {valid.map((m, idx) => {
+            const name = (m.name as string | undefined)?.trim();
+            const dosage = (m.dosage as string | undefined)?.trim();
+            const frequencyKey = (m.frequency as string | undefined)?.trim();
+            const timingKey = (m.timing as string | undefined)?.trim();
+            const notes = (m.notes as string | undefined)?.trim();
+
+            const frequency =
+              frequencyKey && (medicationFrequencyLabels[language] as any)[frequencyKey]
+                ? (medicationFrequencyLabels[language] as any)[frequencyKey]
+                : frequencyKey;
+            const timing =
+              timingKey && (medicationTimingLabels[language] as any)[timingKey]
+                ? (medicationTimingLabels[language] as any)[timingKey]
+                : timingKey;
+
+            const meta = [dosage, frequency, timing].filter(Boolean).join(' · ');
+
+            return (
+              <div key={idx} className="rounded-lg bg-background/50 p-3 text-sm space-y-1">
+                <p className="text-foreground font-medium">{name || `${texts.medications} ${idx + 1}`}</p>
+                {meta && <p className="text-muted-foreground">{meta}</p>}
+                {notes && <p className="text-foreground">{notes}</p>}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
+  };
+
+  const renderAllergies = (allergies: unknown) => {
+    if (!Array.isArray(allergies)) return null;
+    const valid = allergies
+      .filter((a) => a && typeof a === 'object')
+      .map((a) => a as Record<string, unknown>)
+      .filter((a) => Object.values(a).some((v) => typeof v === 'string' ? v.trim() !== '' : v != null));
+
+    if (valid.length === 0) return null;
+
+    return (
+      <div className="pt-4 space-y-2">
+        <span className="text-sm font-medium text-foreground">{texts.allergies}</span>
+        <div className="space-y-2">
+          {valid.map((a, idx) => {
+            const name = (a.name as string | undefined)?.trim();
+            const type = (a.type as string | undefined)?.trim();
+            const severity = (a.severity as string | undefined)?.trim();
+            const reaction = (a.reaction as string | undefined)?.trim();
+            const notes = (a.notes as string | undefined)?.trim();
+            const meta = [type, severity].filter(Boolean).join(' · ');
+            return (
+              <div key={idx} className="rounded-lg bg-background/50 p-3 text-sm space-y-1">
+                <p className="text-foreground font-medium">{name || `${texts.allergies} ${idx + 1}`}</p>
+                {meta && <p className="text-muted-foreground">{meta}</p>}
+                {reaction && <p className="text-foreground">{reaction}</p>}
+                {notes && <p className="text-foreground">{notes}</p>}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
+  };
+
+  const isDocumentsSharedForProfile = (profileId?: string | null): boolean => {
+    // New per-profile structure
+    if (sharedProfileSections && Object.keys(sharedProfileSections).length > 0) {
+      if (profileId) {
+        return !!sharedProfileSections[profileId]?.includes('documents');
+      }
+      return Object.values(sharedProfileSections).some((sections) => sections?.includes('documents'));
+    }
+    // Legacy structure
+    return sharedSections?.includes('documents') ?? false;
   };
 
   const getInsuranceTypeLabel = (type: string): string => {
@@ -500,6 +642,10 @@ const RelativesSummary = ({ data, profiles, sharedSections, sharedProfileSection
             {renderInfoItem(texts.birthDate, sectionData.birthDate)}
             {renderInfoItem(texts.address, sectionData.address)}
             {renderInfoItem(texts.phone, sectionData.phone)}
+            {renderInfoItem(texts.bloodType, sectionData.bloodType)}
+            {renderInfoItem(texts.preExistingConditions, sectionData.preExistingConditions)}
+            {renderMedications(sectionData.medications)}
+            {renderAllergies(sectionData.allergies)}
             {(sectionData.trustedPerson1 || sectionData.trustedPerson2) && (
               <div className="pt-4">
                 <span className="text-sm font-medium text-foreground">{texts.trustedPersons}</span>
@@ -593,11 +739,9 @@ const RelativesSummary = ({ data, profiles, sharedSections, sharedProfileSection
     }
   };
 
-  const hasContent = (sectionData: Record<string, unknown>, sectionKey?: string): boolean => {
-    // For documents section, always show if it's in shared sections (documents may be in storage)
-    if (sectionKey === 'documents' && sharedSections?.includes('documents')) {
-      return true;
-    }
+  const hasContent = (sectionData: Record<string, unknown>, sectionKey?: string, profileId?: string | null): boolean => {
+    // For documents section, always show if shared (uploads may exist even if locations are empty)
+    if (sectionKey === 'documents' && isDocumentsSharedForProfile(profileId)) return true;
     
     return Object.values(sectionData).some(value => {
       if (Array.isArray(value)) {
@@ -609,13 +753,13 @@ const RelativesSummary = ({ data, profiles, sharedSections, sharedProfileSection
     });
   };
 
-  const renderProfileData = (profileData: VorsorgeData[]) => {
+  const renderProfileData = (profileData: VorsorgeData[], profileId?: string | null) => {
     // Filter out empty sections (but keep documents if shared - storage files may exist)
-    const nonEmptyData = profileData.filter(item => hasContent(item.data, item.section_key));
+    const nonEmptyData = profileData.filter(item => hasContent(item.data, item.section_key, profileId));
     
     // Also check if documents section should be shown even if not in vorsorge_data
     const hasDocumentsSection = nonEmptyData.some(item => item.section_key === 'documents');
-    const shouldShowDocuments = sharedSections?.includes('documents') && !hasDocumentsSection;
+    const shouldShowDocuments = isDocumentsSharedForProfile(profileId) && !hasDocumentsSection;
     
     if (nonEmptyData.length === 0 && !shouldShowDocuments) {
       return (
@@ -627,7 +771,7 @@ const RelativesSummary = ({ data, profiles, sharedSections, sharedProfileSection
     
     // If documents should be shown but isn't in data, add a placeholder entry
     const displayData = shouldShowDocuments 
-      ? [...nonEmptyData, { section_key: 'documents', data: {}, is_for_partner: false, person_profile_id: null, profile_name: null }]
+      ? [...nonEmptyData, { section_key: 'documents', data: {}, is_for_partner: false, person_profile_id: profileId ?? null, profile_name: null }]
       : nonEmptyData;
 
     const sectionOrder = ['personal', 'assets', 'digital', 'wishes', 'documents', 'contacts'];
@@ -713,7 +857,10 @@ const RelativesSummary = ({ data, profiles, sharedSections, sharedProfileSection
             )}
             <PrintButton />
           </div>
-          {renderProfileData(dataByProfile.length > 0 ? dataByProfile[0].data : [])}
+          {renderProfileData(
+            dataByProfile.length > 0 ? dataByProfile[0].data : [],
+            dataByProfile.length > 0 ? dataByProfile[0].profile.profile_id : null
+          )}
         </motion.div>
 
         {/* Hidden printable content */}
@@ -756,7 +903,7 @@ const RelativesSummary = ({ data, profiles, sharedSections, sharedProfileSection
           
           {dataByProfile.map(({ profile, data: profileData }) => (
             <TabsContent key={profile.profile_id} value={profile.profile_id} className="mt-6">
-              {renderProfileData(profileData)}
+              {renderProfileData(profileData, profile.profile_id)}
             </TabsContent>
           ))}
         </Tabs>
