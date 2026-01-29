@@ -395,7 +395,9 @@ const PersonalForm = () => {
                     }}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder={texts.frequency} />
+                      <SelectValue placeholder={texts.frequency}>
+                        {med.frequency ? texts.frequencyOptions[med.frequency as keyof typeof texts.frequencyOptions] : texts.frequency}
+                      </SelectValue>
                     </SelectTrigger>
                     <SelectContent>
                       {Object.entries(texts.frequencyOptions).map(([key, label]) => (
@@ -414,7 +416,9 @@ const PersonalForm = () => {
                     }}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder={texts.timing} />
+                      <SelectValue placeholder={texts.timing}>
+                        {med.timing ? texts.timingOptions[med.timing as keyof typeof texts.timingOptions] : texts.timing}
+                      </SelectValue>
                     </SelectTrigger>
                     <SelectContent>
                       {Object.entries(texts.timingOptions).map(([key, label]) => (
@@ -495,7 +499,9 @@ const PersonalForm = () => {
                     }}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder={texts.allergyType} />
+                      <SelectValue placeholder={texts.allergyType}>
+                        {allergy.type ? texts.allergyTypeOptions[allergy.type as keyof typeof texts.allergyTypeOptions] : texts.allergyType}
+                      </SelectValue>
                     </SelectTrigger>
                     <SelectContent>
                       {Object.entries(texts.allergyTypeOptions).map(([key, label]) => (
@@ -517,7 +523,9 @@ const PersonalForm = () => {
                     }}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder={texts.allergySeverity} />
+                      <SelectValue placeholder={texts.allergySeverity}>
+                        {allergy.severity ? texts.allergySeverityOptions[allergy.severity as keyof typeof texts.allergySeverityOptions] : texts.allergySeverity}
+                      </SelectValue>
                     </SelectTrigger>
                     <SelectContent>
                       {Object.entries(texts.allergySeverityOptions).map(([key, label]) => (

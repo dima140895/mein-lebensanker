@@ -370,6 +370,80 @@ const RelativesSummary = ({ data, profiles, sharedSections, sharedProfileSection
     },
   } as const;
 
+  const allergyTypeLabels = {
+    de: {
+      medication: 'Medikament',
+      food: 'Lebensmittel',
+      environmental: 'Umwelt (Pollen, Staub, etc.)',
+      other: 'Sonstige',
+    },
+    en: {
+      medication: 'Medication',
+      food: 'Food',
+      environmental: 'Environmental (pollen, dust, etc.)',
+      other: 'Other',
+    },
+  } as const;
+
+  const allergySeverityLabels = {
+    de: {
+      mild: 'Leicht',
+      moderate: 'Mittel',
+      severe: 'Schwer (lebensbedrohlich)',
+    },
+    en: {
+      mild: 'Mild',
+      moderate: 'Moderate',
+      severe: 'Severe (life-threatening)',
+    },
+  } as const;
+
+  const relationshipLabels = {
+    de: {
+      family: 'Familie',
+      friend: 'Freund/in',
+      neighbor: 'Nachbar/in',
+      doctor: 'Arzt/Ärztin',
+      lawyer: 'Anwalt/Anwältin',
+      taxAdvisor: 'Steuerberater/in',
+      employer: 'Arbeitgeber/in',
+      other: 'Sonstige',
+    },
+    en: {
+      family: 'Family',
+      friend: 'Friend',
+      neighbor: 'Neighbor',
+      doctor: 'Doctor',
+      lawyer: 'Lawyer',
+      taxAdvisor: 'Tax Advisor',
+      employer: 'Employer',
+      other: 'Other',
+    },
+  } as const;
+
+  const professionalTypeLabels = {
+    de: {
+      familyDoctor: 'Hausarzt',
+      specialist: 'Facharzt',
+      lawyer: 'Rechtsanwalt',
+      notary: 'Notar',
+      taxAdvisor: 'Steuerberater',
+      bankAdvisor: 'Bankberater',
+      insuranceAgent: 'Versicherungsvertreter',
+      other: 'Sonstige',
+    },
+    en: {
+      familyDoctor: 'Family Doctor',
+      specialist: 'Specialist',
+      lawyer: 'Lawyer',
+      notary: 'Notary',
+      taxAdvisor: 'Tax Advisor',
+      bankAdvisor: 'Bank Advisor',
+      insuranceAgent: 'Insurance Agent',
+      other: 'Other',
+    },
+  } as const;
+
   const renderMedications = (medications: unknown) => {
     if (!Array.isArray(medications)) return null;
     const valid = medications
@@ -429,11 +503,21 @@ const RelativesSummary = ({ data, profiles, sharedSections, sharedProfileSection
         <div className="space-y-2">
           {valid.map((a, idx) => {
             const name = (a.name as string | undefined)?.trim();
-            const type = (a.type as string | undefined)?.trim();
-            const severity = (a.severity as string | undefined)?.trim();
+            const typeKey = (a.type as string | undefined)?.trim();
+            const severityKey = (a.severity as string | undefined)?.trim();
             const reaction = (a.reaction as string | undefined)?.trim();
             const notes = (a.notes as string | undefined)?.trim();
-            const meta = [type, severity].filter(Boolean).join(' · ');
+
+            const typeLabel =
+              typeKey && (allergyTypeLabels[language] as any)[typeKey]
+                ? (allergyTypeLabels[language] as any)[typeKey]
+                : typeKey;
+            const severityLabel =
+              severityKey && (allergySeverityLabels[language] as any)[severityKey]
+                ? (allergySeverityLabels[language] as any)[severityKey]
+                : severityKey;
+
+            const meta = [typeLabel, severityLabel].filter(Boolean).join(' · ');
             return (
               <div key={idx} className="rounded-lg bg-background/50 p-3 text-sm space-y-1">
                 <p className="text-foreground font-medium">{name || `${texts.allergies} ${idx + 1}`}</p>
@@ -615,6 +699,16 @@ const RelativesSummary = ({ data, profiles, sharedSections, sharedProfileSection
     
     if (validContacts.length === 0) return null;
 
+    const getRelationshipLabel = (key: string): string => {
+      if (!key) return '';
+      return (relationshipLabels[language] as any)[key] || key;
+    };
+
+    const getProfessionalTypeLabel = (key: string): string => {
+      if (!key) return '';
+      return (professionalTypeLabels[language] as any)[key] || key;
+    };
+
     return (
       <div className="space-y-2">
         <span className="text-sm font-medium text-foreground">
@@ -623,8 +717,8 @@ const RelativesSummary = ({ data, profiles, sharedSections, sharedProfileSection
         {validContacts.map((contact, i) => (
           <div key={i} className="rounded-lg bg-background/50 p-3 text-sm space-y-1">
             {contact.name && <p><span className="text-muted-foreground">{texts.contactName}: </span>{String(contact.name)}</p>}
-            {isProfessional && contact.type && <p><span className="text-muted-foreground">{texts.professionalType}: </span>{String(contact.type)}</p>}
-            {!isProfessional && contact.relation && <p><span className="text-muted-foreground">{texts.contactRelation}: </span>{String(contact.relation)}</p>}
+            {isProfessional && contact.type && <p><span className="text-muted-foreground">{texts.professionalType}: </span>{getProfessionalTypeLabel(String(contact.type))}</p>}
+            {!isProfessional && contact.relationship && <p><span className="text-muted-foreground">{texts.contactRelation}: </span>{getRelationshipLabel(String(contact.relationship))}</p>}
             {contact.phone && <p><span className="text-muted-foreground">{texts.contactPhone}: </span>{String(contact.phone)}</p>}
             {contact.email && <p><span className="text-muted-foreground">{texts.contactEmail}: </span>{String(contact.email)}</p>}
           </div>
