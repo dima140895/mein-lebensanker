@@ -238,26 +238,23 @@ export const FormProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
-  const loadAllData = React.useCallback(async () => {
-    if (!user || !activeProfileId) return;
+  // Load data for a specific profile - takes profileId as parameter to avoid stale closure
+  const loadDataForProfile = React.useCallback(async (profileId: string) => {
+    if (!user) return;
     
     // If encryption is enabled but not unlocked, don't load data
     if (isEncryptionEnabled && !isUnlocked) {
       setFormData(defaultFormData);
+      setIsLoadingProfile(false);
       return;
     }
-
-    setIsLoadingProfile(true);
-    
-    // CRITICAL: Reset form data immediately to prevent cross-contamination
-    setFormData(defaultFormData);
 
     try {
       const { data, error } = await supabase
         .from('vorsorge_data')
         .select('*')
         .eq('user_id', user.id)
-        .eq('person_profile_id', activeProfileId);
+        .eq('person_profile_id', profileId);
 
       if (error) throw error;
 
@@ -291,7 +288,13 @@ export const FormProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     } finally {
       setIsLoadingProfile(false);
     }
-  }, [user, activeProfileId, isEncryptionEnabled, isUnlocked, decrypt]);
+  }, [user, isEncryptionEnabled, isUnlocked, decrypt]);
+
+  // Wrapper function that uses current activeProfileId
+  const loadAllData = React.useCallback(async () => {
+    if (!activeProfileId) return;
+    await loadDataForProfile(activeProfileId);
+  }, [activeProfileId, loadDataForProfile]);
 
   // Reload data when active profile changes or encryption state changes
   useEffect(() => {
@@ -302,14 +305,15 @@ export const FormProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     if (user && profile?.has_paid && activeProfileId) {
       // Only load if encryption is not enabled OR if it's unlocked
       if (!isEncryptionEnabled || isUnlocked) {
-        loadAllData();
+        // Use the profile ID directly to avoid stale closure issues
+        loadDataForProfile(activeProfileId);
       } else {
         setIsLoadingProfile(false);
       }
     } else {
       setIsLoadingProfile(false);
     }
-  }, [user, profile?.has_paid, activeProfileId, loadAllData, isEncryptionEnabled, isUnlocked]);
+  }, [user, profile?.has_paid, activeProfileId, isEncryptionEnabled, isUnlocked, loadDataForProfile]);
 
   return (
     <FormContext.Provider value={{ 
