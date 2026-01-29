@@ -17,7 +17,7 @@ const PersonalForm = () => {
   const { profile } = useAuth();
   const { language } = useLanguage();
   const { activeProfileId } = useProfiles();
-  const { handleBlur, resetSaveState } = useAutoSave({ 
+  const { handleBlur, handleBlurWithData, resetSaveState } = useAutoSave({ 
     section: 'personal', 
     syncToProfile: true 
   });
@@ -188,6 +188,7 @@ const PersonalForm = () => {
     const updatedMedications = [...(data.medications || [])];
     updatedMedications[index] = { ...updatedMedications[index], [field]: value };
     handleChange('medications', updatedMedications);
+    return updatedMedications;
   };
 
   const addMedication = () => {
@@ -198,15 +199,16 @@ const PersonalForm = () => {
       timing: '',
       notes: '',
     };
-    handleChange('medications', [...(data.medications || []), newMedication]);
-    // Ensure adding an item persists even if the user doesn't blur an input immediately
-    handleBlur();
+    const updated = [...(data.medications || []), newMedication];
+    handleChange('medications', updated);
+    // Persist immediately (Select changes don't reliably trigger onBlur)
+    handleBlurWithData({ ...data, medications: updated });
   };
 
   const removeMedication = (index: number) => {
-    const updatedMedications = (data.medications || []).filter((_, i) => i !== index);
-    handleChange('medications', updatedMedications);
-    handleBlur();
+    const updated = (data.medications || []).filter((_, i) => i !== index);
+    handleChange('medications', updated);
+    handleBlurWithData({ ...data, medications: updated });
   };
 
   const handleAllergyChange = (index: number, field: keyof Allergy, value: string) => {
@@ -223,15 +225,15 @@ const PersonalForm = () => {
       reaction: '',
       notes: '',
     };
-    handleChange('allergies', [...(data.allergies || []), newAllergy]);
-    // Ensure adding an item persists even if the user doesn't blur an input immediately
-    handleBlur();
+    const updated = [...(data.allergies || []), newAllergy];
+    handleChange('allergies', updated);
+    handleBlurWithData({ ...data, allergies: updated });
   };
 
   const removeAllergy = (index: number) => {
-    const updatedAllergies = (data.allergies || []).filter((_, i) => i !== index);
-    handleChange('allergies', updatedAllergies);
-    handleBlur();
+    const updated = (data.allergies || []).filter((_, i) => i !== index);
+    handleChange('allergies', updated);
+    handleBlurWithData({ ...data, allergies: updated });
   };
 
   // Only show form for paid users
@@ -303,7 +305,7 @@ const PersonalForm = () => {
             value={data.bloodType || ''}
             onValueChange={(value) => {
               handleChange('bloodType', value);
-              handleBlur();
+              handleBlurWithData({ ...data, bloodType: value });
             }}
           >
             <SelectTrigger>
@@ -388,8 +390,8 @@ const PersonalForm = () => {
                   <Select
                     value={med.frequency}
                     onValueChange={(value) => {
-                      handleMedicationChange(index, 'frequency', value);
-                      handleBlur();
+                      const updated = handleMedicationChange(index, 'frequency', value);
+                      handleBlurWithData({ ...data, medications: updated });
                     }}
                   >
                     <SelectTrigger>
@@ -407,8 +409,8 @@ const PersonalForm = () => {
                   <Select
                     value={med.timing}
                     onValueChange={(value) => {
-                      handleMedicationChange(index, 'timing', value);
-                      handleBlur();
+                      const updated = handleMedicationChange(index, 'timing', value);
+                      handleBlurWithData({ ...data, medications: updated });
                     }}
                   >
                     <SelectTrigger>

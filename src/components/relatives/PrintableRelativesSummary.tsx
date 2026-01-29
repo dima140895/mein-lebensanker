@@ -127,6 +127,8 @@ const PrintableRelativesSummary = forwardRef<HTMLDivElement, PrintableRelativesS
         contactRelation: 'Beziehung',
         professionalType: 'Fachrichtung',
         notes: 'Hinweise',
+        infoLabel: 'Info',
+        reactionLabel: 'Reaktion',
         disclaimer: 'Diese Übersicht dient ausschließlich der persönlichen Orientierung und hat keinerlei rechtliche Wirkung. Sie ersetzt keine rechtliche, notarielle, medizinische oder steuerliche Beratung.',
         footerCopyright: `© ${new Date().getFullYear()} Mein Lebensanker`,
         footerImprint: 'Impressum',
@@ -229,6 +231,8 @@ const PrintableRelativesSummary = forwardRef<HTMLDivElement, PrintableRelativesS
         contactRelation: 'Relation',
         professionalType: 'Profession',
         notes: 'Notes',
+        infoLabel: 'Info',
+        reactionLabel: 'Reaction',
         disclaimer: 'This overview is for personal orientation only and has no legal effect. It does not replace legal, notarial, medical, or tax advice.',
         footerCopyright: `© ${new Date().getFullYear()} Mein Lebensanker`,
         footerImprint: 'Imprint',
@@ -239,6 +243,98 @@ const PrintableRelativesSummary = forwardRef<HTMLDivElement, PrintableRelativesS
     };
 
     const texts = t[language];
+
+    const medicationFrequencyLabels = {
+      de: {
+        once: '1x täglich',
+        twice: '2x täglich',
+        thrice: '3x täglich',
+        fourTimes: '4x täglich',
+        asNeeded: 'Bei Bedarf',
+        weekly: 'Wöchentlich',
+        other: 'Andere',
+      },
+      en: {
+        once: 'Once daily',
+        twice: 'Twice daily',
+        thrice: '3 times daily',
+        fourTimes: '4 times daily',
+        asNeeded: 'As needed',
+        weekly: 'Weekly',
+        other: 'Other',
+      },
+    } as const;
+
+    const medicationTimingLabels = {
+      de: {
+        morning: 'Morgens',
+        noon: 'Mittags',
+        evening: 'Abends',
+        night: 'Nachts',
+        beforeMeals: 'Vor dem Essen',
+        afterMeals: 'Nach dem Essen',
+        withMeals: 'Zum Essen',
+        other: 'Andere',
+      },
+      en: {
+        morning: 'Morning',
+        noon: 'Noon',
+        evening: 'Evening',
+        night: 'Night',
+        beforeMeals: 'Before meals',
+        afterMeals: 'After meals',
+        withMeals: 'With meals',
+        other: 'Other',
+      },
+    } as const;
+
+    const allergyTypeLabels = {
+      de: {
+        medication: 'Medikament',
+        food: 'Lebensmittel',
+        environmental: 'Umwelt (Pollen, Staub, etc.)',
+        other: 'Sonstige',
+      },
+      en: {
+        medication: 'Medication',
+        food: 'Food',
+        environmental: 'Environmental (pollen, dust, etc.)',
+        other: 'Other',
+      },
+    } as const;
+
+    const allergySeverityLabels = {
+      de: {
+        mild: 'Leicht',
+        moderate: 'Mittel',
+        severe: 'Schwer (lebensbedrohlich)',
+      },
+      en: {
+        mild: 'Mild',
+        moderate: 'Moderate',
+        severe: 'Severe (life-threatening)',
+      },
+    } as const;
+
+    const getMedicationFrequencyLabel = (key: string) => {
+      const map = medicationFrequencyLabels[language] as Record<string, string>;
+      return map[key] || key;
+    };
+
+    const getMedicationTimingLabel = (key: string) => {
+      const map = medicationTimingLabels[language] as Record<string, string>;
+      return map[key] || key;
+    };
+
+    const getAllergyTypeLabel = (key: string) => {
+      const map = allergyTypeLabels[language] as Record<string, string>;
+      return map[key] || key;
+    };
+
+    const getAllergySeverityLabel = (key: string) => {
+      const map = allergySeverityLabels[language] as Record<string, string>;
+      return map[key] || key;
+    };
 
     const sectionIcons: Record<string, typeof User> = {
       personal: User,
@@ -323,14 +419,16 @@ const PrintableRelativesSummary = forwardRef<HTMLDivElement, PrintableRelativesS
                   {renderArrayItems(sectionData.medications as Array<Record<string, unknown>>, (m, i) => {
                     const name = (m.name as string | undefined)?.trim();
                     const dosage = (m.dosage as string | undefined)?.trim();
-                    const frequency = (m.frequency as string | undefined)?.trim();
-                    const timing = (m.timing as string | undefined)?.trim();
+                    const frequencyKey = (m.frequency as string | undefined)?.trim();
+                    const timingKey = (m.timing as string | undefined)?.trim();
+                    const frequency = frequencyKey ? getMedicationFrequencyLabel(frequencyKey) : '';
+                    const timing = timingKey ? getMedicationTimingLabel(timingKey) : '';
                     const notes = (m.notes as string | undefined)?.trim();
                     const meta = [dosage, frequency, timing].filter(Boolean).join(' · ');
                     return (
                       <div key={i} className="print-card">
                         {name && <div className="print-info-item"><span className="print-label">{texts.name}:</span> <span className="print-value">{name}</span></div>}
-                        {meta && <div className="print-info-item"><span className="print-label">Info:</span> <span className="print-value">{meta}</span></div>}
+                        {meta && <div className="print-info-item"><span className="print-label">{texts.infoLabel}:</span> <span className="print-value">{meta}</span></div>}
                         {notes && <div className="print-info-item"><span className="print-label">{texts.notes}:</span> <span className="print-value">{notes}</span></div>}
                       </div>
                     );
@@ -345,16 +443,18 @@ const PrintableRelativesSummary = forwardRef<HTMLDivElement, PrintableRelativesS
                   <div className="print-subsection-title">{texts.allergies}</div>
                   {renderArrayItems(sectionData.allergies as Array<Record<string, unknown>>, (a, i) => {
                     const name = (a.name as string | undefined)?.trim();
-                    const type = (a.type as string | undefined)?.trim();
-                    const severity = (a.severity as string | undefined)?.trim();
+                    const typeKey = (a.type as string | undefined)?.trim();
+                    const severityKey = (a.severity as string | undefined)?.trim();
+                    const type = typeKey ? getAllergyTypeLabel(typeKey) : '';
+                    const severity = severityKey ? getAllergySeverityLabel(severityKey) : '';
                     const reaction = (a.reaction as string | undefined)?.trim();
                     const notes = (a.notes as string | undefined)?.trim();
                     const meta = [type, severity].filter(Boolean).join(' · ');
                     return (
                       <div key={i} className="print-card">
                         {name && <div className="print-info-item"><span className="print-label">{texts.name}:</span> <span className="print-value">{name}</span></div>}
-                        {meta && <div className="print-info-item"><span className="print-label">Info:</span> <span className="print-value">{meta}</span></div>}
-                        {reaction && <div className="print-info-item"><span className="print-label">Reaktion:</span> <span className="print-value">{reaction}</span></div>}
+                        {meta && <div className="print-info-item"><span className="print-label">{texts.infoLabel}:</span> <span className="print-value">{meta}</span></div>}
+                        {reaction && <div className="print-info-item"><span className="print-label">{texts.reactionLabel}:</span> <span className="print-value">{reaction}</span></div>}
                         {notes && <div className="print-info-item"><span className="print-label">{texts.notes}:</span> <span className="print-value">{notes}</span></div>}
                       </div>
                     );
