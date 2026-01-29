@@ -284,12 +284,12 @@ const Header = () => {
 
                 {/* My Package for paid users (mobile) - now before nav */}
                 {user && profile?.has_paid && (
-                  <div className="p-4 border-b border-border">
+                  <div className="p-4 border-b border-border bg-primary/5">
                     <p className="text-xs text-muted-foreground mb-1">{tx.currentTier}</p>
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 bg-primary/10 px-2.5 py-1 rounded-md border border-primary/20">
                         <Package className="h-4 w-4 text-primary" />
-                        <span className="font-medium">
+                        <span className="font-medium text-foreground">
                           {profile.purchased_tier === 'single' && tx.single}
                           {profile.purchased_tier === 'couple' && tx.couple}
                           {profile.purchased_tier === 'family' && tx.family}
@@ -484,11 +484,15 @@ const Header = () => {
                     <Button 
                       variant="ghost" 
                       size="sm" 
-                      className="text-muted-foreground hover:text-foreground"
+                      className="text-foreground bg-primary/10 hover:bg-primary/20 border border-primary/20"
                     >
-                      <Package className="mr-1.5 h-4 w-4" />
-                      {tx.myPackage}
-                      <ChevronDown className="ml-1 h-3 w-3" />
+                      <Package className="mr-1.5 h-4 w-4 text-primary" />
+                      <span className="font-medium">
+                        {profile.purchased_tier === 'single' && tx.single}
+                        {profile.purchased_tier === 'couple' && tx.couple}
+                        {profile.purchased_tier === 'family' && tx.family}
+                      </span>
+                      <ChevronDown className="ml-1 h-3 w-3 text-primary" />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-56 bg-popover">
