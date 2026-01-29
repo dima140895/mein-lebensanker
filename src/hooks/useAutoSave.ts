@@ -88,24 +88,38 @@ export const useAutoSave = ({ section, syncToProfile = false, onSaveComplete }: 
     }
   }, [profile?.has_paid, activeProfileId, section, saveSectionWithData, syncToProfile, updateProfile, loadProfiles, isEncryptionEnabled, isUnlocked, onSaveComplete]);
 
+  const scheduleSave = useCallback(
+    (dataSnapshot: VorsorgeFormData[keyof VorsorgeFormData]) => {
+      // Capture BOTH the current profile ID AND the data snapshot
+      // Important for components that trigger saves immediately after state updates (e.g. Select onValueChange)
+      capturedDataRef.current = {
+        profileId: activeProfileId,
+        data: JSON.parse(JSON.stringify(dataSnapshot)),
+      };
+
+      // Clear any pending timeout
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current);
+      }
+
+      // Debounce the save by 300ms to avoid saving on rapid field changes
+      saveTimeoutRef.current = setTimeout(() => {
+        triggerSave();
+      }, 300);
+    },
+    [activeProfileId, triggerSave]
+  );
+
   const handleBlur = useCallback(() => {
-    // Capture BOTH the current profile ID AND the data at the moment of blur
-    // This prevents data loss when profile is switched during debounce
-    capturedDataRef.current = {
-      profileId: activeProfileId,
-      data: JSON.parse(JSON.stringify(formData[section])), // Deep clone to capture current state
-    };
-    
-    // Clear any pending timeout
-    if (saveTimeoutRef.current) {
-      clearTimeout(saveTimeoutRef.current);
-    }
-    
-    // Debounce the save by 300ms to avoid saving on rapid field changes
-    saveTimeoutRef.current = setTimeout(() => {
-      triggerSave();
-    }, 300);
-  }, [triggerSave, activeProfileId, formData, section]);
+    scheduleSave(formData[section]);
+  }, [formData, scheduleSave, section]);
+
+  const handleBlurWithData = useCallback(
+    (dataSnapshot: VorsorgeFormData[keyof VorsorgeFormData]) => {
+      scheduleSave(dataSnapshot);
+    },
+    [scheduleSave]
+  );
 
   // Reset the last saved hash when profile changes (to allow saving for new profile)
   const resetSaveState = useCallback(() => {
@@ -123,6 +137,7 @@ export const useAutoSave = ({ section, syncToProfile = false, onSaveComplete }: 
 
   return {
     handleBlur,
+    handleBlurWithData,
     triggerSave,
     resetSaveState,
   };
