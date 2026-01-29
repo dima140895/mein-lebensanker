@@ -28,7 +28,7 @@ const DigitalForm = () => {
   const t = {
     de: {
       title: 'Digitale Ordnung',
-      disclaimer: 'Dokumentiere hier Deine digitale Präsenz – ohne sicherheitskritische Daten. Notiere nur, WO Zugangsdaten hinterlegt sind. Änderungen werden automatisch gespeichert.',
+      disclaimer: 'Dokumentiere hier Deine digitale Präsenz – ohne sicherheitskritische Daten. Notiere nur, wo Zugangsdaten hinterlegt sind. Änderungen werden automatisch gespeichert.',
       warning: 'Warum wir keine Passwörter abfragen: Deine Sicherheit steht an erster Stelle. Passwörter, Zugangscodes und Sicherheitsfragen werden bewusst nicht erfasst. Nutze stattdessen einen Passwort-Manager und notiere hier nur, wo dieser zu finden ist.',
       emailAccounts: 'E-Mail-Konten',
       provider: 'Anbieter',
@@ -54,7 +54,7 @@ const DigitalForm = () => {
     },
     en: {
       title: 'Digital Organization',
-      disclaimer: 'Document your digital presence here – without security-critical data. Only note WHERE access credentials are stored. Changes are saved automatically.',
+      disclaimer: 'Document your digital presence here – without security-critical data. Only note where access credentials are stored. Changes are saved automatically.',
       warning: "Why we don't ask for passwords: Your security comes first. Passwords, access codes, and security questions are intentionally not collected. Use a password manager instead and only note here where it can be found.",
       emailAccounts: 'Email Accounts',
       provider: 'Provider',
