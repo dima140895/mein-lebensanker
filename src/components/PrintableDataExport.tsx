@@ -121,6 +121,26 @@ const PrintableDataExport = forwardRef<HTMLDivElement, PrintableDataExportProps>
         contactRelation: 'Beziehung',
         professionalType: 'Fachrichtung',
         notes: 'Hinweise',
+        relationshipTypes: {
+          family: 'Familie',
+          friend: 'Freund/in',
+          neighbor: 'Nachbar/in',
+          doctor: 'Arzt/Ärztin',
+          lawyer: 'Anwalt/Anwältin',
+          taxAdvisor: 'Steuerberater/in',
+          employer: 'Arbeitgeber/in',
+          other: 'Sonstige',
+        },
+        professionalTypes: {
+          familyDoctor: 'Hausarzt',
+          specialist: 'Facharzt',
+          lawyer: 'Rechtsanwalt',
+          notary: 'Notar',
+          taxAdvisor: 'Steuerberater',
+          bankAdvisor: 'Bankberater',
+          insuranceAgent: 'Versicherungsvertreter',
+          other: 'Sonstige',
+        },
         disclaimer: 'Diese Übersicht dient ausschließlich der persönlichen Orientierung und hat keinerlei rechtliche Wirkung. Sie ersetzt keine rechtliche, notarielle, medizinische oder steuerliche Beratung.',
         footerCopyright: `© ${new Date().getFullYear()} Mein Lebensanker`,
         footerImprint: 'Impressum',
@@ -219,6 +239,26 @@ const PrintableDataExport = forwardRef<HTMLDivElement, PrintableDataExportProps>
         contactRelation: 'Relation',
         professionalType: 'Profession',
         notes: 'Notes',
+        relationshipTypes: {
+          family: 'Family',
+          friend: 'Friend',
+          neighbor: 'Neighbor',
+          doctor: 'Doctor',
+          lawyer: 'Lawyer',
+          taxAdvisor: 'Tax Advisor',
+          employer: 'Employer',
+          other: 'Other',
+        },
+        professionalTypes: {
+          familyDoctor: 'Family Doctor',
+          specialist: 'Specialist',
+          lawyer: 'Lawyer',
+          notary: 'Notary',
+          taxAdvisor: 'Tax Advisor',
+          bankAdvisor: 'Bank Advisor',
+          insuranceAgent: 'Insurance Agent',
+          other: 'Other',
+        },
         disclaimer: 'This overview is for personal orientation only and has no legal effect. It does not replace legal, notarial, medical, or tax advice.',
         footerCopyright: `© ${new Date().getFullYear()} Mein Lebensanker`,
         footerImprint: 'Imprint',
@@ -270,6 +310,18 @@ const PrintableDataExport = forwardRef<HTMLDivElement, PrintableDataExportProps>
     const getDocumentTypeLabel = (type: string): string => {
       const key = type as keyof typeof texts.documentTypes;
       return texts.documentTypes[key] || type;
+    };
+
+    const getRelationshipLabel = (relationship: string): string => {
+      if (!relationship) return '';
+      const key = relationship as keyof typeof texts.relationshipTypes;
+      return texts.relationshipTypes[key] || relationship;
+    };
+
+    const getProfessionalTypeLabel = (type: string): string => {
+      if (!type) return '';
+      const key = type as keyof typeof texts.professionalTypes;
+      return texts.professionalTypes[key] || type;
     };
 
     const formatFileSize = (bytes: number): string => {
@@ -527,10 +579,11 @@ const PrintableDataExport = forwardRef<HTMLDivElement, PrintableDataExportProps>
           );
 
         case 'contacts':
-          const personalContacts = (sectionData.personalContacts as Array<Record<string, unknown>>)?.filter(c => 
+          // Support both 'contacts' (FormContext) and 'personalContacts' (legacy) field names
+          const personalContacts = ((sectionData.contacts || sectionData.personalContacts) as Array<Record<string, unknown>>)?.filter(c => 
             c.name && typeof c.name === 'string' && c.name.trim()
           ) || [];
-          const professionalContacts = (sectionData.professionalContacts as Array<Record<string, unknown>>)?.filter(c => 
+          const professionalContacts = ((sectionData.professionals || sectionData.professionalContacts) as Array<Record<string, unknown>>)?.filter(c => 
             c.name && typeof c.name === 'string' && c.name.trim()
           ) || [];
 
@@ -539,14 +592,18 @@ const PrintableDataExport = forwardRef<HTMLDivElement, PrintableDataExportProps>
               {personalContacts.length > 0 && (
                 <div className="print-subsection">
                   <div className="print-subsection-title">{texts.personalContacts}</div>
-                  {personalContacts.map((contact, i) => (
-                    <div key={i} className="print-card">
-                      {contact.name && <div className="print-info-item"><span className="print-label">{texts.contactName}:</span> <span className="print-value">{String(contact.name)}</span></div>}
-                      {contact.relation && <div className="print-info-item"><span className="print-label">{texts.contactRelation}:</span> <span className="print-value">{String(contact.relation)}</span></div>}
-                      {contact.phone && <div className="print-info-item"><span className="print-label">{texts.contactPhone}:</span> <span className="print-value">{String(contact.phone)}</span></div>}
-                      {contact.email && <div className="print-info-item"><span className="print-label">{texts.contactEmail}:</span> <span className="print-value">{String(contact.email)}</span></div>}
-                    </div>
-                  ))}
+                  {personalContacts.map((contact, i) => {
+                    // Support both 'relation' and 'relationship' field names
+                    const relationValue = contact.relation || contact.relationship;
+                    return (
+                      <div key={i} className="print-card">
+                        {contact.name && <div className="print-info-item"><span className="print-label">{texts.contactName}:</span> <span className="print-value">{String(contact.name)}</span></div>}
+                        {relationValue && <div className="print-info-item"><span className="print-label">{texts.contactRelation}:</span> <span className="print-value">{getRelationshipLabel(String(relationValue))}</span></div>}
+                        {contact.phone && <div className="print-info-item"><span className="print-label">{texts.contactPhone}:</span> <span className="print-value">{String(contact.phone)}</span></div>}
+                        {contact.email && <div className="print-info-item"><span className="print-label">{texts.contactEmail}:</span> <span className="print-value">{String(contact.email)}</span></div>}
+                      </div>
+                    );
+                  })}
                 </div>
               )}
               {professionalContacts.length > 0 && (
@@ -555,7 +612,7 @@ const PrintableDataExport = forwardRef<HTMLDivElement, PrintableDataExportProps>
                   {professionalContacts.map((contact, i) => (
                     <div key={i} className="print-card">
                       {contact.name && <div className="print-info-item"><span className="print-label">{texts.contactName}:</span> <span className="print-value">{String(contact.name)}</span></div>}
-                      {contact.type && <div className="print-info-item"><span className="print-label">{texts.professionalType}:</span> <span className="print-value">{String(contact.type)}</span></div>}
+                      {contact.type && <div className="print-info-item"><span className="print-label">{texts.professionalType}:</span> <span className="print-value">{getProfessionalTypeLabel(String(contact.type))}</span></div>}
                       {contact.phone && <div className="print-info-item"><span className="print-label">{texts.contactPhone}:</span> <span className="print-value">{String(contact.phone)}</span></div>}
                       {contact.email && <div className="print-info-item"><span className="print-label">{texts.contactEmail}:</span> <span className="print-value">{String(contact.email)}</span></div>}
                     </div>
