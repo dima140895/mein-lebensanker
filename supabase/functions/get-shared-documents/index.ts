@@ -40,7 +40,7 @@ serve(async (req) => {
   }
 
   try {
-    const { token } = await req.json()
+    const { token, pin } = await req.json()
 
     if (!token) {
       return new Response(
@@ -55,9 +55,9 @@ serve(async (req) => {
     
     const supabase = createClient(supabaseUrl, supabaseServiceKey)
 
-    // Validate the token and check if 'documents' section is shared
+    // Validate the token AND PIN using the PIN-aware validation function
     const { data: tokenData, error: tokenError } = await supabase
-      .rpc('validate_share_token', { _token: token })
+      .rpc('validate_share_token_with_pin', { _token: token, _pin: pin || null })
 
     if (tokenError || !tokenData || tokenData.length === 0) {
       return new Response(
@@ -67,22 +67,23 @@ serve(async (req) => {
     }
 
     const validation = tokenData[0]
-    if (!validation.is_valid) {
+    // Check both is_valid AND pin_valid to ensure proper authorization
+    if (!validation.is_valid || !validation.pin_valid) {
       return new Response(
-        JSON.stringify({ error: 'Invalid or expired token' }),
+        JSON.stringify({ error: 'Invalid or expired token, or incorrect PIN' }),
         { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       )
     }
 
     const userId = validation.user_id
 
-    // Get per-profile sections for new structure
+    // Get per-profile sections for new structure - pass PIN for authorization
     const { data: profileSections, error: profileSectionsError } = await supabase
-      .rpc('get_shared_profile_sections_by_token', { _token: token })
+      .rpc('get_shared_profile_sections_by_token', { _token: token, _pin: pin || null })
 
-    // Also get legacy shared sections
+    // Also get legacy shared sections - pass PIN for authorization
     const { data: sharedSections, error: sectionsError } = await supabase
-      .rpc('get_shared_sections_by_token', { _token: token })
+      .rpc('get_shared_sections_by_token', { _token: token, _pin: pin || null })
 
     if (profileSectionsError && sectionsError) {
       console.error('Section retrieval failed')
@@ -92,9 +93,9 @@ serve(async (req) => {
       )
     }
 
-    // Get profiles shared via this token
+    // Get profiles shared via this token - pass PIN for authorization
     const { data: sharedProfiles, error: profilesError } = await supabase
-      .rpc('get_profiles_by_token', { _token: token })
+      .rpc('get_profiles_by_token', { _token: token, _pin: pin || null })
 
     if (profilesError) {
       console.error('Failed to get profiles')

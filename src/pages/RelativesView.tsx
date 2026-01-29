@@ -45,6 +45,7 @@ const RelativesViewContent = () => {
   const [pinVerified, setPINVerified] = useState(false);
   const [remainingAttempts, setRemainingAttempts] = useState(3);
   const [isLocked, setIsLocked] = useState(false);
+  const [verifiedPIN, setVerifiedPIN] = useState<string | null>(null);
   
   // Encryption state
   const [encryptionInfo, setEncryptionInfo] = useState<EncryptionInfo | null>(null);
@@ -124,7 +125,7 @@ const RelativesViewContent = () => {
         }
 
         // No PIN required or PIN not set, load encryption info
-        await loadEncryptionInfo();
+        await loadEncryptionInfo(null);
       } catch (err) {
         logger.error('Error:', err);
         setError(texts.invalidLink);
@@ -135,16 +136,16 @@ const RelativesViewContent = () => {
     checkPINRequirement();
   }, [token]);
 
-  const loadEncryptionInfo = async () => {
+  const loadEncryptionInfo = async (pin: string | null) => {
     if (!token) return;
 
     try {
       const { data: encInfo, error: encError } = await supabase
-        .rpc('get_encryption_info_by_token', { _token: token });
+        .rpc('get_encryption_info_by_token', { _token: token, _pin: pin });
 
       if (encError || !encInfo?.length) {
         // No encryption info, load data directly
-        await loadFullData(null);
+        await loadFullData(null, pin);
         return;
       }
 
@@ -157,24 +158,25 @@ const RelativesViewContent = () => {
         setLoading(false);
       } else {
         // Not encrypted, load directly
-        await loadFullData(null);
+        await loadFullData(null, pin);
       }
     } catch (err) {
       logger.error('Error loading encryption info:', err);
-      await loadFullData(null);
+      await loadFullData(null, pin);
     }
   };
 
-  const loadFullData = async (password: string | null) => {
+  const loadFullData = async (password: string | null, pin: string | null = verifiedPIN) => {
     if (!token) return;
 
     try {
       // Get profiles, vorsorge data, shared sections, and per-profile sections in parallel
+      // Pass PIN to all RPCs to ensure authorization
       const [profilesResult, dataResult, sectionsResult, profileSectionsResult] = await Promise.all([
-        supabase.rpc('get_profiles_by_token', { _token: token }),
-        supabase.rpc('get_vorsorge_data_by_token', { _token: token }),
-        supabase.rpc('get_shared_sections_by_token', { _token: token }),
-        supabase.rpc('get_shared_profile_sections_by_token', { _token: token }),
+        supabase.rpc('get_profiles_by_token', { _token: token, _pin: pin }),
+        supabase.rpc('get_vorsorge_data_by_token', { _token: token, _pin: pin }),
+        supabase.rpc('get_shared_sections_by_token', { _token: token, _pin: pin }),
+        supabase.rpc('get_shared_profile_sections_by_token', { _token: token, _pin: pin }),
       ]);
 
       // Store shared sections (legacy)
@@ -263,8 +265,9 @@ const RelativesViewContent = () => {
       if (validation.is_valid && validation.pin_valid) {
         setPINVerified(true);
         setRequiresPIN(false);
+        setVerifiedPIN(enteredPIN); // Store verified PIN for subsequent calls
         setLoading(true);
-        await loadEncryptionInfo();
+        await loadEncryptionInfo(enteredPIN);
         return { valid: true, remainingAttempts: 3 };
       }
 
@@ -284,6 +287,7 @@ const RelativesViewContent = () => {
     setDecryptionPassword(password);
     setRequiresDecryption(false);
     setLoading(true);
+    // Pass verifiedPIN to loadFullData
     await loadFullData(password);
   };
 
@@ -379,6 +383,7 @@ const RelativesViewContent = () => {
             sharedSections={sharedSections}
             sharedProfileSections={sharedProfileSections}
             token={token}
+            pin={verifiedPIN}
           />
         ) : (
           <div className="rounded-xl border border-border bg-card p-8 text-center">

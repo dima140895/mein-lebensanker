@@ -235,47 +235,82 @@ export type Database = {
     }
     Functions: {
       cleanup_token_access_logs: { Args: never; Returns: undefined }
-      get_encryption_info_by_token: {
-        Args: { _token: string }
-        Returns: {
-          encrypted_password_recovery: string
-          encryption_salt: string
-          is_encrypted: boolean
-        }[]
-      }
-      get_profile_by_token: {
-        Args: { _token: string }
-        Returns: {
-          full_name: string
-          partner_name: string
-        }[]
-      }
-      get_profiles_by_token: {
-        Args: { _token: string }
-        Returns: {
-          birth_date: string
-          profile_id: string
-          profile_name: string
-        }[]
-      }
-      get_shared_profile_sections_by_token: {
-        Args: { _token: string }
-        Returns: Json
-      }
-      get_shared_sections_by_token: {
-        Args: { _token: string }
-        Returns: string[]
-      }
-      get_vorsorge_data_by_token: {
-        Args: { _token: string }
-        Returns: {
-          data: Json
-          is_for_partner: boolean
-          person_profile_id: string
-          profile_name: string
-          section_key: string
-        }[]
-      }
+      get_encryption_info_by_token:
+        | {
+            Args: { _token: string }
+            Returns: {
+              encrypted_password_recovery: string
+              encryption_salt: string
+              is_encrypted: boolean
+            }[]
+          }
+        | {
+            Args: { _pin?: string; _token: string }
+            Returns: {
+              encrypted_password_recovery: string
+              encryption_salt: string
+              is_encrypted: boolean
+            }[]
+          }
+      get_profile_by_token:
+        | {
+            Args: { _token: string }
+            Returns: {
+              full_name: string
+              partner_name: string
+            }[]
+          }
+        | {
+            Args: { _pin?: string; _token: string }
+            Returns: {
+              full_name: string
+              partner_name: string
+            }[]
+          }
+      get_profiles_by_token:
+        | {
+            Args: { _token: string }
+            Returns: {
+              birth_date: string
+              profile_id: string
+              profile_name: string
+            }[]
+          }
+        | {
+            Args: { _pin?: string; _token: string }
+            Returns: {
+              birth_date: string
+              profile_id: string
+              profile_name: string
+            }[]
+          }
+      get_shared_profile_sections_by_token:
+        | { Args: { _token: string }; Returns: Json }
+        | { Args: { _pin?: string; _token: string }; Returns: Json }
+      get_shared_sections_by_token:
+        | { Args: { _token: string }; Returns: string[] }
+        | { Args: { _pin?: string; _token: string }; Returns: string[] }
+      get_vorsorge_data_by_token:
+        | {
+            Args: { _token: string }
+            Returns: {
+              data: Json
+              is_for_partner: boolean
+              person_profile_id: string
+              profile_name: string
+              section_key: string
+            }[]
+          }
+        | {
+            Args: { _pin?: string; _token: string }
+            Returns: {
+              data: Json
+              is_for_partner: boolean
+              person_profile_id: string
+              profile_name: string
+              section_key: string
+            }[]
+          }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
