@@ -63,7 +63,7 @@ const translations = {
     
     // Encouragement
     'encourage.title': 'Ein verantwortungsvoller Schritt',
-    'encourage.text': 'Viele Menschen schieben dieses Thema vor sich her. Du gehst gerade einen wichtigen Schritt.',
+    'encourage.text': 'Für viele ist dieses Thema schwer. Du nimmst es jetzt bewusst in die Hand.',
     
     // Disclaimer
     'disclaimer.title': 'Wichtiger Hinweis',
@@ -137,7 +137,7 @@ const translations = {
     
     // Encouragement
     'encourage.title': 'A Responsible Step',
-    'encourage.text': 'Many people postpone this topic. You are taking an important step right now.',
+    'encourage.text': 'For many, this topic is difficult. You are now taking it into your own hands.',
     
     // Disclaimer
     'disclaimer.title': 'Important Notice',
