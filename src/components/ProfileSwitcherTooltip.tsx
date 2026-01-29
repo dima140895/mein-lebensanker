@@ -46,8 +46,17 @@ export const ProfileSwitcherTooltip: React.FC<ProfileSwitcherTooltipProps> = ({ 
       const justCompletedSetup = sessionStorage.getItem(SETUP_COMPLETED_FLAG) === 'true';
       const showAfterPurchase = localStorage.getItem(PURCHASE_TOOLTIP_FLAG) === 'true';
       
+      console.log('[ProfileSwitcherTooltip] Check:', {
+        wasShown,
+        justCompletedSetup,
+        showAfterPurchase,
+        hasChecked: hasChecked.current,
+        pathname: location.pathname,
+      });
+      
       // Show tooltip if either: setup just completed OR first login after multi-profile purchase
       if ((justCompletedSetup || showAfterPurchase) && !wasShown && !hasChecked.current) {
+        console.log('[ProfileSwitcherTooltip] Showing tooltip!');
         hasChecked.current = true;
         setShowTooltip(true);
         // Clear the flags to prevent re-triggering
