@@ -633,7 +633,7 @@ const RelativesSummary = ({ data, profiles, sharedSections, sharedProfileSection
     );
   };
 
-  const renderSection = (sectionKey: string, sectionData: Record<string, unknown>) => {
+  const renderSection = (sectionKey: string, sectionData: Record<string, unknown>, profileId?: string | null) => {
     switch (sectionKey) {
       case 'personal':
         return (
@@ -721,7 +721,7 @@ const RelativesSummary = ({ data, profiles, sharedSections, sharedProfileSection
             {renderInfoItem(texts.otherDocs, sectionData.otherDocsLocation)}
             {renderInfoItem(texts.notes, sectionData.notes)}
             {/* Show uploaded documents from storage */}
-            {token && <SharedDocuments token={token} pin={pin} />}
+            {token && <SharedDocuments token={token} pin={pin} profileId={profileId ?? undefined} />}
           </div>
         );
 
@@ -808,7 +808,7 @@ const RelativesSummary = ({ data, profiles, sharedSections, sharedProfileSection
               </AccordionTrigger>
               <AccordionContent className="pb-4">
                 <div className="ml-11">
-                  {renderSection(item.section_key, item.data)}
+                  {renderSection(item.section_key, item.data, profileId)}
                 </div>
               </AccordionContent>
             </AccordionItem>
