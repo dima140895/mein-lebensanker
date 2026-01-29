@@ -15,7 +15,7 @@ interface UseAutoSaveOptions {
 }
 
 export const useAutoSave = ({ section, syncToProfile = false, onSaveComplete }: UseAutoSaveOptions) => {
-  const { formData, saveSection } = useFormData();
+  const { formData, saveSection, saveSectionWithData } = useFormData();
   const { activeProfileId, updateProfile, loadProfiles } = useProfiles();
   const { profile } = useAuth();
   const { isEncryptionEnabled, isUnlocked } = useEncryption();
@@ -23,25 +23,26 @@ export const useAutoSave = ({ section, syncToProfile = false, onSaveComplete }: 
   const lastSavedRef = useRef<string>('');
   const lastProfileIdRef = useRef<string | null>(null);
 
-  // Store activeProfileId in a ref to capture it at the time of blur
-  const capturedProfileIdRef = useRef<string | null>(null);
+  // Store captured data at the time of blur to prevent data loss during profile switch
+  const capturedDataRef = useRef<{
+    profileId: string | null;
+    data: VorsorgeFormData[keyof VorsorgeFormData] | null;
+  }>({ profileId: null, data: null });
 
   const triggerSave = useCallback(async () => {
-    // Use captured profile ID to ensure we save for the profile that was active when blur occurred
-    const profileIdToSave = capturedProfileIdRef.current || activeProfileId;
+    const captured = capturedDataRef.current;
+    const profileIdToSave = captured.profileId;
+    const dataToSave = captured.data;
     
-    if (!profile?.has_paid || !profileIdToSave) return;
+    if (!profile?.has_paid || !profileIdToSave || !dataToSave) {
+      capturedDataRef.current = { profileId: null, data: null };
+      return;
+    }
     
     // If encryption is enabled but not unlocked, skip save
     if (isEncryptionEnabled && !isUnlocked) {
       logger.warn('Auto-save skipped: encryption locked');
-      return;
-    }
-    
-    // If profile changed between blur and save, abort to prevent cross-contamination
-    if (profileIdToSave !== activeProfileId) {
-      logger.warn('Auto-save aborted: profile changed during debounce');
-      capturedProfileIdRef.current = null;
+      capturedDataRef.current = { profileId: null, data: null };
       return;
     }
     
@@ -51,20 +52,21 @@ export const useAutoSave = ({ section, syncToProfile = false, onSaveComplete }: 
       lastProfileIdRef.current = profileIdToSave;
     }
     
-    // Create a hash of current data to avoid duplicate saves
-    const currentDataHash = JSON.stringify(formData[section]);
+    // Create a hash of captured data to avoid duplicate saves
+    const currentDataHash = JSON.stringify(dataToSave);
     if (currentDataHash === lastSavedRef.current) {
-      capturedProfileIdRef.current = null;
+      capturedDataRef.current = { profileId: null, data: null };
       return; // No changes, skip save
     }
     
     try {
-      await saveSection(section);
+      // Use the new saveSectionWithData that accepts explicit data and profileId
+      await saveSectionWithData(section, dataToSave, profileIdToSave);
       lastSavedRef.current = currentDataHash;
       
-      // Sync personal data to profile if needed
-      if (syncToProfile && section === 'personal') {
-        const personalData = formData.personal;
+      // Sync personal data to profile if needed (only if still on same profile)
+      if (syncToProfile && section === 'personal' && profileIdToSave === activeProfileId) {
+        const personalData = dataToSave as VorsorgeFormData['personal'];
         if (personalData.fullName || personalData.birthDate) {
           const profileName = personalData.fullName?.trim() || 'Unbenannt';
           await updateProfile(profileIdToSave, profileName, personalData.birthDate || undefined);
@@ -78,17 +80,21 @@ export const useAutoSave = ({ section, syncToProfile = false, onSaveComplete }: 
       // Trigger optional callback after successful save
       onSaveComplete?.();
       
-      logger.debug(`Auto-saved section: ${section}`);
+      logger.debug(`Auto-saved section: ${section} for profile: ${profileIdToSave}`);
     } catch (error) {
       logger.error(`Error auto-saving section ${section}:`, error);
     } finally {
-      capturedProfileIdRef.current = null;
+      capturedDataRef.current = { profileId: null, data: null };
     }
-  }, [profile?.has_paid, activeProfileId, formData, section, saveSection, syncToProfile, updateProfile, loadProfiles, isEncryptionEnabled, isUnlocked, onSaveComplete]);
+  }, [profile?.has_paid, activeProfileId, section, saveSectionWithData, syncToProfile, updateProfile, loadProfiles, isEncryptionEnabled, isUnlocked, onSaveComplete]);
 
   const handleBlur = useCallback(() => {
-    // Capture the current profile ID at the moment of blur
-    capturedProfileIdRef.current = activeProfileId;
+    // Capture BOTH the current profile ID AND the data at the moment of blur
+    // This prevents data loss when profile is switched during debounce
+    capturedDataRef.current = {
+      profileId: activeProfileId,
+      data: JSON.parse(JSON.stringify(formData[section])), // Deep clone to capture current state
+    };
     
     // Clear any pending timeout
     if (saveTimeoutRef.current) {
@@ -99,18 +105,21 @@ export const useAutoSave = ({ section, syncToProfile = false, onSaveComplete }: 
     saveTimeoutRef.current = setTimeout(() => {
       triggerSave();
     }, 300);
-  }, [triggerSave, activeProfileId]);
+  }, [triggerSave, activeProfileId, formData, section]);
 
   // Reset the last saved hash when profile changes (to allow saving for new profile)
   const resetSaveState = useCallback(() => {
     lastSavedRef.current = '';
-    capturedProfileIdRef.current = null;
-    // Cancel any pending save when profile changes
+    // Cancel any pending save when profile changes, but still process the captured data
     if (saveTimeoutRef.current) {
+      // If there's pending data from the old profile, save it immediately before clearing
+      if (capturedDataRef.current.profileId && capturedDataRef.current.data) {
+        triggerSave();
+      }
       clearTimeout(saveTimeoutRef.current);
       saveTimeoutRef.current = null;
     }
-  }, []);
+  }, [triggerSave]);
 
   return {
     handleBlur,
