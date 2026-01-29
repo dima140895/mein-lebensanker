@@ -199,6 +199,8 @@ const PersonalForm = () => {
       notes: '',
     };
     handleChange('medications', [...(data.medications || []), newMedication]);
+    // Ensure adding an item persists even if the user doesn't blur an input immediately
+    handleBlur();
   };
 
   const removeMedication = (index: number) => {
@@ -222,6 +224,8 @@ const PersonalForm = () => {
       notes: '',
     };
     handleChange('allergies', [...(data.allergies || []), newAllergy]);
+    // Ensure adding an item persists even if the user doesn't blur an input immediately
+    handleBlur();
   };
 
   const removeAllergy = (index: number) => {
