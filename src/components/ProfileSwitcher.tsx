@@ -230,7 +230,7 @@ const ProfileSwitcher = () => {
               <ChevronDown className="h-3 w-3" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-64 bg-popover">
+          <DropdownMenuContent align="end" className="w-48 bg-popover">
             <div className="px-2 py-1.5 text-xs font-medium text-muted-foreground">
               {t.profiles} ({personProfiles.length}/{profile?.max_profiles})
             </div>
