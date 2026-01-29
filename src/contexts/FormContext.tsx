@@ -173,6 +173,12 @@ interface FormContextType {
     data: VorsorgeFormData[K]
   ) => void;
   saveSection: (section: keyof VorsorgeFormData) => Promise<void>;
+  /** Save section with explicit data and profile ID - used for auto-save during profile switch */
+  saveSectionWithData: <K extends keyof VorsorgeFormData>(
+    section: K,
+    data: VorsorgeFormData[K],
+    profileId: string
+  ) => Promise<void>;
   loadAllData: () => Promise<void>;
   saving: boolean;
 }
@@ -233,6 +239,48 @@ export const FormProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       if (error) throw error;
     } catch (error) {
       logger.error('Error saving section:', error);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  // Save section with explicit data and profile ID - used during profile switch to prevent data loss
+  const saveSectionWithData = async <K extends keyof VorsorgeFormData>(
+    section: K,
+    data: VorsorgeFormData[K],
+    profileId: string
+  ) => {
+    if (!user || !profile?.has_paid || !profileId) return;
+    
+    // If encryption is enabled but not unlocked, don't allow saves
+    if (isEncryptionEnabled && !isUnlocked) {
+      logger.warn('Cannot save: encryption is enabled but not unlocked');
+      return;
+    }
+    
+    setSaving(true);
+    try {
+      // Encrypt data if encryption is enabled
+      const processedData = isEncryptionEnabled && isUnlocked 
+        ? await encrypt(data)
+        : data;
+      
+      const { error } = await supabase
+        .from('vorsorge_data')
+        .upsert({
+          user_id: user.id,
+          section_key: section,
+          data: processedData as unknown as Json,
+          person_profile_id: profileId,
+          is_for_partner: false,
+        }, {
+          onConflict: 'user_id,section_key,person_profile_id'
+        });
+
+      if (error) throw error;
+      logger.debug(`Saved section ${section} for profile ${profileId}`);
+    } catch (error) {
+      logger.error('Error saving section with data:', error);
     } finally {
       setSaving(false);
     }
@@ -319,7 +367,8 @@ export const FormProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     <FormContext.Provider value={{ 
       formData, 
       updateSection, 
-      saveSection, 
+      saveSection,
+      saveSectionWithData,
       loadAllData,
       saving 
     }}>
