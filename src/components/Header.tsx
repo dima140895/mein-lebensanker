@@ -528,7 +528,7 @@ const Header = () => {
                     <Button 
                       variant="ghost" 
                       size="sm" 
-                      className="text-foreground"
+                      className="text-foreground hover:bg-primary/10 hover:text-primary transition-colors"
                     >
                       <Package className="mr-1.5 h-4 w-4" />
                       <span>{tx.myPackage}</span>
@@ -564,7 +564,7 @@ const Header = () => {
           {user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="sm">
+                <Button variant="outline" size="sm" className="hover:bg-primary/10 hover:text-primary hover:border-primary/20 transition-colors">
                   <User className="mr-1.5 h-4 w-4" />
                   {tx.account}
                   <ChevronDown className="ml-1 h-3 w-3" />
