@@ -528,15 +528,11 @@ const Header = () => {
                     <Button 
                       variant="ghost" 
                       size="sm" 
-                      className="text-foreground bg-primary/10 hover:bg-primary/20 border border-primary/20"
+                      className="text-foreground"
                     >
-                      <Package className="mr-1.5 h-4 w-4 text-primary" />
-                      <span className="font-medium">
-                        {profile.purchased_tier === 'single' && tx.single}
-                        {profile.purchased_tier === 'couple' && tx.couple}
-                        {profile.purchased_tier === 'family' && tx.family}
-                      </span>
-                      <ChevronDown className="ml-1 h-3 w-3 text-primary" />
+                      <Package className="mr-1.5 h-4 w-4" />
+                      <span>{tx.myPackage}</span>
+                      <ChevronDown className="ml-1 h-3 w-3" />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-56 bg-popover">
