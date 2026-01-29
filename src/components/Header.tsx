@@ -282,6 +282,31 @@ const Header = () => {
                   <Logo size="sm" />
                 </div>
 
+                {/* My Package for paid users (mobile) - now before nav */}
+                {user && profile?.has_paid && (
+                  <div className="p-4 border-b border-border">
+                    <p className="text-xs text-muted-foreground mb-1">{tx.currentTier}</p>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Package className="h-4 w-4 text-primary" />
+                        <span className="font-medium">
+                          {profile.purchased_tier === 'single' && tx.single}
+                          {profile.purchased_tier === 'couple' && tx.couple}
+                          {profile.purchased_tier === 'family' && tx.family}
+                        </span>
+                      </div>
+                      <Button 
+                        variant="link" 
+                        size="sm" 
+                        className="text-primary p-0 h-auto"
+                        onClick={() => navigateTo('/dashboard?section=payment')}
+                      >
+                        {tx.managePackage}
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
                 {/* Mobile Menu Items */}
                 <nav className="flex-1 p-4">
                   <ul className="space-y-1">
@@ -301,31 +326,6 @@ const Header = () => {
 
                 {/* Mobile Menu Footer */}
                 <div className="border-t border-border p-4 space-y-3">
-                  {/* My Package for paid users (mobile) */}
-                  {user && profile?.has_paid && (
-                    <div className="pb-3 border-b border-border">
-                      <p className="text-xs text-muted-foreground mb-1">{tx.currentTier}</p>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <Package className="h-4 w-4 text-primary" />
-                          <span className="font-medium">
-                            {profile.purchased_tier === 'single' && tx.single}
-                            {profile.purchased_tier === 'couple' && tx.couple}
-                            {profile.purchased_tier === 'family' && tx.family}
-                          </span>
-                        </div>
-                        <Button 
-                          variant="link" 
-                          size="sm" 
-                          className="text-primary p-0 h-auto"
-                          onClick={() => navigateTo('/dashboard?section=payment')}
-                        >
-                          {tx.managePackage}
-                        </Button>
-                      </div>
-                    </div>
-                  )}
-                  
                   {user ? (
                     <div className="space-y-2">
                       <Button 
