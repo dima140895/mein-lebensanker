@@ -477,6 +477,44 @@ const Header = () => {
           {/* Quick Links Dropdown for authenticated users */}
           {user && (
             <>
+              {/* My Package Button for paid users - now first */}
+              {profile?.has_paid && (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="text-muted-foreground hover:text-foreground"
+                    >
+                      <Package className="mr-1.5 h-4 w-4" />
+                      {tx.myPackage}
+                      <ChevronDown className="ml-1 h-3 w-3" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-56 bg-popover">
+                    {/* Current Package Info */}
+                    <div className="px-2 py-2 border-b border-border">
+                      <p className="text-xs text-muted-foreground">{tx.currentTier}</p>
+                      <p className="font-medium text-foreground">
+                        {profile.purchased_tier === 'single' && tx.single}
+                        {profile.purchased_tier === 'couple' && tx.couple}
+                        {profile.purchased_tier === 'family' && tx.family}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {profile.max_profiles} {tx.profiles}
+                      </p>
+                    </div>
+                    
+                    <DropdownMenuItem
+                      onClick={() => navigateTo('/dashboard?section=payment')}
+                    >
+                      <CreditCard className="mr-2 h-4 w-4" />
+                      {tx.managePackage}
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )}
+
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button 
@@ -515,44 +553,6 @@ const Header = () => {
                   })}
                 </DropdownMenuContent>
               </DropdownMenu>
-
-              {/* My Package Button for paid users */}
-              {profile?.has_paid && (
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
-                      className="text-muted-foreground hover:text-foreground"
-                    >
-                      <Package className="mr-1.5 h-4 w-4" />
-                      {tx.myPackage}
-                      <ChevronDown className="ml-1 h-3 w-3" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-56 bg-popover">
-                    {/* Current Package Info */}
-                    <div className="px-2 py-2 border-b border-border">
-                      <p className="text-xs text-muted-foreground">{tx.currentTier}</p>
-                      <p className="font-medium text-foreground">
-                        {profile.purchased_tier === 'single' && tx.single}
-                        {profile.purchased_tier === 'couple' && tx.couple}
-                        {profile.purchased_tier === 'family' && tx.family}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        {profile.max_profiles} {tx.profiles}
-                      </p>
-                    </div>
-                    
-                    <DropdownMenuItem
-                      onClick={() => navigateTo('/dashboard?section=payment')}
-                    >
-                      <CreditCard className="mr-2 h-4 w-4" />
-                      {tx.managePackage}
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              )}
               
               {/* Profile Switcher for multi-profile packages */}
               <ProfileSwitcher />
