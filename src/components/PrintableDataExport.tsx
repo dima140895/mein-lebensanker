@@ -288,7 +288,7 @@ const PrintableDataExport = forwardRef<HTMLDivElement, PrintableDataExportProps>
       );
     };
 
-    const renderSection = (sectionKey: string, sectionData: Record<string, unknown>) => {
+    const renderSection = (sectionKey: string, sectionData: Record<string, unknown>, profileId?: string | null) => {
       switch (sectionKey) {
         case 'personal':
           return (
@@ -462,10 +462,13 @@ const PrintableDataExport = forwardRef<HTMLDivElement, PrintableDataExportProps>
           );
 
         case 'documents':
-          // Group uploaded documents by type for this section display
+          // Group uploaded documents by type for this profile only
+          const profileDocs = profileId 
+            ? uploadedDocuments.filter(doc => doc.path.includes(`/${profileId}/`))
+            : uploadedDocuments;
           const documentTypeOrder = ['testament', 'power-of-attorney', 'living-will', 'insurance', 'property', 'other'];
           const groupedUploadedDocs = documentTypeOrder.reduce((acc, type) => {
-            acc[type] = uploadedDocuments.filter(doc => doc.documentType === type);
+            acc[type] = profileDocs.filter(doc => doc.documentType === type);
             return acc;
           }, {} as Record<string, UploadedDocument[]>);
 
@@ -572,12 +575,31 @@ const PrintableDataExport = forwardRef<HTMLDivElement, PrintableDataExportProps>
       }
     };
 
-    // Group data by profile
+    // Group uploaded documents by profile
+    const getUploadedDocsForProfile = (profileId: string): UploadedDocument[] => {
+      return uploadedDocuments.filter(doc => doc.path.includes(`/${profileId}/`));
+    };
+
+    // Group data by profile, including documents section if uploaded docs exist
     const dataByProfile = profiles.map(profile => {
       const profileData = data
         .filter(d => d.person_profile_id === profile.id)
         .filter(d => d.data && Object.keys(d.data).length > 0);
-      return { profile, data: profileData };
+      
+      // Check if this profile has uploaded documents
+      const profileUploadedDocs = getUploadedDocsForProfile(profile.id);
+      
+      // If there are uploaded docs but no documents section in data, add a placeholder
+      const hasDocumentsSection = profileData.some(d => d.section_key === 'documents');
+      if (profileUploadedDocs.length > 0 && !hasDocumentsSection) {
+        profileData.push({
+          section_key: 'documents',
+          data: {},
+          person_profile_id: profile.id,
+        });
+      }
+      
+      return { profile, data: profileData, uploadedDocs: profileUploadedDocs };
     }).filter(p => p.data.length > 0);
 
     const currentDate = new Date().toLocaleDateString(language === 'de' ? 'de-DE' : 'en-US', {
@@ -865,7 +887,7 @@ const PrintableDataExport = forwardRef<HTMLDivElement, PrintableDataExportProps>
                     </div>
                     <span className="print-section-title">{sectionNames[item.section_key]}</span>
                   </div>
-                  {renderSection(item.section_key, item.data)}
+                  {renderSection(item.section_key, item.data, profile.id)}
                 </div>
               );
             })}
