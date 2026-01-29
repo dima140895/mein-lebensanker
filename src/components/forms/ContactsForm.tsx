@@ -173,7 +173,9 @@ const ContactsForm = () => {
                   }}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder={texts.relationship} />
+                    <SelectValue placeholder={texts.relationship}>
+                      {contact.relationship ? texts.relationshipOptions[contact.relationship as keyof typeof texts.relationshipOptions] : texts.relationship}
+                    </SelectValue>
                   </SelectTrigger>
                   <SelectContent>
                     {Object.entries(texts.relationshipOptions).map(([key, label]) => (
@@ -230,7 +232,9 @@ const ContactsForm = () => {
                   }}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder={texts.professionalType} />
+                    <SelectValue placeholder={texts.professionalType}>
+                      {prof.type ? texts.professionalOptions[prof.type as keyof typeof texts.professionalOptions] : texts.professionalType}
+                    </SelectValue>
                   </SelectTrigger>
                   <SelectContent>
                     {Object.entries(texts.professionalOptions).map(([key, label]) => (
