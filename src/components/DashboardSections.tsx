@@ -139,34 +139,34 @@ const DashboardSections = () => {
     return (
       <div
         onClick={() => handleSectionClick(section.key)}
-        className={`group relative cursor-pointer overflow-hidden rounded-2xl border border-border/50 bg-gradient-to-br ${section.gradient} p-6 shadow-sm hover-lift hover:shadow-xl ${section.accent} animate-stagger-fade-in ${getStaggerClass(index)}`}
+        className={`group relative cursor-pointer overflow-hidden rounded-xl md:rounded-2xl border border-border/50 bg-gradient-to-br ${section.gradient} p-4 md:p-6 shadow-sm hover-lift hover:shadow-xl ${section.accent} animate-stagger-fade-in ${getStaggerClass(index)}`}
         data-tour={dataTourAttr}
       >
         {/* Decorative background element */}
-        <div className="absolute -right-8 -top-8 h-24 w-24 rounded-full bg-white/20 blur-2xl transition-all duration-500 group-hover:scale-150 group-hover:bg-white/30" />
+        <div className="absolute -right-6 -top-6 md:-right-8 md:-top-8 h-16 w-16 md:h-24 md:w-24 rounded-full bg-white/20 blur-2xl transition-all duration-500 group-hover:scale-150 group-hover:bg-white/30" />
         
         <div className="relative z-10">
           <div className="flex items-start justify-between">
-            <div className={`inline-flex h-14 w-14 items-center justify-center rounded-xl ${section.iconBg} transition-transform duration-300 group-hover:scale-110`}>
-              <Icon className={`h-7 w-7 ${section.iconColor}`} />
+            <div className={`inline-flex h-10 w-10 md:h-14 md:w-14 items-center justify-center rounded-lg md:rounded-xl ${section.iconBg} transition-transform duration-300 group-hover:scale-110`}>
+              <Icon className={`h-5 w-5 md:h-7 md:w-7 ${section.iconColor}`} />
             </div>
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/60 backdrop-blur-sm opacity-50 group-hover:opacity-100 transition-opacity">
-              <ChevronRight className="h-4 w-4 text-foreground/70 transition-transform group-hover:translate-x-0.5" />
+            <div className="flex h-6 w-6 md:h-8 md:w-8 items-center justify-center rounded-full bg-white/60 backdrop-blur-sm opacity-50 group-hover:opacity-100 transition-opacity">
+              <ChevronRight className="h-3 w-3 md:h-4 md:w-4 text-foreground/70 transition-transform group-hover:translate-x-0.5" />
             </div>
           </div>
           
-          <h3 className="mt-5 font-serif text-xl font-semibold text-foreground">
+          <h3 className="mt-3 md:mt-5 font-serif text-base md:text-xl font-semibold text-foreground">
             {t(`section.${section.key}`)}
           </h3>
-          <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+          <p className="mt-1 md:mt-2 text-xs md:text-sm leading-relaxed text-muted-foreground line-clamp-2 md:line-clamp-none">
             {t(`section.${section.key}Desc`)}
           </p>
           
-          <div className="mt-5 flex items-center gap-2">
-            <span className="text-sm font-medium text-foreground/80 transition-colors group-hover:text-foreground">
+          <div className="mt-3 md:mt-5 flex items-center gap-2">
+            <span className="text-xs md:text-sm font-medium text-foreground/80 transition-colors group-hover:text-foreground">
               {t('action.start')}
             </span>
-            <Sparkles className="h-3.5 w-3.5 text-foreground/40 opacity-0 transition-opacity group-hover:opacity-100" />
+            <Sparkles className="h-3 w-3 md:h-3.5 md:w-3.5 text-foreground/40 opacity-0 transition-opacity group-hover:opacity-100" />
           </div>
         </div>
       </div>
@@ -174,27 +174,27 @@ const DashboardSections = () => {
   };
 
   return (
-    <section id="sections" className="relative pt-8 pb-20 md:pt-12 md:pb-28 overflow-hidden bg-background">
+    <section id="sections" className="relative pt-6 pb-12 md:pt-12 md:pb-28 overflow-hidden bg-background">
       <div className="container mx-auto px-4">
         {/* Main Sections Header */}
         <div
           key={`main-header-${language}`}
-          className="mb-16 text-center animate-fade-in-up"
+          className="mb-8 md:mb-16 text-center animate-fade-in-up"
         >
-          <span className="inline-block rounded-full bg-sage-light px-4 py-1.5 text-sm font-medium text-sage-dark mb-4">
+          <span className="inline-block rounded-full bg-sage-light px-3 py-1 md:px-4 md:py-1.5 text-xs md:text-sm font-medium text-sage-dark mb-3 md:mb-4">
             {tx.badge}
           </span>
-          <h2 className="font-serif text-3xl font-bold text-foreground md:text-4xl lg:text-5xl">
+          <h2 className="font-serif text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold text-foreground">
             {tx.title}
           </h2>
-          <p className="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-muted-foreground">
+          <p className="mx-auto mt-3 md:mt-5 max-w-2xl text-sm md:text-base lg:text-lg leading-relaxed text-muted-foreground px-2">
             {tx.description}
           </p>
         </div>
 
         <div 
           key={`main-${language}`}
-          className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3"
+          className="grid gap-3 md:gap-5 grid-cols-2 lg:grid-cols-3"
           data-tour="dashboard-tiles"
         >
           {sections.map((section, index) => (
@@ -210,19 +210,19 @@ const DashboardSections = () => {
         {/* Info & Tools Sections */}
         <div
           key={`tools-header-${language}`}
-          className="mb-10 mt-20 text-center animate-fade-in-up"
+          className="mb-6 md:mb-10 mt-12 md:mt-20 text-center animate-fade-in-up"
         >
-          <span className="inline-block rounded-full bg-muted px-4 py-1.5 text-sm font-medium text-muted-foreground">
+          <span className="inline-block rounded-full bg-muted px-3 py-1 md:px-4 md:py-1.5 text-xs md:text-sm font-medium text-muted-foreground">
             {t('dashboard.helpfulTools')}
           </span>
-          <h3 className="mt-4 font-serif text-2xl font-bold text-foreground md:text-3xl">
+          <h3 className="mt-3 md:mt-4 font-serif text-xl md:text-2xl lg:text-3xl font-bold text-foreground">
             {t('dashboard.orientationSupport')}
           </h3>
         </div>
 
         <div 
           key={`info-${language}`}
-          className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4"
+          className="grid gap-3 md:gap-5 grid-cols-2 lg:grid-cols-4"
         >
           {infoSections.map((section, index) => (
             <SectionCard 
