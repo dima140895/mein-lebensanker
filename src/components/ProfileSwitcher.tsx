@@ -239,33 +239,29 @@ const ProfileSwitcher = () => {
             {personProfiles.map((p) => (
               <DropdownMenuItem
                 key={p.id}
-                className="flex items-center justify-between group"
                 onClick={() => setActiveProfileId(p.id)}
               >
-                <div className="flex items-center gap-2">
-                  {p.id === activeProfileId && (
-                    <Check className="h-4 w-4 text-primary" />
-                  )}
-                  {p.id !== activeProfileId && (
-                    <div className="w-4" />
-                  )}
-                  <span className={p.id === activeProfileId ? 'font-medium' : ''}>
-                    {p.name}
-                  </span>
-                </div>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-6 w-6 opacity-0 group-hover:opacity-100"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    openEditDialog(p.id);
-                  }}
-                >
-                  <Pencil className="h-3 w-3" />
-                </Button>
+                {p.id === activeProfileId && (
+                  <Check className="mr-2 h-4 w-4 text-primary" />
+                )}
+                {p.id !== activeProfileId && (
+                  <div className="mr-2 w-4" />
+                )}
+                <span className={p.id === activeProfileId ? 'font-medium' : ''}>
+                  {p.name}
+                </span>
               </DropdownMenuItem>
             ))}
+            
+            {personProfiles.length > 0 && (
+              <>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => openEditDialog(activeProfileId!)}>
+                  <Pencil className="mr-2 h-4 w-4" />
+                  {t.editProfile}
+                </DropdownMenuItem>
+              </>
+            )}
             
             {canAddProfile && (
               <>
