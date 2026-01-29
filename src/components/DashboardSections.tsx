@@ -139,13 +139,13 @@ const DashboardSections = () => {
     return (
       <div
         onClick={() => handleSectionClick(section.key)}
-        className={`group relative cursor-pointer overflow-hidden rounded-xl md:rounded-2xl border border-border/50 bg-gradient-to-br ${section.gradient} p-4 md:p-6 shadow-sm hover-lift hover:shadow-xl ${section.accent} animate-stagger-fade-in ${getStaggerClass(index)}`}
+        className={`group relative cursor-pointer overflow-hidden rounded-xl md:rounded-2xl border border-border/50 bg-gradient-to-br ${section.gradient} p-4 md:p-6 shadow-sm hover-lift hover:shadow-xl ${section.accent} animate-stagger-fade-in ${getStaggerClass(index)} h-full flex flex-col`}
         data-tour={dataTourAttr}
       >
         {/* Decorative background element */}
         <div className="absolute -right-6 -top-6 md:-right-8 md:-top-8 h-16 w-16 md:h-24 md:w-24 rounded-full bg-white/20 blur-2xl transition-all duration-500 group-hover:scale-150 group-hover:bg-white/30" />
         
-        <div className="relative z-10">
+        <div className="relative z-10 flex flex-col flex-1">
           <div className="flex items-start justify-between">
             <div className={`inline-flex h-10 w-10 md:h-14 md:w-14 items-center justify-center rounded-lg md:rounded-xl ${section.iconBg} transition-transform duration-300 group-hover:scale-110`}>
               <Icon className={`h-5 w-5 md:h-7 md:w-7 ${section.iconColor}`} />
@@ -158,7 +158,7 @@ const DashboardSections = () => {
           <h3 className="mt-3 md:mt-5 font-serif text-base md:text-xl font-semibold text-foreground">
             {t(`section.${section.key}`)}
           </h3>
-          <p className="mt-1 md:mt-2 text-xs md:text-sm leading-relaxed text-muted-foreground line-clamp-2 md:line-clamp-none">
+          <p className="mt-1 md:mt-2 text-xs md:text-sm leading-relaxed text-muted-foreground line-clamp-2 flex-1">
             {t(`section.${section.key}Desc`)}
           </p>
           
