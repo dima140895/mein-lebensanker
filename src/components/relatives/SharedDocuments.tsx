@@ -17,9 +17,10 @@ interface SharedDocument {
 
 interface SharedDocumentsProps {
   token: string;
+  pin?: string | null;
 }
 
-const SharedDocuments = ({ token }: SharedDocumentsProps) => {
+const SharedDocuments = ({ token, pin }: SharedDocumentsProps) => {
   const { language } = useLanguage();
   const [documents, setDocuments] = useState<SharedDocument[]>([]);
   const [loading, setLoading] = useState(true);
@@ -69,7 +70,7 @@ const SharedDocuments = ({ token }: SharedDocumentsProps) => {
         setError(null);
 
         const { data, error: funcError } = await supabase.functions.invoke('get-shared-documents', {
-          body: { token },
+          body: { token, pin },
         });
 
         if (funcError) {

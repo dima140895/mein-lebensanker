@@ -31,6 +31,7 @@ interface RelativesSummaryProps {
   sharedSections?: string[];
   sharedProfileSections?: Record<string, string[]> | null;
   token?: string;
+  pin?: string | null;
 }
 
 interface SharedDocument {
@@ -40,7 +41,7 @@ interface SharedDocument {
   documentType: string;
 }
 
-const RelativesSummary = ({ data, profiles, sharedSections, sharedProfileSections, token }: RelativesSummaryProps) => {
+const RelativesSummary = ({ data, profiles, sharedSections, sharedProfileSections, token, pin }: RelativesSummaryProps) => {
   const { language } = useLanguage();
   const printRef = useRef<HTMLDivElement>(null);
   const [sharedDocuments, setSharedDocuments] = useState<SharedDocument[]>([]);
@@ -64,7 +65,7 @@ const RelativesSummary = ({ data, profiles, sharedSections, sharedProfileSection
 
       try {
         const { data: docData } = await supabase.functions.invoke('get-shared-documents', {
-          body: { token },
+          body: { token, pin },
         });
 
         if (docData?.documents) {
@@ -81,7 +82,7 @@ const RelativesSummary = ({ data, profiles, sharedSections, sharedProfileSection
     };
 
     fetchDocuments();
-  }, [token, sharedSections, sharedProfileSections]);
+  }, [token, pin, sharedSections, sharedProfileSections]);
 
   const handlePrint = useReactToPrint({
     contentRef: printRef,
@@ -574,7 +575,7 @@ const RelativesSummary = ({ data, profiles, sharedSections, sharedProfileSection
             {renderInfoItem(texts.otherDocs, sectionData.otherDocsLocation)}
             {renderInfoItem(texts.notes, sectionData.notes)}
             {/* Show uploaded documents from storage */}
-            {token && <SharedDocuments token={token} />}
+            {token && <SharedDocuments token={token} pin={pin} />}
           </div>
         );
 
