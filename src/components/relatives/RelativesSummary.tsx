@@ -155,6 +155,25 @@ const RelativesSummary = ({ data, profiles, sharedSections, sharedProfileSection
         other: 'Sonstige',
       },
       
+      // Insurance companies
+      insuranceCompanies: {
+        allianz: 'Allianz',
+        axa: 'AXA',
+        ergo: 'ERGO',
+        generali: 'Generali',
+        huk: 'HUK-COBURG',
+        debeka: 'Debeka',
+        signal: 'Signal Iduna',
+        provinzial: 'Provinzial',
+        lvm: 'LVM',
+        vgh: 'VGH',
+        devk: 'DEVK',
+        zurich: 'Zurich',
+        swisslife: 'Swiss Life',
+        nuernberger: 'Nürnberger',
+        other: 'Sonstige',
+      },
+      
       // Digital fields
       emailAccounts: 'E-Mail-Konten',
       provider: 'Anbieter',
@@ -254,6 +273,25 @@ const RelativesSummary = ({ data, profiles, sharedSections, sharedProfileSection
         legal: 'Legal Protection',
         pension: 'Private Pension',
         travel: 'Travel Insurance',
+        other: 'Other',
+      },
+      
+      // Insurance companies
+      insuranceCompanies: {
+        allianz: 'Allianz',
+        axa: 'AXA',
+        ergo: 'ERGO',
+        generali: 'Generali',
+        huk: 'HUK-COBURG',
+        debeka: 'Debeka',
+        signal: 'Signal Iduna',
+        provinzial: 'Provinzial',
+        lvm: 'LVM',
+        vgh: 'VGH',
+        devk: 'DEVK',
+        zurich: 'Zurich',
+        swisslife: 'Swiss Life',
+        nuernberger: 'Nürnberger',
         other: 'Other',
       },
       
@@ -550,6 +588,12 @@ const RelativesSummary = ({ data, profiles, sharedSections, sharedProfileSection
     return texts.insuranceTypes[key] || type;
   };
 
+  const getCompanyLabel = (company: string): string => {
+    if (!company) return '';
+    const key = company as keyof typeof texts.insuranceCompanies;
+    return texts.insuranceCompanies[key] || company;
+  };
+
   const getOwnershipLabel = (ownership: string, ownershipOther?: string): string => {
     if (ownership === 'self-occupied') return texts.ownershipSelfOccupied;
     if (ownership === 'rented-out') return texts.ownershipRentedOut;
@@ -622,7 +666,7 @@ const RelativesSummary = ({ data, profiles, sharedSections, sharedProfileSection
         {validInsurances.map((ins, i) => (
           <div key={i} className="rounded-lg bg-background/50 p-3 text-sm space-y-1">
             {ins.type && <p><span className="text-muted-foreground">{texts.insuranceType}: </span>{ins.type === 'other' && ins.typeOther ? String(ins.typeOther) : getInsuranceTypeLabel(String(ins.type))}</p>}
-            {ins.company && <p><span className="text-muted-foreground">{texts.insuranceCompany}: </span>{ins.company === 'other' && ins.companyOther ? String(ins.companyOther) : String(ins.company)}</p>}
+            {ins.company && <p><span className="text-muted-foreground">{texts.insuranceCompany}: </span>{ins.company === 'other' && ins.companyOther ? String(ins.companyOther) : getCompanyLabel(String(ins.company))}</p>}
             {ins.policyNumber && <p><span className="text-muted-foreground">{texts.policyNumber}: </span>{String(ins.policyNumber)}</p>}
             {ins.surrenderValue && <p><span className="text-muted-foreground">{texts.surrenderValue}: </span>{String(ins.surrenderValue)}</p>}
           </div>

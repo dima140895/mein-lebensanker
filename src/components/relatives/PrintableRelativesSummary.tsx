@@ -90,6 +90,23 @@ const PrintableRelativesSummary = forwardRef<HTMLDivElement, PrintableRelativesS
           travel: 'Reiseversicherung',
           other: 'Sonstige',
         },
+        insuranceCompanies: {
+          allianz: 'Allianz',
+          axa: 'AXA',
+          ergo: 'ERGO',
+          generali: 'Generali',
+          huk: 'HUK-COBURG',
+          debeka: 'Debeka',
+          signal: 'Signal Iduna',
+          provinzial: 'Provinzial',
+          lvm: 'LVM',
+          vgh: 'VGH',
+          devk: 'DEVK',
+          zurich: 'Zurich',
+          swisslife: 'Swiss Life',
+          nuernberger: 'Nürnberger',
+          other: 'Sonstige',
+        },
         emailAccounts: 'E-Mail-Konten',
         provider: 'Anbieter',
         emailAddress: 'E-Mail-Adresse',
@@ -192,6 +209,23 @@ const PrintableRelativesSummary = forwardRef<HTMLDivElement, PrintableRelativesS
           legal: 'Legal Protection',
           pension: 'Private Pension',
           travel: 'Travel Insurance',
+          other: 'Other',
+        },
+        insuranceCompanies: {
+          allianz: 'Allianz',
+          axa: 'AXA',
+          ergo: 'ERGO',
+          generali: 'Generali',
+          huk: 'HUK-COBURG',
+          debeka: 'Debeka',
+          signal: 'Signal Iduna',
+          provinzial: 'Provinzial',
+          lvm: 'LVM',
+          vgh: 'VGH',
+          devk: 'DEVK',
+          zurich: 'Zurich',
+          swisslife: 'Swiss Life',
+          nuernberger: 'Nürnberger',
           other: 'Other',
         },
         emailAccounts: 'Email Accounts',
@@ -358,6 +392,12 @@ const PrintableRelativesSummary = forwardRef<HTMLDivElement, PrintableRelativesS
       if (!type) return '';
       const key = type as keyof typeof texts.insuranceTypes;
       return texts.insuranceTypes[key] || type;
+    };
+
+    const getCompanyLabel = (company: string): string => {
+      if (!company) return '';
+      const key = company as keyof typeof texts.insuranceCompanies;
+      return texts.insuranceCompanies[key] || company;
     };
 
     const getOwnershipLabel = (ownership: string, ownershipOther?: string): string => {
@@ -542,7 +582,7 @@ const PrintableRelativesSummary = forwardRef<HTMLDivElement, PrintableRelativesS
                   {insurances.map((ins, i) => (
                     <div key={i} className="print-card">
                       {ins.type && <div className="print-info-item"><span className="print-label">{texts.insuranceType}:</span> <span className="print-value">{ins.type === 'other' && ins.typeOther ? String(ins.typeOther) : getInsuranceTypeLabel(String(ins.type))}</span></div>}
-                      {ins.company && <div className="print-info-item"><span className="print-label">{texts.insuranceCompany}:</span> <span className="print-value">{ins.company === 'other' && ins.companyOther ? String(ins.companyOther) : String(ins.company)}</span></div>}
+                      {ins.company && <div className="print-info-item"><span className="print-label">{texts.insuranceCompany}:</span> <span className="print-value">{ins.company === 'other' && ins.companyOther ? String(ins.companyOther) : getCompanyLabel(String(ins.company))}</span></div>}
                       {ins.policyNumber && <div className="print-info-item"><span className="print-label">{texts.policyNumber}:</span> <span className="print-value">{String(ins.policyNumber)}</span></div>}
                       {ins.surrenderValue && <div className="print-info-item"><span className="print-label">{texts.surrenderValue}:</span> <span className="print-value">{String(ins.surrenderValue)}</span></div>}
                     </div>
