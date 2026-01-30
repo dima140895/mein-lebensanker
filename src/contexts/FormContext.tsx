@@ -83,9 +83,20 @@ export interface DocumentsData {
   notes: string;
 }
 
+export interface ContactEntry {
+  type: string;
+  name: string;
+  phone: string;
+  email: string;
+  address: string;
+}
+
 export interface ContactsData {
-  contacts: Array<{ name: string; relationship: string; phone: string; email: string; address: string }>;
-  professionals: Array<{ type: string; name: string; phone: string; email: string; address: string }>;
+  doctors: ContactEntry[];
+  professionals: ContactEntry[];
+  advisors: ContactEntry[];
+  // Legacy fields for backwards compatibility
+  contacts?: Array<{ name: string; relationship: string; phone: string; email: string; address: string }>;
   notes: string;
 }
 
@@ -152,8 +163,9 @@ const defaultDocumentsData: DocumentsData = {
 };
 
 const defaultContactsData: ContactsData = {
-  contacts: [{ name: '', relationship: '', phone: '', email: '', address: '' }],
+  doctors: [],
   professionals: [],
+  advisors: [],
   notes: '',
 };
 
