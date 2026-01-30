@@ -136,13 +136,16 @@ const PrintableRelativesSummary = forwardRef<HTMLDivElement, PrintableRelativesS
           property: 'Immobilienunterlagen',
           other: 'Sonstige Dokumente',
         },
-        personalContacts: 'Persönliche Kontakte',
-        professionalContacts: 'Fachliche Kontakte',
+        doctors: 'Ärzte',
+        professionals: 'Berufliche Kontakte',
+        advisors: 'Berater',
         contactName: 'Name',
         contactPhone: 'Telefon',
         contactEmail: 'E-Mail',
-        contactRelation: 'Beziehung',
-        professionalType: 'Fachrichtung',
+        contactAddress: 'Adresse',
+        doctorType: 'Fachrichtung',
+        professionalType: 'Bereich',
+        advisorType: 'Beratungsbereich',
         notes: 'Hinweise',
         infoLabel: 'Info',
         reactionLabel: 'Reaktion',
@@ -257,13 +260,16 @@ const PrintableRelativesSummary = forwardRef<HTMLDivElement, PrintableRelativesS
           property: 'Property Documents',
           other: 'Other Documents',
         },
-        personalContacts: 'Personal Contacts',
-        professionalContacts: 'Professional Contacts',
+        doctors: 'Doctors',
+        professionals: 'Professional Contacts',
+        advisors: 'Advisors',
         contactName: 'Name',
         contactPhone: 'Phone',
         contactEmail: 'Email',
-        contactRelation: 'Relation',
-        professionalType: 'Profession',
+        contactAddress: 'Address',
+        doctorType: 'Specialty',
+        professionalType: 'Area',
+        advisorType: 'Advisory Area',
         notes: 'Notes',
         infoLabel: 'Info',
         reactionLabel: 'Reaction',
@@ -368,6 +374,105 @@ const PrintableRelativesSummary = forwardRef<HTMLDivElement, PrintableRelativesS
     const getAllergySeverityLabel = (key: string) => {
       const map = allergySeverityLabels[language] as Record<string, string>;
       return map[key] || key;
+    };
+
+    // Contact type labels for print
+    const doctorTypeLabels = {
+      de: {
+        familyDoctor: 'Hausarzt',
+        internist: 'Internist',
+        cardiologist: 'Kardiologe',
+        neurologist: 'Neurologe',
+        orthopedist: 'Orthopäde',
+        dermatologist: 'Dermatologe',
+        ophthalmologist: 'Augenarzt',
+        dentist: 'Zahnarzt',
+        gynecologist: 'Gynäkologe',
+        urologist: 'Urologe',
+        psychiatrist: 'Psychiater',
+        psychologist: 'Psychologe',
+        physiotherapist: 'Physiotherapeut',
+        other: 'Sonstiger Arzt',
+      },
+      en: {
+        familyDoctor: 'Family Doctor',
+        internist: 'Internist',
+        cardiologist: 'Cardiologist',
+        neurologist: 'Neurologist',
+        orthopedist: 'Orthopedist',
+        dermatologist: 'Dermatologist',
+        ophthalmologist: 'Ophthalmologist',
+        dentist: 'Dentist',
+        gynecologist: 'Gynecologist',
+        urologist: 'Urologist',
+        psychiatrist: 'Psychiatrist',
+        psychologist: 'Psychologist',
+        physiotherapist: 'Physiotherapist',
+        other: 'Other Doctor',
+      },
+    } as const;
+
+    const professionalTypeLabels = {
+      de: {
+        employer: 'Arbeitgeber',
+        hrDepartment: 'Personalabteilung',
+        supervisor: 'Vorgesetzter',
+        colleague: 'Kollege/Kollegin',
+        businessPartner: 'Geschäftspartner',
+        union: 'Gewerkschaft',
+        chamberOfCommerce: 'Handelskammer',
+        professionalAssociation: 'Berufsverband',
+        other: 'Sonstiger beruflicher Kontakt',
+      },
+      en: {
+        employer: 'Employer',
+        hrDepartment: 'HR Department',
+        supervisor: 'Supervisor',
+        colleague: 'Colleague',
+        businessPartner: 'Business Partner',
+        union: 'Union',
+        chamberOfCommerce: 'Chamber of Commerce',
+        professionalAssociation: 'Professional Association',
+        other: 'Other Professional Contact',
+      },
+    } as const;
+
+    const advisorTypeLabels = {
+      de: {
+        lawyer: 'Rechtsanwalt',
+        notary: 'Notar',
+        taxAdvisor: 'Steuerberater',
+        financialAdvisor: 'Finanzberater',
+        bankAdvisor: 'Bankberater',
+        insuranceAgent: 'Versicherungsberater',
+        realEstateAgent: 'Immobilienmakler',
+        wealthManager: 'Vermögensverwalter',
+        estatePlanner: 'Nachlassplaner',
+        other: 'Sonstiger Berater',
+      },
+      en: {
+        lawyer: 'Lawyer',
+        notary: 'Notary',
+        taxAdvisor: 'Tax Advisor',
+        financialAdvisor: 'Financial Advisor',
+        bankAdvisor: 'Bank Advisor',
+        insuranceAgent: 'Insurance Advisor',
+        realEstateAgent: 'Real Estate Agent',
+        wealthManager: 'Wealth Manager',
+        estatePlanner: 'Estate Planner',
+        other: 'Other Advisor',
+      },
+    } as const;
+
+    const getContactTypeLabel = (key: string, category: 'doctors' | 'professionals' | 'advisors'): string => {
+      if (!key) return key;
+      if (category === 'doctors') {
+        return (doctorTypeLabels[language] as Record<string, string>)[key] || key;
+      } else if (category === 'professionals') {
+        return (professionalTypeLabels[language] as Record<string, string>)[key] || key;
+      } else {
+        return (advisorTypeLabels[language] as Record<string, string>)[key] || key;
+      }
     };
 
     const sectionIcons: Record<string, typeof User> = {
@@ -729,37 +834,56 @@ const PrintableRelativesSummary = forwardRef<HTMLDivElement, PrintableRelativesS
           );
 
         case 'contacts':
-          const personalContacts = (sectionData.contacts as Array<Record<string, unknown>>)?.filter(contact => 
-            contact.name && typeof contact.name === 'string' && contact.name.trim()
+          const doctors = (sectionData.doctors as Array<Record<string, unknown>>)?.filter(entry => 
+            entry.name && typeof entry.name === 'string' && entry.name.trim()
           ) || [];
-          const professionals = (sectionData.professionals as Array<Record<string, unknown>>)?.filter(contact => 
-            contact.name && typeof contact.name === 'string' && contact.name.trim()
+          const professionalsData = (sectionData.professionals as Array<Record<string, unknown>>)?.filter(entry => 
+            entry.name && typeof entry.name === 'string' && entry.name.trim()
+          ) || [];
+          const advisors = (sectionData.advisors as Array<Record<string, unknown>>)?.filter(entry => 
+            entry.name && typeof entry.name === 'string' && entry.name.trim()
           ) || [];
 
           return (
             <div className="print-section-content">
-              {personalContacts.length > 0 && (
+              {doctors.length > 0 && (
                 <div className="print-subsection">
-                  <div className="print-subsection-title">{texts.personalContacts}</div>
-                  {personalContacts.map((contact, i) => (
+                  <div className="print-subsection-title">{texts.doctors}</div>
+                  {doctors.map((entry, i) => (
                     <div key={i} className="print-card">
-                      {contact.name && <div className="print-info-item"><span className="print-label">{texts.contactName}:</span> <span className="print-value">{String(contact.name)}</span></div>}
-                      {contact.relation && <div className="print-info-item"><span className="print-label">{texts.contactRelation}:</span> <span className="print-value">{String(contact.relation)}</span></div>}
-                      {contact.phone && <div className="print-info-item"><span className="print-label">{texts.contactPhone}:</span> <span className="print-value">{String(contact.phone)}</span></div>}
-                      {contact.email && <div className="print-info-item"><span className="print-label">{texts.contactEmail}:</span> <span className="print-value">{String(contact.email)}</span></div>}
+                      {entry.name && <div className="print-info-item"><span className="print-label">{texts.contactName}:</span> <span className="print-value">{String(entry.name)}</span></div>}
+                      {entry.type && <div className="print-info-item"><span className="print-label">{texts.doctorType}:</span> <span className="print-value">{getContactTypeLabel(String(entry.type), 'doctors')}</span></div>}
+                      {entry.phone && <div className="print-info-item"><span className="print-label">{texts.contactPhone}:</span> <span className="print-value">{String(entry.phone)}</span></div>}
+                      {entry.email && <div className="print-info-item"><span className="print-label">{texts.contactEmail}:</span> <span className="print-value">{String(entry.email)}</span></div>}
+                      {entry.address && <div className="print-info-item"><span className="print-label">{texts.contactAddress}:</span> <span className="print-value">{String(entry.address)}</span></div>}
                     </div>
                   ))}
                 </div>
               )}
-              {professionals.length > 0 && (
+              {professionalsData.length > 0 && (
                 <div className="print-subsection">
-                  <div className="print-subsection-title">{texts.professionalContacts}</div>
-                  {professionals.map((contact, i) => (
+                  <div className="print-subsection-title">{texts.professionals}</div>
+                  {professionalsData.map((entry, i) => (
                     <div key={i} className="print-card">
-                      {contact.name && <div className="print-info-item"><span className="print-label">{texts.contactName}:</span> <span className="print-value">{String(contact.name)}</span></div>}
-                      {contact.type && <div className="print-info-item"><span className="print-label">{texts.professionalType}:</span> <span className="print-value">{String(contact.type)}</span></div>}
-                      {contact.phone && <div className="print-info-item"><span className="print-label">{texts.contactPhone}:</span> <span className="print-value">{String(contact.phone)}</span></div>}
-                      {contact.email && <div className="print-info-item"><span className="print-label">{texts.contactEmail}:</span> <span className="print-value">{String(contact.email)}</span></div>}
+                      {entry.name && <div className="print-info-item"><span className="print-label">{texts.contactName}:</span> <span className="print-value">{String(entry.name)}</span></div>}
+                      {entry.type && <div className="print-info-item"><span className="print-label">{texts.professionalType}:</span> <span className="print-value">{getContactTypeLabel(String(entry.type), 'professionals')}</span></div>}
+                      {entry.phone && <div className="print-info-item"><span className="print-label">{texts.contactPhone}:</span> <span className="print-value">{String(entry.phone)}</span></div>}
+                      {entry.email && <div className="print-info-item"><span className="print-label">{texts.contactEmail}:</span> <span className="print-value">{String(entry.email)}</span></div>}
+                      {entry.address && <div className="print-info-item"><span className="print-label">{texts.contactAddress}:</span> <span className="print-value">{String(entry.address)}</span></div>}
+                    </div>
+                  ))}
+                </div>
+              )}
+              {advisors.length > 0 && (
+                <div className="print-subsection">
+                  <div className="print-subsection-title">{texts.advisors}</div>
+                  {advisors.map((entry, i) => (
+                    <div key={i} className="print-card">
+                      {entry.name && <div className="print-info-item"><span className="print-label">{texts.contactName}:</span> <span className="print-value">{String(entry.name)}</span></div>}
+                      {entry.type && <div className="print-info-item"><span className="print-label">{texts.advisorType}:</span> <span className="print-value">{getContactTypeLabel(String(entry.type), 'advisors')}</span></div>}
+                      {entry.phone && <div className="print-info-item"><span className="print-label">{texts.contactPhone}:</span> <span className="print-value">{String(entry.phone)}</span></div>}
+                      {entry.email && <div className="print-info-item"><span className="print-label">{texts.contactEmail}:</span> <span className="print-value">{String(entry.email)}</span></div>}
+                      {entry.address && <div className="print-info-item"><span className="print-label">{texts.contactAddress}:</span> <span className="print-value">{String(entry.address)}</span></div>}
                     </div>
                   ))}
                 </div>

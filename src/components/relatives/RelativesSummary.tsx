@@ -201,13 +201,16 @@ const RelativesSummary = ({ data, profiles, sharedSections, sharedProfileSection
       otherDocs: 'Sonstige Dokumente',
       
       // Contacts fields
-      personalContacts: 'Persönliche Kontakte',
-      professionalContacts: 'Fachliche Kontakte',
+      doctors: 'Ärzte',
+      professionals: 'Berufliche Kontakte',
+      advisors: 'Berater',
       contactName: 'Name',
       contactPhone: 'Telefon',
       contactEmail: 'E-Mail',
-      contactRelation: 'Beziehung',
-      professionalType: 'Fachrichtung',
+      contactAddress: 'Adresse',
+      doctorType: 'Fachrichtung',
+      professionalType: 'Bereich',
+      advisorType: 'Beratungsbereich',
       
       notes: 'Hinweise',
     },
@@ -322,13 +325,16 @@ const RelativesSummary = ({ data, profiles, sharedSections, sharedProfileSection
       otherDocs: 'Other Documents',
       
       // Contacts fields
-      personalContacts: 'Personal Contacts',
-      professionalContacts: 'Professional Contacts',
+      doctors: 'Doctors',
+      professionals: 'Professional Contacts',
+      advisors: 'Advisors',
       contactName: 'Name',
       contactPhone: 'Phone',
       contactEmail: 'Email',
-      contactRelation: 'Relation',
-      professionalType: 'Profession',
+      contactAddress: 'Address',
+      doctorType: 'Specialty',
+      professionalType: 'Area',
+      advisorType: 'Advisory Area',
       
       notes: 'Notes',
     },
@@ -459,26 +465,93 @@ const RelativesSummary = ({ data, profiles, sharedSections, sharedProfileSection
     },
   } as const;
 
-  const professionalTypeLabels = {
+  // Doctor specialty labels
+  const doctorTypeLabels = {
     de: {
       familyDoctor: 'Hausarzt',
-      specialist: 'Facharzt',
-      lawyer: 'Rechtsanwalt',
-      notary: 'Notar',
-      taxAdvisor: 'Steuerberater',
-      bankAdvisor: 'Bankberater',
-      insuranceAgent: 'Versicherungsvertreter',
-      other: 'Sonstige',
+      internist: 'Internist',
+      cardiologist: 'Kardiologe',
+      neurologist: 'Neurologe',
+      orthopedist: 'Orthopäde',
+      dermatologist: 'Dermatologe',
+      ophthalmologist: 'Augenarzt',
+      dentist: 'Zahnarzt',
+      gynecologist: 'Gynäkologe',
+      urologist: 'Urologe',
+      psychiatrist: 'Psychiater',
+      psychologist: 'Psychologe',
+      physiotherapist: 'Physiotherapeut',
+      other: 'Sonstiger Arzt',
     },
     en: {
       familyDoctor: 'Family Doctor',
-      specialist: 'Specialist',
+      internist: 'Internist',
+      cardiologist: 'Cardiologist',
+      neurologist: 'Neurologist',
+      orthopedist: 'Orthopedist',
+      dermatologist: 'Dermatologist',
+      ophthalmologist: 'Ophthalmologist',
+      dentist: 'Dentist',
+      gynecologist: 'Gynecologist',
+      urologist: 'Urologist',
+      psychiatrist: 'Psychiatrist',
+      psychologist: 'Psychologist',
+      physiotherapist: 'Physiotherapist',
+      other: 'Other Doctor',
+    },
+  } as const;
+
+  // Professional contact type labels
+  const professionalTypeLabels = {
+    de: {
+      employer: 'Arbeitgeber',
+      hrDepartment: 'Personalabteilung',
+      supervisor: 'Vorgesetzter',
+      colleague: 'Kollege/Kollegin',
+      businessPartner: 'Geschäftspartner',
+      union: 'Gewerkschaft',
+      chamberOfCommerce: 'Handelskammer',
+      professionalAssociation: 'Berufsverband',
+      other: 'Sonstiger beruflicher Kontakt',
+    },
+    en: {
+      employer: 'Employer',
+      hrDepartment: 'HR Department',
+      supervisor: 'Supervisor',
+      colleague: 'Colleague',
+      businessPartner: 'Business Partner',
+      union: 'Union',
+      chamberOfCommerce: 'Chamber of Commerce',
+      professionalAssociation: 'Professional Association',
+      other: 'Other Professional Contact',
+    },
+  } as const;
+
+  // Advisor type labels
+  const advisorTypeLabels = {
+    de: {
+      lawyer: 'Rechtsanwalt',
+      notary: 'Notar',
+      taxAdvisor: 'Steuerberater',
+      financialAdvisor: 'Finanzberater',
+      bankAdvisor: 'Bankberater',
+      insuranceAgent: 'Versicherungsberater',
+      realEstateAgent: 'Immobilienmakler',
+      wealthManager: 'Vermögensverwalter',
+      estatePlanner: 'Nachlassplaner',
+      other: 'Sonstiger Berater',
+    },
+    en: {
       lawyer: 'Lawyer',
       notary: 'Notary',
       taxAdvisor: 'Tax Advisor',
+      financialAdvisor: 'Financial Advisor',
       bankAdvisor: 'Bank Advisor',
-      insuranceAgent: 'Insurance Agent',
-      other: 'Other',
+      insuranceAgent: 'Insurance Advisor',
+      realEstateAgent: 'Real Estate Agent',
+      wealthManager: 'Wealth Manager',
+      estatePlanner: 'Estate Planner',
+      other: 'Other Advisor',
     },
   } as const;
 
@@ -736,35 +809,49 @@ const RelativesSummary = ({ data, profiles, sharedSections, sharedProfileSection
     );
   };
 
-  const renderContacts = (contacts: Array<Record<string, unknown>>, isProfessional: boolean) => {
-    const validContacts = contacts?.filter(contact => 
-      contact.name && typeof contact.name === 'string' && contact.name.trim()
+  const renderContactCategory = (
+    entries: Array<Record<string, unknown>>, 
+    category: 'doctors' | 'professionals' | 'advisors'
+  ) => {
+    const validEntries = entries?.filter(entry => 
+      entry.name && typeof entry.name === 'string' && entry.name.trim()
     ) || [];
     
-    if (validContacts.length === 0) return null;
+    if (validEntries.length === 0) return null;
 
-    const getRelationshipLabel = (key: string): string => {
+    const getTypeLabel = (key: string): string => {
       if (!key) return '';
-      return (relationshipLabels[language] as any)[key] || key;
+      if (category === 'doctors') {
+        return (doctorTypeLabels[language] as any)[key] || key;
+      } else if (category === 'professionals') {
+        return (professionalTypeLabels[language] as any)[key] || key;
+      } else {
+        return (advisorTypeLabels[language] as any)[key] || key;
+      }
     };
 
-    const getProfessionalTypeLabel = (key: string): string => {
-      if (!key) return '';
-      return (professionalTypeLabels[language] as any)[key] || key;
+    const titles = {
+      doctors: texts.doctors,
+      professionals: texts.professionals,
+      advisors: texts.advisors,
+    };
+
+    const typeLabels = {
+      doctors: texts.doctorType,
+      professionals: texts.professionalType,
+      advisors: texts.advisorType,
     };
 
     return (
       <div className="space-y-2">
-        <span className="text-sm font-medium text-foreground">
-          {isProfessional ? texts.professionalContacts : texts.personalContacts}
-        </span>
-        {validContacts.map((contact, i) => (
+        <span className="text-sm font-medium text-foreground">{titles[category]}</span>
+        {validEntries.map((entry, i) => (
           <div key={i} className="rounded-lg bg-background/50 p-3 text-sm space-y-1">
-            {contact.name && <p><span className="text-muted-foreground">{texts.contactName}: </span>{String(contact.name)}</p>}
-            {isProfessional && contact.type && <p><span className="text-muted-foreground">{texts.professionalType}: </span>{getProfessionalTypeLabel(String(contact.type))}</p>}
-            {!isProfessional && contact.relationship && <p><span className="text-muted-foreground">{texts.contactRelation}: </span>{getRelationshipLabel(String(contact.relationship))}</p>}
-            {contact.phone && <p><span className="text-muted-foreground">{texts.contactPhone}: </span>{String(contact.phone)}</p>}
-            {contact.email && <p><span className="text-muted-foreground">{texts.contactEmail}: </span>{String(contact.email)}</p>}
+            {entry.name && <p><span className="text-muted-foreground">{texts.contactName}: </span>{String(entry.name)}</p>}
+            {entry.type && <p><span className="text-muted-foreground">{typeLabels[category]}: </span>{getTypeLabel(String(entry.type))}</p>}
+            {entry.phone && <p><span className="text-muted-foreground">{texts.contactPhone}: </span>{String(entry.phone)}</p>}
+            {entry.email && <p><span className="text-muted-foreground">{texts.contactEmail}: </span>{String(entry.email)}</p>}
+            {entry.address && <p><span className="text-muted-foreground">{texts.contactAddress}: </span>{String(entry.address)}</p>}
           </div>
         ))}
       </div>
@@ -866,8 +953,9 @@ const RelativesSummary = ({ data, profiles, sharedSections, sharedProfileSection
       case 'contacts':
         return (
           <div className="space-y-4">
-            {renderContacts(sectionData.contacts as Array<Record<string, unknown>>, false)}
-            {renderContacts(sectionData.professionals as Array<Record<string, unknown>>, true)}
+            {renderContactCategory(sectionData.doctors as Array<Record<string, unknown>>, 'doctors')}
+            {renderContactCategory(sectionData.professionals as Array<Record<string, unknown>>, 'professionals')}
+            {renderContactCategory(sectionData.advisors as Array<Record<string, unknown>>, 'advisors')}
             {renderInfoItem(texts.notes, sectionData.notes)}
           </div>
         );
