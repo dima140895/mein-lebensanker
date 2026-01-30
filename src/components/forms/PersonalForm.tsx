@@ -11,6 +11,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import SectionNavigation from './SectionNavigation';
 
 const PersonalForm = () => {
   const { formData, updateSection } = useFormData();
@@ -638,6 +639,8 @@ const PersonalForm = () => {
           rows={3}
         />
       </div>
+
+      <SectionNavigation currentSection="personal" />
     </motion.div>
   );
 };

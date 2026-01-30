@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Combobox } from "@/components/ui/combobox";
+import SectionNavigation from './SectionNavigation';
 
 const AssetsForm = () => {
   const { formData, updateSection } = useFormData();
@@ -512,6 +513,8 @@ const AssetsForm = () => {
           rows={3}
         />
       </div>
+
+      <SectionNavigation currentSection="assets" />
     </motion.div>
   );
 };

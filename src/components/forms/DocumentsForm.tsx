@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import DocumentUploadSection from "./DocumentUploadSection";
+import SectionNavigation from './SectionNavigation';
 
 const DocumentsForm = () => {
   const { formData, updateSection } = useFormData();
@@ -179,6 +180,8 @@ const DocumentsForm = () => {
           rows={3}
         />
       </div>
+
+      <SectionNavigation currentSection="documents" />
     </motion.div>
   );
 };
