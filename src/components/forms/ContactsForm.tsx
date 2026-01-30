@@ -17,6 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import SectionNavigation from './SectionNavigation';
 
 const ContactsForm = () => {
   const { formData, updateSection } = useFormData();
@@ -292,6 +293,8 @@ const ContactsForm = () => {
           rows={3}
         />
       </div>
+
+      <SectionNavigation currentSection="contacts" />
     </motion.div>
   );
 };

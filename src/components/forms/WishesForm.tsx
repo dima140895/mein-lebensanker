@@ -8,6 +8,7 @@ import { useProfiles } from '@/contexts/ProfileContext';
 import { useAutoSave } from '@/hooks/useAutoSave';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import SectionNavigation from './SectionNavigation';
 
 const WishesForm = () => {
   const { formData, updateSection } = useFormData();
@@ -145,6 +146,8 @@ const WishesForm = () => {
           rows={3}
         />
       </div>
+
+      <SectionNavigation currentSection="wishes" />
     </motion.div>
   );
 };
