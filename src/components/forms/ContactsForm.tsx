@@ -19,6 +19,14 @@ import {
 } from '@/components/ui/select';
 import SectionNavigation from './SectionNavigation';
 
+interface ContactEntry {
+  type: string;
+  name: string;
+  phone: string;
+  email: string;
+  address: string;
+}
+
 const ContactsForm = () => {
   const { formData, updateSection } = useFormData();
   const { profile } = useAuth();
@@ -37,114 +45,235 @@ const ContactsForm = () => {
     de: {
       title: 'Wichtige Kontakte',
       disclaimer: 'Notiere hier alle wichtigen Kontaktpersonen, die im Ernstfall informiert werden sollten. Änderungen werden automatisch gespeichert.',
-      contacts: 'Kontaktpersonen',
-      name: 'Name',
-      relationship: 'Beziehung',
-      phone: 'Telefon',
-      email: 'E-Mail',
-      address: 'Adresse',
-      relationshipOptions: {
-        family: 'Familie',
-        friend: 'Freund/in',
-        neighbor: 'Nachbar/in',
-        doctor: 'Arzt/Ärztin',
-        lawyer: 'Anwalt/Anwältin',
-        taxAdvisor: 'Steuerberater/in',
-        employer: 'Arbeitgeber/in',
-        other: 'Sonstige',
-      },
-      professionals: 'Berufliche Kontakte',
-      professionalType: 'Art',
-      professionalOptions: {
+      
+      // Doctors section
+      doctors: 'Ärzte',
+      doctorType: 'Fachrichtung',
+      doctorOptions: {
         familyDoctor: 'Hausarzt',
-        specialist: 'Facharzt',
+        internist: 'Internist',
+        cardiologist: 'Kardiologe',
+        neurologist: 'Neurologe',
+        orthopedist: 'Orthopäde',
+        dermatologist: 'Dermatologe',
+        ophthalmologist: 'Augenarzt',
+        dentist: 'Zahnarzt',
+        gynecologist: 'Gynäkologe',
+        urologist: 'Urologe',
+        psychiatrist: 'Psychiater',
+        psychologist: 'Psychologe',
+        physiotherapist: 'Physiotherapeut',
+        other: 'Sonstiger Arzt',
+      },
+      addDoctor: 'Arzt hinzufügen',
+      
+      // Professional contacts section
+      professionals: 'Berufliche Kontakte',
+      professionalType: 'Bereich',
+      professionalOptions: {
+        employer: 'Arbeitgeber',
+        hrDepartment: 'Personalabteilung',
+        supervisor: 'Vorgesetzter',
+        colleague: 'Kollege/Kollegin',
+        businessPartner: 'Geschäftspartner',
+        union: 'Gewerkschaft',
+        chamberOfCommerce: 'Handelskammer',
+        professionalAssociation: 'Berufsverband',
+        other: 'Sonstiger beruflicher Kontakt',
+      },
+      addProfessional: 'Beruflichen Kontakt hinzufügen',
+      
+      // Advisors section
+      advisors: 'Berater',
+      advisorType: 'Beratungsbereich',
+      advisorOptions: {
         lawyer: 'Rechtsanwalt',
         notary: 'Notar',
         taxAdvisor: 'Steuerberater',
+        financialAdvisor: 'Finanzberater',
         bankAdvisor: 'Bankberater',
-        insuranceAgent: 'Versicherungsvertreter',
-        other: 'Sonstige',
+        insuranceAgent: 'Versicherungsberater',
+        realEstateAgent: 'Immobilienmakler',
+        wealthManager: 'Vermögensverwalter',
+        estatePlanner: 'Nachlassplaner',
+        other: 'Sonstiger Berater',
       },
-      addContact: 'Kontakt hinzufügen',
-      addProfessional: 'Beruflichen Kontakt hinzufügen',
+      addAdvisor: 'Berater hinzufügen',
+      
+      // Common fields
+      name: 'Name / Praxis',
+      phone: 'Telefon',
+      email: 'E-Mail',
+      address: 'Adresse',
       notes: 'Zusätzliche Hinweise',
     },
     en: {
       title: 'Important Contacts',
       disclaimer: 'Note all important contacts who should be informed in case of emergency. Changes are saved automatically.',
-      contacts: 'Personal Contacts',
-      name: 'Name',
-      relationship: 'Relationship',
-      phone: 'Phone',
-      email: 'Email',
-      address: 'Address',
-      relationshipOptions: {
-        family: 'Family',
-        friend: 'Friend',
-        neighbor: 'Neighbor',
-        doctor: 'Doctor',
-        lawyer: 'Lawyer',
-        taxAdvisor: 'Tax Advisor',
-        employer: 'Employer',
-        other: 'Other',
-      },
-      professionals: 'Professional Contacts',
-      professionalType: 'Type',
-      professionalOptions: {
+      
+      // Doctors section
+      doctors: 'Doctors',
+      doctorType: 'Specialty',
+      doctorOptions: {
         familyDoctor: 'Family Doctor',
-        specialist: 'Specialist',
+        internist: 'Internist',
+        cardiologist: 'Cardiologist',
+        neurologist: 'Neurologist',
+        orthopedist: 'Orthopedist',
+        dermatologist: 'Dermatologist',
+        ophthalmologist: 'Ophthalmologist',
+        dentist: 'Dentist',
+        gynecologist: 'Gynecologist',
+        urologist: 'Urologist',
+        psychiatrist: 'Psychiatrist',
+        psychologist: 'Psychologist',
+        physiotherapist: 'Physiotherapist',
+        other: 'Other Doctor',
+      },
+      addDoctor: 'Add Doctor',
+      
+      // Professional contacts section
+      professionals: 'Professional Contacts',
+      professionalType: 'Area',
+      professionalOptions: {
+        employer: 'Employer',
+        hrDepartment: 'HR Department',
+        supervisor: 'Supervisor',
+        colleague: 'Colleague',
+        businessPartner: 'Business Partner',
+        union: 'Union',
+        chamberOfCommerce: 'Chamber of Commerce',
+        professionalAssociation: 'Professional Association',
+        other: 'Other Professional Contact',
+      },
+      addProfessional: 'Add Professional Contact',
+      
+      // Advisors section
+      advisors: 'Advisors',
+      advisorType: 'Advisory Area',
+      advisorOptions: {
         lawyer: 'Lawyer',
         notary: 'Notary',
         taxAdvisor: 'Tax Advisor',
+        financialAdvisor: 'Financial Advisor',
         bankAdvisor: 'Bank Advisor',
-        insuranceAgent: 'Insurance Agent',
-        other: 'Other',
+        insuranceAgent: 'Insurance Advisor',
+        realEstateAgent: 'Real Estate Agent',
+        wealthManager: 'Wealth Manager',
+        estatePlanner: 'Estate Planner',
+        other: 'Other Advisor',
       },
-      addContact: 'Add Contact',
-      addProfessional: 'Add Professional Contact',
+      addAdvisor: 'Add Advisor',
+      
+      // Common fields
+      name: 'Name / Practice',
+      phone: 'Phone',
+      email: 'Email',
+      address: 'Address',
       notes: 'Additional Notes',
     },
   };
 
   const texts = t[language];
 
-  const addContact = () => {
-    const newContacts = [...data.contacts, { name: '', relationship: '', phone: '', email: '', address: '' }];
-    updateSection('contacts', { ...data, contacts: newContacts });
+  // Helper to safely get array or default to empty
+  const getArray = (key: string): ContactEntry[] => {
+    const arr = (data as any)[key];
+    return Array.isArray(arr) ? arr : [];
   };
 
-  const addProfessional = () => {
-    const newProfessionals = [...data.professionals, { type: '', name: '', phone: '', email: '', address: '' }];
-    updateSection('contacts', { ...data, professionals: newProfessionals });
+  // Generic add/remove/update functions
+  const addEntry = (category: 'doctors' | 'professionals' | 'advisors') => {
+    const currentArray = getArray(category);
+    const newArray = [...currentArray, { type: '', name: '', phone: '', email: '', address: '' }];
+    updateSection('contacts', { ...data, [category]: newArray });
   };
 
-  const removeContact = (index: number) => {
-    const newContacts = [...data.contacts];
-    newContacts.splice(index, 1);
-    updateSection('contacts', { ...data, contacts: newContacts });
+  const removeEntry = (category: 'doctors' | 'professionals' | 'advisors', index: number) => {
+    const currentArray = getArray(category);
+    const newArray = [...currentArray];
+    newArray.splice(index, 1);
+    updateSection('contacts', { ...data, [category]: newArray });
   };
 
-  const removeProfessional = (index: number) => {
-    const newProfessionals = [...data.professionals];
-    newProfessionals.splice(index, 1);
-    updateSection('contacts', { ...data, professionals: newProfessionals });
+  const updateEntry = (category: 'doctors' | 'professionals' | 'advisors', index: number, key: string, value: string) => {
+    const currentArray = getArray(category);
+    const newArray = [...currentArray];
+    newArray[index] = { ...newArray[index], [key]: value };
+    updateSection('contacts', { ...data, [category]: newArray });
   };
 
-  const updateContact = (index: number, key: string, value: string) => {
-    const newContacts = [...data.contacts];
-    newContacts[index] = { ...newContacts[index], [key]: value };
-    updateSection('contacts', { ...data, contacts: newContacts });
-  };
-
-  const updateProfessional = (index: number, key: string, value: string) => {
-    const newProfessionals = [...data.professionals];
-    newProfessionals[index] = { ...newProfessionals[index], [key]: value };
-    updateSection('contacts', { ...data, professionals: newProfessionals });
-  };
+  const renderContactCard = (
+    entry: ContactEntry,
+    index: number,
+    category: 'doctors' | 'professionals' | 'advisors',
+    typeLabel: string,
+    options: Record<string, string>
+  ) => (
+    <div key={index} className="p-4 rounded-lg border border-border bg-card/50 space-y-3">
+      <div className="flex justify-between items-start">
+        <div className="flex-1 grid gap-3 md:grid-cols-2">
+          <Select
+            value={entry.type}
+            onValueChange={(value) => {
+              updateEntry(category, index, 'type', value);
+              handleBlur();
+            }}
+          >
+            <SelectTrigger className="bg-background">
+              <SelectValue placeholder={typeLabel}>
+                {entry.type ? options[entry.type as keyof typeof options] : typeLabel}
+              </SelectValue>
+            </SelectTrigger>
+            <SelectContent className="bg-popover z-50">
+              {Object.entries(options).map(([key, label]) => (
+                <SelectItem key={key} value={key}>{label}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Input
+            value={entry.name}
+            onChange={(e) => updateEntry(category, index, 'name', e.target.value)}
+            onBlur={handleBlur}
+            placeholder={texts.name}
+          />
+        </div>
+        <Button variant="ghost" size="icon" onClick={() => removeEntry(category, index)} className="ml-2">
+          <Trash2 className="h-4 w-4 text-destructive" />
+        </Button>
+      </div>
+      <div className="grid gap-3 md:grid-cols-2">
+        <Input
+          type="tel"
+          value={entry.phone}
+          onChange={(e) => updateEntry(category, index, 'phone', e.target.value)}
+          onBlur={handleBlur}
+          placeholder={texts.phone}
+        />
+        <Input
+          type="email"
+          value={entry.email}
+          onChange={(e) => updateEntry(category, index, 'email', e.target.value)}
+          onBlur={handleBlur}
+          placeholder={texts.email}
+        />
+      </div>
+      <Input
+        value={entry.address}
+        onChange={(e) => updateEntry(category, index, 'address', e.target.value)}
+        onBlur={handleBlur}
+        placeholder={texts.address}
+      />
+    </div>
+  );
 
   if (!profile?.has_paid) {
     return null;
   }
+
+  const doctors = getArray('doctors');
+  const professionals = getArray('professionals');
+  const advisors = getArray('advisors');
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-8">
@@ -153,136 +282,40 @@ const ContactsForm = () => {
         <p className="text-sm text-sage-dark">{texts.disclaimer}</p>
       </div>
 
-      {/* Personal Contacts */}
+      {/* Doctors Section */}
       <div className="space-y-4">
-        <h3 className="font-serif text-lg font-semibold text-foreground">{texts.contacts}</h3>
-        {data.contacts.map((contact, i) => (
-          <div key={i} className="p-4 rounded-lg border border-border bg-card/50 space-y-3">
-            <div className="flex justify-between items-start">
-              <div className="flex-1 grid gap-3 md:grid-cols-2">
-                <Input
-                  value={contact.name}
-                  onChange={(e) => updateContact(i, 'name', e.target.value)}
-                  onBlur={handleBlur}
-                  placeholder={texts.name}
-                />
-                <Select
-                  value={contact.relationship}
-                  onValueChange={(value) => {
-                    updateContact(i, 'relationship', value);
-                    handleBlur();
-                  }}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder={texts.relationship}>
-                      {contact.relationship ? texts.relationshipOptions[contact.relationship as keyof typeof texts.relationshipOptions] : texts.relationship}
-                    </SelectValue>
-                  </SelectTrigger>
-                  <SelectContent>
-                    {Object.entries(texts.relationshipOptions).map(([key, label]) => (
-                      <SelectItem key={key} value={key}>{label}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <Button variant="ghost" size="icon" onClick={() => removeContact(i)} className="ml-2">
-                <Trash2 className="h-4 w-4 text-destructive" />
-              </Button>
-            </div>
-            <div className="grid gap-3 md:grid-cols-2">
-              <Input
-                type="tel"
-                value={contact.phone}
-                onChange={(e) => updateContact(i, 'phone', e.target.value)}
-                onBlur={handleBlur}
-                placeholder={texts.phone}
-              />
-              <Input
-                type="email"
-                value={contact.email}
-                onChange={(e) => updateContact(i, 'email', e.target.value)}
-                onBlur={handleBlur}
-                placeholder={texts.email}
-              />
-            </div>
-            <Input
-              value={contact.address}
-              onChange={(e) => updateContact(i, 'address', e.target.value)}
-              onBlur={handleBlur}
-              placeholder={texts.address}
-            />
-          </div>
-        ))}
-        <Button variant="outline" size="sm" onClick={addContact}>
-          <Plus className="mr-2 h-4 w-4" /> {texts.addContact}
+        <h3 className="font-serif text-lg font-semibold text-foreground">{texts.doctors}</h3>
+        {doctors.map((entry, i) => 
+          renderContactCard(entry, i, 'doctors', texts.doctorType, texts.doctorOptions)
+        )}
+        <Button variant="outline" size="sm" onClick={() => addEntry('doctors')}>
+          <Plus className="mr-2 h-4 w-4" /> {texts.addDoctor}
         </Button>
       </div>
 
-      {/* Professional Contacts */}
+      {/* Professional Contacts Section */}
       <div className="space-y-4 border-t border-border pt-6">
         <h3 className="font-serif text-lg font-semibold text-foreground">{texts.professionals}</h3>
-        {data.professionals.map((prof, i) => (
-          <div key={i} className="p-4 rounded-lg border border-border bg-card/50 space-y-3">
-            <div className="flex justify-between items-start">
-              <div className="flex-1 grid gap-3 md:grid-cols-2">
-                <Select
-                  value={prof.type}
-                  onValueChange={(value) => {
-                    updateProfessional(i, 'type', value);
-                    handleBlur();
-                  }}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder={texts.professionalType}>
-                      {prof.type ? texts.professionalOptions[prof.type as keyof typeof texts.professionalOptions] : texts.professionalType}
-                    </SelectValue>
-                  </SelectTrigger>
-                  <SelectContent>
-                    {Object.entries(texts.professionalOptions).map(([key, label]) => (
-                      <SelectItem key={key} value={key}>{label}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <Input
-                  value={prof.name}
-                  onChange={(e) => updateProfessional(i, 'name', e.target.value)}
-                  onBlur={handleBlur}
-                  placeholder={texts.name}
-                />
-              </div>
-              <Button variant="ghost" size="icon" onClick={() => removeProfessional(i)} className="ml-2">
-                <Trash2 className="h-4 w-4 text-destructive" />
-              </Button>
-            </div>
-            <div className="grid gap-3 md:grid-cols-2">
-              <Input
-                type="tel"
-                value={prof.phone}
-                onChange={(e) => updateProfessional(i, 'phone', e.target.value)}
-                onBlur={handleBlur}
-                placeholder={texts.phone}
-              />
-              <Input
-                type="email"
-                value={prof.email}
-                onChange={(e) => updateProfessional(i, 'email', e.target.value)}
-                onBlur={handleBlur}
-                placeholder={texts.email}
-              />
-            </div>
-            <Input
-              value={prof.address}
-              onChange={(e) => updateProfessional(i, 'address', e.target.value)}
-              onBlur={handleBlur}
-              placeholder={texts.address}
-            />
-          </div>
-        ))}
-        <Button variant="outline" size="sm" onClick={addProfessional}>
+        {professionals.map((entry, i) => 
+          renderContactCard(entry, i, 'professionals', texts.professionalType, texts.professionalOptions)
+        )}
+        <Button variant="outline" size="sm" onClick={() => addEntry('professionals')}>
           <Plus className="mr-2 h-4 w-4" /> {texts.addProfessional}
         </Button>
       </div>
 
+      {/* Advisors Section */}
+      <div className="space-y-4 border-t border-border pt-6">
+        <h3 className="font-serif text-lg font-semibold text-foreground">{texts.advisors}</h3>
+        {advisors.map((entry, i) => 
+          renderContactCard(entry, i, 'advisors', texts.advisorType, texts.advisorOptions)
+        )}
+        <Button variant="outline" size="sm" onClick={() => addEntry('advisors')}>
+          <Plus className="mr-2 h-4 w-4" /> {texts.addAdvisor}
+        </Button>
+      </div>
+
+      {/* Notes */}
       <div className="space-y-2 border-t border-border pt-6">
         <Label>{texts.notes}</Label>
         <Textarea
