@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useLocation } from 'react-router-dom';
+import { useProfiles } from '@/contexts/ProfileContext';
 import { X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -15,8 +16,10 @@ interface ProfileSwitcherTooltipProps {
 export const ProfileSwitcherTooltip: React.FC<ProfileSwitcherTooltipProps> = ({ children }) => {
   const { language } = useLanguage();
   const location = useLocation();
+  const { personProfiles, loading: profilesLoading } = useProfiles();
   const [showTooltip, setShowTooltip] = useState(false);
-  const hasChecked = useRef(false);
+  const hasShown = useRef(false);
+  const checkInterval = useRef<NodeJS.Timeout | null>(null);
 
   const t = {
     de: {
@@ -31,62 +34,95 @@ export const ProfileSwitcherTooltip: React.FC<ProfileSwitcherTooltipProps> = ({ 
 
   const texts = t[language];
 
-  // Check on mount and on location changes with extended polling
+  // Watch for profiles being loaded and flags being set
   useEffect(() => {
     // Only run on dashboard
     if (!location.pathname.includes('/dashboard')) {
       return;
     }
     
-    // Reset check flag when location changes
-    hasChecked.current = false;
+    // Already shown in this session
+    if (hasShown.current) {
+      return;
+    }
 
     const checkAndShow = () => {
       const wasShown = localStorage.getItem(TOOLTIP_DISMISSED_KEY) === 'true';
       const justCompletedSetup = sessionStorage.getItem(SETUP_COMPLETED_FLAG) === 'true';
       const showAfterPurchase = localStorage.getItem(PURCHASE_TOOLTIP_FLAG) === 'true';
+      const hasMultipleProfiles = personProfiles.length > 1;
       
       console.log('[ProfileSwitcherTooltip] Check:', {
         wasShown,
         justCompletedSetup,
         showAfterPurchase,
-        hasChecked: hasChecked.current,
-        pathname: location.pathname,
+        hasMultipleProfiles,
+        profilesLoading,
+        profileCount: personProfiles.length,
+        hasShown: hasShown.current,
       });
       
-      // Show tooltip if either: setup just completed OR first login after multi-profile purchase
-      if ((justCompletedSetup || showAfterPurchase) && !wasShown && !hasChecked.current) {
-        console.log('[ProfileSwitcherTooltip] Showing tooltip!');
-        hasChecked.current = true;
+      // Only show tooltip for multi-profile users who haven't seen it
+      // Trigger when: (setup just completed OR purchase flag set) AND has multiple profiles AND not already shown
+      if ((justCompletedSetup || showAfterPurchase) && hasMultipleProfiles && !wasShown && !hasShown.current) {
+        console.log('[ProfileSwitcherTooltip] Showing tooltip for multi-profile user!');
+        hasShown.current = true;
         setShowTooltip(true);
         // Clear the flags to prevent re-triggering
         sessionStorage.removeItem(SETUP_COMPLETED_FLAG);
         localStorage.removeItem(PURCHASE_TOOLTIP_FLAG);
+        // Stop polling
+        if (checkInterval.current) {
+          clearInterval(checkInterval.current);
+          checkInterval.current = null;
+        }
         return true;
       }
+      
+      // If profiles are loaded and user only has 1 profile, clear flags without showing
+      if (!profilesLoading && personProfiles.length === 1 && (justCompletedSetup || showAfterPurchase)) {
+        console.log('[ProfileSwitcherTooltip] Single profile user, clearing flags without showing tooltip');
+        sessionStorage.removeItem(SETUP_COMPLETED_FLAG);
+        localStorage.removeItem(PURCHASE_TOOLTIP_FLAG);
+        hasShown.current = true; // Prevent further checks
+        if (checkInterval.current) {
+          clearInterval(checkInterval.current);
+          checkInterval.current = null;
+        }
+      }
+      
       return false;
     };
 
-    // Initial check with small delay to ensure component is mounted
+    // Initial check with small delay to ensure profiles are loaded
     const initialTimer = setTimeout(() => {
-      if (checkAndShow()) return;
-    }, 100);
+      if (!profilesLoading && checkAndShow()) return;
+    }, 300);
 
-    // Poll for the flag for a longer time (10 seconds) to catch delayed navigation
-    const interval = setInterval(() => {
-      checkAndShow();
+    // Poll for the profiles to be loaded and flags to be set
+    // This handles the case where profiles load after the component mounts
+    checkInterval.current = setInterval(() => {
+      if (!profilesLoading) {
+        checkAndShow();
+      }
     }, 500);
     
+    // Stop polling after 15 seconds
     const cleanup = setTimeout(() => {
-      clearInterval(interval);
-    }, 10000);
+      if (checkInterval.current) {
+        clearInterval(checkInterval.current);
+        checkInterval.current = null;
+      }
+    }, 15000);
     
     return () => {
       clearTimeout(initialTimer);
-      clearInterval(interval);
+      if (checkInterval.current) {
+        clearInterval(checkInterval.current);
+      }
       clearTimeout(cleanup);
     };
-  }, [location.pathname]);
+  }, [location.pathname, personProfiles.length, profilesLoading]);
 
   const handleDismiss = () => {
     localStorage.setItem(TOOLTIP_DISMISSED_KEY, 'true');
