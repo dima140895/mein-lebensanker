@@ -19,6 +19,7 @@ import Datenschutz from "./pages/Datenschutz";
 import Impressum from "./pages/Impressum";
 import Datensicherheit from "./pages/Datensicherheit";
 import Sicherheitsgrenzen from "./pages/Sicherheitsgrenzen";
+import PromoVideo from "./pages/PromoVideo";
 import NotFound from "./pages/NotFound";
 import CookieConsent from "./components/CookieConsent";
 import { EncryptionReminder } from "./components/EncryptionReminder";
@@ -47,6 +48,7 @@ const App = () => (
                     <Route path="/impressum" element={<Impressum />} />
                     <Route path="/datensicherheit" element={<Datensicherheit />} />
                     <Route path="/sicherheitsgrenzen" element={<Sicherheitsgrenzen />} />
+                    <Route path="/promo" element={<PromoVideo />} />
                     <Route path="/fuer-angehoerige/:token" element={<RelativesView />} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>
