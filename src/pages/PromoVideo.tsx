@@ -1,35 +1,20 @@
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Play, Pause, Share2, Download, MessageCircle, Mail, Copy, Check } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Play, Share2, MessageCircle, Mail, Copy, Check, Presentation } from 'lucide-react';
 import Logo from '@/components/Logo';
-import promoVideo from '@/assets/promo-video-generations.mp4';
+import ExplainerSlideshow from '@/components/ExplainerSlideshow';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 const PromoVideo = () => {
   const { language } = useLanguage();
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [activeTab, setActiveTab] = useState('slideshow');
 
   const shareUrl = 'https://mein-lebensanker.lovable.app/promo';
   const shareText = language === 'de' 
     ? 'Schau dir das an – ein Tool, das uns hilft, wichtige Dinge für die Zukunft zu organisieren. Für Dich und die Menschen, die Dir wichtig sind. 🌿'
     : 'Check this out – a tool that helps us organize important things for the future. For you and the people who matter to you. 🌿';
-
-  const togglePlay = () => {
-    if (videoRef.current) {
-      if (isPlaying) {
-        videoRef.current.pause();
-      } else {
-        videoRef.current.play();
-      }
-      setIsPlaying(!isPlaying);
-    }
-  };
-
-  const handleVideoEnd = () => {
-    setIsPlaying(false);
-  };
 
   const shareWhatsApp = () => {
     window.open(`https://wa.me/?text=${encodeURIComponent(shareText + '\n\n' + shareUrl)}`, '_blank');
@@ -46,13 +31,6 @@ const PromoVideo = () => {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const downloadVideo = () => {
-    const link = document.createElement('a');
-    link.href = promoVideo;
-    link.download = 'mein-lebensanker-promo.mp4';
-    link.click();
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted/30">
       {/* Header */}
@@ -65,70 +43,23 @@ const PromoVideo = () => {
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8 max-w-4xl">
-        {/* Video Card */}
-        <div className="relative rounded-2xl overflow-hidden shadow-2xl bg-black">
-          {/* Brand Overlay - Top */}
-          <div className="absolute top-4 left-4 z-10 flex items-center gap-2 bg-white/90 backdrop-blur-sm rounded-full px-4 py-2 shadow-lg">
-            <Logo size="sm" />
-            <span className="font-semibold text-foreground text-sm">Mein Lebensanker</span>
-          </div>
-
-          {/* Video */}
-          <video
-            ref={videoRef}
-            src={promoVideo}
-            className="w-full aspect-video object-cover"
-            onEnded={handleVideoEnd}
-            onClick={togglePlay}
-            playsInline
-          />
-
-          {/* Play Button Overlay */}
-          {!isPlaying && (
-            <button
-              onClick={togglePlay}
-              className="absolute inset-0 flex items-center justify-center bg-black/20 hover:bg-black/30 transition-colors"
-            >
-              <div className="w-20 h-20 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-xl hover:scale-105 transition-transform">
-                <Play className="w-8 h-8 text-primary ml-1" fill="currentColor" />
-              </div>
-            </button>
-          )}
-
-          {/* Brand Overlay - Bottom */}
-          <div className="absolute bottom-4 right-4 z-10">
-            <div className="bg-white/90 backdrop-blur-sm rounded-lg px-3 py-1.5 shadow-lg">
-              <p className="text-xs text-muted-foreground">
-                {language === 'de' ? 'Für Dich und die Menschen, die Dir wichtig sind' : 'For you and the people who matter'}
-              </p>
-            </div>
-          </div>
+        {/* Title */}
+        <div className="text-center mb-8">
+          <h1 className="text-3xl md:text-4xl font-bold mb-3">
+            {language === 'de' ? 'So funktioniert Mein Lebensanker' : 'How Mein Lebensanker Works'}
+          </h1>
+          <p className="text-muted-foreground text-lg">
+            {language === 'de' 
+              ? 'Eine kurze Einführung in alle wichtigen Funktionen'
+              : 'A quick introduction to all important features'}
+          </p>
         </div>
 
-        {/* Controls */}
-        <div className="mt-6 flex flex-wrap justify-center gap-3">
-          <Button
-            variant="outline"
-            size="lg"
-            onClick={togglePlay}
-            className="gap-2"
-          >
-            {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
-            {isPlaying ? (language === 'de' ? 'Pause' : 'Pause') : (language === 'de' ? 'Abspielen' : 'Play')}
-          </Button>
-          <Button
-            variant="outline"
-            size="lg"
-            onClick={downloadVideo}
-            className="gap-2"
-          >
-            <Download className="w-4 h-4" />
-            {language === 'de' ? 'Herunterladen' : 'Download'}
-          </Button>
-        </div>
+        {/* Slideshow */}
+        <ExplainerSlideshow />
 
         {/* Share Section */}
-        <div className="mt-10 text-center">
+        <div className="mt-12 text-center">
           <h2 className="text-xl font-semibold mb-2 flex items-center justify-center gap-2">
             <Share2 className="w-5 h-5 text-primary" />
             {language === 'de' ? 'Mit Deinen Eltern teilen' : 'Share with your parents'}
