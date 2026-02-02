@@ -6,7 +6,7 @@ import { supabase } from '@/integrations/supabase/browserClient';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 
-const REDIRECT_DELAY = 5;
+const REDIRECT_DELAY = 3;
 
 const VerifyEmail = () => {
   const [searchParams] = useSearchParams();
