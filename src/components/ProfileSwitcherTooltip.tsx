@@ -50,22 +50,20 @@ export const ProfileSwitcherTooltip: React.FC<ProfileSwitcherTooltipProps> = ({ 
       const wasShown = localStorage.getItem(TOOLTIP_DISMISSED_KEY) === 'true';
       const justCompletedSetup = sessionStorage.getItem(SETUP_COMPLETED_FLAG) === 'true';
       const showAfterPurchase = localStorage.getItem(PURCHASE_TOOLTIP_FLAG) === 'true';
-      const hasMultipleProfiles = personProfiles.length > 1;
       
       console.log('[ProfileSwitcherTooltip] Check:', {
         wasShown,
         justCompletedSetup,
         showAfterPurchase,
-        hasMultipleProfiles,
         profilesLoading,
         profileCount: personProfiles.length,
         hasShown: hasShown.current,
       });
       
-      // Only show tooltip for multi-profile users who haven't seen it
-      // Trigger when: (setup just completed OR purchase flag set) AND has multiple profiles AND not already shown
-      if ((justCompletedSetup || showAfterPurchase) && hasMultipleProfiles && !wasShown && !hasShown.current) {
-        console.log('[ProfileSwitcherTooltip] Showing tooltip for multi-profile user!');
+      // Show tooltip after registration or purchase if not already shown
+      // Trigger when: (setup just completed OR purchase flag set) AND not already shown permanently
+      if ((justCompletedSetup || showAfterPurchase) && !wasShown && !hasShown.current) {
+        console.log('[ProfileSwitcherTooltip] Showing tooltip!');
         hasShown.current = true;
         setShowTooltip(true);
         // Clear the flags to prevent re-triggering
@@ -77,18 +75,6 @@ export const ProfileSwitcherTooltip: React.FC<ProfileSwitcherTooltipProps> = ({ 
           checkInterval.current = null;
         }
         return true;
-      }
-      
-      // If profiles are loaded and user only has 1 profile, clear flags without showing
-      if (!profilesLoading && personProfiles.length === 1 && (justCompletedSetup || showAfterPurchase)) {
-        console.log('[ProfileSwitcherTooltip] Single profile user, clearing flags without showing tooltip');
-        sessionStorage.removeItem(SETUP_COMPLETED_FLAG);
-        localStorage.removeItem(PURCHASE_TOOLTIP_FLAG);
-        hasShown.current = true; // Prevent further checks
-        if (checkInterval.current) {
-          clearInterval(checkInterval.current);
-          checkInterval.current = null;
-        }
       }
       
       return false;
