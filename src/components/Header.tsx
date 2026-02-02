@@ -115,7 +115,7 @@ const Header = () => {
       home: 'Startseite',
       myVorsorge: 'Meine Vorsorge',
       myProfile: 'Persönliche Daten',
-      learnMore: 'Mehr erfahren',
+      learnMore: 'So funktioniert\'s',
       openMenu: 'Menü öffnen',
       assets: 'Vermögen',
       digital: 'Digitales',
