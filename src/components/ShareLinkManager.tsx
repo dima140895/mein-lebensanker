@@ -3,8 +3,10 @@ import { motion } from 'framer-motion';
 import { Link2, Plus, Trash2, Copy, Check, ExternalLink, Shield, Lock, Share2, Eye, Info, ShieldX, User, Wallet, Smartphone, Heart, FileText, Users, UserCircle, ChevronDown, ChevronRight } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
+import { useEncryption } from '@/contexts/EncryptionContext';
 import { useProfiles, PersonProfile } from '@/contexts/ProfileContext';
 import { supabase } from '@/integrations/supabase/browserClient';
+import { encryptData } from '@/lib/encryption';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -50,6 +52,7 @@ const ShareLinkManager = () => {
   const { user } = useAuth();
   const { language } = useLanguage();
   const { personProfiles } = useProfiles();
+  const { isEncryptionEnabled, encryptedPasswordRecovery, encryptionSalt } = useEncryption();
   const [tokens, setTokens] = useState<ShareToken[]>([]);
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
@@ -338,9 +341,31 @@ const ShareLinkManager = () => {
         .rpc('hash_pin_secure', { _pin: pin, _salt: pinSalt });
       
       if (hashData) {
+        const updateData: { pin_hash: string; pin_salt: string; encrypted_recovery_key?: string } = { 
+          pin_hash: hashData, 
+          pin_salt: pinSalt 
+        };
+        
+        // If encryption is enabled, encrypt the recovery key with the PIN
+        // This allows relatives to decrypt data automatically after entering the PIN
+        if (isEncryptionEnabled && encryptedPasswordRecovery && encryptionSalt) {
+          try {
+            // Encrypt the encrypted_password_recovery (which contains the encrypted password)
+            // with the PIN so relatives can auto-decrypt after PIN entry
+            const encryptedRecoveryKeyForPin = await encryptData(
+              encryptedPasswordRecovery, 
+              pin, 
+              pinSalt
+            );
+            updateData.encrypted_recovery_key = encryptedRecoveryKeyForPin;
+          } catch (err) {
+            logger.error('Error encrypting recovery key for PIN:', err);
+          }
+        }
+        
         await supabase
           .from('share_tokens')
-          .update({ pin_hash: hashData, pin_salt: pinSalt })
+          .update(updateData)
           .eq('id', data.id);
         
         data.pin_hash = hashData;
