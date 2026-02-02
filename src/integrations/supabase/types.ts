@@ -238,23 +238,15 @@ export type Database = {
     }
     Functions: {
       cleanup_token_access_logs: { Args: never; Returns: undefined }
-      get_encryption_info_by_token:
-        | {
-            Args: { _token: string }
-            Returns: {
-              encrypted_password_recovery: string
-              encryption_salt: string
-              is_encrypted: boolean
-            }[]
-          }
-        | {
-            Args: { _pin?: string; _token: string }
-            Returns: {
-              encrypted_password_recovery: string
-              encryption_salt: string
-              is_encrypted: boolean
-            }[]
-          }
+      get_encryption_info_by_token: {
+        Args: { _pin?: string; _token: string }
+        Returns: {
+          encrypted_password_recovery: string
+          encrypted_recovery_key: string
+          encryption_salt: string
+          is_encrypted: boolean
+        }[]
+      }
       get_profile_by_token:
         | {
             Args: { _token: string }
