@@ -1,7 +1,6 @@
-import { useState, useEffect, useCallback } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
+import { useState, useEffect, useCallback, useContext } from 'react';
 import { useProfiles, PersonProfile } from '@/contexts/ProfileContext';
-import { supabase } from '@/integrations/supabase/browserClient';
+import { FormContext } from '@/contexts/FormContext';
 import { sectionStatusEvents } from './useSectionStatusRefresh';
 
 export interface SectionStatus {
@@ -18,12 +17,15 @@ export interface ProfileProgress {
   isComplete: boolean;
 }
 
-const SECTIONS_TO_CHECK = ['personal', 'assets', 'digital', 'wishes', 'documents', 'contacts'];
+const SECTIONS_TO_CHECK = ['personal', 'assets', 'digital', 'wishes', 'documents', 'contacts'] as const;
 
 // Helper to check if section data has meaningful content
 // For 'personal' section, we need MORE than just fullName (which comes from profile setup)
 const hasMeaningfulData = (data: any, sectionKey: string): boolean => {
   if (!data || typeof data !== 'object') return false;
+  
+  // If data is a string (encrypted), it cannot be analyzed - return false
+  if (typeof data === 'string') return false;
   
   // For personal section: ignore fullName alone since it comes from profile setup wizard
   // Only count as filled if there's OTHER data besides fullName
@@ -81,71 +83,59 @@ const hasMeaningfulData = (data: any, sectionKey: string): boolean => {
 };
 
 export const useSectionStatus = () => {
-  const { user } = useAuth();
   const { activeProfile, personProfiles } = useProfiles();
+  // Use optional context access - FormContext may not be available in all cases
+  const formContext = useContext(FormContext);
   const [sectionStatus, setSectionStatus] = useState<SectionStatus>({});
   const [allProfilesProgress, setAllProfilesProgress] = useState<ProfileProgress[]>([]);
   const [loading, setLoading] = useState(true);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
 
-  const checkSections = useCallback(async () => {
-    if (!user || !activeProfile) {
+  // Calculate status from decrypted formData (from FormContext)
+  const checkSections = useCallback(() => {
+    if (!activeProfile) {
+      setSectionStatus({});
       setLoading(false);
       return;
     }
 
-    setLoading(true); // Always set loading at start of fetch
+    setLoading(true);
 
-    try {
-      // Fetch data for all profiles at once
-      const { data, error } = await supabase
-        .from('vorsorge_data')
-        .select('section_key, data, person_profile_id')
-        .eq('user_id', user.id);
-
-      if (error) throw error;
-
-      // Calculate status for active profile
+    // Use decrypted data from FormContext if available
+    if (formContext) {
       const activeStatuses: SectionStatus = {};
       for (const key of SECTIONS_TO_CHECK) {
-        const sectionData = data?.find(
-          d => d.section_key === key && d.person_profile_id === activeProfile.id
-        );
-        activeStatuses[key] = !!(sectionData && hasMeaningfulData(sectionData.data, key));
+        const sectionData = formContext[key];
+        activeStatuses[key] = hasMeaningfulData(sectionData, key);
       }
       setSectionStatus(activeStatuses);
 
-      // Calculate progress for all profiles
-      const progressByProfile: ProfileProgress[] = personProfiles.map(profile => {
-        const profileStatuses: SectionStatus = {};
-        for (const key of SECTIONS_TO_CHECK) {
-          const sectionData = data?.find(
-            d => d.section_key === key && d.person_profile_id === profile.id
-          );
-          profileStatuses[key] = !!(sectionData && hasMeaningfulData(sectionData.data, key));
-        }
-        
-        const filled = Object.values(profileStatuses).filter(Boolean).length;
-        const total = SECTIONS_TO_CHECK.length;
-        
-        return {
-          profileId: profile.id,
-          profileName: profile.name,
-          sectionStatus: profileStatuses,
-          filledCount: filled,
-          totalCount: total,
-          progressPercent: total > 0 ? (filled / total) * 100 : 0,
-          isComplete: filled === total && total > 0,
-        };
-      });
+      // For current profile, calculate progress based on FormContext data
+      const filled = Object.values(activeStatuses).filter(Boolean).length;
+      const total = SECTIONS_TO_CHECK.length;
       
-      setAllProfilesProgress(progressByProfile);
-    } catch (error) {
-      console.error('Error checking sections:', error);
-    } finally {
-      setLoading(false);
-    }
-  }, [user, activeProfile?.id, personProfiles]); // Use activeProfile.id for more precise dependency
+      // Update progress for active profile only (FormContext only has current profile data)
+      const activeProgress: ProfileProgress = {
+        profileId: activeProfile.id,
+        profileName: activeProfile.name,
+        sectionStatus: activeStatuses,
+        filledCount: filled,
+        totalCount: total,
+        progressPercent: total > 0 ? (filled / total) * 100 : 0,
+        isComplete: filled === total && total > 0,
+      };
 
+      // Keep other profiles' progress, update only active profile
+      setAllProfilesProgress(prev => {
+        const otherProfiles = prev.filter(p => p.profileId !== activeProfile.id);
+        return [...otherProfiles, activeProgress];
+      });
+    }
+
+    setLoading(false);
+  }, [activeProfile?.id, formContext, refreshTrigger]);
+
+  // Recalculate when formData changes or profile changes
   useEffect(() => {
     checkSections();
   }, [checkSections]);
@@ -153,13 +143,14 @@ export const useSectionStatus = () => {
   // Subscribe to global refresh events (triggered after auto-save)
   useEffect(() => {
     const unsubscribe = sectionStatusEvents.subscribe(() => {
-      checkSections();
+      // Trigger a recalculation
+      setRefreshTrigger(prev => prev + 1);
     });
     return unsubscribe;
-  }, [checkSections]);
+  }, []);
 
   const filledCount = Object.values(sectionStatus).filter(Boolean).length;
-  const totalCount = SECTIONS_TO_CHECK.length; // Always use constant total for consistent progress display
+  const totalCount = SECTIONS_TO_CHECK.length;
   const progressPercent = (filledCount / totalCount) * 100;
   const isComplete = filledCount === totalCount;
 
@@ -172,6 +163,6 @@ export const useSectionStatus = () => {
     loading,
     allProfilesProgress,
     hasMultipleProfiles: personProfiles.length > 1,
-    refetch: checkSections, // Expose refetch function
+    refetch: () => setRefreshTrigger(prev => prev + 1),
   };
 };
