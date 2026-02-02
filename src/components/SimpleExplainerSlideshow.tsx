@@ -18,6 +18,42 @@ import {
 import { useLanguage } from '@/contexts/LanguageContext';
 import { cn } from '@/lib/utils';
 
+// CSS keyframes for slide animations
+const slideAnimationStyles = `
+  @keyframes slideIn {
+    0% {
+      opacity: 0;
+      transform: translateX(20px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes scaleIn {
+    0% {
+      opacity: 0;
+      transform: scale(0.8);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+`;
+
 interface SimpleSlide {
   id: number;
   emoji: string;
@@ -223,45 +259,78 @@ const SimpleExplainerSlideshow = () => {
   const Icon = currentSlideData.icon;
 
   return (
-    <div className="w-full max-w-2xl mx-auto">
-      <Card className="overflow-hidden shadow-xl border-2 border-border/50">
+    <>
+      {/* Inject animation styles */}
+      <style>{slideAnimationStyles}</style>
+      
+      <div className="w-full max-w-2xl mx-auto">
+        <Card className="overflow-hidden shadow-xl border-2 border-border/50">
         <CardContent className="p-0">
           {/* Slide Content */}
-          <div className="relative min-h-[320px] md:min-h-[380px] flex items-center justify-center bg-gradient-to-br from-background via-muted/20 to-background p-6 md:p-10">
-            {/* Background decoration */}
-            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="relative min-h-[320px] md:min-h-[380px] flex items-center justify-center bg-gradient-to-br from-background via-muted/20 to-background p-6 md:p-10 overflow-hidden">
+            {/* Background decoration with smooth transition */}
+            <div 
+              key={`bg-${currentSlide}`}
+              className="absolute inset-0 overflow-hidden pointer-events-none animate-fade-in"
+            >
               <div className={cn(
-                "absolute -top-20 -right-20 w-40 h-40 rounded-full opacity-20 blur-3xl",
+                "absolute -top-20 -right-20 w-40 h-40 rounded-full opacity-20 blur-3xl transition-colors duration-500",
                 currentSlideData.color.split(' ')[0]
               )} />
               <div className={cn(
-                "absolute -bottom-20 -left-20 w-40 h-40 rounded-full opacity-20 blur-3xl",
+                "absolute -bottom-20 -left-20 w-40 h-40 rounded-full opacity-20 blur-3xl transition-colors duration-500",
                 currentSlideData.color.split(' ')[0]
               )} />
             </div>
 
-            {/* Main content */}
-            <div className="relative text-center z-10 animate-fade-in">
-              {/* Big Emoji */}
-              <div className="text-7xl md:text-8xl mb-6 animate-bounce">
+            {/* Main content with slide animation */}
+            <div 
+              key={`slide-${currentSlide}`}
+              className="relative text-center z-10 animate-fade-in"
+              style={{
+                animation: 'slideIn 0.4s ease-out'
+              }}
+            >
+              {/* Big Emoji with scale animation */}
+              <div 
+                className="text-6xl md:text-7xl mb-5"
+                style={{
+                  animation: 'scaleIn 0.5s ease-out 0.1s both'
+                }}
+              >
                 {currentSlideData.emoji}
               </div>
               
               {/* Icon Badge */}
-              <div className={cn(
-                "inline-flex h-14 w-14 md:h-16 md:w-16 items-center justify-center rounded-2xl mb-4",
-                currentSlideData.color
-              )}>
-                <Icon className="h-7 w-7 md:h-8 md:w-8" />
+              <div 
+                className={cn(
+                  "inline-flex h-12 w-12 md:h-14 md:w-14 items-center justify-center rounded-2xl mb-4 transition-colors duration-300",
+                  currentSlideData.color
+                )}
+                style={{
+                  animation: 'fadeIn 0.4s ease-out 0.15s both'
+                }}
+              >
+                <Icon className="h-6 w-6 md:h-7 md:w-7" />
               </div>
               
               {/* Title */}
-              <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-3">
+              <h2 
+                className="text-2xl md:text-3xl font-bold text-foreground mb-3"
+                style={{
+                  animation: 'fadeIn 0.4s ease-out 0.2s both'
+                }}
+              >
                 {currentSlideData.title}
               </h2>
               
-              {/* Description - Simple language for kids */}
-              <p className="text-lg md:text-xl text-muted-foreground max-w-md mx-auto leading-relaxed">
+              {/* Description */}
+              <p 
+                className="text-lg md:text-xl text-muted-foreground max-w-md mx-auto leading-relaxed"
+                style={{
+                  animation: 'fadeIn 0.4s ease-out 0.25s both'
+                }}
+              >
                 {currentSlideData.description}
               </p>
             </div>
@@ -355,7 +424,8 @@ const SimpleExplainerSlideshow = () => {
           : '💡 Tip: Press Play for auto-play or click the arrows.'
         }
       </p>
-    </div>
+      </div>
+    </>
   );
 };
 
