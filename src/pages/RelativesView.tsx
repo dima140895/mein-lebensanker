@@ -175,7 +175,7 @@ const RelativesViewContent = () => {
             
             // Success! We have the encryption password, load data with it
             setDecryptionPassword(decryptedPassword);
-            await loadFullData(decryptedPassword, pin);
+            await loadFullData(decryptedPassword, pin, info.encryption_salt);
             return;
           } catch (autoDecryptErr) {
             logger.error('Error auto-decrypting with PIN:', autoDecryptErr);
@@ -198,8 +198,11 @@ const RelativesViewContent = () => {
     }
   };
 
-  const loadFullData = async (password: string | null, pin: string | null = verifiedPIN) => {
+  const loadFullData = async (password: string | null, pin: string | null = verifiedPIN, encSalt: string | null = null) => {
     if (!token) return;
+    
+    // Use passed encryption salt or fall back to state
+    const effectiveEncryptionSalt = encSalt || encryptionInfo?.encryption_salt;
 
     try {
       // Get profiles, vorsorge data, shared sections, and per-profile sections in parallel
@@ -242,20 +245,32 @@ const RelativesViewContent = () => {
           let parsedData: Record<string, unknown> = {};
           
           // Check if data needs decryption
-          if (typeof item.data === 'string' && isEncryptedData(item.data) && password && encryptionInfo?.encryption_salt) {
+          // The data field from RPC could be a string (encrypted) or an object (unencrypted)
+          const dataValue = item.data;
+          const isStringData = typeof dataValue === 'string';
+          
+          if (isStringData && isEncryptedData(dataValue) && password && effectiveEncryptionSalt) {
             try {
               parsedData = await decryptData<Record<string, unknown>>(
-                item.data,
+                dataValue,
                 password,
-                encryptionInfo.encryption_salt
+                effectiveEncryptionSalt
               );
             } catch (decryptErr) {
-              logger.error('Error decrypting item:', decryptErr);
+              logger.error('Error decrypting item:', item.section_key, decryptErr);
               // Skip items that can't be decrypted
               continue;
             }
-          } else if (typeof item.data === 'object' && item.data !== null) {
-            parsedData = item.data as Record<string, unknown>;
+          } else if (typeof dataValue === 'object' && dataValue !== null) {
+            parsedData = dataValue as Record<string, unknown>;
+          } else if (isStringData) {
+            // If it's a string but not encrypted (shouldn't happen), try to parse as JSON
+            try {
+              parsedData = JSON.parse(dataValue);
+            } catch {
+              logger.error('Could not parse data for section:', item.section_key);
+              continue;
+            }
           }
 
           // Skip internal verifier sections
@@ -319,8 +334,8 @@ const RelativesViewContent = () => {
     setDecryptionPassword(password);
     setRequiresDecryption(false);
     setLoading(true);
-    // Pass verifiedPIN to loadFullData
-    await loadFullData(password);
+    // Pass verifiedPIN and encryption_salt to loadFullData
+    await loadFullData(password, verifiedPIN, encryptionInfo?.encryption_salt);
   };
 
   if (loading) {
