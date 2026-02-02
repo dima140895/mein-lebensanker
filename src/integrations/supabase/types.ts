@@ -245,6 +245,7 @@ export type Database = {
           encrypted_recovery_key: string
           encryption_salt: string
           is_encrypted: boolean
+          pin_salt: string
         }[]
       }
       get_profile_by_token:

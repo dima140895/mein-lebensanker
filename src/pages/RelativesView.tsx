@@ -30,6 +30,8 @@ interface EncryptionInfo {
   encryption_salt: string | null;
   encrypted_password_recovery: string | null;
   is_encrypted: boolean;
+  encrypted_recovery_key: string | null;
+  pin_salt: string | null;
 }
 
 const RelativesViewContent = () => {
@@ -153,9 +155,31 @@ const RelativesViewContent = () => {
       setEncryptionInfo(info);
 
       if (info.is_encrypted && info.encrypted_password_recovery) {
-        // Data is encrypted, need recovery key
-        setRequiresDecryption(true);
-        setLoading(false);
+        // Check if we can auto-decrypt using PIN
+        if (info.encrypted_recovery_key && info.pin_salt && pin) {
+          try {
+            // Decrypt the encryption password using the PIN
+            const decryptedPassword = await decryptData<string>(
+              info.encrypted_recovery_key,
+              pin,
+              info.pin_salt
+            );
+            
+            // Success! We have the encryption password, load data with it
+            setDecryptionPassword(decryptedPassword);
+            await loadFullData(decryptedPassword, pin);
+            return;
+          } catch (autoDecryptErr) {
+            logger.error('Error auto-decrypting with PIN:', autoDecryptErr);
+            // Fallback to recovery key entry
+            setRequiresDecryption(true);
+            setLoading(false);
+          }
+        } else {
+          // No PIN-based decryption available, need recovery key
+          setRequiresDecryption(true);
+          setLoading(false);
+        }
       } else {
         // Not encrypted, load directly
         await loadFullData(null, pin);
