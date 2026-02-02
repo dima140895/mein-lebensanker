@@ -119,6 +119,7 @@ export type Database = {
       share_tokens: {
         Row: {
           created_at: string
+          encrypted_recovery_key: string | null
           expires_at: string | null
           failed_attempts: number
           id: string
@@ -135,6 +136,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          encrypted_recovery_key?: string | null
           expires_at?: string | null
           failed_attempts?: number
           id?: string
@@ -151,6 +153,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          encrypted_recovery_key?: string | null
           expires_at?: string | null
           failed_attempts?: number
           id?: string
