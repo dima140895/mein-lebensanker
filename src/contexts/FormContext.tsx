@@ -51,6 +51,13 @@ export interface AssetsData {
     financingStatus: string;
     outstandingLoan: string;
   }>;
+  vehicles: Array<{ 
+    type: string; 
+    brand: string; 
+    model: string; 
+    licensePlate: string; 
+    location: string;
+  }>;
   insurances: Array<{ type: string; typeOther: string; company: string; companyOther: string; policyNumber: string; surrenderValue: string }>;
   valuables: Array<{ description: string; location: string }>;
   notes: string;
@@ -130,6 +137,7 @@ const defaultPersonalData: PersonalData = {
 const defaultAssetsData: AssetsData = {
   bankAccounts: [{ institute: '', purpose: '', balance: '' }],
   properties: [],
+  vehicles: [],
   insurances: [],
   valuables: [],
   notes: '',
