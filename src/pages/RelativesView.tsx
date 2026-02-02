@@ -48,6 +48,7 @@ const RelativesViewContent = () => {
   const [remainingAttempts, setRemainingAttempts] = useState(3);
   const [isLocked, setIsLocked] = useState(false);
   const [verifiedPIN, setVerifiedPIN] = useState<string | null>(null);
+  const [noPinConfigured, setNoPinConfigured] = useState(false);
   
   // Encryption state
   const [encryptionInfo, setEncryptionInfo] = useState<EncryptionInfo | null>(null);
@@ -65,6 +66,7 @@ const RelativesViewContent = () => {
       disclaimerTop: 'Diese Übersicht dient ausschließlich der persönlichen Orientierung und hat keinerlei rechtliche Wirkung. Sie ersetzt keine rechtliche, notarielle, medizinische oder steuerliche Beratung.',
       disclaimerBottom: 'Alle hier dokumentierten Informationen dienen der Übersicht und vorbereitenden Organisation. Sie sind nicht rechtlich bindend und ersetzen keine professionelle Beratung bei rechtlichen, steuerlichen oder medizinischen Fragen.',
       decryptionError: 'Fehler beim Entschlüsseln der Daten.',
+      noPinConfigured: 'Dieser Link ist nicht durch einen PIN geschützt. Bitte kontaktiere die Person, die Dir diesen Link gegeben hat, um einen geschützten Zugangslink zu erhalten.',
     },
     en: {
       title: 'Overview for Orientation',
@@ -76,6 +78,7 @@ const RelativesViewContent = () => {
       disclaimerTop: 'This overview is for personal orientation only and has no legal effect. It does not replace legal, notarial, medical, or tax advice.',
       disclaimerBottom: 'All information documented here is for overview and preparatory organization purposes only. It is not legally binding and does not replace professional advice on legal, tax, or medical matters.',
       decryptionError: 'Error decrypting data.',
+      noPinConfigured: 'This link is not protected by a PIN. Please contact the person who shared this link with you to obtain a protected access link.',
     },
   };
 
@@ -118,16 +121,21 @@ const RelativesViewContent = () => {
           return;
         }
 
-        if (validation.requires_pin && !validation.pin_valid) {
+        // Check if PIN is configured - PIN is now mandatory
+        if (!validation.requires_pin) {
+          // No PIN configured - show error
+          setNoPinConfigured(true);
+          setLoading(false);
+          return;
+        }
+
+        if (!validation.pin_valid) {
           // PIN is required, show PIN entry with remaining attempts
           setRequiresPIN(true);
           setRemainingAttempts(validation.remaining_attempts ?? 3);
           setLoading(false);
           return;
         }
-
-        // No PIN required or PIN not set, load encryption info
-        await loadEncryptionInfo(null);
       } catch (err) {
         logger.error('Error:', err);
         setError(texts.invalidLink);
@@ -323,6 +331,19 @@ const RelativesViewContent = () => {
           <Skeleton className="h-24 w-full" />
           <Skeleton className="h-48 w-full" />
           <Skeleton className="h-48 w-full" />
+        </div>
+      </div>
+    );
+  }
+
+  if (noPinConfigured) {
+    return (
+      <div className="container mx-auto px-4 py-12">
+        <div className="max-w-md mx-auto text-center">
+          <div className="rounded-xl bg-amber-light/30 border border-amber/20 p-8">
+            <Shield className="h-12 w-12 text-amber mx-auto mb-4" />
+            <p className="text-foreground">{texts.noPinConfigured}</p>
+          </div>
         </div>
       </div>
     );
