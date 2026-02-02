@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { User, Plus, ChevronDown, Pencil, Trash2 } from 'lucide-react';
 import { useProfiles } from '@/contexts/ProfileContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { useFormData } from '@/contexts/FormContext';
+import { FormContext } from '@/contexts/FormContext';
 import { supabase } from '@/integrations/supabase/browserClient';
 import { Button } from '@/components/ui/button';
 import {
@@ -29,7 +29,8 @@ import { ProfileSwitcherTooltip } from './ProfileSwitcherTooltip';
 const ProfileSwitcher = () => {
   const { language } = useLanguage();
   const { profile, user } = useAuth();
-  const { loadAllData } = useFormData();
+  // Use optional context access to avoid errors during HMR
+  const formContext = useContext(FormContext);
   const {
     personProfiles,
     activeProfileId,
@@ -178,8 +179,10 @@ const ProfileSwitcher = () => {
         onConflict: 'user_id,section_key,person_profile_id'
       });
     
-    // Reload form data to reflect changes in the UI
-    await loadAllData();
+    // Reload form data to reflect changes in the UI (if context available)
+    if (formContext?.loadAllData) {
+      await formContext.loadAllData();
+    }
     
     toast.success(t.profileUpdated);
     setDialogOpen(false);
