@@ -232,7 +232,7 @@ const PaymentSuccessContent = () => {
       setVerificationStatus('redirecting');
       setTimeout(() => {
         navigate('/dashboard');
-      }, 2000);
+      }, 3000);
     };
 
     return (
