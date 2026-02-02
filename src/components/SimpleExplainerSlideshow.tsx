@@ -100,8 +100,8 @@ const slides: Record<'de' | 'en', SimpleSlide[]> = {
     {
       id: 5,
       emoji: '🛡️',
-      title: 'Datenschutz first',
-      description: 'Deine Daten gehören Dir. Wir verkaufen nichts an Dritte und speichern keine Passwörter.',
+      title: 'Datenschutz im Fokus',
+      description: 'Deine Daten bleiben bei Dir. Mehr zu unseren Datenschutzprinzipien findest Du in unserer Datenschutzerklärung.',
       icon: Shield,
       color: 'bg-amber-100 text-amber-600',
     },
@@ -150,8 +150,8 @@ const slides: Record<'de' | 'en', SimpleSlide[]> = {
     {
       id: 5,
       emoji: '🛡️',
-      title: 'Privacy First',
-      description: 'Your data belongs to you. We don\'t sell to third parties and don\'t store passwords.',
+      title: 'Privacy Focused',
+      description: 'Your data stays with you. Learn more about our privacy principles in our privacy policy.',
       icon: Shield,
       color: 'bg-amber-100 text-amber-600',
     },
