@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback, useContext } from 'react';
-import { useProfiles, PersonProfile } from '@/contexts/ProfileContext';
-import { FormContext } from '@/contexts/FormContext';
+import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useProfiles } from '@/contexts/ProfileContext';
+import { useFormData, VorsorgeFormData } from '@/contexts/FormContext';
 import { sectionStatusEvents } from './useSectionStatusRefresh';
 
 export interface SectionStatus {
@@ -84,14 +84,25 @@ const hasMeaningfulData = (data: any, sectionKey: string): boolean => {
 
 export const useSectionStatus = () => {
   const { activeProfile, personProfiles } = useProfiles();
-  // Use optional context access - FormContext may not be available in all cases
-  const formContext = useContext(FormContext);
+  const { formData } = useFormData();
   const [sectionStatus, setSectionStatus] = useState<SectionStatus>({});
   const [allProfilesProgress, setAllProfilesProgress] = useState<ProfileProgress[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
-  // Calculate status from decrypted formData (from FormContext)
+  // Create a stable hash of form data to detect changes
+  const formDataHash = useMemo(() => {
+    return JSON.stringify({
+      personal: formData.personal,
+      assets: formData.assets,
+      digital: formData.digital,
+      wishes: formData.wishes,
+      documents: formData.documents,
+      contacts: formData.contacts,
+    });
+  }, [formData.personal, formData.assets, formData.digital, formData.wishes, formData.documents, formData.contacts]);
+
+  // Calculate status from decrypted formData
   const checkSections = useCallback(() => {
     if (!activeProfile) {
       setSectionStatus({});
@@ -101,39 +112,36 @@ export const useSectionStatus = () => {
 
     setLoading(true);
 
-    // Use decrypted data from FormContext if available
-    if (formContext) {
-      const activeStatuses: SectionStatus = {};
-      for (const key of SECTIONS_TO_CHECK) {
-        const sectionData = formContext[key];
-        activeStatuses[key] = hasMeaningfulData(sectionData, key);
-      }
-      setSectionStatus(activeStatuses);
-
-      // For current profile, calculate progress based on FormContext data
-      const filled = Object.values(activeStatuses).filter(Boolean).length;
-      const total = SECTIONS_TO_CHECK.length;
-      
-      // Update progress for active profile only (FormContext only has current profile data)
-      const activeProgress: ProfileProgress = {
-        profileId: activeProfile.id,
-        profileName: activeProfile.name,
-        sectionStatus: activeStatuses,
-        filledCount: filled,
-        totalCount: total,
-        progressPercent: total > 0 ? (filled / total) * 100 : 0,
-        isComplete: filled === total && total > 0,
-      };
-
-      // Keep other profiles' progress, update only active profile
-      setAllProfilesProgress(prev => {
-        const otherProfiles = prev.filter(p => p.profileId !== activeProfile.id);
-        return [...otherProfiles, activeProgress];
-      });
+    const activeStatuses: SectionStatus = {};
+    for (const key of SECTIONS_TO_CHECK) {
+      const sectionData = formData[key as keyof VorsorgeFormData];
+      activeStatuses[key] = hasMeaningfulData(sectionData, key);
     }
+    setSectionStatus(activeStatuses);
+
+    // For current profile, calculate progress based on formData
+    const filled = Object.values(activeStatuses).filter(Boolean).length;
+    const total = SECTIONS_TO_CHECK.length;
+    
+    // Update progress for active profile only
+    const activeProgress: ProfileProgress = {
+      profileId: activeProfile.id,
+      profileName: activeProfile.name,
+      sectionStatus: activeStatuses,
+      filledCount: filled,
+      totalCount: total,
+      progressPercent: total > 0 ? (filled / total) * 100 : 0,
+      isComplete: filled === total && total > 0,
+    };
+
+    // Keep other profiles' progress, update only active profile
+    setAllProfilesProgress(prev => {
+      const otherProfiles = prev.filter(p => p.profileId !== activeProfile.id);
+      return [...otherProfiles, activeProgress];
+    });
 
     setLoading(false);
-  }, [activeProfile?.id, formContext, refreshTrigger]);
+  }, [activeProfile?.id, activeProfile?.name, formDataHash, refreshTrigger]);
 
   // Recalculate when formData changes or profile changes
   useEffect(() => {
