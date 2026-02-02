@@ -291,28 +291,6 @@ const SimpleExplainerSlideshow = () => {
                 animation: 'slideIn 0.4s ease-out'
               }}
             >
-              {/* Big Emoji with scale animation */}
-              <div 
-                className="text-6xl md:text-7xl mb-5"
-                style={{
-                  animation: 'scaleIn 0.5s ease-out 0.1s both'
-                }}
-              >
-                {currentSlideData.emoji}
-              </div>
-              
-              {/* Icon Badge */}
-              <div 
-                className={cn(
-                  "inline-flex h-12 w-12 md:h-14 md:w-14 items-center justify-center rounded-2xl mb-4 transition-colors duration-300",
-                  currentSlideData.color
-                )}
-                style={{
-                  animation: 'fadeIn 0.4s ease-out 0.15s both'
-                }}
-              >
-                <Icon className="h-6 w-6 md:h-7 md:w-7" />
-              </div>
               
               {/* Title */}
               <h2 
@@ -336,10 +314,6 @@ const SimpleExplainerSlideshow = () => {
             </div>
           </div>
 
-          {/* Progress Bar (for auto-play) */}
-          {isPlaying && (
-            <Progress value={progress} className="h-1.5 rounded-none" />
-          )}
 
           {/* Controls */}
           <div className="p-4 md:p-6 bg-card border-t">
