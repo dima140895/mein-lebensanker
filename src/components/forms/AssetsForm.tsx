@@ -64,6 +64,8 @@ const AssetsForm = () => {
       model: "Modell",
       licensePlate: "Kennzeichen",
       vehicleLocation: "Standort",
+      estimatedValue: "Geschätzter Wert (optional)",
+      documentsLocation: "Aufbewahrungsort Fahrzeugpapiere (optional)",
       insurances: "Versicherungen",
       insuranceType: "Versicherungsart",
       selectInsuranceType: "Versicherungsart wählen",
@@ -148,6 +150,8 @@ const AssetsForm = () => {
       model: "Model",
       licensePlate: "License Plate",
       vehicleLocation: "Location",
+      estimatedValue: "Estimated Value (optional)",
+      documentsLocation: "Vehicle Documents Location (optional)",
       insurances: "Insurance Policies",
       insuranceType: "Insurance Type",
       selectInsuranceType: "Select insurance type",
@@ -219,7 +223,7 @@ const AssetsForm = () => {
       ],
       vehicles: [
         ...(data.vehicles || []),
-        { type: "", brand: "", model: "", licensePlate: "", location: "" },
+        { type: "", brand: "", model: "", licensePlate: "", location: "", estimatedValue: "", documentsLocation: "" },
       ],
       insurances: [
         ...data.insurances,
@@ -465,6 +469,20 @@ const AssetsForm = () => {
                   onChange={(e) => updateItem("vehicles", i, "location", e.target.value)}
                   onBlur={handleBlur}
                   placeholder={texts.vehicleLocation}
+                />
+              </div>
+              <div className="grid gap-3 md:grid-cols-2">
+                <Input
+                  value={vehicle.estimatedValue || ""}
+                  onChange={(e) => updateItem("vehicles", i, "estimatedValue", e.target.value)}
+                  onBlur={handleBlur}
+                  placeholder={texts.estimatedValue}
+                />
+                <Input
+                  value={vehicle.documentsLocation || ""}
+                  onChange={(e) => updateItem("vehicles", i, "documentsLocation", e.target.value)}
+                  onBlur={handleBlur}
+                  placeholder={texts.documentsLocation}
                 />
               </div>
             </div>
