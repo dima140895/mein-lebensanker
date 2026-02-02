@@ -205,7 +205,7 @@ interface FormContextType {
   saving: boolean;
 }
 
-const FormContext = createContext<FormContextType | undefined>(undefined);
+export const FormContext = createContext<FormContextType | undefined>(undefined);
 
 export const FormProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const { user, profile } = useAuth();
