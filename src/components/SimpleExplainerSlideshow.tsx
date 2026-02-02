@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
@@ -139,39 +139,64 @@ const SimpleExplainerSlideshow = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
+  
+  // Use refs for stable timing
+  const startTimeRef = useRef<number>(0);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  // Auto-advance logic
-  useEffect(() => {
-    if (!isPlaying) {
-      setProgress(0);
-      return;
+  // Clear any existing interval
+  const clearAutoAdvance = useCallback(() => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
     }
+  }, []);
 
-    const startTime = Date.now();
-    const interval = setInterval(() => {
-      const elapsed = Date.now() - startTime;
-      const newProgress = (elapsed / AUTO_ADVANCE_DELAY) * 100;
+  // Start auto-advance timer
+  const startAutoAdvance = useCallback(() => {
+    clearAutoAdvance();
+    startTimeRef.current = Date.now();
+    setProgress(0);
+    
+    intervalRef.current = setInterval(() => {
+      const elapsed = Date.now() - startTimeRef.current;
+      const newProgress = Math.min((elapsed / AUTO_ADVANCE_DELAY) * 100, 100);
       
       if (newProgress >= 100) {
         // Move to next slide
-        if (currentSlide < currentSlides.length - 1) {
-          setCurrentSlide(prev => prev + 1);
-        } else {
-          // Loop back to start
-          setCurrentSlide(0);
-        }
+        setCurrentSlide(prev => {
+          const nextSlide = prev < currentSlides.length - 1 ? prev + 1 : 0;
+          return nextSlide;
+        });
+        // Reset timer for next slide
+        startTimeRef.current = Date.now();
+        setProgress(0);
       } else {
         setProgress(newProgress);
       }
-    }, 50);
+    }, 30); // Smoother updates at 30ms
+  }, [clearAutoAdvance, currentSlides.length]);
 
-    return () => clearInterval(interval);
-  }, [isPlaying, currentSlide, currentSlides.length]);
-
-  // Reset progress when slide changes
+  // Handle play/pause
   useEffect(() => {
+    if (isPlaying) {
+      startAutoAdvance();
+    } else {
+      clearAutoAdvance();
+      setProgress(0);
+    }
+    
+    return () => clearAutoAdvance();
+  }, [isPlaying, startAutoAdvance, clearAutoAdvance]);
+
+  // When slide changes manually, reset timer if playing
+  const handleSlideChange = useCallback((newSlide: number) => {
+    setCurrentSlide(newSlide);
     setProgress(0);
-  }, [currentSlide]);
+    if (isPlaying) {
+      startTimeRef.current = Date.now();
+    }
+  }, [isPlaying]);
 
   const togglePlay = () => {
     setIsPlaying(!isPlaying);
@@ -180,20 +205,19 @@ const SimpleExplainerSlideshow = () => {
   const restart = () => {
     setCurrentSlide(0);
     setIsPlaying(false);
+    clearAutoAdvance();
     setProgress(0);
   };
 
   const goToPrevSlide = useCallback(() => {
-    setCurrentSlide(prev => Math.max(0, prev - 1));
-    setProgress(0);
-  }, []);
+    handleSlideChange(Math.max(0, currentSlide - 1));
+  }, [handleSlideChange, currentSlide]);
 
   const goToNextSlide = useCallback(() => {
     if (currentSlide < currentSlides.length - 1) {
-      setCurrentSlide(prev => prev + 1);
-      setProgress(0);
+      handleSlideChange(currentSlide + 1);
     }
-  }, [currentSlide, currentSlides.length]);
+  }, [currentSlide, currentSlides.length, handleSlideChange]);
 
   const currentSlideData = currentSlides[currentSlide];
   const Icon = currentSlideData.icon;
@@ -309,10 +333,7 @@ const SimpleExplainerSlideshow = () => {
               {currentSlides.map((slide, index) => (
                 <button
                   key={slide.id}
-                  onClick={() => {
-                    setCurrentSlide(index);
-                    setProgress(0);
-                  }}
+                  onClick={() => handleSlideChange(index)}
                   className={cn(
                     "h-3 rounded-full transition-all duration-300",
                     index === currentSlide 
