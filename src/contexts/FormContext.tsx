@@ -57,6 +57,8 @@ export interface AssetsData {
     model: string; 
     licensePlate: string; 
     location: string;
+    estimatedValue: string;
+    documentsLocation: string;
   }>;
   insurances: Array<{ type: string; typeOther: string; company: string; companyOther: string; policyNumber: string; surrenderValue: string }>;
   valuables: Array<{ description: string; location: string }>;
