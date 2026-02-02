@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Progress } from '@/components/ui/progress';
 import { 
   Play, 
   Pause, 
@@ -17,6 +16,7 @@ import {
 } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { cn } from '@/lib/utils';
+import SecurityDocDialog from '@/components/SecurityDocDialog';
 
 // CSS keyframes for slide animations
 const slideAnimationStyles = `
@@ -59,6 +59,7 @@ interface SimpleSlide {
   emoji: string;
   title: string;
   description: string;
+  linkText?: string; // Optional clickable link text
   icon: React.ComponentType<{ className?: string }>;
   color: string;
 }
@@ -101,7 +102,8 @@ const slides: Record<'de' | 'en', SimpleSlide[]> = {
       id: 5,
       emoji: '🛡️',
       title: 'Datenschutz im Fokus',
-      description: 'Deine Daten bleiben bei Dir. Mehr zu unseren Datenschutzprinzipien findest Du in unserer Datenschutzerklärung.',
+      description: 'Deine Daten bleiben bei Dir. Mehr zu unseren Datenschutzprinzipien findest Du',
+      linkText: 'hier',
       icon: Shield,
       color: 'bg-amber-100 text-amber-600',
     },
@@ -151,7 +153,8 @@ const slides: Record<'de' | 'en', SimpleSlide[]> = {
       id: 5,
       emoji: '🛡️',
       title: 'Privacy Focused',
-      description: 'Your data stays with you. Learn more about our privacy principles in our privacy policy.',
+      description: 'Your data stays with you. Learn more about our privacy principles',
+      linkText: 'here',
       icon: Shield,
       color: 'bg-amber-100 text-amber-600',
     },
@@ -175,6 +178,7 @@ const SimpleExplainerSlideshow = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [showSecurityDoc, setShowSecurityDoc] = useState(false);
   
   // Use refs for stable timing
   const startTimeRef = useRef<number>(0);
@@ -322,6 +326,18 @@ const SimpleExplainerSlideshow = () => {
                 }}
               >
                 {currentSlideData.description}
+                {currentSlideData.linkText && (
+                  <>
+                    {' '}
+                    <button
+                      onClick={() => setShowSecurityDoc(true)}
+                      className="text-primary underline hover:text-primary/80 transition-colors font-medium"
+                    >
+                      {currentSlideData.linkText}
+                    </button>
+                    .
+                  </>
+                )}
               </p>
             </div>
           </div>
@@ -411,6 +427,12 @@ const SimpleExplainerSlideshow = () => {
         }
       </p>
       </div>
+      
+      {/* Security Documentation Dialog */}
+      <SecurityDocDialog 
+        open={showSecurityDoc} 
+        onOpenChange={setShowSecurityDoc} 
+      />
     </>
   );
 };
