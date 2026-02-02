@@ -20,7 +20,7 @@ const translations = {
     'hero.subtitle': 'Damit Angehörige nicht im Chaos stehen.',
     'hero.description': 'Strukturiere Deine persönlichen, finanziellen und organisatorischen Informationen – damit Deine Liebsten im Ernstfall entlastet werden.',
     'hero.cta': 'Jetzt starten',
-    'hero.learnMore': 'Mehr erfahren',
+    'hero.learnMore': 'So funktioniert\'s',
     
     // Value Propositions
     'value.structure': 'Struktur',
