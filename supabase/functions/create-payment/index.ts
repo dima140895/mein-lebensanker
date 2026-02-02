@@ -6,6 +6,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 const ALLOWED_ORIGINS = [
   "https://mein-lebensanker.lovable.app",
   "https://id-preview--3aceebdb-8fff-4d04-bf5f-d8b882169f3d.lovable.app",
+  "https://3aceebdb-8fff-4d04-bf5f-d8b882169f3d.lovableproject.com",
 ];
 
 const getCorsHeaders = (origin: string | null) => {
