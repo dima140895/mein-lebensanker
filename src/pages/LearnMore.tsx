@@ -16,7 +16,8 @@ import {
   Eye,
   EyeOff,
   RefreshCw,
-  FileDown
+  FileDown,
+  PlayCircle
 } from 'lucide-react';
 import encryptionDiagram from '@/assets/encryption-diagram.png';
 import Header from '@/components/Header';
@@ -24,6 +25,7 @@ import Disclaimer from '@/components/Disclaimer';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import SecurityDocDialog from '@/components/SecurityDocDialog';
+import SimpleExplainerSlideshow from '@/components/SimpleExplainerSlideshow';
 
 const LearnMore = () => {
   const navigate = useNavigate();
@@ -160,14 +162,14 @@ const LearnMore = () => {
       <Header />
       
       <main className="flex-1">
-        {/* Hero Section */}
-        <section className="relative bg-gradient-to-b from-sage-light/30 to-background py-20">
+        {/* Hero Section with Slideshow */}
+        <section className="relative bg-gradient-to-b from-sage-light/30 to-background py-12 md:py-20">
           <div className="container mx-auto px-4">
             <motion.button
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               onClick={() => navigate('/')}
-              className="mb-8 inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+              className="mb-6 inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
             >
               <ArrowLeft className="h-4 w-4" />
               {language === 'de' ? 'Zurück zur Startseite' : 'Back to Home'}
@@ -176,20 +178,30 @@ const LearnMore = () => {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="max-w-3xl"
+              className="text-center mb-10"
             >
-              <span className="inline-block rounded-full bg-sage-light px-4 py-1.5 text-sm font-medium text-sage-dark mb-4">
-                {language === 'de' ? 'Über uns' : 'About Us'}
+              <span className="inline-flex items-center gap-2 rounded-full bg-sage-light px-4 py-1.5 text-sm font-medium text-sage-dark mb-4">
+                <PlayCircle className="h-4 w-4" />
+                {language === 'de' ? 'So funktioniert\'s' : 'How It Works'}
               </span>
-              <h1 className="font-serif text-4xl font-bold text-foreground md:text-5xl lg:text-6xl">
-                {language === 'de' ? 'Vorsorge mit Herz und Verstand' : 'Planning with Heart and Mind'}
+              <h1 className="font-serif text-3xl font-bold text-foreground md:text-4xl lg:text-5xl">
+                {language === 'de' ? 'Ganz einfach erklärt' : 'Simply Explained'}
               </h1>
-              <p className="mt-6 text-xl leading-relaxed text-muted-foreground">
+              <p className="mt-4 text-lg leading-relaxed text-muted-foreground max-w-xl mx-auto">
                 {language === 'de' 
-                  ? 'Ein digitaler Helfer, um wichtige Informationen für Deine Angehörigen zu sammeln und zu organisieren – damit sie im Ernstfall nicht im Ungewissen stehen.'
-                  : 'A digital helper to collect and organize important information for your loved ones – so they won\'t be left in the dark in case of emergency.'
+                  ? 'Schau dir an, wie einfach es ist, deine wichtigen Informationen zu organisieren.'
+                  : 'See how easy it is to organize your important information.'
                 }
               </p>
+            </motion.div>
+
+            {/* Interactive Slideshow */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+            >
+              <SimpleExplainerSlideshow />
             </motion.div>
           </div>
         </section>
