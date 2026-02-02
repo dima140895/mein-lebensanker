@@ -52,6 +52,18 @@ const AssetsForm = () => {
       financingFinanced: "Finanziert",
       selectFinancing: "Finanzierungsstatus wählen",
       outstandingLoan: "Offener Kreditsaldo (optional)",
+      vehicles: "Fahrzeuge",
+      vehicleType: "Fahrzeugart",
+      vehicleTypeCar: "PKW",
+      vehicleTypeMotorcycle: "Motorrad",
+      vehicleTypeCamper: "Wohnmobil",
+      vehicleTypeTrailer: "Anhänger",
+      vehicleTypeOther: "Sonstiges",
+      selectVehicleType: "Fahrzeugart wählen",
+      brand: "Marke",
+      model: "Modell",
+      licensePlate: "Kennzeichen",
+      vehicleLocation: "Standort",
       insurances: "Versicherungen",
       insuranceType: "Versicherungsart",
       selectInsuranceType: "Versicherungsart wählen",
@@ -124,6 +136,18 @@ const AssetsForm = () => {
       financingFinanced: "Financed",
       selectFinancing: "Select financing status",
       outstandingLoan: "Outstanding loan balance (optional)",
+      vehicles: "Vehicles",
+      vehicleType: "Vehicle Type",
+      vehicleTypeCar: "Car",
+      vehicleTypeMotorcycle: "Motorcycle",
+      vehicleTypeCamper: "Camper/RV",
+      vehicleTypeTrailer: "Trailer",
+      vehicleTypeOther: "Other",
+      selectVehicleType: "Select vehicle type",
+      brand: "Brand",
+      model: "Model",
+      licensePlate: "License Plate",
+      vehicleLocation: "Location",
       insurances: "Insurance Policies",
       insuranceType: "Insurance Type",
       selectInsuranceType: "Select insurance type",
@@ -178,7 +202,7 @@ const AssetsForm = () => {
 
   const texts = t[language];
 
-  const addItem = (field: "bankAccounts" | "properties" | "insurances" | "valuables") => {
+  const addItem = (field: "bankAccounts" | "properties" | "vehicles" | "insurances" | "valuables") => {
     const newItems = {
       bankAccounts: [...data.bankAccounts, { institute: "", purpose: "", balance: "" }],
       properties: [
@@ -192,6 +216,10 @@ const AssetsForm = () => {
           financingStatus: "",
           outstandingLoan: "",
         },
+      ],
+      vehicles: [
+        ...(data.vehicles || []),
+        { type: "", brand: "", model: "", licensePlate: "", location: "" },
       ],
       insurances: [
         ...data.insurances,
@@ -211,8 +239,8 @@ const AssetsForm = () => {
     label: label as string,
   }));
 
-  const removeItem = (field: "bankAccounts" | "properties" | "insurances" | "valuables", index: number) => {
-    const newArray = [...data[field]];
+  const removeItem = (field: "bankAccounts" | "properties" | "vehicles" | "insurances" | "valuables", index: number) => {
+    const newArray = [...(data[field] || [])];
     newArray.splice(index, 1);
     updateSection("assets", { ...data, [field]: newArray });
   };
@@ -383,6 +411,69 @@ const AssetsForm = () => {
           </div>
         ))}
         <Button variant="outline" size="sm" onClick={() => addItem("properties")}>
+          <Plus className="mr-2 h-4 w-4" /> {texts.addItem}
+        </Button>
+      </div>
+
+      {/* Vehicles */}
+      <div className="space-y-4 border-t border-border pt-6">
+        <h3 className="font-serif text-lg font-semibold text-foreground">{texts.vehicles}</h3>
+        {(data.vehicles || []).map((vehicle, i) => (
+          <div key={i} className="flex gap-3 items-start">
+            <div className="flex-1 space-y-3">
+              <div className="grid gap-3 md:grid-cols-2">
+                <Select
+                  value={vehicle.type || ""}
+                  onValueChange={(value) => {
+                    updateItem("vehicles", i, "type", value);
+                    handleBlur();
+                  }}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder={texts.selectVehicleType} />
+                  </SelectTrigger>
+                  <SelectContent className="bg-background border border-border shadow-lg z-50">
+                    <SelectItem value="car">{texts.vehicleTypeCar}</SelectItem>
+                    <SelectItem value="motorcycle">{texts.vehicleTypeMotorcycle}</SelectItem>
+                    <SelectItem value="camper">{texts.vehicleTypeCamper}</SelectItem>
+                    <SelectItem value="trailer">{texts.vehicleTypeTrailer}</SelectItem>
+                    <SelectItem value="other">{texts.vehicleTypeOther}</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Input
+                  value={vehicle.brand || ""}
+                  onChange={(e) => updateItem("vehicles", i, "brand", e.target.value)}
+                  onBlur={handleBlur}
+                  placeholder={texts.brand}
+                />
+              </div>
+              <div className="grid gap-3 md:grid-cols-3">
+                <Input
+                  value={vehicle.model || ""}
+                  onChange={(e) => updateItem("vehicles", i, "model", e.target.value)}
+                  onBlur={handleBlur}
+                  placeholder={texts.model}
+                />
+                <Input
+                  value={vehicle.licensePlate || ""}
+                  onChange={(e) => updateItem("vehicles", i, "licensePlate", e.target.value)}
+                  onBlur={handleBlur}
+                  placeholder={texts.licensePlate}
+                />
+                <Input
+                  value={vehicle.location || ""}
+                  onChange={(e) => updateItem("vehicles", i, "location", e.target.value)}
+                  onBlur={handleBlur}
+                  placeholder={texts.vehicleLocation}
+                />
+              </div>
+            </div>
+            <Button variant="ghost" size="icon" onClick={() => removeItem("vehicles", i)}>
+              <Trash2 className="h-4 w-4 text-destructive" />
+            </Button>
+          </div>
+        ))}
+        <Button variant="outline" size="sm" onClick={() => addItem("vehicles")}>
           <Plus className="mr-2 h-4 w-4" /> {texts.addItem}
         </Button>
       </div>
