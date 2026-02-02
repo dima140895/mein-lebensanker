@@ -52,7 +52,7 @@ const ShareLinkManager = () => {
   const { user } = useAuth();
   const { language } = useLanguage();
   const { personProfiles } = useProfiles();
-  const { isEncryptionEnabled, encryptedPasswordRecovery, encryptionSalt } = useEncryption();
+  const { isEncryptionEnabled, encryptionSalt } = useEncryption();
   const [tokens, setTokens] = useState<ShareToken[]>([]);
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
@@ -346,20 +346,24 @@ const ShareLinkManager = () => {
           pin_salt: pinSalt 
         };
         
-        // If encryption is enabled, encrypt the recovery key with the PIN
-        // This allows relatives to decrypt data automatically after entering the PIN
-        if (isEncryptionEnabled && encryptedPasswordRecovery && encryptionSalt) {
+        // If encryption is enabled and unlocked, encrypt the current encryption password with the PIN
+        // This allows relatives to decrypt data automatically after entering the correct PIN
+        if (isEncryptionEnabled && encryptionSalt) {
           try {
-            // Encrypt the encrypted_password_recovery (which contains the encrypted password)
-            // with the PIN so relatives can auto-decrypt after PIN entry
-            const encryptedRecoveryKeyForPin = await encryptData(
-              encryptedPasswordRecovery, 
-              pin, 
-              pinSalt
-            );
-            updateData.encrypted_recovery_key = encryptedRecoveryKeyForPin;
+            // Get the current encryption password from session storage
+            const currentEncryptionPassword = sessionStorage.getItem('vorsorge_encryption_key');
+            
+            if (currentEncryptionPassword) {
+              // Encrypt the actual encryption password with the PIN
+              const encryptedPasswordForPin = await encryptData(
+                currentEncryptionPassword, 
+                pin, 
+                pinSalt
+              );
+              updateData.encrypted_recovery_key = encryptedPasswordForPin;
+            }
           } catch (err) {
-            logger.error('Error encrypting recovery key for PIN:', err);
+            logger.error('Error encrypting password for PIN:', err);
           }
         }
         
