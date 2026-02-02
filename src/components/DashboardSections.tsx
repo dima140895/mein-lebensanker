@@ -84,14 +84,6 @@ const infoSections = [
     accent: 'group-hover:shadow-emerald-500/20'
   },
   { 
-    icon: MessageCircle, 
-    key: 'decision', 
-    gradient: 'from-orange-100 to-orange-50',
-    iconBg: 'bg-orange-500/10',
-    iconColor: 'text-orange-600',
-    accent: 'group-hover:shadow-orange-500/20'
-  },
-  { 
     icon: Link2, 
     key: 'share', 
     gradient: 'from-indigo-100 to-indigo-50',
