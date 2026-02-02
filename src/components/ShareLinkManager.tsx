@@ -25,7 +25,6 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from '@/components/ui/input-otp';
-import { Switch } from '@/components/ui/switch';
 import { Checkbox } from '@/components/ui/checkbox';
 
 interface ShareToken {
@@ -59,7 +58,6 @@ const ShareLinkManager = () => {
   const [newLabel, setNewLabel] = useState('');
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [usePIN, setUsePIN] = useState(false);
   const [pin, setPIN] = useState('');
   // Per-profile section selection state
   const [profileSections, setProfileSections] = useState<ProfileSectionSelection>({});
@@ -110,9 +108,8 @@ const ShareLinkManager = () => {
       created: 'Zugangslink erstellt',
       securityNote: 'Jeder mit diesem Link kann Deine Übersicht einsehen. Teile ihn nur mit Personen, denen Du vertraust.',
       createdAt: 'Erstellt am',
-      pinProtection: 'PIN-Schutz aktivieren',
-      pinDescription: 'Angehörige müssen einen 6-stelligen PIN eingeben. Nach 3 Fehlversuchen wird der Link gesperrt.',
-      enterPIN: 'PIN festlegen',
+      pinDescription: 'Angehörige müssen diesen 6-stelligen PIN eingeben. Nach 3 Fehlversuchen wird der Link gesperrt.',
+      enterPIN: 'PIN festlegen (erforderlich)',
       pinRequired: 'Bitte gib einen 6-stelligen PIN ein',
       protected: 'Geschützt',
       blocked: 'Gesperrt',
@@ -156,9 +153,8 @@ const ShareLinkManager = () => {
       created: 'Access link created',
       securityNote: 'Anyone with this link can view your overview. Only share it with people you trust.',
       createdAt: 'Created on',
-      pinProtection: 'Enable PIN protection',
-      pinDescription: 'Relatives must enter a 6-digit PIN. After 3 failed attempts, the link will be locked.',
-      enterPIN: 'Set PIN',
+      pinDescription: 'Relatives must enter this 6-digit PIN. After 3 failed attempts, the link will be locked.',
+      enterPIN: 'Set PIN (required)',
       pinRequired: 'Please enter a 6-digit PIN',
       protected: 'Protected',
       blocked: 'Blocked',
@@ -286,8 +282,8 @@ const ShareLinkManager = () => {
   const createToken = async () => {
     if (!user) return;
     
-    // Validate PIN if enabled
-    if (usePIN && pin.length !== 6) {
+    // Validate PIN - now always required
+    if (pin.length !== 6) {
       toast.error(texts.pinRequired);
       return;
     }
@@ -329,8 +325,8 @@ const ShareLinkManager = () => {
       return;
     }
     
-    // If PIN is enabled, generate salt, hash with secure function, and update
-    if (usePIN && pin.length === 6 && data) {
+    // PIN is now always required - generate salt, hash with secure function, and update
+    if (pin.length === 6 && data) {
       // Generate a random salt for this token
       const randomBytes = new Uint8Array(16);
       crypto.getRandomValues(randomBytes);
@@ -381,7 +377,6 @@ const ShareLinkManager = () => {
       toast.success(texts.created);
       setNewLabel('');
       setPIN('');
-      setUsePIN(false);
       initializeProfileSections();
       setDialogOpen(false);
     }
@@ -582,44 +577,33 @@ const ShareLinkManager = () => {
                 </div>
               </div>
               
-              {/* PIN Protection Toggle */}
-              <div className="rounded-lg border border-border p-4 space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="space-y-0.5">
-                    <Label className="flex items-center gap-2">
-                      <Lock className="h-4 w-4" />
-                      {texts.pinProtection}
-                    </Label>
-                    <p className="text-sm text-muted-foreground">{texts.pinDescription}</p>
-                  </div>
-                  <Switch
-                    checked={usePIN}
-                    onCheckedChange={setUsePIN}
-                  />
+              {/* PIN Protection - Now mandatory */}
+              <div className="rounded-lg border border-primary/30 bg-primary/5 p-4 space-y-4">
+                <div className="space-y-0.5">
+                  <Label className="flex items-center gap-2">
+                    <Lock className="h-4 w-4 text-primary" />
+                    {texts.enterPIN}
+                  </Label>
+                  <p className="text-sm text-muted-foreground">{texts.pinDescription}</p>
                 </div>
                 
-                {usePIN && (
-                  <div className="space-y-2">
-                    <Label>{texts.enterPIN}</Label>
-                    <InputOTP
-                      maxLength={6}
-                      value={pin}
-                      onChange={setPIN}
-                    >
-                      <InputOTPGroup>
-                        <InputOTPSlot index={0} />
-                        <InputOTPSlot index={1} />
-                        <InputOTPSlot index={2} />
-                        <InputOTPSlot index={3} />
-                        <InputOTPSlot index={4} />
-                        <InputOTPSlot index={5} />
-                      </InputOTPGroup>
-                    </InputOTP>
-                  </div>
-                )}
+                <InputOTP
+                  maxLength={6}
+                  value={pin}
+                  onChange={setPIN}
+                >
+                  <InputOTPGroup>
+                    <InputOTPSlot index={0} />
+                    <InputOTPSlot index={1} />
+                    <InputOTPSlot index={2} />
+                    <InputOTPSlot index={3} />
+                    <InputOTPSlot index={4} />
+                    <InputOTPSlot index={5} />
+                  </InputOTPGroup>
+                </InputOTP>
               </div>
               
-              <Button onClick={createToken} disabled={creating || (usePIN && pin.length !== 6) || !hasValidSelection()} className="w-full">
+              <Button onClick={createToken} disabled={creating || pin.length !== 6 || !hasValidSelection()} className="w-full">
                 {creating ? '...' : texts.create}
               </Button>
             </div>
