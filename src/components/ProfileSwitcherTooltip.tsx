@@ -5,8 +5,6 @@ import { X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const TOOLTIP_DISMISSED_KEY = 'vorsorge_profile_switcher_tooltip_shown';
-const SETUP_COMPLETED_FLAG = 'profile_setup_just_completed';
-const PURCHASE_TOOLTIP_FLAG = 'show_profile_tooltip_after_purchase';
 
 interface ProfileSwitcherTooltipProps {
   children: React.ReactNode;
@@ -17,10 +15,7 @@ export const ProfileSwitcherTooltip: React.FC<ProfileSwitcherTooltipProps> = ({ 
   const location = useLocation();
   const [showTooltip, setShowTooltip] = useState(false);
   const hasShown = useRef(false);
-  const checkAttempts = useRef(0);
 
-  // Debug: Log on every render to confirm component is mounted
-  console.log('[ProfileSwitcherTooltip] Render - path:', location.pathname);
 
   const t = {
     de: {
@@ -35,82 +30,17 @@ export const ProfileSwitcherTooltip: React.FC<ProfileSwitcherTooltipProps> = ({ 
 
   const texts = t[language];
 
-  // Watch for flags being set - simpler, more reliable approach
+  // Show once on the first dashboard visit (for all package types), unless dismissed.
   useEffect(() => {
-    console.log('[ProfileSwitcherTooltip] useEffect running, path:', location.pathname);
-    
-    // Only run on dashboard - check for both exact and with query params
-    const isDashboard = location.pathname === '/dashboard' || location.pathname.startsWith('/dashboard');
-    if (!isDashboard) {
-      console.log('[ProfileSwitcherTooltip] Not on dashboard, skipping');
-      return;
-    }
-    
-    // Already shown in this component instance
-    if (hasShown.current) {
-      console.log('[ProfileSwitcherTooltip] Already shown, skipping');
-      return;
-    }
+    if (location.pathname !== '/dashboard') return;
+    if (hasShown.current) return;
 
-    const checkAndShow = () => {
-      checkAttempts.current += 1;
-      
-      const wasShownPermanently = localStorage.getItem(TOOLTIP_DISMISSED_KEY) === 'true';
-      const justCompletedSetup = sessionStorage.getItem(SETUP_COMPLETED_FLAG) === 'true';
-      const showAfterPurchase = localStorage.getItem(PURCHASE_TOOLTIP_FLAG) === 'true';
-      
-      console.log('[ProfileSwitcherTooltip] Check #' + checkAttempts.current + ':', {
-        wasShownPermanently,
-        justCompletedSetup,
-        showAfterPurchase,
-        hasShown: hasShown.current,
-        path: location.pathname,
-      });
-      
-      // Show tooltip after registration or purchase if not already shown permanently
-      if ((justCompletedSetup || showAfterPurchase) && !wasShownPermanently && !hasShown.current) {
-        console.log('[ProfileSwitcherTooltip] Triggering tooltip display!');
-        hasShown.current = true;
-        
-        // Clear the flags immediately
-        sessionStorage.removeItem(SETUP_COMPLETED_FLAG);
-        localStorage.removeItem(PURCHASE_TOOLTIP_FLAG);
-        
-        // Show tooltip with a slight delay for UI to be ready
-        setTimeout(() => {
-          setShowTooltip(true);
-        }, 500);
-        
-        return true;
-      }
-      
-      return false;
-    };
+    const wasShownPermanently = localStorage.getItem(TOOLTIP_DISMISSED_KEY) === 'true';
+    if (wasShownPermanently) return;
 
-    // Initial check after component mounts with delay for page to settle
-    const initialTimer = setTimeout(() => {
-      if (checkAndShow()) return;
-    }, 800);
-
-    // Poll for flags (in case they're set after component mounts)
-    const pollInterval = setInterval(() => {
-      if (hasShown.current || checkAttempts.current > 20) {
-        clearInterval(pollInterval);
-        return;
-      }
-      checkAndShow();
-    }, 500);
-    
-    // Stop polling after 10 seconds max
-    const maxWaitTimer = setTimeout(() => {
-      clearInterval(pollInterval);
-    }, 10000);
-    
-    return () => {
-      clearTimeout(initialTimer);
-      clearInterval(pollInterval);
-      clearTimeout(maxWaitTimer);
-    };
+    hasShown.current = true;
+    const t = window.setTimeout(() => setShowTooltip(true), 600);
+    return () => window.clearTimeout(t);
   }, [location.pathname]);
 
   const handleDismiss = () => {
