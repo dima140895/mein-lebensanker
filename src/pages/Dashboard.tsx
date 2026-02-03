@@ -383,7 +383,7 @@ const DashboardContent = () => {
 
         {/* Info/utility sections */}
         <div className="max-w-4xl mx-auto">
-          <div className="grid gap-2 grid-cols-3 md:grid-cols-2 lg:grid-cols-5">
+          <div className="grid gap-2 md:gap-4 grid-cols-2 lg:grid-cols-4">
             {infoSections.map((section, i) => {
               const Icon = section.icon;
               return (
