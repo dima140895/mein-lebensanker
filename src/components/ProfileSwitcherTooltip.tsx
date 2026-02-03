@@ -19,6 +19,9 @@ export const ProfileSwitcherTooltip: React.FC<ProfileSwitcherTooltipProps> = ({ 
   const hasShown = useRef(false);
   const checkAttempts = useRef(0);
 
+  // Debug: Log on every render to confirm component is mounted
+  console.log('[ProfileSwitcherTooltip] Render - path:', location.pathname);
+
   const t = {
     de: {
       message: 'Hier kannst Du zwischen Deinen Profilen wechseln – wie in einem Tresor mit verschiedenen Fächern.',
@@ -34,13 +37,18 @@ export const ProfileSwitcherTooltip: React.FC<ProfileSwitcherTooltipProps> = ({ 
 
   // Watch for flags being set - simpler, more reliable approach
   useEffect(() => {
-    // Only run on dashboard
-    if (location.pathname !== '/dashboard') {
+    console.log('[ProfileSwitcherTooltip] useEffect running, path:', location.pathname);
+    
+    // Only run on dashboard - check for both exact and with query params
+    const isDashboard = location.pathname === '/dashboard' || location.pathname.startsWith('/dashboard');
+    if (!isDashboard) {
+      console.log('[ProfileSwitcherTooltip] Not on dashboard, skipping');
       return;
     }
     
     // Already shown in this component instance
     if (hasShown.current) {
+      console.log('[ProfileSwitcherTooltip] Already shown, skipping');
       return;
     }
 
