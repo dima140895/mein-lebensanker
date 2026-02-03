@@ -39,6 +39,7 @@ interface SharedDocument {
   path: string;
   size: number;
   documentType: string;
+  profileId?: string;
 }
 
 const RelativesSummary = ({ data, profiles, sharedSections, sharedProfileSections, token, pin }: RelativesSummaryProps) => {
@@ -69,11 +70,12 @@ const RelativesSummary = ({ data, profiles, sharedSections, sharedProfileSection
         });
 
         if (docData?.documents) {
-          setSharedDocuments(docData.documents.map((doc: { name: string; path: string; size: number; documentType: string }) => ({
+          setSharedDocuments(docData.documents.map((doc: { name: string; path: string; size: number; documentType: string; profileId?: string }) => ({
             name: doc.name,
             path: doc.path,
             size: doc.size,
             documentType: doc.documentType,
+            profileId: doc.profileId,
           })));
         }
       } catch (err) {
