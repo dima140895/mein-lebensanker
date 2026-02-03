@@ -20,6 +20,7 @@ interface SharedDocument {
   path: string;
   size: number;
   documentType: string;
+  profileId?: string;
 }
 
 interface PrintableRelativesSummaryProps {
@@ -544,7 +545,7 @@ const PrintableRelativesSummary = forwardRef<HTMLDivElement, PrintableRelativesS
       return items.map(renderItem);
     };
 
-    const renderSection = (sectionKey: string, sectionData: Record<string, unknown>) => {
+    const renderSection = (sectionKey: string, sectionData: Record<string, unknown>, currentProfileId?: string) => {
       switch (sectionKey) {
         case 'personal':
           return (
@@ -772,10 +773,13 @@ const PrintableRelativesSummary = forwardRef<HTMLDivElement, PrintableRelativesS
           );
 
         case 'documents':
-          // Group uploaded documents by type
+          // Group uploaded documents by type - filter by profile if profileId is available
           const documentTypeOrder = ['testament', 'power-of-attorney', 'living-will', 'insurance', 'property', 'other'];
+          const profileFilteredDocs = currentProfileId 
+            ? sharedDocuments.filter(doc => doc.profileId === currentProfileId)
+            : sharedDocuments;
           const groupedUploadedDocs = documentTypeOrder.reduce((acc, type) => {
-            acc[type] = sharedDocuments.filter(doc => doc.documentType === type);
+            acc[type] = profileFilteredDocs.filter(doc => doc.documentType === type);
             return acc;
           }, {} as Record<string, SharedDocument[]>);
 
@@ -1233,7 +1237,7 @@ const PrintableRelativesSummary = forwardRef<HTMLDivElement, PrintableRelativesS
                     </div>
                     <span className="print-section-title">{sectionNames[item.section_key]}</span>
                   </div>
-                  {renderSection(item.section_key, item.data)}
+                  {renderSection(item.section_key, item.data, profile.profile_id)}
                 </div>
               );
             })}
