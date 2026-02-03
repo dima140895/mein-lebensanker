@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { User, Wallet, Globe, Heart, FileText, ArrowLeft, Phone, Info, Compass, MessageCircle, Link2, Download, CheckCircle } from 'lucide-react';
+import { User, Wallet, Globe, Heart, FileText, ArrowLeft, Phone, Info, Compass, Link2, Download, CheckCircle } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -21,7 +21,7 @@ import DocumentsForm from '@/components/forms/DocumentsForm';
 import ContactsForm from '@/components/forms/ContactsForm';
 import AboutSection from '@/components/sections/AboutSection';
 import GuidanceSection from '@/components/sections/GuidanceSection';
-import DecisionAssistant from '@/components/sections/DecisionAssistant';
+
 import ShareLinkManager from '@/components/ShareLinkManager';
 import DataExport from '@/components/DataExport';
 import { useProfiles } from '@/contexts/ProfileContext';
@@ -46,7 +46,6 @@ const dataSections = [
 const infoSections = [
   { key: 'about', icon: Info, color: 'bg-sage-light text-sage-dark', isInfo: true },
   { key: 'guidance', icon: Compass, color: 'bg-sage-light text-sage-dark', isInfo: true },
-  { key: 'decision', icon: MessageCircle, color: 'bg-amber-light text-amber', isInfo: true },
   { key: 'share', icon: Link2, color: 'bg-primary/20 text-primary', isInfo: true },
   { key: 'export', icon: Download, color: 'bg-sage-light text-sage-dark', isInfo: true },
 ];
@@ -165,8 +164,6 @@ const DashboardContent = () => {
       contactsDesc: 'Angehörige, Ärzte, Anwälte, Berater',
       guidance: 'Orientierung',
       guidanceDesc: 'Hilfreiche Tipps und nächste Schritte',
-      decision: 'Entscheidungen',
-      decisionDesc: 'Unterstützung bei schwierigen Fragen',
       share: 'Für Angehörige',
       shareDesc: 'Sicheren Zugangslink erstellen & verwalten',
       export: 'Daten-Export',
@@ -197,8 +194,6 @@ const DashboardContent = () => {
       contactsDesc: 'Family, doctors, lawyers, advisors',
       guidance: 'Guidance',
       guidanceDesc: 'Helpful tips and next steps',
-      decision: 'Decisions',
-      decisionDesc: 'Support for difficult questions',
       share: 'For Relatives',
       shareDesc: 'Create & manage secure access link',
       export: 'Data Export',
@@ -239,7 +234,6 @@ const DashboardContent = () => {
     switch (activeSection) {
       case 'about': return <AboutSection />;
       case 'guidance': return <GuidanceSection />;
-      case 'decision': return <DecisionAssistant />;
       case 'share': return <ShareLinkManager />;
       case 'export': return <DataExport />;
       case 'upgrade': return <PackageManagement />;
