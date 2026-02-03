@@ -92,16 +92,21 @@ const ProfileSwitcher = () => {
     return null;
   }
 
-  // Single profile package - show profile name without dropdown
+  // Single profile package - show profile name without dropdown but with tooltip
   if ((profile.max_profiles || 1) <= 1) {
     const singleProfile = personProfiles.length > 0 ? personProfiles[0] : null;
     if (!singleProfile) return null;
     
     return (
-      <div className="flex items-center gap-2 text-sm text-muted-foreground px-3 py-1.5 border rounded-md bg-background">
-        <User className="h-4 w-4" />
-        <span className="max-w-[120px] truncate">{singleProfile.name}</span>
-      </div>
+      <ProfileSwitcherTooltip>
+        <div 
+          className="flex items-center gap-2 text-sm text-muted-foreground px-3 py-1.5 border rounded-md bg-background"
+          data-tour="profile-switcher"
+        >
+          <User className="h-4 w-4" />
+          <span className="max-w-[120px] truncate">{singleProfile.name}</span>
+        </div>
+      </ProfileSwitcherTooltip>
     );
   }
 
