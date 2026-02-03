@@ -214,7 +214,7 @@ const DashboardSections = () => {
 
         <div 
           key={`info-${language}`}
-          className="grid gap-3 md:gap-5 grid-cols-1 sm:grid-cols-3"
+          className="grid gap-3 md:gap-5 grid-cols-3"
         >
           {infoSections.map((section, index) => (
             <SectionCard 
