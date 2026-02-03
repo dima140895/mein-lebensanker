@@ -131,8 +131,8 @@ export const DashboardOnboardingTour: React.FC = () => {
   }, [currentStep]);
 
   useEffect(() => {
-    // Only run on dashboard
-    if (!location.pathname.includes('/dashboard')) {
+    // Only run on dashboard page
+    if (location.pathname !== '/dashboard') {
       return;
     }
 
@@ -143,18 +143,17 @@ export const DashboardOnboardingTour: React.FC = () => {
     console.log('[Tour] Checking tour trigger:', { tourCompleted, shouldShowTour, path: location.pathname });
 
     if (shouldShowTour && !tourCompleted) {
-      // Clear the flag immediately to prevent multiple triggers
-      sessionStorage.removeItem(TOUR_TRIGGER_FLAG);
-      
-      // Delay to let page elements render fully
+      // Delay to let page elements render fully, then clear flag and show tour
       const timer = setTimeout(() => {
+        // Clear the flag AFTER the delay to prevent race conditions
+        sessionStorage.removeItem(TOUR_TRIGGER_FLAG);
         console.log('[Tour] Showing tour now');
         setShowTour(true);
-      }, 1200);
+      }, 1500);
 
       return () => clearTimeout(timer);
     }
-  }, [location.pathname, location.key]);
+  }, [location.pathname]);
 
   useEffect(() => {
     if (showTour) {
