@@ -53,7 +53,7 @@ const AdvisorFinderSection = () => {
           title: 'Medizinische Beratung',
           description: 'Für Patientenverfügungen und Vorsorge-Entscheidungen',
           links: [
-            { label: 'Arztsuche der Kassenärztlichen Bundesvereinigung', url: 'https://www.kbv.de/html/arztsuche.php' },
+            { label: 'KBV-Arztsuche', url: 'https://www.kbv.de/html/arztsuche.php' },
           ],
           tip: 'Hausärzte können bei der Formulierung medizinischer Wünsche unterstützen.',
         },
@@ -115,7 +115,7 @@ const AdvisorFinderSection = () => {
           title: 'Medical Advice',
           description: 'For living wills and healthcare decisions',
           links: [
-            { label: 'Doctor Search (German Association)', url: 'https://www.kbv.de/html/arztsuche.php' },
+            { label: 'Doctor Search (KBV)', url: 'https://www.kbv.de/html/arztsuche.php' },
           ],
           tip: 'Family doctors can help formulate medical wishes.',
         },
