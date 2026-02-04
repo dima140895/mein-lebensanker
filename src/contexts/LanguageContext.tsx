@@ -17,7 +17,7 @@ const translations = {
     
     // Hero Section
     'hero.tagline': 'Ordnung für den Fall der Fälle',
-    'hero.subtitle': 'Damit Angehörige nicht im Chaos stehen.',
+    'hero.subtitle': 'Damit Deine Angehörigen wissen, was zu tun ist.',
     'hero.description': 'Strukturiere Deine persönlichen, finanziellen und organisatorischen Informationen – damit Deine Liebsten im Ernstfall entlastet werden.',
     'hero.cta': 'Jetzt starten',
     'hero.learnMore': 'So funktioniert\'s',
