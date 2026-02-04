@@ -27,6 +27,12 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import AuthForm from './AuthForm';
 import PricingDialog from './PricingDialog';
 import ChangePasswordDialog from './ChangePasswordDialog';
@@ -142,6 +148,7 @@ const Header = () => {
       recoveryKey: 'Ersatzschlüssel neu generieren',
       changeEncryptionPassword: 'Verschlüsselungs-Passwort ändern',
       forgotPassword: 'Passwort vergessen?',
+      settingsTooltip: 'Paket & Konto',
     },
     en: {
       login: 'Sign In',
@@ -177,6 +184,7 @@ const Header = () => {
       recoveryKey: 'Regenerate Recovery Key',
       changeEncryptionPassword: 'Change Encryption Password',
       forgotPassword: 'Forgot password?',
+      settingsTooltip: 'Package & Account',
     },
   };
 
@@ -522,16 +530,23 @@ const Header = () => {
               <div className="w-px h-6 bg-border" />
 
               {/* Combined Settings Menu (Mein Paket + Konto) */}
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    className="border-border hover:bg-primary/10 hover:text-primary hover:border-primary/30 transition-colors"
-                  >
-                    <Menu className="h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
+              <TooltipProvider>
+                <Tooltip>
+                  <DropdownMenu>
+                    <TooltipTrigger asChild>
+                      <DropdownMenuTrigger asChild>
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="border-border hover:bg-primary/10 hover:text-primary hover:border-primary/30 transition-colors"
+                        >
+                          <Menu className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom">
+                      <p>{tx.settingsTooltip}</p>
+                    </TooltipContent>
                 <DropdownMenuContent align="end" className="w-64 bg-popover">
                   {/* My Package Section - only for paid users */}
                   {profile?.has_paid && (
@@ -636,8 +651,10 @@ const Header = () => {
                     <LogOut className="mr-2 h-4 w-4" />
                     {tx.logout}
                   </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+                  </DropdownMenuContent>
+                  </DropdownMenu>
+                </Tooltip>
+              </TooltipProvider>
             </>
           )}
           
