@@ -12,6 +12,7 @@ const Index = () => {
       <main className="flex-1">
         <HeroSection />
         <WhatIsThisTool />
+        <DashboardSections />
       </main>
       <Disclaimer />
       <Footer />
