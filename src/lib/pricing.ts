@@ -3,22 +3,23 @@ export const PRICING = {
   single: {
     name: 'single',
     price: 49,
-    priceId: 'price_1StQxpICzkfBNYhyfkFifG39',
+    priceId: 'price_1SxDbfICzkfBNYhyLR73x2G6',
     maxProfiles: 1,
   },
   couple: {
     name: 'couple',
     price: 69,
-    priceId: 'price_1StQy5ICzkfBNYhyGqh7RUsk',
+    priceId: 'price_1SxDc0ICzkfBNYhyLscc8Vmu',
     maxProfiles: 2,
   },
   family: {
     name: 'family',
     basePrice: 99,
+    basePriceId: 'price_1SxDcBICzkfBNYhynUFvXJm6',
     pricePerAdditionalProfile: 10,
+    additionalProfilePriceId: 'price_1SxDcKICzkfBNYhyxOuk9ROB',
     minProfiles: 4,
     maxProfiles: 10,
-    // Dynamic price - no fixed priceId
   },
   updateService: {
     name: 'update_service',
