@@ -35,7 +35,7 @@ const AdvisorFinderSection = () => {
           title: 'Steuerberater',
           description: 'Für Erbschaftssteuer, Schenkungen und Nachlassplanung',
           links: [
-            { label: 'Steuerberatersuche der Bundessteuerberaterkammer', url: 'https://www.bstbk.de/de/steuerberater-suche' },
+            { label: 'Steuerberaterverzeichnis', url: 'https://steuerberaterverzeichnis.berufs-org.de' },
           ],
           tip: 'Bei größeren Vermögenswerten kann steuerliche Beratung erhebliche Vorteile bringen.',
         },
@@ -97,7 +97,7 @@ const AdvisorFinderSection = () => {
           title: 'Tax Advisors',
           description: 'For inheritance tax, gifts, and estate planning',
           links: [
-            { label: 'Tax Advisor Search (German Chamber)', url: 'https://www.bstbk.de/de/steuerberater-suche' },
+            { label: 'Tax Advisor Directory', url: 'https://steuerberaterverzeichnis.berufs-org.de' },
           ],
           tip: 'For larger estates, tax advice can provide significant benefits.',
         },
