@@ -68,7 +68,7 @@ const translations = {
     // Disclaimer
     'disclaimer.title': 'Wichtiger Hinweis',
     'disclaimer.text': 'Diese Anwendung ersetzt keine rechtliche, notarielle, steuerliche oder medizinische Beratung und erstellt keine rechtlich bindenden Dokumente. Alle Angaben dienen ausschließlich der persönlichen Übersicht, Vorbereitung und als Gesprächsgrundlage für Deine Angehörigen.',
-    'disclaimer.short': 'Alles an einem Ort',
+    'disclaimer.short': 'Für Einzelpersonen, Paare und Familien, die Verantwortung übernehmen wollen.',
     
     // Actions
     'action.start': 'Bereich öffnen',
