@@ -62,7 +62,7 @@ const AdvisorFinderSection = () => {
           title: 'Betreuungsvereine',
           description: 'Für rechtliche Betreuung und Vorsorgevollmachten',
           links: [
-            { label: 'Betreuungsvereine über lokale Amtsgerichte', url: 'https://www.justiz.de/OrganisijsonundVerwaltung/ordentliche_gerichtsbarkeit/amtsgerichte/index.php' },
+            { label: 'Justizadressen-Suche', url: 'https://www.justizadressen.nrw.de/de/justiz/suche' },
           ],
           tip: 'Betreuungsvereine beraten kostenlos zu Vorsorgevollmachten.',
         },
@@ -124,7 +124,7 @@ const AdvisorFinderSection = () => {
           title: 'Guardianship Associations',
           description: 'For legal guardianship and powers of attorney',
           links: [
-            { label: 'Guardianship associations via local courts', url: 'https://www.justiz.de/OrganisijsonundVerwaltung/ordentliche_gerichtsbarkeit/amtsgerichte/index.php' },
+            { label: 'Justice Address Search', url: 'https://www.justizadressen.nrw.de/de/justiz/suche' },
           ],
           tip: 'Guardianship associations provide free advice on powers of attorney.',
         },
