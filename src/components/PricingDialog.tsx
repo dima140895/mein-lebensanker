@@ -191,16 +191,16 @@ const PricingDialog = ({ open, onOpenChange, onSelectPackage }: PricingDialogPro
                   </div>
                 )}
 
-                {/* Header section - fixed height */}
-                <div className="flex items-center gap-3 mb-3 mt-1 min-h-[52px]">
+                {/* Header section - fixed height for alignment */}
+                <div className="flex items-start gap-3 mb-3 mt-1 h-[60px]">
                   <div className={`h-10 w-10 rounded-lg flex items-center justify-center flex-shrink-0 ${iconBg}`}>
                     <Icon className={`h-5 w-5 ${iconColor}`} />
                   </div>
-                  <div>
-                    <h3 className="font-serif text-lg font-semibold text-foreground">
+                  <div className="flex flex-col justify-center">
+                    <h3 className="font-serif text-lg font-semibold text-foreground leading-tight">
                       {name}
                     </h3>
-                    <p className="text-xs text-muted-foreground">{desc}</p>
+                    <p className="text-xs text-muted-foreground leading-tight">{desc}</p>
                   </div>
                 </div>
 
