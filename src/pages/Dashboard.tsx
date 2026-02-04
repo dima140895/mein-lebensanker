@@ -20,7 +20,7 @@ import WishesForm from '@/components/forms/WishesForm';
 import DocumentsForm from '@/components/forms/DocumentsForm';
 import ContactsForm from '@/components/forms/ContactsForm';
 import AboutSection from '@/components/sections/AboutSection';
-import GuidanceSection from '@/components/sections/GuidanceSection';
+import AdvisorFinderSection from '@/components/sections/AdvisorFinderSection';
 
 import ShareLinkManager from '@/components/ShareLinkManager';
 import DataExport from '@/components/DataExport';
@@ -45,7 +45,7 @@ const dataSections = [
 // Info/utility sections (no completion tracking)
 const infoSections = [
   { key: 'about', icon: Info, color: 'bg-sage-light text-sage-dark', isInfo: true },
-  { key: 'guidance', icon: Compass, color: 'bg-sage-light text-sage-dark', isInfo: true },
+  { key: 'advisors', icon: Compass, color: 'bg-sage-light text-sage-dark', isInfo: true },
   { key: 'share', icon: Link2, color: 'bg-primary/20 text-primary', isInfo: true },
   { key: 'export', icon: Download, color: 'bg-sage-light text-sage-dark', isInfo: true },
 ];
@@ -162,8 +162,8 @@ const DashboardContent = () => {
       documentsDesc: 'Wichtige Unterlagen hochladen & verwalten',
       contacts: 'Kontakte',
       contactsDesc: 'Angehörige, Ärzte, Anwälte, Berater',
-      guidance: 'Orientierung',
-      guidanceDesc: 'Hilfreiche Tipps und nächste Schritte',
+      advisors: 'Beratung finden',
+      advisorsDesc: 'Notare, Anwälte, Steuerberater finden',
       share: 'Für Angehörige',
       shareDesc: 'Sicheren Zugangslink erstellen & verwalten',
       export: 'Daten-Export',
@@ -192,8 +192,8 @@ const DashboardContent = () => {
       documentsDesc: 'Upload & manage important documents',
       contacts: 'Contacts',
       contactsDesc: 'Family, doctors, lawyers, advisors',
-      guidance: 'Guidance',
-      guidanceDesc: 'Helpful tips and next steps',
+      advisors: 'Find Advisors',
+      advisorsDesc: 'Find notaries, lawyers, tax advisors',
       share: 'For Relatives',
       shareDesc: 'Create & manage secure access link',
       export: 'Data Export',
@@ -233,7 +233,7 @@ const DashboardContent = () => {
   const renderContent = () => {
     switch (activeSection) {
       case 'about': return <AboutSection />;
-      case 'guidance': return <GuidanceSection />;
+      case 'advisors': return <AdvisorFinderSection />;
       case 'share': return <ShareLinkManager />;
       case 'export': return <DataExport />;
       case 'upgrade': return <PackageManagement />;
