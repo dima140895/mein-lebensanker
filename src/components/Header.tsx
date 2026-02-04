@@ -521,125 +521,127 @@ const Header = () => {
               
               <div className="w-px h-6 bg-border" />
 
-              {/* My Package Button for paid users - left of Konto */}
-              {profile?.has_paid && (
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
-                      className="border-border hover:bg-primary/10 hover:text-primary hover:border-primary/30 transition-colors"
-                    >
-                      <Package className="mr-1.5 h-4 w-4" />
-                      <span>{tx.myPackage}</span>
-                      <ChevronDown className="ml-1 h-3 w-3" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-56 bg-popover">
-                    {/* Current Package Info */}
-                    <div className="px-2 py-2 border-b border-border">
-                      <p className="text-xs text-muted-foreground">{tx.currentTier}</p>
-                      <p className="font-medium text-foreground">
-                        {profile.purchased_tier === 'single' && tx.single}
-                        {profile.purchased_tier === 'couple' && tx.couple}
-                        {profile.purchased_tier === 'family' && tx.family}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        {profile.max_profiles} {tx.profiles}
-                      </p>
+              {/* Combined Settings Menu (Mein Paket + Konto) */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="border-border hover:bg-primary/10 hover:text-primary hover:border-primary/30 transition-colors"
+                  >
+                    <Menu className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-64 bg-popover">
+                  {/* My Package Section - only for paid users */}
+                  {profile?.has_paid && (
+                    <>
+                      <div className="px-2 py-2">
+                        <div className="flex items-center gap-2 mb-1">
+                          <Package className="h-4 w-4 text-primary" />
+                          <span className="font-medium text-sm">{tx.myPackage}</span>
+                        </div>
+                        <div className="pl-6">
+                          <p className="text-xs text-muted-foreground">{tx.currentTier}</p>
+                          <p className="font-medium text-foreground">
+                            {profile.purchased_tier === 'single' && tx.single}
+                            {profile.purchased_tier === 'couple' && tx.couple}
+                            {profile.purchased_tier === 'family' && tx.family}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {profile.max_profiles} {tx.profiles}
+                          </p>
+                        </div>
+                      </div>
+                      <DropdownMenuItem
+                        onClick={() => navigateTo('/dashboard?section=payment')}
+                      >
+                        <CreditCard className="mr-2 h-4 w-4" />
+                        {tx.managePackage}
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                    </>
+                  )}
+                  
+                  {/* Account Section */}
+                  <div className="px-2 py-1.5">
+                    <div className="flex items-center gap-2">
+                      <User className="h-4 w-4 text-primary" />
+                      <span className="font-medium text-sm">{tx.account}</span>
                     </div>
-                    
-                    <DropdownMenuItem
-                      onClick={() => navigateTo('/dashboard?section=payment')}
-                    >
-                      <CreditCard className="mr-2 h-4 w-4" />
-                      {tx.managePackage}
+                  </div>
+                  <DropdownMenuItem onClick={() => setChangePasswordOpen(true)}>
+                    <Key className="mr-2 h-4 w-4" />
+                    {tx.changePassword}
+                  </DropdownMenuItem>
+                  {!encryptionEnabled ? (
+                    <DropdownMenuItem onClick={() => setEncryptionSetupOpen(true)}>
+                      <Shield className="mr-2 h-4 w-4" />
+                      {tx.encryption}
                     </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              )}
+                  ) : (
+                    <>
+                      {isUnlocked ? (
+                        <>
+                          <DropdownMenuItem disabled className="opacity-70">
+                            <Shield className="mr-2 h-4 w-4 text-primary" />
+                            {tx.encryptionEnabled}
+                          </DropdownMenuItem>
+                          <DropdownMenuItem 
+                            onClick={() => lock()}
+                            className="cursor-pointer"
+                          >
+                            <Lock className="mr-2 h-4 w-4" />
+                            {tx.lockData}
+                          </DropdownMenuItem>
+                          <DropdownMenuItem 
+                            onClick={() => setChangeEncryptionPasswordOpen(true)}
+                            className="cursor-pointer"
+                          >
+                            <KeyRound className="mr-2 h-4 w-4" />
+                            {tx.changeEncryptionPassword}
+                          </DropdownMenuItem>
+                          <DropdownMenuItem 
+                            onClick={() => setRecoveryKeyDialogOpen(true)}
+                            className="cursor-pointer"
+                          >
+                            <KeyRound className="mr-2 h-4 w-4" />
+                            {tx.recoveryKey}
+                          </DropdownMenuItem>
+                        </>
+                      ) : (
+                        <>
+                          <DropdownMenuItem 
+                            onClick={() => setEncryptionUnlockOpen(true)}
+                            className="cursor-pointer text-primary hover:text-primary"
+                          >
+                            <Unlock className="mr-2 h-4 w-4" />
+                            {tx.unlockData}
+                          </DropdownMenuItem>
+                          {encryptedPasswordRecovery && (
+                            <DropdownMenuItem 
+                              onClick={() => setRecoveryKeyRecoveryOpen(true)}
+                              className="cursor-pointer text-muted-foreground"
+                            >
+                              <Key className="mr-2 h-4 w-4" />
+                              {tx.forgotPassword}
+                            </DropdownMenuItem>
+                          )}
+                        </>
+                      )}
+                    </>
+                  )}
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleLogout} className="text-destructive focus:text-destructive">
+                    <LogOut className="mr-2 h-4 w-4" />
+                    {tx.logout}
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </>
           )}
           
-          {user ? (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="sm" className="border-border hover:bg-primary/10 hover:text-primary hover:border-primary/30 transition-colors">
-                  <User className="mr-1.5 h-4 w-4" />
-                  {tx.account}
-                  <ChevronDown className="ml-1 h-3 w-3" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56 bg-popover">
-                <DropdownMenuItem onClick={() => setChangePasswordOpen(true)}>
-                  <Key className="mr-2 h-4 w-4" />
-                  {tx.changePassword}
-                </DropdownMenuItem>
-                {!encryptionEnabled ? (
-                  <DropdownMenuItem onClick={() => setEncryptionSetupOpen(true)}>
-                    <Shield className="mr-2 h-4 w-4" />
-                    {tx.encryption}
-                  </DropdownMenuItem>
-                ) : (
-                  <>
-                    {isUnlocked ? (
-                      <>
-                        <DropdownMenuItem disabled className="opacity-70">
-                          <Shield className="mr-2 h-4 w-4 text-primary" />
-                          {tx.encryptionEnabled}
-                        </DropdownMenuItem>
-                        <DropdownMenuItem 
-                          onClick={() => lock()}
-                          className="cursor-pointer"
-                        >
-                          <Lock className="mr-2 h-4 w-4" />
-                          {tx.lockData}
-                        </DropdownMenuItem>
-                        <DropdownMenuItem 
-                          onClick={() => setChangeEncryptionPasswordOpen(true)}
-                          className="cursor-pointer"
-                        >
-                          <KeyRound className="mr-2 h-4 w-4" />
-                          {tx.changeEncryptionPassword}
-                        </DropdownMenuItem>
-                        <DropdownMenuItem 
-                          onClick={() => setRecoveryKeyDialogOpen(true)}
-                          className="cursor-pointer"
-                        >
-                          <KeyRound className="mr-2 h-4 w-4" />
-                          {tx.recoveryKey}
-                        </DropdownMenuItem>
-                      </>
-                    ) : (
-                      <>
-                        <DropdownMenuItem 
-                          onClick={() => setEncryptionUnlockOpen(true)}
-                          className="cursor-pointer text-primary hover:text-primary"
-                        >
-                          <Unlock className="mr-2 h-4 w-4" />
-                          {tx.unlockData}
-                        </DropdownMenuItem>
-                        {encryptedPasswordRecovery && (
-                          <DropdownMenuItem 
-                            onClick={() => setRecoveryKeyRecoveryOpen(true)}
-                            className="cursor-pointer text-muted-foreground"
-                          >
-                            <Key className="mr-2 h-4 w-4" />
-                            {tx.forgotPassword}
-                          </DropdownMenuItem>
-                        )}
-                      </>
-                    )}
-                  </>
-                )}
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleLogout} className="text-destructive focus:text-destructive">
-                  <LogOut className="mr-2 h-4 w-4" />
-                  {tx.logout}
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          ) : (
+          {!user && (
             <Dialog open={authOpen} onOpenChange={handleAuthOpenChange}>
               <DialogTrigger asChild>
                 <Button
