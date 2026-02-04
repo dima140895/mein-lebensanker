@@ -59,12 +59,12 @@ const AdvisorFinderSection = () => {
         },
         {
           icon: Building2,
-          title: 'Betreuungsvereine',
-          description: 'Für rechtliche Betreuung und Vorsorgevollmachten',
+          title: 'Gerichte & Justiz',
+          description: 'Für Betreuungsverfahren und Nachlassangelegenheiten',
           links: [
             { label: 'Justizadressen-Suche', url: 'https://www.justizadressen.nrw.de/de/justiz/suche' },
           ],
-          tip: 'Betreuungsvereine beraten kostenlos zu Vorsorgevollmachten.',
+          tip: 'Amtsgerichte sind zuständig für Betreuung und Nachlasssachen.',
         },
       ],
       disclaimer: 'Diese Links führen zu externen Webseiten. Mein Lebensanker übernimmt keine Verantwortung für deren Inhalte oder Aktualität.',
@@ -121,12 +121,12 @@ const AdvisorFinderSection = () => {
         },
         {
           icon: Building2,
-          title: 'Guardianship Associations',
-          description: 'For legal guardianship and powers of attorney',
+          title: 'Courts & Justice',
+          description: 'For guardianship proceedings and probate matters',
           links: [
             { label: 'Justice Address Search', url: 'https://www.justizadressen.nrw.de/de/justiz/suche' },
           ],
-          tip: 'Guardianship associations provide free advice on powers of attorney.',
+          tip: 'Local courts handle guardianship and probate matters.',
         },
       ],
       disclaimer: 'These links lead to external websites. Mein Lebensanker assumes no responsibility for their content or accuracy.',
