@@ -547,25 +547,23 @@ const Header = () => {
                     <TooltipContent side="bottom">
                       <p>{tx.settingsTooltip}</p>
                     </TooltipContent>
-                <DropdownMenuContent align="end" className="w-64 bg-popover">
+                <DropdownMenuContent align="end" className="w-56 bg-popover">
                   {/* My Package Section - only for paid users */}
                   {profile?.has_paid && (
                     <>
-                      <div className="px-2 py-2">
-                        <div className="flex items-center gap-2 mb-1">
-                          <Package className="h-4 w-4 text-primary" />
-                          <span className="font-medium text-sm">{tx.myPackage}</span>
-                        </div>
-                        <div className="pl-6">
-                          <p className="text-xs text-muted-foreground">{tx.currentTier}</p>
-                          <p className="font-medium text-foreground">
-                            {profile.purchased_tier === 'single' && tx.single}
-                            {profile.purchased_tier === 'couple' && tx.couple}
-                            {profile.purchased_tier === 'family' && tx.family}
-                          </p>
-                          <p className="text-xs text-muted-foreground">
-                            {profile.max_profiles} {tx.profiles}
-                          </p>
+                      <div className="px-3 py-2.5 bg-muted/50 rounded-md mx-1.5 my-1.5">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <p className="text-[10px] uppercase tracking-wide text-muted-foreground">{tx.currentTier}</p>
+                            <p className="font-semibold text-sm text-foreground">
+                              {profile.purchased_tier === 'single' && tx.single}
+                              {profile.purchased_tier === 'couple' && tx.couple}
+                              {profile.purchased_tier === 'family' && tx.family}
+                            </p>
+                          </div>
+                          <div className="text-right">
+                            <p className="text-xs text-muted-foreground">{profile.max_profiles} {tx.profiles}</p>
+                          </div>
                         </div>
                       </div>
                       <DropdownMenuItem
@@ -579,16 +577,12 @@ const Header = () => {
                   )}
                   
                   {/* Account Section */}
-                  <div className="px-2 py-1.5">
-                    <div className="flex items-center gap-2">
-                      <User className="h-4 w-4 text-primary" />
-                      <span className="font-medium text-sm">{tx.account}</span>
-                    </div>
-                  </div>
                   <DropdownMenuItem onClick={() => setChangePasswordOpen(true)}>
                     <Key className="mr-2 h-4 w-4" />
                     {tx.changePassword}
                   </DropdownMenuItem>
+                  
+                  {/* Encryption Section */}
                   {!encryptionEnabled ? (
                     <DropdownMenuItem onClick={() => setEncryptionSetupOpen(true)}>
                       <Shield className="mr-2 h-4 w-4" />
@@ -598,10 +592,6 @@ const Header = () => {
                     <>
                       {isUnlocked ? (
                         <>
-                          <DropdownMenuItem disabled className="opacity-70">
-                            <Shield className="mr-2 h-4 w-4 text-primary" />
-                            {tx.encryptionEnabled}
-                          </DropdownMenuItem>
                           <DropdownMenuItem 
                             onClick={() => lock()}
                             className="cursor-pointer"
@@ -646,12 +636,13 @@ const Header = () => {
                       )}
                     </>
                   )}
+                  
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleLogout} className="text-destructive focus:text-destructive">
                     <LogOut className="mr-2 h-4 w-4" />
                     {tx.logout}
                   </DropdownMenuItem>
-                  </DropdownMenuContent>
+                </DropdownMenuContent>
                   </DropdownMenu>
                 </Tooltip>
               </TooltipProvider>
