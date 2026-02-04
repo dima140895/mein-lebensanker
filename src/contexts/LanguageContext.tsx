@@ -19,7 +19,7 @@ const translations = {
     'hero.tagline': 'Ordnung für den Fall der Fälle',
     'hero.subtitle': 'Damit Deine Angehörigen wissen, was zu tun ist.',
     'hero.description': 'Dein digitaler Lebensordner – damit Deine Liebsten im Ernstfall nicht suchen müssen.',
-    'hero.cta': 'Jetzt starten',
+    'hero.cta': 'Ordnung schaffen',
     'hero.learnMore': 'So funktioniert\'s',
     
     // Value Propositions
