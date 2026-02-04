@@ -294,7 +294,7 @@ const PricingDialog = ({ open, onOpenChange, onSelectPackage }: PricingDialogPro
 
         {/* CTA for non-logged-in users */}
         {!user && (
-          <div className="mt-6 flex justify-center">
+          <div className="mt-3 flex justify-center">
             <Button size="lg" onClick={onSelectPackage} className="px-8">
               <CreditCard className="mr-2 h-4 w-4" />
               {texts.getStarted}
