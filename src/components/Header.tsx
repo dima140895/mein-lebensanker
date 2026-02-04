@@ -569,7 +569,7 @@ const Header = () => {
                       <DropdownMenuItem
                         onClick={() => navigateTo('/dashboard?section=payment')}
                       >
-                        <CreditCard className="mr-2 h-4 w-4" />
+                        <CreditCard className="mr-2 h-4 w-4 text-primary" />
                         {tx.managePackage}
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
@@ -578,14 +578,14 @@ const Header = () => {
                   
                   {/* Account Section */}
                   <DropdownMenuItem onClick={() => setChangePasswordOpen(true)}>
-                    <Key className="mr-2 h-4 w-4" />
+                    <Key className="mr-2 h-4 w-4 text-accent" />
                     {tx.changePassword}
                   </DropdownMenuItem>
                   
                   {/* Encryption Section */}
                   {!encryptionEnabled ? (
                     <DropdownMenuItem onClick={() => setEncryptionSetupOpen(true)}>
-                      <Shield className="mr-2 h-4 w-4" />
+                      <Shield className="mr-2 h-4 w-4 text-muted-foreground" />
                       {tx.encryption}
                     </DropdownMenuItem>
                   ) : (
@@ -596,21 +596,21 @@ const Header = () => {
                             onClick={() => lock()}
                             className="cursor-pointer"
                           >
-                            <Lock className="mr-2 h-4 w-4" />
+                            <Lock className="mr-2 h-4 w-4 text-primary" />
                             {tx.lockData}
                           </DropdownMenuItem>
                           <DropdownMenuItem 
                             onClick={() => setChangeEncryptionPasswordOpen(true)}
                             className="cursor-pointer"
                           >
-                            <KeyRound className="mr-2 h-4 w-4" />
+                            <KeyRound className="mr-2 h-4 w-4 text-primary" />
                             {tx.changeEncryptionPassword}
                           </DropdownMenuItem>
                           <DropdownMenuItem 
                             onClick={() => setRecoveryKeyDialogOpen(true)}
                             className="cursor-pointer"
                           >
-                            <KeyRound className="mr-2 h-4 w-4" />
+                            <KeyRound className="mr-2 h-4 w-4 text-primary" />
                             {tx.recoveryKey}
                           </DropdownMenuItem>
                         </>
@@ -618,9 +618,9 @@ const Header = () => {
                         <>
                           <DropdownMenuItem 
                             onClick={() => setEncryptionUnlockOpen(true)}
-                            className="cursor-pointer text-primary hover:text-primary"
+                            className="cursor-pointer"
                           >
-                            <Unlock className="mr-2 h-4 w-4" />
+                            <Unlock className="mr-2 h-4 w-4 text-primary" />
                             {tx.unlockData}
                           </DropdownMenuItem>
                           {encryptedPasswordRecovery && (
