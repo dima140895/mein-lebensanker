@@ -11,6 +11,20 @@ const ALLOWED_ORIGINS = [
   "https://id-preview--3aceebdb-8fff-4d04-bf5f-d8b882169f3d.lovable.app",
 ];
 
+// In-memory rate limiting (per email, max 1 per 5 minutes)
+const emailRateLimits = new Map<string, number>();
+const EMAIL_RATE_LIMIT_MS = 5 * 60 * 1000; // 5 minutes
+
+// Clean up old rate limit entries periodically
+const cleanupRateLimits = () => {
+  const now = Date.now();
+  for (const [key, timestamp] of emailRateLimits.entries()) {
+    if (now - timestamp > EMAIL_RATE_LIMIT_MS) {
+      emailRateLimits.delete(key);
+    }
+  }
+};
+
 const getCorsHeaders = (origin: string | null) => {
   // Allow lovableproject.com origins for preview environments
   const isLovablePreview = origin && origin.includes('.lovableproject.com');
@@ -40,6 +54,9 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
+    // Cleanup old rate limit entries
+    cleanupRateLimits();
+
     const { email, confirmationUrl, userName }: VerificationRequest = await req.json();
 
     // Validate required fields
@@ -57,6 +74,30 @@ const handler = async (req: Request): Promise<Response> => {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
+    }
+
+    // Normalize email for rate limiting
+    const normalizedEmail = email.toLowerCase().trim();
+
+    // Check rate limit for this email
+    const lastRequestTime = emailRateLimits.get(normalizedEmail);
+    if (lastRequestTime && Date.now() - lastRequestTime < EMAIL_RATE_LIMIT_MS) {
+      const remainingSeconds = Math.ceil((EMAIL_RATE_LIMIT_MS - (Date.now() - lastRequestTime)) / 1000);
+      console.log(`Rate limited email request for: ${normalizedEmail.substring(0, 3)}***`);
+      return new Response(
+        JSON.stringify({ 
+          error: "Too many requests. Please wait before requesting another verification email.",
+          retryAfter: remainingSeconds
+        }), 
+        {
+          status: 429,
+          headers: { 
+            ...corsHeaders, 
+            "Content-Type": "application/json",
+            "Retry-After": String(remainingSeconds)
+          },
+        }
+      );
     }
 
     // Validate confirmation URL
@@ -82,6 +123,31 @@ const handler = async (req: Request): Promise<Response> => {
       },
     });
 
+    // Validate that this email exists in the auth system (prevents spam to arbitrary addresses)
+    const { data: users, error: listError } = await supabaseAdmin.auth.admin.listUsers({
+      page: 1,
+      perPage: 1,
+    });
+
+    // Search for user with this email
+    const { data: userByEmail } = await supabaseAdmin.auth.admin.listUsers();
+    const userExists = userByEmail?.users?.some(u => u.email?.toLowerCase() === normalizedEmail);
+
+    if (!userExists) {
+      // Log attempt but return generic success to prevent email enumeration
+      console.log(`Verification email requested for non-existent user: ${normalizedEmail.substring(0, 3)}***`);
+      // Still record rate limit to prevent abuse
+      emailRateLimits.set(normalizedEmail, Date.now());
+      // Return success to prevent email enumeration attacks
+      return new Response(JSON.stringify({ success: true }), {
+        status: 200,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    // Record the request for rate limiting
+    emailRateLimits.set(normalizedEmail, Date.now());
+
     // Use Supabase's built-in resend confirmation to get a fresh token
     // This uses the 'magiclink' type which works for email verification
     const { data: linkData, error: linkError } = await supabaseAdmin.auth.admin.generateLink({
@@ -95,7 +161,7 @@ const handler = async (req: Request): Promise<Response> => {
     let fullConfirmationUrl = confirmationUrl;
     
     if (linkError) {
-      console.error("Error generating verification link:", linkError);
+      console.error("Error generating verification link");
       // If we can't generate a link (user might not exist yet), just use the base URL
       // The verification will need to be done via Supabase's built-in flow
     } else if (linkData?.properties?.hashed_token) {
@@ -188,8 +254,7 @@ const handler = async (req: Request): Promise<Response> => {
     });
 
     if (!emailResponse.ok) {
-      const errorText = await emailResponse.text();
-      console.error("Resend API error:", errorText);
+      console.error("Failed to send verification email");
       return new Response(
         JSON.stringify({ error: "Failed to send verification email" }),
         {
@@ -207,7 +272,7 @@ const handler = async (req: Request): Promise<Response> => {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (error: unknown) {
-    console.error("Error sending verification email:", error);
+    console.error("Error in send-verification-email function");
     return new Response(
       JSON.stringify({ error: "Failed to send verification email" }),
       {
