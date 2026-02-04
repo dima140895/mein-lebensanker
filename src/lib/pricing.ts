@@ -2,20 +2,20 @@
 export const PRICING = {
   single: {
     name: 'single',
-    price: 39,
+    price: 49,
     priceId: 'price_1StQxpICzkfBNYhyfkFifG39',
     maxProfiles: 1,
   },
   couple: {
     name: 'couple',
-    price: 49,
+    price: 69,
     priceId: 'price_1StQy5ICzkfBNYhyGqh7RUsk',
     maxProfiles: 2,
   },
   family: {
     name: 'family',
-    basePrice: 59,
-    pricePerAdditionalProfile: 19,
+    basePrice: 99,
+    pricePerAdditionalProfile: 10,
     minProfiles: 4,
     maxProfiles: 10,
     // Dynamic price - no fixed priceId
@@ -30,7 +30,7 @@ export const PRICING = {
 
 // Upgrade-Preise (Differenzbeträge) - für Family wird dynamisch berechnet
 export const UPGRADE_PRICES = {
-  single_to_couple: 10,
+  single_to_couple: 20, // 69 - 49 = 20
   // Family upgrades werden dynamisch berechnet basierend auf Profilanzahl
 } as const;
 
