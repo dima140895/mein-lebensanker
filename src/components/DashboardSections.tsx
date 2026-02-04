@@ -107,7 +107,7 @@ const DashboardSections = () => {
     de: {
       badge: 'Deine Vorsorge',
       title: 'Alles an einem Ort',
-      description: 'Halte Deine wichtigsten Informationen strukturiert fest – damit Deine Liebsten im Ernstfall nicht im Ungewissen stehen.',
+      description: 'Halte Deine wichtigsten Informationen strukturiert fest – damit Deine Liebsten im Ernstfall nicht im Ungewissen bleiben.',
     },
     en: {
       badge: 'Your Planning',
