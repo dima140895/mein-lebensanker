@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { LogIn, UserPlus, Menu, Home, User, Info, ClipboardList, Wallet, Globe, ScrollText, FolderOpen, Phone, ChevronDown, Link2, CreditCard, Package, Key, LogOut, Shield, KeyRound, Lock, Unlock } from 'lucide-react';
+import { LogIn, UserPlus, Menu, Home, User, Info, ClipboardList, Wallet, Globe, ScrollText, FolderOpen, Phone, ChevronDown, Link2, CreditCard, Package, Key, LogOut, Shield, KeyRound, Lock, Unlock, Settings } from 'lucide-react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import LanguageToggle from './LanguageToggle';
 import Logo from './Logo';
@@ -540,7 +540,7 @@ const Header = () => {
                           size="sm" 
                           className="border-border hover:bg-primary/10 hover:text-primary hover:border-primary/30 transition-colors"
                         >
-                          <Menu className="h-4 w-4" />
+                          <Settings className="h-4 w-4" />
                         </Button>
                       </DropdownMenuTrigger>
                     </TooltipTrigger>
