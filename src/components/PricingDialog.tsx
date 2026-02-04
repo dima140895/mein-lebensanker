@@ -49,7 +49,7 @@ const PricingDialog = ({ open, onOpenChange, onSelectPackage }: PricingDialogPro
         'Export- / Download-Funktion',
       ],
       inclVat: 'inkl. MwSt.',
-      getStarted: 'Jetzt starten',
+      getStarted: 'Jetzt in Ruhe vorsorgen',
       buyNow: 'Jetzt kaufen',
       processing: 'Wird verarbeitet...',
       popular: 'Beliebt',
@@ -78,7 +78,7 @@ const PricingDialog = ({ open, onOpenChange, onSelectPackage }: PricingDialogPro
         'Export / download function',
       ],
       inclVat: 'incl. VAT',
-      getStarted: 'Get Started',
+      getStarted: 'Plan ahead with peace of mind',
       buyNow: 'Buy Now',
       processing: 'Processing...',
       popular: 'Popular',
@@ -191,8 +191,9 @@ const PricingDialog = ({ open, onOpenChange, onSelectPackage }: PricingDialogPro
                   </div>
                 )}
 
-                <div className="flex items-center gap-3 mb-3 mt-1">
-                  <div className={`h-10 w-10 rounded-lg flex items-center justify-center ${iconBg}`}>
+                {/* Header section - fixed height */}
+                <div className="flex items-center gap-3 mb-3 mt-1 min-h-[52px]">
+                  <div className={`h-10 w-10 rounded-lg flex items-center justify-center flex-shrink-0 ${iconBg}`}>
                     <Icon className={`h-5 w-5 ${iconColor}`} />
                   </div>
                   <div>
@@ -203,33 +204,38 @@ const PricingDialog = ({ open, onOpenChange, onSelectPackage }: PricingDialogPro
                   </div>
                 </div>
 
-                {/* Family profile selector */}
-                {showProfileSelector && (
-                  <div className="mb-3 flex items-center justify-center gap-3 p-2 bg-muted/50 rounded-lg">
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      className="h-7 w-7"
-                      onClick={() => setFamilyProfileCount(Math.max(4, familyProfileCount - 1))}
-                      disabled={familyProfileCount <= 4}
-                    >
-                      <Minus className="h-3 w-3" />
-                    </Button>
-                    <span className="font-medium text-sm min-w-[70px] text-center">
-                      {familyProfileCount} {texts.profiles}
-                    </span>
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      className="h-7 w-7"
-                      onClick={() => setFamilyProfileCount(Math.min(10, familyProfileCount + 1))}
-                      disabled={familyProfileCount >= 10}
-                    >
-                      <Plus className="h-3 w-3" />
-                    </Button>
-                  </div>
-                )}
+                {/* Profile selector section - fixed height placeholder for alignment */}
+                <div className="h-[44px] mb-3">
+                  {showProfileSelector ? (
+                    <div className="flex items-center justify-center gap-3 p-2 bg-muted/50 rounded-lg h-full">
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="h-7 w-7"
+                        onClick={() => setFamilyProfileCount(Math.max(4, familyProfileCount - 1))}
+                        disabled={familyProfileCount <= 4}
+                      >
+                        <Minus className="h-3 w-3" />
+                      </Button>
+                      <span className="font-medium text-sm min-w-[70px] text-center">
+                        {familyProfileCount} {texts.profiles}
+                      </span>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="h-7 w-7"
+                        onClick={() => setFamilyProfileCount(Math.min(10, familyProfileCount + 1))}
+                        disabled={familyProfileCount >= 10}
+                      >
+                        <Plus className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="h-full" /> 
+                  )}
+                </div>
 
+                {/* Price section - aligned */}
                 <div className="mb-3">
                   <span className="font-mono text-3xl font-bold text-primary">
                     {price}
@@ -237,6 +243,7 @@ const PricingDialog = ({ open, onOpenChange, onSelectPackage }: PricingDialogPro
                   <span className="text-xs text-muted-foreground ml-1">{texts.inclVat}</span>
                 </div>
 
+                {/* Features section - aligned */}
                 <ul className="space-y-1.5 text-xs flex-1">
                   {texts.features.slice(0, 3).map((feature, i) => (
                     <li key={i} className="flex items-start gap-1.5 text-foreground">
