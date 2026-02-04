@@ -198,33 +198,6 @@ const DashboardSections = () => {
             />
           ))}
         </div>
-
-        {/* Info & Tools Sections */}
-        <div
-          key={`tools-header-${language}`}
-          className="mb-6 md:mb-10 mt-12 md:mt-20 text-center animate-fade-in-up"
-        >
-          <span className="inline-block rounded-full bg-muted px-3 py-1 md:px-4 md:py-1.5 text-xs md:text-sm font-medium text-muted-foreground">
-            {t('dashboard.helpfulTools')}
-          </span>
-          <h3 className="mt-3 md:mt-4 font-serif text-xl md:text-2xl lg:text-3xl font-bold text-foreground">
-            {t('dashboard.orientationSupport')}
-          </h3>
-        </div>
-
-        <div 
-          key={`info-${language}`}
-          className="grid gap-3 md:gap-5 grid-cols-3"
-        >
-          {infoSections.map((section, index) => (
-            <SectionCard 
-              key={`${language}-${section.key}`} 
-              section={section} 
-              index={index}
-              dataTourAttr={section.key === 'share' ? 'relatives-link' : undefined}
-            />
-          ))}
-        </div>
       </div>
     </section>
   );
