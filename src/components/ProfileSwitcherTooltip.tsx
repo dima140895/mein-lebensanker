@@ -3,6 +3,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { useLocation } from 'react-router-dom';
 import { X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const TOOLTIP_DISMISSED_KEY = 'vorsorge_profile_switcher_tooltip_shown';
 
@@ -13,6 +14,7 @@ interface ProfileSwitcherTooltipProps {
 export const ProfileSwitcherTooltip: React.FC<ProfileSwitcherTooltipProps> = ({ children }) => {
   const { language } = useLanguage();
   const location = useLocation();
+  const isMobile = useIsMobile();
   const [showTooltip, setShowTooltip] = useState(false);
   const hasShown = useRef(false);
 
@@ -60,13 +62,25 @@ export const ProfileSwitcherTooltip: React.FC<ProfileSwitcherTooltipProps> = ({ 
             onClick={handleDismiss}
           />
           
-          {/* Tooltip bubble */}
-          <div className="absolute top-full left-1/2 -translate-x-1/2 mt-3 z-50 animate-fade-in">
-            {/* Arrow pointing up */}
-            <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-0 h-0 border-l-8 border-r-8 border-b-8 border-l-transparent border-r-transparent border-b-primary" />
+          {/* Tooltip bubble - left-aligned on mobile, centered on desktop */}
+          <div className={`absolute top-full mt-3 z-50 animate-fade-in ${
+            isMobile 
+              ? 'left-0 right-auto' 
+              : 'left-1/2 -translate-x-1/2'
+          }`}>
+            {/* Arrow pointing up - positioned relative to trigger */}
+            <div className={`absolute -top-2 w-0 h-0 border-l-8 border-r-8 border-b-8 border-l-transparent border-r-transparent border-b-primary ${
+              isMobile 
+                ? 'left-4' 
+                : 'left-1/2 -translate-x-1/2'
+            }`} />
             
             {/* Bubble content */}
-            <div className="bg-primary text-primary-foreground rounded-xl px-4 py-3 shadow-elevated min-w-[220px] max-w-[300px]">
+            <div className={`bg-primary text-primary-foreground rounded-xl px-4 py-3 shadow-elevated ${
+              isMobile 
+                ? 'min-w-[200px] max-w-[280px]' 
+                : 'min-w-[220px] max-w-[300px]'
+            }`}>
               <div className="flex items-start gap-2">
                 <p className="text-sm font-medium flex-1">
                   {texts.message}
