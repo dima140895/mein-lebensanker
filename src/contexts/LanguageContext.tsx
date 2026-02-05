@@ -159,10 +159,20 @@ const translations = {
   },
 };
 
+const LANGUAGE_STORAGE_KEY = 'preferred-language';
+
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [language, setLanguage] = useState<Language>('de');
+  const [language, setLanguageState] = useState<Language>(() => {
+    const stored = localStorage.getItem(LANGUAGE_STORAGE_KEY);
+    return (stored === 'en' || stored === 'de') ? stored : 'de';
+  });
+
+  const setLanguage = (lang: Language) => {
+    setLanguageState(lang);
+    localStorage.setItem(LANGUAGE_STORAGE_KEY, lang);
+  };
 
   const t = (key: string): string => {
     return translations[language][key as keyof typeof translations['de']] || key;
