@@ -931,274 +931,325 @@ const PrintableRelativesSummary = forwardRef<HTMLDivElement, PrintableRelativesS
       <div ref={ref} className="print-container">
         <style>{`
           .print-container {
-            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif;
-            max-width: 800px;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+            max-width: 820px;
             margin: 0 auto;
             padding: 48px 56px;
-            background: #ffffff;
-            color: #1a1a1a;
-            line-height: 1.6;
+            background: hsl(var(--background));
+            color: hsl(var(--foreground));
+            line-height: 1.55;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
           }
+
           .print-header {
             text-align: center;
-            margin-bottom: 48px;
-            padding-bottom: 32px;
-            border-bottom: 2px solid #e8efe9;
+            margin-bottom: 44px;
+            padding-bottom: 28px;
+            border-bottom: 1px solid hsl(var(--border));
           }
+
           .print-logo {
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 14px;
-            margin-bottom: 24px;
+            margin-bottom: 18px;
           }
+
           .print-logo-icon {
             width: 56px;
             height: 56px;
-            background: linear-gradient(145deg, #7c9a82 0%, #5a7a60 100%);
-            border-radius: 14px;
+            background: var(--gradient-hero);
+            border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 12px rgba(124, 154, 130, 0.3);
+            box-shadow: var(--shadow-elevated);
+            color: hsl(var(--primary-foreground));
           }
+
           .print-logo-text {
+            font-family: 'Playfair Display', serif;
             font-size: 34px;
-            font-weight: 600;
-            color: #1a1a1a;
-            letter-spacing: -0.5px;
+            font-weight: 650;
+            color: hsl(var(--foreground));
+            letter-spacing: -0.4px;
           }
+
           .print-title {
-            font-size: 26px;
-            font-weight: 400;
-            margin-bottom: 8px;
-            color: #4a5d4d;
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: hsl(var(--sage-dark));
           }
+
           .print-date {
-            font-size: 14px;
-            color: #888;
+            font-size: 13px;
+            color: hsl(var(--muted-foreground));
           }
+
           .print-profile {
-            margin-bottom: 48px;
+            margin-bottom: 44px;
             page-break-inside: avoid;
           }
+
           .print-profile-header {
             display: flex;
             align-items: center;
             gap: 16px;
-            padding: 20px 24px;
-            background: linear-gradient(145deg, #7c9a82 0%, #5a7a60 100%);
-            border-radius: 16px;
-            margin-bottom: 28px;
-            box-shadow: 0 4px 16px rgba(124, 154, 130, 0.25);
+            padding: 18px 22px;
+            background: var(--gradient-hero);
+            border-radius: 18px;
+            margin-bottom: 26px;
+            box-shadow: var(--shadow-soft);
+            color: hsl(var(--primary-foreground));
           }
+
           .print-profile-icon {
-            width: 52px;
-            height: 52px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            background: hsl(var(--primary-foreground) / 0.16);
+            border-radius: 999px;
             display: flex;
             align-items: center;
             justify-content: center;
-            backdrop-filter: blur(4px);
           }
+
           .print-profile-name {
-            font-size: 24px;
-            font-weight: 600;
-            color: #ffffff;
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            font-family: 'Playfair Display', serif;
+            font-size: 22px;
+            font-weight: 650;
+            color: hsl(var(--primary-foreground));
           }
+
           .print-section {
-            margin-bottom: 28px;
+            margin-bottom: 26px;
             page-break-inside: avoid;
           }
+
           .print-section-header {
             display: flex;
             align-items: center;
             gap: 12px;
             padding: 14px 18px;
-            background: linear-gradient(135deg, #f8faf8 0%, #f0f5f1 100%);
-            border: 1px solid #d4e0d6;
-            border-radius: 10px 10px 0 0;
+            background: var(--gradient-card);
+            border: 1px solid hsl(var(--border));
+            border-radius: 12px 12px 0 0;
           }
+
           .print-section-icon {
             width: 34px;
             height: 34px;
-            background: linear-gradient(145deg, #7c9a82 0%, #5a7a60 100%);
-            border-radius: 8px;
+            background: var(--gradient-hero);
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 2px 6px rgba(124, 154, 130, 0.25);
+            box-shadow: var(--shadow-card);
+            color: hsl(var(--primary-foreground));
           }
+
           .print-section-title {
-            font-size: 17px;
-            font-weight: 600;
-            color: #2a3d2e;
+            font-family: 'Playfair Display', serif;
+            font-size: 16px;
+            font-weight: 650;
+            color: hsl(var(--sage-dark));
           }
+
           .print-section-content {
-            padding: 22px;
-            border: 1px solid #d4e0d6;
+            padding: 20px;
+            border: 1px solid hsl(var(--border));
             border-top: none;
-            border-radius: 0 0 10px 10px;
-            background: #fefefe;
+            border-radius: 0 0 12px 12px;
+            background: hsl(var(--card));
           }
+
           .print-info-item {
-            padding: 12px 0;
-            border-bottom: 1px solid #eef3ef;
-            display: flex;
-            flex-wrap: wrap;
-            align-items: baseline;
-            gap: 8px;
+            padding: 10px 0;
+            border-bottom: 1px solid hsl(var(--border) / 0.6);
+            display: grid;
+            grid-template-columns: 150px 1fr;
+            column-gap: 14px;
+            row-gap: 4px;
+            align-items: start;
           }
+
           .print-info-item:last-child {
             border-bottom: none;
           }
+
           .print-label {
-            font-size: 12px;
-            color: #6a7d6d;
+            font-size: 11px;
+            color: hsl(var(--muted-foreground));
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            font-weight: 500;
-            min-width: 120px;
+            font-weight: 600;
           }
+
           .print-value {
-            font-size: 15px;
-            color: #1a1a1a;
-            flex: 1;
+            font-size: 13px;
+            color: hsl(var(--foreground));
+            font-weight: 500;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
           }
+
           .print-subsection {
-            margin-top: 22px;
-            padding-top: 18px;
-            border-top: 1px dashed #d4e0d6;
+            margin-top: 18px;
+            padding-top: 14px;
+            border-top: 1px dashed hsl(var(--border));
           }
+
           .print-subsection:first-child {
             margin-top: 0;
             padding-top: 0;
             border-top: none;
           }
+
           .print-subsection-title {
-            font-size: 14px;
-            font-weight: 600;
-            color: #4a5d4d;
-            margin-bottom: 14px;
+            font-size: 13px;
+            font-weight: 700;
+            color: hsl(var(--sage-dark));
+            margin-bottom: 12px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
           }
+
           .print-subsection-title::before {
             content: '';
             width: 4px;
             height: 16px;
-            background: linear-gradient(180deg, #7c9a82 0%, #5a7a60 100%);
-            border-radius: 2px;
+            background: var(--gradient-hero);
+            border-radius: 99px;
           }
+
           .print-card {
-            background: linear-gradient(135deg, #f8faf8 0%, #f5f8f5 100%);
-            padding: 16px 18px;
-            border-radius: 10px;
+            background: var(--gradient-card);
+            padding: 14px 16px;
+            border-radius: 12px;
             margin-bottom: 12px;
-            border: 1px solid #e8efe9;
-            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.02);
+            border: 1px solid hsl(var(--border));
+            box-shadow: var(--shadow-card);
           }
+
           .print-card:last-child {
             margin-bottom: 0;
           }
+
           .print-uploaded-docs {
             margin: 10px 0 18px 0;
-            padding: 14px 18px;
-            background: linear-gradient(135deg, #f8faf8 0%, #f0f5f1 100%);
-            border-radius: 10px;
-            border: 1px dashed #c4d6c8;
+            padding: 14px 16px;
+            background: hsl(var(--secondary));
+            border-radius: 12px;
+            border: 1px dashed hsl(var(--border));
           }
+
           .print-doc-item {
-            font-size: 13px;
-            color: #4a5d4d;
+            font-size: 12px;
+            color: hsl(var(--foreground));
             padding: 8px 0;
-            border-bottom: 1px solid #e8efe9;
+            border-bottom: 1px solid hsl(var(--border) / 0.7);
             display: flex;
             align-items: center;
             gap: 8px;
           }
+
           .print-doc-item::before {
             content: '📄';
             font-size: 12px;
           }
+
           .print-doc-item:last-child {
             border-bottom: none;
             padding-bottom: 0;
           }
+
           .print-doc-item:first-child {
             padding-top: 0;
           }
+
           .print-disclaimer {
-            margin-top: 48px;
-            padding: 24px;
-            background: linear-gradient(135deg, #f5f8f5 0%, #eef3ef 100%);
-            border-radius: 12px;
-            font-size: 12px;
-            color: #6a7d6d;
+            margin-top: 44px;
+            padding: 20px 22px;
+            background: hsl(var(--secondary));
+            border-radius: 14px;
+            font-size: 11px;
+            color: hsl(var(--muted-foreground));
             text-align: center;
-            border: 1px solid #d4e0d6;
+            border: 1px solid hsl(var(--border));
             line-height: 1.7;
           }
+
           .print-footer {
-            margin-top: 48px;
-            padding-top: 28px;
-            border-top: 2px solid #e8efe9;
+            margin-top: 44px;
+            padding-top: 24px;
+            border-top: 1px solid hsl(var(--border));
             text-align: center;
           }
+
           .print-footer-note {
-            font-size: 13px;
-            color: #7c9a82;
-            margin-bottom: 18px;
+            font-size: 12px;
+            color: hsl(var(--sage-dark));
+            margin-bottom: 14px;
             font-style: italic;
           }
+
           .print-footer-links {
             display: flex;
             justify-content: center;
-            gap: 24px;
-            margin-bottom: 14px;
-            font-size: 12px;
-            color: #888;
+            gap: 16px;
+            margin-bottom: 12px;
+            font-size: 11px;
+            color: hsl(var(--muted-foreground));
           }
+
           .print-footer-links span:nth-child(2) {
-            color: #d4e0d6;
+            color: hsl(var(--border));
           }
+
           .print-footer-copyright {
-            font-size: 12px;
-            color: #aaa;
+            font-size: 11px;
+            color: hsl(var(--muted-foreground));
           }
+
           .print-footer-website {
-            font-size: 13px;
-            color: #7c9a82;
-            margin-top: 10px;
-            font-weight: 500;
+            font-size: 12px;
+            color: hsl(var(--sage-dark));
+            margin-top: 8px;
+            font-weight: 650;
           }
+
           @media print {
-            .print-container {
-              padding: 24px;
+            @page {
+              size: A4;
+              margin: 14mm;
             }
+
+            .print-container {
+              max-width: none;
+              padding: 0;
+              background: hsl(var(--background));
+            }
+
             .print-profile {
               page-break-before: auto;
             }
+
             .print-section {
               page-break-inside: avoid;
             }
-            .print-profile-header {
-              -webkit-print-color-adjust: exact;
-              print-color-adjust: exact;
-            }
+
+            .print-header,
+            .print-profile-header,
+            .print-logo-icon,
             .print-section-icon {
               -webkit-print-color-adjust: exact;
               print-color-adjust: exact;
             }
-            .print-logo-icon {
-              -webkit-print-color-adjust: exact;
-              print-color-adjust: exact;
-            }
+
             .print-footer {
               page-break-inside: avoid;
             }
@@ -1209,7 +1260,7 @@ const PrintableRelativesSummary = forwardRef<HTMLDivElement, PrintableRelativesS
         <div className="print-header">
           <div className="print-logo">
             <div className="print-logo-icon">
-              <Anchor size={28} color="#ffffff" />
+              <Anchor size={28} />
             </div>
             <span className="print-logo-text">Mein Lebensanker</span>
           </div>
@@ -1222,7 +1273,7 @@ const PrintableRelativesSummary = forwardRef<HTMLDivElement, PrintableRelativesS
           <div key={profile.profile_id} className="print-profile">
             <div className="print-profile-header">
               <div className="print-profile-icon">
-                <User size={24} color="#ffffff" />
+                <User size={24} />
               </div>
               <span className="print-profile-name">{profile.profile_name || texts.unknownProfile}</span>
             </div>
@@ -1233,7 +1284,7 @@ const PrintableRelativesSummary = forwardRef<HTMLDivElement, PrintableRelativesS
                 <div key={item.section_key} className="print-section">
                   <div className="print-section-header">
                     <div className="print-section-icon">
-                      <Icon size={16} color="#ffffff" />
+                      <Icon size={16} />
                     </div>
                     <span className="print-section-title">{sectionNames[item.section_key]}</span>
                   </div>
