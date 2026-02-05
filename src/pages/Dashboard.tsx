@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { User, Wallet, Globe, Heart, FileText, ArrowLeft, Phone, Info, Compass, Link2, Download, CheckCircle } from 'lucide-react';
+import { User, Wallet, Globe, Heart, FileText, ArrowLeft, Phone, Info, Compass, Link2, Download, CheckCircle, HelpCircle } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -27,7 +27,7 @@ import DataExport from '@/components/DataExport';
 import { useProfiles } from '@/contexts/ProfileContext';
 import { Button } from '@/components/ui/button';
 import { EncryptionPasswordDialog } from '@/components/EncryptionPasswordDialog';
-import { DashboardOnboardingTour } from '@/components/DashboardOnboardingTour';
+import { DashboardOnboardingTour, triggerDashboardTour } from '@/components/DashboardOnboardingTour';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useSectionStatus } from '@/hooks/useSectionStatus';
 import { Progress } from '@/components/ui/progress';
@@ -61,10 +61,20 @@ const DashboardContent = () => {
   const [activeSection, setActiveSection] = useState<string | null>(null);
   const [isPartnerView, setIsPartnerView] = useState(false);
   const [showUnlockDialog, setShowUnlockDialog] = useState(false);
+  const [tourKey, setTourKey] = useState(0);
   const isMobile = useIsMobile();
   const { sectionStatus, progressPercent, filledCount, totalCount, isComplete, allProfilesProgress, hasMultipleProfiles, refetch, loading: statusLoading } = useSectionStatus();
   const hasShownConfetti = useRef(false);
   const previousProfileId = useRef<string | null>(null);
+
+  const handleStartTour = () => {
+    // Clear the completed flag so tour can show again
+    localStorage.removeItem('vorsorge_dashboard_tour_completed');
+    // Set trigger flag
+    sessionStorage.setItem('show_dashboard_tour', 'true');
+    // Force re-render of tour component
+    setTourKey(prev => prev + 1);
+  };
 
   // Refetch when active profile changes
   useEffect(() => {
@@ -304,9 +314,21 @@ const DashboardContent = () => {
   return (
     <>
       <div className="container mx-auto px-4 py-4 md:py-8">
-        <div className="text-center mb-4 md:mb-6">
+        <div className="text-center mb-4 md:mb-6 relative">
           <h1 className="font-serif text-2xl md:text-3xl font-bold text-foreground">{texts.title}</h1>
           <p className="mt-1 md:mt-2 text-sm md:text-base text-muted-foreground">{texts.subtitle}</p>
+          
+          {/* Tour restart button */}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleStartTour}
+            className="absolute right-0 top-0 text-muted-foreground hover:text-foreground gap-1.5"
+            title={language === 'de' ? 'Tour starten' : 'Start tour'}
+          >
+            <HelpCircle className="h-4 w-4" />
+            <span className="hidden md:inline text-xs">{language === 'de' ? 'Tour' : 'Tour'}</span>
+          </Button>
         </div>
 
         {/* Progress bar */}
@@ -417,7 +439,7 @@ const DashboardContent = () => {
       />
 
       {/* Dashboard Onboarding Tour */}
-      <DashboardOnboardingTour />
+      <DashboardOnboardingTour key={tourKey} />
     </>
   );
 };
