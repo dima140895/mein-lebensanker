@@ -314,26 +314,24 @@ const DashboardContent = () => {
   return (
     <>
       <div className="container mx-auto px-4 py-4 md:py-8">
-        {/* Header with title and tour button */}
-        <div className="flex items-center justify-between mb-4 md:mb-6">
-          <div className="flex-1" />
-          <div className="text-center flex-shrink-0">
-            <h1 className="font-serif text-2xl md:text-3xl font-bold text-foreground">{texts.title}</h1>
-            <p className="mt-1 md:mt-2 text-sm md:text-base text-muted-foreground">{texts.subtitle}</p>
-          </div>
-          <div className="flex-1 flex justify-end">
-            {/* Tour restart button */}
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={handleStartTour}
-              className="h-9 w-9 md:w-auto md:px-3 text-muted-foreground hover:text-primary hover:border-primary/30"
-              title={language === 'de' ? 'Tour starten' : 'Start tour'}
-            >
-              <HelpCircle className="h-4 w-4" />
-              <span className="hidden md:inline ml-1.5 text-xs">{language === 'de' ? 'Tour' : 'Tour'}</span>
-            </Button>
-          </div>
+        {/* Tour restart button - top right */}
+        <div className="flex justify-end mb-2">
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={handleStartTour}
+            className="h-9 w-9 md:w-auto md:px-3 text-muted-foreground hover:text-primary hover:border-primary/30"
+            title={language === 'de' ? 'Tour starten' : 'Start tour'}
+          >
+            <HelpCircle className="h-4 w-4" />
+            <span className="hidden md:inline ml-1.5 text-xs">{language === 'de' ? 'Tour' : 'Tour'}</span>
+          </Button>
+        </div>
+
+        {/* Header with title */}
+        <div className="text-center mb-4 md:mb-6">
+          <h1 className="font-serif text-2xl md:text-3xl font-bold text-foreground">{texts.title}</h1>
+          <p className="mt-1 md:mt-2 text-sm md:text-base text-muted-foreground">{texts.subtitle}</p>
         </div>
 
         {/* Progress bar */}
