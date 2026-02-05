@@ -139,7 +139,6 @@ serve(async (req) => {
         .eq("user_id", authenticatedUserId);
 
       if (error) {
-        console.error("Profile update failed");
         return new Response(JSON.stringify({ error: "Failed to update payment status" }), {
           headers: { ...corsHeaders, "Content-Type": "application/json" },
           status: 500,
@@ -165,7 +164,6 @@ serve(async (req) => {
       status: 200,
     });
   } catch (error: unknown) {
-    console.error("Verification error occurred");
     return new Response(JSON.stringify({ error: "Verification failed" }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 500,

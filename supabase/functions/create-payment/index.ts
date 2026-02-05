@@ -271,7 +271,6 @@ serve(async (req) => {
     });
   } catch (error: unknown) {
     // Return generic error message to prevent information leakage
-    console.error("Payment error occurred");
     return new Response(JSON.stringify({ error: "Payment processing failed" }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 500,

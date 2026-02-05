@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { CheckCircle, XCircle, Loader2, Anchor, ArrowLeft } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/browserClient';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { logger } from '@/lib/logger';
 import { Button } from '@/components/ui/button';
 
 const REDIRECT_DELAY = 3;
@@ -108,7 +109,7 @@ const VerifyEmail = () => {
         setStatus('error');
         setErrorMessage(texts.errorDesc);
       } catch (err) {
-        console.error('Email verification error:', err);
+        logger.error('Email verification error:', err);
         setStatus('error');
         setErrorMessage(err instanceof Error ? err.message : texts.errorDesc);
       }
