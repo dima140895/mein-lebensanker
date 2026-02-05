@@ -359,8 +359,8 @@ const DashboardContent = () => {
         </div>
 
         {/* Data sections with status indicators */}
-        <div className="max-w-4xl mx-auto mb-4 md:mb-6" data-tour="dashboard-tiles">
-          <div className="grid gap-2.5 md:gap-4 grid-cols-2 lg:grid-cols-3">
+        <div className="max-w-4xl mx-auto mb-4 md:mb-6">
+          <div className="grid gap-2.5 md:gap-4 grid-cols-2 lg:grid-cols-3" data-tour="dashboard-tiles">
             {dataSections.map((section, i) => {
               const Icon = section.icon;
               const descKey = `${section.key}Desc` as keyof typeof texts;
