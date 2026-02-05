@@ -4,6 +4,7 @@ import { useLocation } from 'react-router-dom';
 import { X, ChevronRight, ChevronLeft, Users, LayoutGrid, FileText, Link2, Shield } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const TOUR_COMPLETED_KEY = 'vorsorge_dashboard_tour_completed';
 const TOUR_TRIGGER_FLAG = 'show_dashboard_tour';
@@ -82,6 +83,7 @@ interface HighlightRect {
 export const DashboardOnboardingTour: React.FC = () => {
   const { language } = useLanguage();
   const location = useLocation();
+  const isMobile = useIsMobile();
   const [showTour, setShowTour] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
   const [highlightRect, setHighlightRect] = useState<HighlightRect | null>(null);
@@ -108,6 +110,12 @@ export const DashboardOnboardingTour: React.FC = () => {
   const texts = t[language];
 
   const updateHighlight = useCallback(() => {
+    // Mobile: no spotlight/highlights (prevents off-screen targets)
+    if (isMobile) {
+      setHighlightRect(null);
+      return;
+    }
+
     const step = tourSteps[currentStep];
     if (!step.highlightSelector) {
       setHighlightRect(null);
@@ -160,7 +168,7 @@ export const DashboardOnboardingTour: React.FC = () => {
       console.warn('[Tour] Visible element not found:', step.highlightSelector);
       setHighlightRect(null);
     }
-  }, [currentStep]);
+  }, [currentStep, isMobile]);
 
   useEffect(() => {
     // Only run on dashboard page
@@ -322,32 +330,36 @@ export const DashboardOnboardingTour: React.FC = () => {
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-[200] pointer-events-none"
           >
-            <svg width="100%" height="100%" className="absolute inset-0">
-              <defs>
-                <mask id="spotlight-mask">
-                  <rect width="100%" height="100%" fill="white" />
-                  {highlightRect && (
-                    <rect
-                      x={highlightRect.left}
-                      y={highlightRect.top}
-                      width={highlightRect.width}
-                      height={highlightRect.height}
-                      rx="12"
-                      fill="black"
-                    />
-                  )}
-                </mask>
-              </defs>
-              <rect
-                width="100%"
-                height="100%"
-                fill="rgba(0, 0, 0, 0.6)"
-                mask="url(#spotlight-mask)"
-              />
-            </svg>
+            {isMobile ? (
+              <div className="absolute inset-0 bg-black/60" />
+            ) : (
+              <svg width="100%" height="100%" className="absolute inset-0">
+                <defs>
+                  <mask id="spotlight-mask">
+                    <rect width="100%" height="100%" fill="white" />
+                    {highlightRect && (
+                      <rect
+                        x={highlightRect.left}
+                        y={highlightRect.top}
+                        width={highlightRect.width}
+                        height={highlightRect.height}
+                        rx="12"
+                        fill="black"
+                      />
+                    )}
+                  </mask>
+                </defs>
+                <rect
+                  width="100%"
+                  height="100%"
+                  fill="rgba(0, 0, 0, 0.6)"
+                  mask="url(#spotlight-mask)"
+                />
+              </svg>
+            )}
 
-            {/* Highlight border */}
-            {highlightRect && (
+            {/* Highlight border (desktop only) */}
+            {!isMobile && highlightRect && (
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
