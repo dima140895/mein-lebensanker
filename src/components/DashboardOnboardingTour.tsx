@@ -376,33 +376,33 @@ export const DashboardOnboardingTour: React.FC = () => {
                 </div>
 
                 {/* Actions */}
-                <div className="p-4 pt-0 flex items-center justify-between gap-3">
+                <div className="p-4 pt-0 flex flex-wrap items-center justify-between gap-2">
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={handleClose}
-                    className="text-muted-foreground hover:text-foreground"
+                    className="text-muted-foreground hover:text-foreground text-xs sm:text-sm shrink-0"
                   >
                     {texts.skip}
                   </Button>
 
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 shrink-0">
                     {currentStep > 0 && (
                       <Button
                         variant="outline"
                         size="sm"
                         onClick={handlePrev}
-                        className="gap-1"
+                        className="gap-1 text-xs sm:text-sm px-2 sm:px-3"
                       >
                         <ChevronLeft className="h-4 w-4" />
-                        {texts.prev}
+                        <span className="hidden sm:inline">{texts.prev}</span>
                       </Button>
                     )}
                     <Button
                       variant="default"
                       size="sm"
                       onClick={handleNext}
-                      className="gap-1"
+                      className="gap-1 text-xs sm:text-sm px-3 sm:px-4"
                     >
                       {isLastStep ? texts.finish : texts.next}
                       {!isLastStep && <ChevronRight className="h-4 w-4" />}
