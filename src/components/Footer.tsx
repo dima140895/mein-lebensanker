@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Cookie, Shield, FileText, Lock, AlertTriangle } from 'lucide-react';
+import { Cookie, Shield, FileText, Lock, AlertTriangle, Smartphone } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 const Footer = () => {
@@ -13,6 +13,7 @@ const Footer = () => {
       copyright: '© 2026 Mein Lebensanker. Alle Rechte vorbehalten.',
       security: 'Datensicherheit & DSGVO',
       securityLimits: 'Sicherheitsgrenzen',
+      installApp: 'App installieren',
     },
     en: {
       privacy: 'Privacy Policy',
@@ -21,6 +22,7 @@ const Footer = () => {
       copyright: '© 2026 Mein Lebensanker. All rights reserved.',
       security: 'Data Security & GDPR',
       securityLimits: 'Security Limits',
+      installApp: 'Install App',
     },
   };
 
@@ -75,6 +77,13 @@ const Footer = () => {
             >
               <AlertTriangle className="h-3.5 w-3.5 md:h-4 md:w-4" />
               {texts.securityLimits}
+            </Link>
+            <Link
+              to="/installieren"
+              className="flex items-center gap-1 md:gap-1.5 text-xs md:text-sm text-primary/80 transition-colors hover:text-primary"
+            >
+              <Smartphone className="h-3.5 w-3.5 md:h-4 md:w-4" />
+              {texts.installApp}
             </Link>
           </nav>
           
