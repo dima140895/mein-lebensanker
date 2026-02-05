@@ -1,5 +1,4 @@
 import { forwardRef } from 'react';
-import { Anchor, User, Wallet, Globe, Heart, FileText, Phone } from 'lucide-react';
 
 interface VorsorgeData {
   section_key: string;
@@ -31,16 +30,16 @@ const PrintableDataExport = forwardRef<HTMLDivElement, PrintableDataExportProps>
   ({ data, profiles, language, uploadedDocuments = [] }, ref) => {
     const t = {
       de: {
-        title: 'Lebensanker-Übersicht',
+        title: 'Mein Lebensanker',
+        subtitle: 'Persönliche Vorsorge-Übersicht',
         generatedOn: 'Erstellt am',
         personal: 'Persönliche Daten',
         assets: 'Vermögensübersicht',
         digital: 'Digitale Dienste',
         wishes: 'Persönliche Wünsche',
-        documents: 'Dokumenten-Standorte',
+        documents: 'Dokumente',
         contacts: 'Wichtige Kontakte',
-        noInfo: 'Keine Angaben hinterlegt',
-        unknownProfile: 'Unbekanntes Profil',
+        noInfo: 'Keine Angaben',
         name: 'Name',
         birthDate: 'Geburtsdatum',
         address: 'Adresse',
@@ -49,49 +48,14 @@ const PrintableDataExport = forwardRef<HTMLDivElement, PrintableDataExportProps>
         emergencyContact: 'Notfallkontakt',
         bankAccounts: 'Bankkonten',
         institute: 'Institut',
-        purpose: 'Verwendungszweck',
+        purpose: 'Verwendung',
         balance: 'Kontostand',
         properties: 'Immobilien',
-        propertyAddress: 'Adresse',
-        propertyType: 'Art',
-        ownership: 'Nutzung',
-        ownershipSelfOccupied: 'Eigennutzung',
-        ownershipRentedOut: 'Vermietung',
-        rentalIncome: 'Mieteinnahmen',
-        financingStatus: 'Finanzierung',
-        financingPaidOff: 'Abbezahlt',
-        financingFinanced: 'Finanziert',
-        outstandingLoan: 'Offener Kredit',
         insurances: 'Versicherungen',
-        insuranceType: 'Art',
-        insuranceCompany: 'Gesellschaft',
-        policyNumber: 'Policennummer',
-        surrenderValue: 'Rückkaufswert',
         valuables: 'Wertgegenstände',
-        description: 'Beschreibung',
-        location: 'Aufbewahrungsort',
-        insuranceTypes: {
-          life: 'Lebensversicherung',
-          health: 'Krankenversicherung',
-          liability: 'Haftpflichtversicherung',
-          household: 'Hausratversicherung',
-          building: 'Gebäudeversicherung',
-          car: 'KFZ-Versicherung',
-          disability: 'Berufsunfähigkeitsversicherung',
-          accident: 'Unfallversicherung',
-          legal: 'Rechtsschutzversicherung',
-          pension: 'Private Rentenversicherung',
-          travel: 'Reiseversicherung',
-          other: 'Sonstige',
-        },
         emailAccounts: 'E-Mail-Konten',
-        provider: 'Anbieter',
-        emailAddress: 'E-Mail-Adresse',
         socialMedia: 'Soziale Medien',
-        platform: 'Plattform',
-        username: 'Benutzername',
         subscriptions: 'Abonnements',
-        service: 'Dienst',
         passwordManager: 'Passwort-Manager',
         medicalWishes: 'Medizinische Wünsche',
         carePreferences: 'Pflegewünsche',
@@ -101,64 +65,48 @@ const PrintableDataExport = forwardRef<HTMLDivElement, PrintableDataExportProps>
         testament: 'Testament',
         powerOfAttorney: 'Vorsorgevollmacht',
         livingWill: 'Patientenverfügung',
-        insuranceDocs: 'Versicherungsunterlagen',
-        propertyDocs: 'Immobilienunterlagen',
-        otherDocs: 'Sonstige Dokumente',
+        insuranceDocs: 'Versicherungen',
+        propertyDocs: 'Immobilien',
+        otherDocs: 'Sonstige',
         uploadedDocuments: 'Hochgeladene Dokumente',
-        documentTypes: {
-          testament: 'Testament',
-          'power-of-attorney': 'Vorsorgevollmacht',
-          'living-will': 'Patientenverfügung',
-          insurance: 'Versicherungsunterlagen',
-          property: 'Immobilienunterlagen',
-          other: 'Sonstige Dokumente',
-        },
         personalContacts: 'Persönliche Kontakte',
         professionalContacts: 'Fachliche Kontakte',
-        contactName: 'Name',
-        contactPhone: 'Telefon',
-        contactEmail: 'E-Mail',
-        contactRelation: 'Beziehung',
-        professionalType: 'Fachrichtung',
         notes: 'Hinweise',
+        disclaimer: 'Diese Übersicht dient ausschließlich der persönlichen Orientierung und ersetzt keine rechtliche, notarielle, medizinische oder steuerliche Beratung.',
+        footer: 'mein-lebensanker.lovable.app',
+        insuranceTypes: {
+          life: 'Leben', health: 'Kranken', liability: 'Haftpflicht',
+          household: 'Hausrat', building: 'Gebäude', car: 'KFZ',
+          disability: 'BU', accident: 'Unfall', legal: 'Rechtsschutz',
+          pension: 'Rente', travel: 'Reise', other: 'Sonstige',
+        },
+        documentTypes: {
+          testament: 'Testament', 'power-of-attorney': 'Vollmacht',
+          'living-will': 'Patientenverfügung', insurance: 'Versicherung',
+          property: 'Immobilie', other: 'Sonstige',
+        },
         relationshipTypes: {
-          family: 'Familie',
-          friend: 'Freund/in',
-          neighbor: 'Nachbar/in',
-          doctor: 'Arzt/Ärztin',
-          lawyer: 'Anwalt/Anwältin',
-          taxAdvisor: 'Steuerberater/in',
-          employer: 'Arbeitgeber/in',
-          other: 'Sonstige',
+          family: 'Familie', friend: 'Freund/in', neighbor: 'Nachbar/in',
+          doctor: 'Arzt', lawyer: 'Anwalt', taxAdvisor: 'Steuerberater',
+          employer: 'Arbeitgeber', other: 'Sonstige',
         },
         professionalTypes: {
-          familyDoctor: 'Hausarzt',
-          specialist: 'Facharzt',
-          lawyer: 'Rechtsanwalt',
-          notary: 'Notar',
-          taxAdvisor: 'Steuerberater',
-          bankAdvisor: 'Bankberater',
-          insuranceAgent: 'Versicherungsvertreter',
-          other: 'Sonstige',
+          familyDoctor: 'Hausarzt', specialist: 'Facharzt', lawyer: 'Anwalt',
+          notary: 'Notar', taxAdvisor: 'Steuerberater', bankAdvisor: 'Bank',
+          insuranceAgent: 'Versicherung', other: 'Sonstige',
         },
-        disclaimer: 'Diese Übersicht dient ausschließlich der persönlichen Orientierung und hat keinerlei rechtliche Wirkung. Sie ersetzt keine rechtliche, notarielle, medizinische oder steuerliche Beratung.',
-        footerCopyright: `© ${new Date().getFullYear()} Mein Lebensanker`,
-        footerImprint: 'Impressum',
-        footerPrivacy: 'Datenschutz',
-        footerWebsite: 'mein-lebensanker.de',
-        footerNote: 'Erstellt mit Mein Lebensanker – Dein digitaler Vorsorge-Assistent',
       },
       en: {
-        title: 'Care Planning Overview',
+        title: 'Mein Lebensanker',
+        subtitle: 'Personal Care Planning Overview',
         generatedOn: 'Generated on',
         personal: 'Personal Information',
-        assets: 'Asset Overview',
+        assets: 'Assets Overview',
         digital: 'Digital Services',
         wishes: 'Personal Wishes',
-        documents: 'Document Locations',
+        documents: 'Documents',
         contacts: 'Important Contacts',
-        noInfo: 'No information provided',
-        unknownProfile: 'Unknown Profile',
+        noInfo: 'No information',
         name: 'Name',
         birthDate: 'Date of Birth',
         address: 'Address',
@@ -170,46 +118,11 @@ const PrintableDataExport = forwardRef<HTMLDivElement, PrintableDataExportProps>
         purpose: 'Purpose',
         balance: 'Balance',
         properties: 'Properties',
-        propertyAddress: 'Address',
-        propertyType: 'Type',
-        ownership: 'Usage',
-        ownershipSelfOccupied: 'Self-occupied',
-        ownershipRentedOut: 'Rented out',
-        rentalIncome: 'Rental Income',
-        financingStatus: 'Financing',
-        financingPaidOff: 'Paid off',
-        financingFinanced: 'Financed',
-        outstandingLoan: 'Outstanding Loan',
-        insurances: 'Insurance Policies',
-        insuranceType: 'Type',
-        insuranceCompany: 'Company',
-        policyNumber: 'Policy Number',
-        surrenderValue: 'Surrender Value',
+        insurances: 'Insurance',
         valuables: 'Valuables',
-        description: 'Description',
-        location: 'Storage Location',
-        insuranceTypes: {
-          life: 'Life Insurance',
-          health: 'Health Insurance',
-          liability: 'Liability Insurance',
-          household: 'Household Insurance',
-          building: 'Building Insurance',
-          car: 'Car Insurance',
-          disability: 'Disability Insurance',
-          accident: 'Accident Insurance',
-          legal: 'Legal Protection',
-          pension: 'Private Pension',
-          travel: 'Travel Insurance',
-          other: 'Other',
-        },
         emailAccounts: 'Email Accounts',
-        provider: 'Provider',
-        emailAddress: 'Email Address',
         socialMedia: 'Social Media',
-        platform: 'Platform',
-        username: 'Username',
         subscriptions: 'Subscriptions',
-        service: 'Service',
         passwordManager: 'Password Manager',
         medicalWishes: 'Medical Wishes',
         carePreferences: 'Care Preferences',
@@ -219,845 +132,450 @@ const PrintableDataExport = forwardRef<HTMLDivElement, PrintableDataExportProps>
         testament: 'Will',
         powerOfAttorney: 'Power of Attorney',
         livingWill: 'Living Will',
-        insuranceDocs: 'Insurance Documents',
-        propertyDocs: 'Property Documents',
-        otherDocs: 'Other Documents',
+        insuranceDocs: 'Insurance',
+        propertyDocs: 'Property',
+        otherDocs: 'Other',
         uploadedDocuments: 'Uploaded Documents',
-        documentTypes: {
-          testament: 'Will',
-          'power-of-attorney': 'Power of Attorney',
-          'living-will': 'Living Will',
-          insurance: 'Insurance Documents',
-          property: 'Property Documents',
-          other: 'Other Documents',
-        },
         personalContacts: 'Personal Contacts',
         professionalContacts: 'Professional Contacts',
-        contactName: 'Name',
-        contactPhone: 'Phone',
-        contactEmail: 'Email',
-        contactRelation: 'Relation',
-        professionalType: 'Profession',
         notes: 'Notes',
+        disclaimer: 'This overview is for personal orientation only and does not replace legal, notarial, medical, or tax advice.',
+        footer: 'mein-lebensanker.lovable.app',
+        insuranceTypes: {
+          life: 'Life', health: 'Health', liability: 'Liability',
+          household: 'Household', building: 'Building', car: 'Car',
+          disability: 'Disability', accident: 'Accident', legal: 'Legal',
+          pension: 'Pension', travel: 'Travel', other: 'Other',
+        },
+        documentTypes: {
+          testament: 'Will', 'power-of-attorney': 'Power of Attorney',
+          'living-will': 'Living Will', insurance: 'Insurance',
+          property: 'Property', other: 'Other',
+        },
         relationshipTypes: {
-          family: 'Family',
-          friend: 'Friend',
-          neighbor: 'Neighbor',
-          doctor: 'Doctor',
-          lawyer: 'Lawyer',
-          taxAdvisor: 'Tax Advisor',
-          employer: 'Employer',
-          other: 'Other',
+          family: 'Family', friend: 'Friend', neighbor: 'Neighbor',
+          doctor: 'Doctor', lawyer: 'Lawyer', taxAdvisor: 'Tax Advisor',
+          employer: 'Employer', other: 'Other',
         },
         professionalTypes: {
-          familyDoctor: 'Family Doctor',
-          specialist: 'Specialist',
-          lawyer: 'Lawyer',
-          notary: 'Notary',
-          taxAdvisor: 'Tax Advisor',
-          bankAdvisor: 'Bank Advisor',
-          insuranceAgent: 'Insurance Agent',
-          other: 'Other',
+          familyDoctor: 'Family Doctor', specialist: 'Specialist', lawyer: 'Lawyer',
+          notary: 'Notary', taxAdvisor: 'Tax Advisor', bankAdvisor: 'Bank',
+          insuranceAgent: 'Insurance', other: 'Other',
         },
-        disclaimer: 'This overview is for personal orientation only and has no legal effect. It does not replace legal, notarial, medical, or tax advice.',
-        footerCopyright: `© ${new Date().getFullYear()} Mein Lebensanker`,
-        footerImprint: 'Imprint',
-        footerPrivacy: 'Privacy Policy',
-        footerWebsite: 'mein-lebensanker.de',
-        footerNote: 'Created with Mein Lebensanker – Your digital estate planning assistant',
       },
     };
 
     const texts = t[language];
-
-    const sectionIcons: Record<string, typeof User> = {
-      personal: User,
-      assets: Wallet,
-      digital: Globe,
-      wishes: Heart,
-      documents: FileText,
-      contacts: Phone,
-    };
-
-    const sectionNames: Record<string, string> = {
-      personal: texts.personal,
-      assets: texts.assets,
-      digital: texts.digital,
-      wishes: texts.wishes,
-      documents: texts.documents,
-      contacts: texts.contacts,
-    };
-
-    const getInsuranceTypeLabel = (type: string): string => {
-      if (!type) return '';
-      const key = type as keyof typeof texts.insuranceTypes;
-      return texts.insuranceTypes[key] || type;
-    };
-
-    const getOwnershipLabel = (ownership: string, ownershipOther?: string): string => {
-      if (ownership === 'self-occupied') return texts.ownershipSelfOccupied;
-      if (ownership === 'rented-out') return texts.ownershipRentedOut;
-      if (ownership === 'other' && ownershipOther) return ownershipOther;
-      return ownership;
-    };
-
-    const getFinancingLabel = (status: string): string => {
-      if (status === 'paid-off') return texts.financingPaidOff;
-      if (status === 'financed') return texts.financingFinanced;
-      return status;
-    };
-
-    const getDocumentTypeLabel = (type: string): string => {
-      const key = type as keyof typeof texts.documentTypes;
-      return texts.documentTypes[key] || type;
-    };
-
-    const getRelationshipLabel = (relationship: string): string => {
-      if (!relationship) return '';
-      const key = relationship as keyof typeof texts.relationshipTypes;
-      return texts.relationshipTypes[key] || relationship;
-    };
-
-    const getProfessionalTypeLabel = (type: string): string => {
-      if (!type) return '';
-      const key = type as keyof typeof texts.professionalTypes;
-      return texts.professionalTypes[key] || type;
-    };
-
-    const formatFileSize = (bytes: number): string => {
-      if (bytes < 1024) return `${bytes} B`;
-      if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-      return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-    };
-
-    const renderInfoItem = (label: string, value: unknown) => {
-      if (!value || (typeof value === 'string' && !value.trim())) return null;
-      return (
-        <div className="print-info-item">
-          <span className="print-label">{label}:</span>
-          <span className="print-value">{String(value)}</span>
-        </div>
-      );
-    };
-
-    const renderSection = (sectionKey: string, sectionData: Record<string, unknown>, profileId?: string | null) => {
-      switch (sectionKey) {
-        case 'personal':
-          return (
-            <div className="print-section-content">
-              {renderInfoItem(texts.name, sectionData.fullName)}
-              {renderInfoItem(texts.birthDate, sectionData.birthDate)}
-              {renderInfoItem(texts.address, sectionData.address)}
-              {renderInfoItem(texts.phone, sectionData.phone)}
-              {(sectionData.trustedPerson1 || sectionData.trustedPerson2) && (
-                <div className="print-subsection">
-                  <div className="print-subsection-title">{texts.trustedPersons}</div>
-                  {sectionData.trustedPerson1 && (
-                    <div className="print-value">
-                      {String(sectionData.trustedPerson1)}
-                      {sectionData.trustedPerson1Phone && ` (${sectionData.trustedPerson1Phone})`}
-                    </div>
-                  )}
-                  {sectionData.trustedPerson2 && (
-                    <div className="print-value">
-                      {String(sectionData.trustedPerson2)}
-                      {sectionData.trustedPerson2Phone && ` (${sectionData.trustedPerson2Phone})`}
-                    </div>
-                  )}
-                </div>
-              )}
-              {sectionData.emergencyContact && (
-                <div className="print-subsection">
-                  <div className="print-subsection-title">{texts.emergencyContact}</div>
-                  <div className="print-value">
-                    {String(sectionData.emergencyContact)}
-                    {sectionData.emergencyPhone && ` (${sectionData.emergencyPhone})`}
-                  </div>
-                </div>
-              )}
-              {renderInfoItem(texts.notes, sectionData.notes)}
-            </div>
-          );
-
-        case 'assets':
-          const bankAccounts = (sectionData.bankAccounts as Array<Record<string, unknown>>)?.filter(acc => 
-            acc.institute && typeof acc.institute === 'string' && acc.institute.trim()
-          ) || [];
-          const properties = (sectionData.properties as Array<Record<string, unknown>>)?.filter(prop => 
-            prop.address && typeof prop.address === 'string' && prop.address.trim()
-          ) || [];
-          const insurances = (sectionData.insurances as Array<Record<string, unknown>>)?.filter(ins => 
-            (ins.type && typeof ins.type === 'string' && ins.type.trim()) ||
-            (ins.company && typeof ins.company === 'string' && ins.company.trim())
-          ) || [];
-          const valuables = (sectionData.valuables as Array<Record<string, unknown>>)?.filter(val => 
-            val.description && typeof val.description === 'string' && val.description.trim()
-          ) || [];
-
-          return (
-            <div className="print-section-content">
-              {bankAccounts.length > 0 && (
-                <div className="print-subsection">
-                  <div className="print-subsection-title">{texts.bankAccounts}</div>
-                  {bankAccounts.map((acc, i) => (
-                    <div key={i} className="print-card">
-                      {acc.institute && <div className="print-info-item"><span className="print-label">{texts.institute}:</span> <span className="print-value">{String(acc.institute)}</span></div>}
-                      {acc.purpose && <div className="print-info-item"><span className="print-label">{texts.purpose}:</span> <span className="print-value">{String(acc.purpose)}</span></div>}
-                      {acc.balance && <div className="print-info-item"><span className="print-label">{texts.balance}:</span> <span className="print-value">{String(acc.balance)}</span></div>}
-                    </div>
-                  ))}
-                </div>
-              )}
-              {properties.length > 0 && (
-                <div className="print-subsection">
-                  <div className="print-subsection-title">{texts.properties}</div>
-                  {properties.map((prop, i) => (
-                    <div key={i} className="print-card">
-                      {prop.address && <div className="print-info-item"><span className="print-label">{texts.propertyAddress}:</span> <span className="print-value">{String(prop.address)}</span></div>}
-                      {prop.type && <div className="print-info-item"><span className="print-label">{texts.propertyType}:</span> <span className="print-value">{String(prop.type)}</span></div>}
-                      {prop.ownership && <div className="print-info-item"><span className="print-label">{texts.ownership}:</span> <span className="print-value">{getOwnershipLabel(String(prop.ownership), String(prop.ownershipOther || ''))}</span></div>}
-                      {prop.rentalIncome && <div className="print-info-item"><span className="print-label">{texts.rentalIncome}:</span> <span className="print-value">{String(prop.rentalIncome)}</span></div>}
-                      {prop.financingStatus && <div className="print-info-item"><span className="print-label">{texts.financingStatus}:</span> <span className="print-value">{getFinancingLabel(String(prop.financingStatus))}</span></div>}
-                      {prop.outstandingLoan && <div className="print-info-item"><span className="print-label">{texts.outstandingLoan}:</span> <span className="print-value">{String(prop.outstandingLoan)}</span></div>}
-                    </div>
-                  ))}
-                </div>
-              )}
-              {insurances.length > 0 && (
-                <div className="print-subsection">
-                  <div className="print-subsection-title">{texts.insurances}</div>
-                  {insurances.map((ins, i) => (
-                    <div key={i} className="print-card">
-                      {ins.type && <div className="print-info-item"><span className="print-label">{texts.insuranceType}:</span> <span className="print-value">{ins.type === 'other' && ins.typeOther ? String(ins.typeOther) : getInsuranceTypeLabel(String(ins.type))}</span></div>}
-                      {ins.company && <div className="print-info-item"><span className="print-label">{texts.insuranceCompany}:</span> <span className="print-value">{ins.company === 'other' && ins.companyOther ? String(ins.companyOther) : String(ins.company)}</span></div>}
-                      {ins.policyNumber && <div className="print-info-item"><span className="print-label">{texts.policyNumber}:</span> <span className="print-value">{String(ins.policyNumber)}</span></div>}
-                      {ins.surrenderValue && <div className="print-info-item"><span className="print-label">{texts.surrenderValue}:</span> <span className="print-value">{String(ins.surrenderValue)}</span></div>}
-                    </div>
-                  ))}
-                </div>
-              )}
-              {valuables.length > 0 && (
-                <div className="print-subsection">
-                  <div className="print-subsection-title">{texts.valuables}</div>
-                  {valuables.map((val, i) => (
-                    <div key={i} className="print-card">
-                      {val.description && <div className="print-info-item"><span className="print-label">{texts.description}:</span> <span className="print-value">{String(val.description)}</span></div>}
-                      {val.location && <div className="print-info-item"><span className="print-label">{texts.location}:</span> <span className="print-value">{String(val.location)}</span></div>}
-                    </div>
-                  ))}
-                </div>
-              )}
-              {renderInfoItem(texts.notes, sectionData.notes)}
-            </div>
-          );
-
-        case 'digital':
-          const emailAccounts = (sectionData.emailAccounts as Array<Record<string, unknown>>)?.filter(item => 
-            Object.values(item).some(v => v && typeof v === 'string' && v.trim())
-          ) || [];
-          const socialMedia = (sectionData.socialMedia as Array<Record<string, unknown>>)?.filter(item => 
-            Object.values(item).some(v => v && typeof v === 'string' && v.trim())
-          ) || [];
-          const subscriptions = (sectionData.subscriptions as Array<Record<string, unknown>>)?.filter(item => 
-            Object.values(item).some(v => v && typeof v === 'string' && v.trim())
-          ) || [];
-
-          return (
-            <div className="print-section-content">
-              {emailAccounts.length > 0 && (
-                <div className="print-subsection">
-                  <div className="print-subsection-title">{texts.emailAccounts}</div>
-                  {emailAccounts.map((acc, i) => (
-                    <div key={i} className="print-card">
-                      {acc.provider && <div className="print-info-item"><span className="print-label">{texts.provider}:</span> <span className="print-value">{String(acc.provider)}</span></div>}
-                      {acc.email && <div className="print-info-item"><span className="print-label">{texts.emailAddress}:</span> <span className="print-value">{String(acc.email)}</span></div>}
-                    </div>
-                  ))}
-                </div>
-              )}
-              {socialMedia.length > 0 && (
-                <div className="print-subsection">
-                  <div className="print-subsection-title">{texts.socialMedia}</div>
-                  {socialMedia.map((sm, i) => (
-                    <div key={i} className="print-card">
-                      {sm.platform && <div className="print-info-item"><span className="print-label">{texts.platform}:</span> <span className="print-value">{String(sm.platform)}</span></div>}
-                      {sm.username && <div className="print-info-item"><span className="print-label">{texts.username}:</span> <span className="print-value">{String(sm.username)}</span></div>}
-                    </div>
-                  ))}
-                </div>
-              )}
-              {subscriptions.length > 0 && (
-                <div className="print-subsection">
-                  <div className="print-subsection-title">{texts.subscriptions}</div>
-                  {subscriptions.map((sub, i) => (
-                    <div key={i} className="print-card">
-                      {sub.service && <div className="print-info-item"><span className="print-label">{texts.service}:</span> <span className="print-value">{String(sub.service)}</span></div>}
-                    </div>
-                  ))}
-                </div>
-              )}
-              {renderInfoItem(texts.passwordManager, sectionData.passwordManager)}
-              {renderInfoItem(texts.notes, sectionData.notes)}
-            </div>
-          );
-
-        case 'wishes':
-          return (
-            <div className="print-section-content">
-              {renderInfoItem(texts.medicalWishes, sectionData.medicalWishes)}
-              {renderInfoItem(texts.carePreferences, sectionData.carePreferences)}
-              {renderInfoItem(texts.funeralWishes, sectionData.funeralWishes)}
-              {renderInfoItem(texts.organDonation, sectionData.organDonation)}
-              {renderInfoItem(texts.otherWishes, sectionData.otherWishes)}
-              {renderInfoItem(texts.notes, sectionData.notes)}
-            </div>
-          );
-
-        case 'documents':
-          // Group uploaded documents by type for this profile only
-          const profileDocs = profileId 
-            ? uploadedDocuments.filter(doc => doc.path.includes(`/${profileId}/`))
-            : uploadedDocuments;
-          const documentTypeOrder = ['testament', 'power-of-attorney', 'living-will', 'insurance', 'property', 'other'];
-          const groupedUploadedDocs = documentTypeOrder.reduce((acc, type) => {
-            acc[type] = profileDocs.filter(doc => doc.documentType === type);
-            return acc;
-          }, {} as Record<string, UploadedDocument[]>);
-
-          return (
-            <div className="print-section-content">
-              {renderInfoItem(texts.testament, sectionData.testament)}
-              {groupedUploadedDocs['testament']?.length > 0 && (
-                <div className="print-uploaded-docs">
-                  {groupedUploadedDocs['testament'].map((doc, i) => (
-                    <div key={i} className="print-doc-item">📄 {doc.name} ({formatFileSize(doc.size)})</div>
-                  ))}
-                </div>
-              )}
-              {renderInfoItem(texts.powerOfAttorney, sectionData.powerOfAttorney)}
-              {groupedUploadedDocs['power-of-attorney']?.length > 0 && (
-                <div className="print-uploaded-docs">
-                  {groupedUploadedDocs['power-of-attorney'].map((doc, i) => (
-                    <div key={i} className="print-doc-item">📄 {doc.name} ({formatFileSize(doc.size)})</div>
-                  ))}
-                </div>
-              )}
-              {renderInfoItem(texts.livingWill, sectionData.livingWill)}
-              {groupedUploadedDocs['living-will']?.length > 0 && (
-                <div className="print-uploaded-docs">
-                  {groupedUploadedDocs['living-will'].map((doc, i) => (
-                    <div key={i} className="print-doc-item">📄 {doc.name} ({formatFileSize(doc.size)})</div>
-                  ))}
-                </div>
-              )}
-              {renderInfoItem(texts.insuranceDocs, sectionData.insuranceDocs)}
-              {groupedUploadedDocs['insurance']?.length > 0 && (
-                <div className="print-uploaded-docs">
-                  {groupedUploadedDocs['insurance'].map((doc, i) => (
-                    <div key={i} className="print-doc-item">📄 {doc.name} ({formatFileSize(doc.size)})</div>
-                  ))}
-                </div>
-              )}
-              {renderInfoItem(texts.propertyDocs, sectionData.propertyDocs)}
-              {groupedUploadedDocs['property']?.length > 0 && (
-                <div className="print-uploaded-docs">
-                  {groupedUploadedDocs['property'].map((doc, i) => (
-                    <div key={i} className="print-doc-item">📄 {doc.name} ({formatFileSize(doc.size)})</div>
-                  ))}
-                </div>
-              )}
-              {renderInfoItem(texts.otherDocs, sectionData.otherDocs)}
-              {groupedUploadedDocs['other']?.length > 0 && (
-                <div className="print-uploaded-docs">
-                  {groupedUploadedDocs['other'].map((doc, i) => (
-                    <div key={i} className="print-doc-item">📄 {doc.name} ({formatFileSize(doc.size)})</div>
-                  ))}
-                </div>
-              )}
-              {renderInfoItem(texts.notes, sectionData.notes)}
-            </div>
-          );
-
-        case 'contacts':
-          // Support both 'contacts' (FormContext) and 'personalContacts' (legacy) field names
-          const personalContacts = ((sectionData.contacts || sectionData.personalContacts) as Array<Record<string, unknown>>)?.filter(c => 
-            c.name && typeof c.name === 'string' && c.name.trim()
-          ) || [];
-          const professionalContacts = ((sectionData.professionals || sectionData.professionalContacts) as Array<Record<string, unknown>>)?.filter(c => 
-            c.name && typeof c.name === 'string' && c.name.trim()
-          ) || [];
-
-          return (
-            <div className="print-section-content">
-              {personalContacts.length > 0 && (
-                <div className="print-subsection">
-                  <div className="print-subsection-title">{texts.personalContacts}</div>
-                  {personalContacts.map((contact, i) => {
-                    // Support both 'relation' and 'relationship' field names
-                    const relationValue = contact.relation || contact.relationship;
-                    return (
-                      <div key={i} className="print-card">
-                        {contact.name && <div className="print-info-item"><span className="print-label">{texts.contactName}:</span> <span className="print-value">{String(contact.name)}</span></div>}
-                        {relationValue && <div className="print-info-item"><span className="print-label">{texts.contactRelation}:</span> <span className="print-value">{getRelationshipLabel(String(relationValue))}</span></div>}
-                        {contact.phone && <div className="print-info-item"><span className="print-label">{texts.contactPhone}:</span> <span className="print-value">{String(contact.phone)}</span></div>}
-                        {contact.email && <div className="print-info-item"><span className="print-label">{texts.contactEmail}:</span> <span className="print-value">{String(contact.email)}</span></div>}
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-              {professionalContacts.length > 0 && (
-                <div className="print-subsection">
-                  <div className="print-subsection-title">{texts.professionalContacts}</div>
-                  {professionalContacts.map((contact, i) => (
-                    <div key={i} className="print-card">
-                      {contact.name && <div className="print-info-item"><span className="print-label">{texts.contactName}:</span> <span className="print-value">{String(contact.name)}</span></div>}
-                      {contact.type && <div className="print-info-item"><span className="print-label">{texts.professionalType}:</span> <span className="print-value">{getProfessionalTypeLabel(String(contact.type))}</span></div>}
-                      {contact.phone && <div className="print-info-item"><span className="print-label">{texts.contactPhone}:</span> <span className="print-value">{String(contact.phone)}</span></div>}
-                      {contact.email && <div className="print-info-item"><span className="print-label">{texts.contactEmail}:</span> <span className="print-value">{String(contact.email)}</span></div>}
-                    </div>
-                  ))}
-                </div>
-              )}
-              {renderInfoItem(texts.notes, sectionData.notes)}
-            </div>
-          );
-
-        default:
-          return (
-            <div className="print-section-content">
-              <p className="print-value">{texts.noInfo}</p>
-            </div>
-          );
-      }
-    };
-
-    // Group uploaded documents by profile
-    const getUploadedDocsForProfile = (profileId: string): UploadedDocument[] => {
-      return uploadedDocuments.filter(doc => doc.path.includes(`/${profileId}/`));
-    };
-
-    // Group data by profile, including documents section if uploaded docs exist
-    const dataByProfile = profiles.map(profile => {
-      const profileData = data
-        .filter(d => d.person_profile_id === profile.id)
-        .filter(d => d.data && Object.keys(d.data).length > 0);
-      
-      // Check if this profile has uploaded documents
-      const profileUploadedDocs = getUploadedDocsForProfile(profile.id);
-      
-      // If there are uploaded docs but no documents section in data, add a placeholder
-      const hasDocumentsSection = profileData.some(d => d.section_key === 'documents');
-      if (profileUploadedDocs.length > 0 && !hasDocumentsSection) {
-        profileData.push({
-          section_key: 'documents',
-          data: {},
-          person_profile_id: profile.id,
-        });
-      }
-      
-      return { profile, data: profileData, uploadedDocs: profileUploadedDocs };
-    }).filter(p => p.data.length > 0);
-
     const currentDate = new Date().toLocaleDateString(language === 'de' ? 'de-DE' : 'en-US', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
+      day: '2-digit', month: 'long', year: 'numeric'
     });
 
-    if (dataByProfile.length === 0) {
+    const getLabel = (obj: Record<string, string>, key: string) => obj[key] || key;
+
+    const renderValue = (label: string, value: unknown) => {
+      if (!value || (typeof value === 'string' && !value.trim())) return null;
       return (
-        <div ref={ref} className="p-8 text-center text-muted-foreground">
-          {texts.noInfo}
+        <div style={{ display: 'flex', padding: '8px 0', borderBottom: '1px solid #e8e8e8' }}>
+          <span style={{ width: '140px', color: '#6b7280', fontSize: '13px', flexShrink: 0 }}>{label}</span>
+          <span style={{ color: '#1f2937', fontSize: '13px', fontWeight: 500 }}>{String(value)}</span>
         </div>
       );
-    }
+    };
+
+    const SectionHeader = ({ title, icon }: { title: string; icon: string }) => (
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '12px',
+        padding: '16px 20px',
+        background: 'linear-gradient(135deg, #6b8f71 0%, #5a7a60 100%)',
+        borderRadius: '8px 8px 0 0',
+        marginTop: '24px',
+      }}>
+        <span style={{ fontSize: '20px' }}>{icon}</span>
+        <span style={{ color: 'white', fontSize: '16px', fontWeight: 600, fontFamily: 'Playfair Display, Georgia, serif' }}>
+          {title}
+        </span>
+      </div>
+    );
+
+    const Card = ({ children }: { children: React.ReactNode }) => (
+      <div style={{
+        background: '#fafafa',
+        border: '1px solid #e5e5e5',
+        borderRadius: '6px',
+        padding: '12px 16px',
+        marginBottom: '8px',
+      }}>
+        {children}
+      </div>
+    );
+
+    const renderPersonal = (sectionData: Record<string, unknown>) => (
+      <div style={{ padding: '16px 20px', background: 'white', border: '1px solid #e5e5e5', borderTop: 'none', borderRadius: '0 0 8px 8px' }}>
+        {renderValue(texts.name, sectionData.fullName)}
+        {renderValue(texts.birthDate, sectionData.birthDate)}
+        {renderValue(texts.address, sectionData.address)}
+        {renderValue(texts.phone, sectionData.phone)}
+        {(sectionData.trustedPerson1 || sectionData.trustedPerson2) && (
+          <div style={{ marginTop: '16px' }}>
+            <div style={{ fontSize: '14px', fontWeight: 600, color: '#374151', marginBottom: '8px' }}>{texts.trustedPersons}</div>
+            {sectionData.trustedPerson1 && <div style={{ fontSize: '13px', color: '#4b5563', padding: '4px 0' }}>• {String(sectionData.trustedPerson1)}{sectionData.trustedPerson1Phone && ` (${sectionData.trustedPerson1Phone})`}</div>}
+            {sectionData.trustedPerson2 && <div style={{ fontSize: '13px', color: '#4b5563', padding: '4px 0' }}>• {String(sectionData.trustedPerson2)}{sectionData.trustedPerson2Phone && ` (${sectionData.trustedPerson2Phone})`}</div>}
+          </div>
+        )}
+        {sectionData.emergencyContact && (
+          <div style={{ marginTop: '16px' }}>
+            <div style={{ fontSize: '14px', fontWeight: 600, color: '#374151', marginBottom: '8px' }}>{texts.emergencyContact}</div>
+            <div style={{ fontSize: '13px', color: '#4b5563' }}>{String(sectionData.emergencyContact)}{sectionData.emergencyPhone && ` (${sectionData.emergencyPhone})`}</div>
+          </div>
+        )}
+        {sectionData.notes && renderValue(texts.notes, sectionData.notes)}
+      </div>
+    );
+
+    const renderAssets = (sectionData: Record<string, unknown>) => {
+      const bankAccounts = (sectionData.bankAccounts as Array<Record<string, unknown>>)?.filter(a => a.institute) || [];
+      const properties = (sectionData.properties as Array<Record<string, unknown>>)?.filter(p => p.address) || [];
+      const insurances = (sectionData.insurances as Array<Record<string, unknown>>)?.filter(i => i.type || i.company) || [];
+      const valuables = (sectionData.valuables as Array<Record<string, unknown>>)?.filter(v => v.description) || [];
+
+      return (
+        <div style={{ padding: '16px 20px', background: 'white', border: '1px solid #e5e5e5', borderTop: 'none', borderRadius: '0 0 8px 8px' }}>
+          {bankAccounts.length > 0 && (
+            <div style={{ marginBottom: '20px' }}>
+              <div style={{ fontSize: '14px', fontWeight: 600, color: '#374151', marginBottom: '12px' }}>{texts.bankAccounts}</div>
+              {bankAccounts.map((acc, i) => (
+                <Card key={i}>
+                  <div style={{ fontWeight: 600, color: '#1f2937', fontSize: '14px' }}>{String(acc.institute)}</div>
+                  {acc.purpose && <div style={{ fontSize: '12px', color: '#6b7280', marginTop: '4px' }}>{String(acc.purpose)}</div>}
+                  {acc.balance && <div style={{ fontSize: '13px', color: '#059669', fontWeight: 500, marginTop: '4px' }}>{String(acc.balance)}</div>}
+                </Card>
+              ))}
+            </div>
+          )}
+          {properties.length > 0 && (
+            <div style={{ marginBottom: '20px' }}>
+              <div style={{ fontSize: '14px', fontWeight: 600, color: '#374151', marginBottom: '12px' }}>{texts.properties}</div>
+              {properties.map((prop, i) => (
+                <Card key={i}>
+                  <div style={{ fontWeight: 600, color: '#1f2937', fontSize: '14px' }}>{String(prop.address)}</div>
+                  {prop.type && <div style={{ fontSize: '12px', color: '#6b7280', marginTop: '4px' }}>{String(prop.type)}</div>}
+                </Card>
+              ))}
+            </div>
+          )}
+          {insurances.length > 0 && (
+            <div style={{ marginBottom: '20px' }}>
+              <div style={{ fontSize: '14px', fontWeight: 600, color: '#374151', marginBottom: '12px' }}>{texts.insurances}</div>
+              {insurances.map((ins, i) => (
+                <Card key={i}>
+                  <div style={{ fontWeight: 600, color: '#1f2937', fontSize: '14px' }}>
+                    {getLabel(texts.insuranceTypes, String(ins.type || ''))}
+                    {ins.company && ` – ${ins.company}`}
+                  </div>
+                  {ins.policyNumber && <div style={{ fontSize: '12px', color: '#6b7280', marginTop: '4px' }}>Nr. {String(ins.policyNumber)}</div>}
+                </Card>
+              ))}
+            </div>
+          )}
+          {valuables.length > 0 && (
+            <div>
+              <div style={{ fontSize: '14px', fontWeight: 600, color: '#374151', marginBottom: '12px' }}>{texts.valuables}</div>
+              {valuables.map((val, i) => (
+                <Card key={i}>
+                  <div style={{ fontWeight: 600, color: '#1f2937', fontSize: '14px' }}>{String(val.description)}</div>
+                  {val.location && <div style={{ fontSize: '12px', color: '#6b7280', marginTop: '4px' }}>{String(val.location)}</div>}
+                </Card>
+              ))}
+            </div>
+          )}
+          {bankAccounts.length === 0 && properties.length === 0 && insurances.length === 0 && valuables.length === 0 && (
+            <div style={{ color: '#9ca3af', fontStyle: 'italic', fontSize: '13px' }}>{texts.noInfo}</div>
+          )}
+        </div>
+      );
+    };
+
+    const renderDigital = (sectionData: Record<string, unknown>) => {
+      const emails = (sectionData.emailAccounts as Array<Record<string, unknown>>)?.filter(e => e.email) || [];
+      const social = (sectionData.socialMedia as Array<Record<string, unknown>>)?.filter(s => s.platform) || [];
+      const subs = (sectionData.subscriptions as Array<Record<string, unknown>>)?.filter(s => s.service) || [];
+
+      return (
+        <div style={{ padding: '16px 20px', background: 'white', border: '1px solid #e5e5e5', borderTop: 'none', borderRadius: '0 0 8px 8px' }}>
+          {sectionData.passwordManager && renderValue(texts.passwordManager, sectionData.passwordManager)}
+          {emails.length > 0 && (
+            <div style={{ marginTop: '16px' }}>
+              <div style={{ fontSize: '14px', fontWeight: 600, color: '#374151', marginBottom: '12px' }}>{texts.emailAccounts}</div>
+              {emails.map((e, i) => (
+                <Card key={i}>
+                  <div style={{ fontWeight: 500, color: '#1f2937', fontSize: '13px' }}>{String(e.email)}</div>
+                  {e.provider && <div style={{ fontSize: '12px', color: '#6b7280' }}>{String(e.provider)}</div>}
+                </Card>
+              ))}
+            </div>
+          )}
+          {social.length > 0 && (
+            <div style={{ marginTop: '16px' }}>
+              <div style={{ fontSize: '14px', fontWeight: 600, color: '#374151', marginBottom: '12px' }}>{texts.socialMedia}</div>
+              {social.map((s, i) => (
+                <Card key={i}>
+                  <div style={{ fontWeight: 500, color: '#1f2937', fontSize: '13px' }}>{String(s.platform)}</div>
+                  {s.username && <div style={{ fontSize: '12px', color: '#6b7280' }}>@{String(s.username)}</div>}
+                </Card>
+              ))}
+            </div>
+          )}
+          {subs.length > 0 && (
+            <div style={{ marginTop: '16px' }}>
+              <div style={{ fontSize: '14px', fontWeight: 600, color: '#374151', marginBottom: '12px' }}>{texts.subscriptions}</div>
+              {subs.map((s, i) => (
+                <Card key={i}>
+                  <div style={{ fontWeight: 500, color: '#1f2937', fontSize: '13px' }}>{String(s.service)}</div>
+                </Card>
+              ))}
+            </div>
+          )}
+          {!sectionData.passwordManager && emails.length === 0 && social.length === 0 && subs.length === 0 && (
+            <div style={{ color: '#9ca3af', fontStyle: 'italic', fontSize: '13px' }}>{texts.noInfo}</div>
+          )}
+        </div>
+      );
+    };
+
+    const renderWishes = (sectionData: Record<string, unknown>) => (
+      <div style={{ padding: '16px 20px', background: 'white', border: '1px solid #e5e5e5', borderTop: 'none', borderRadius: '0 0 8px 8px' }}>
+        {renderValue(texts.medicalWishes, sectionData.medicalWishes)}
+        {renderValue(texts.carePreferences, sectionData.carePreferences)}
+        {renderValue(texts.funeralWishes, sectionData.funeralWishes)}
+        {renderValue(texts.organDonation, sectionData.organDonation)}
+        {renderValue(texts.otherWishes, sectionData.otherWishes)}
+        {!sectionData.medicalWishes && !sectionData.carePreferences && !sectionData.funeralWishes && !sectionData.organDonation && !sectionData.otherWishes && (
+          <div style={{ color: '#9ca3af', fontStyle: 'italic', fontSize: '13px' }}>{texts.noInfo}</div>
+        )}
+      </div>
+    );
+
+    const renderDocuments = (sectionData: Record<string, unknown>, profileId?: string | null) => {
+      const profileDocs = uploadedDocuments.filter(d => {
+        const pathParts = d.path.split('/');
+        return pathParts.length >= 3 && pathParts[1] === profileId;
+      });
+
+      const groupedDocs = profileDocs.reduce((acc, doc) => {
+        const type = doc.documentType;
+        if (!acc[type]) acc[type] = [];
+        acc[type].push(doc);
+        return acc;
+      }, {} as Record<string, UploadedDocument[]>);
+
+      return (
+        <div style={{ padding: '16px 20px', background: 'white', border: '1px solid #e5e5e5', borderTop: 'none', borderRadius: '0 0 8px 8px' }}>
+          {renderValue(texts.testament, sectionData.testamentLocation)}
+          {renderValue(texts.powerOfAttorney, sectionData.powerOfAttorneyLocation)}
+          {renderValue(texts.livingWill, sectionData.livingWillLocation)}
+          {renderValue(texts.insuranceDocs, sectionData.insuranceLocation)}
+          {renderValue(texts.propertyDocs, sectionData.propertyLocation)}
+          {renderValue(texts.otherDocs, sectionData.otherLocation)}
+          
+          {Object.keys(groupedDocs).length > 0 && (
+            <div style={{ marginTop: '20px' }}>
+              <div style={{ fontSize: '14px', fontWeight: 600, color: '#374151', marginBottom: '12px' }}>{texts.uploadedDocuments}</div>
+              {Object.entries(groupedDocs).map(([type, docs]) => (
+                <div key={type} style={{ marginBottom: '12px' }}>
+                  <div style={{ fontSize: '12px', color: '#6b7280', fontWeight: 500, marginBottom: '6px' }}>
+                    {getLabel(texts.documentTypes, type)}
+                  </div>
+                  {docs.map((doc, i) => (
+                    <div key={i} style={{ fontSize: '13px', color: '#4b5563', padding: '4px 0' }}>• {doc.name}</div>
+                  ))}
+                </div>
+              ))}
+            </div>
+          )}
+          
+          {!sectionData.testamentLocation && !sectionData.powerOfAttorneyLocation && !sectionData.livingWillLocation && 
+           !sectionData.insuranceLocation && !sectionData.propertyLocation && !sectionData.otherLocation && 
+           Object.keys(groupedDocs).length === 0 && (
+            <div style={{ color: '#9ca3af', fontStyle: 'italic', fontSize: '13px' }}>{texts.noInfo}</div>
+          )}
+        </div>
+      );
+    };
+
+    const renderContacts = (sectionData: Record<string, unknown>) => {
+      const personal = (sectionData.personalContacts as Array<Record<string, unknown>>)?.filter(c => c.name) || [];
+      const professional = (sectionData.professionalContacts as Array<Record<string, unknown>>)?.filter(c => c.name) || [];
+
+      return (
+        <div style={{ padding: '16px 20px', background: 'white', border: '1px solid #e5e5e5', borderTop: 'none', borderRadius: '0 0 8px 8px' }}>
+          {personal.length > 0 && (
+            <div style={{ marginBottom: '20px' }}>
+              <div style={{ fontSize: '14px', fontWeight: 600, color: '#374151', marginBottom: '12px' }}>{texts.personalContacts}</div>
+              {personal.map((c, i) => (
+                <Card key={i}>
+                  <div style={{ fontWeight: 600, color: '#1f2937', fontSize: '14px' }}>{String(c.name)}</div>
+                  {c.relationship && <div style={{ fontSize: '12px', color: '#6b8f71', fontWeight: 500 }}>{getLabel(texts.relationshipTypes, String(c.relationship))}</div>}
+                  {c.phone && <div style={{ fontSize: '12px', color: '#6b7280', marginTop: '4px' }}>📞 {String(c.phone)}</div>}
+                  {c.email && <div style={{ fontSize: '12px', color: '#6b7280' }}>✉️ {String(c.email)}</div>}
+                </Card>
+              ))}
+            </div>
+          )}
+          {professional.length > 0 && (
+            <div>
+              <div style={{ fontSize: '14px', fontWeight: 600, color: '#374151', marginBottom: '12px' }}>{texts.professionalContacts}</div>
+              {professional.map((c, i) => (
+                <Card key={i}>
+                  <div style={{ fontWeight: 600, color: '#1f2937', fontSize: '14px' }}>{String(c.name)}</div>
+                  {c.type && <div style={{ fontSize: '12px', color: '#6b8f71', fontWeight: 500 }}>{getLabel(texts.professionalTypes, String(c.type))}</div>}
+                  {c.phone && <div style={{ fontSize: '12px', color: '#6b7280', marginTop: '4px' }}>📞 {String(c.phone)}</div>}
+                  {c.email && <div style={{ fontSize: '12px', color: '#6b7280' }}>✉️ {String(c.email)}</div>}
+                </Card>
+              ))}
+            </div>
+          )}
+          {personal.length === 0 && professional.length === 0 && (
+            <div style={{ color: '#9ca3af', fontStyle: 'italic', fontSize: '13px' }}>{texts.noInfo}</div>
+          )}
+        </div>
+      );
+    };
+
+    const sectionRenderers: Record<string, (data: Record<string, unknown>, profileId?: string | null) => React.ReactNode> = {
+      personal: renderPersonal,
+      assets: renderAssets,
+      digital: renderDigital,
+      wishes: renderWishes,
+      documents: renderDocuments,
+      contacts: renderContacts,
+    };
+
+    const sectionConfig = [
+      { key: 'personal', icon: '👤', title: texts.personal },
+      { key: 'assets', icon: '💰', title: texts.assets },
+      { key: 'digital', icon: '🌐', title: texts.digital },
+      { key: 'wishes', icon: '💚', title: texts.wishes },
+      { key: 'documents', icon: '📄', title: texts.documents },
+      { key: 'contacts', icon: '📞', title: texts.contacts },
+    ];
 
     return (
-      <div ref={ref} className="print-container">
+      <div ref={ref} style={{
+        fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif',
+        background: 'white',
+        color: '#1f2937',
+        lineHeight: 1.5,
+      }}>
         <style>{`
           @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap');
-          
-          .print-container {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 56px 48px;
-            background: #ffffff;
-            color: #1f2937;
-            line-height: 1.65;
-          }
-          
-          /* ===== HEADER ===== */
-          .print-header {
-            text-align: center;
-            margin-bottom: 56px;
-            padding-bottom: 40px;
-            position: relative;
-          }
-          .print-header::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 120px;
-            height: 4px;
-            background: linear-gradient(90deg, transparent 0%, #6b8f71 50%, transparent 100%);
-            border-radius: 2px;
-          }
-          .print-logo {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 16px;
-            margin-bottom: 28px;
-          }
-          .print-logo-icon {
-            width: 52px;
-            height: 52px;
-            background: linear-gradient(145deg, #6b8f71 0%, #4a6b50 100%);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 6px 20px rgba(107, 143, 113, 0.35);
-          }
-          .print-logo-text {
-            font-size: 28px;
-            font-weight: 600;
-            color: #4a6b50;
-            font-family: 'Playfair Display', Georgia, serif;
-            letter-spacing: -0.3px;
-          }
-          .print-title {
-            font-size: 22px;
-            font-weight: 500;
-            color: #374151;
-            margin: 0 0 10px 0;
-            font-family: 'Inter', sans-serif;
-            letter-spacing: 0.2px;
-          }
-          .print-date {
-            font-size: 13px;
-            color: #9ca3af;
-            font-weight: 400;
-          }
-          
-          /* ===== PROFILE SECTIONS ===== */
-          .print-profile {
-            margin-bottom: 52px;
-          }
-          .print-profile-header {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            padding: 18px 22px;
-            background: linear-gradient(135deg, #6b8f71 0%, #4a6b50 100%);
-            border-radius: 14px;
-            margin-bottom: 24px;
-            box-shadow: 0 4px 16px rgba(107, 143, 113, 0.25);
-          }
-          .print-profile-icon {
-            width: 42px;
-            height: 42px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-          }
-          .print-profile-name {
-            font-size: 20px;
-            font-weight: 600;
-            color: #ffffff;
-            font-family: 'Playfair Display', Georgia, serif;
-            letter-spacing: 0.2px;
-          }
-          
-          /* ===== DATA SECTIONS ===== */
-          .print-section {
-            margin-bottom: 20px;
-            border-radius: 12px;
-            overflow: hidden;
-            border: 1px solid #e5e7eb;
-          }
-          .print-section-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 14px 18px;
-            background: linear-gradient(135deg, #f8faf8 0%, #f1f5f2 100%);
-            border-bottom: 1px solid #e5e7eb;
-          }
-          .print-section-icon {
-            width: 32px;
-            height: 32px;
-            background: linear-gradient(145deg, #6b8f71 0%, #4a6b50 100%);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 2px 6px rgba(107, 143, 113, 0.2);
-          }
-          .print-section-title {
-            font-size: 15px;
-            font-weight: 600;
-            color: #374151;
-            font-family: 'Playfair Display', Georgia, serif;
-            letter-spacing: 0.1px;
-          }
-          .print-section-content {
-            padding: 20px;
-            background: #ffffff;
-          }
-          
-          /* ===== INFO ITEMS ===== */
-          .print-info-item {
-            display: grid;
-            grid-template-columns: 140px 1fr;
-            gap: 12px;
-            padding: 10px 0;
-            border-bottom: 1px solid #f3f4f6;
-            align-items: baseline;
-          }
-          .print-info-item:last-child {
-            border-bottom: none;
-            padding-bottom: 0;
-          }
-          .print-info-item:first-child {
-            padding-top: 0;
-          }
-          .print-label {
-            font-size: 11px;
-            color: #6b7280;
-            text-transform: uppercase;
-            letter-spacing: 0.6px;
-            font-weight: 500;
-          }
-          .print-value {
-            font-size: 14px;
-            color: #1f2937;
-            font-weight: 400;
-          }
-          
-          /* ===== SUBSECTIONS ===== */
-          .print-subsection {
-            margin-top: 20px;
-            padding-top: 16px;
-            border-top: 1px dashed #d1d5db;
-          }
-          .print-subsection:first-child {
-            margin-top: 0;
-            padding-top: 0;
-            border-top: none;
-          }
-          .print-subsection-title {
-            font-size: 13px;
-            font-weight: 600;
-            color: #4a6b50;
-            margin-bottom: 14px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-          }
-          .print-subsection-title::before {
-            content: '';
-            width: 3px;
-            height: 14px;
-            background: linear-gradient(180deg, #6b8f71 0%, #4a6b50 100%);
-            border-radius: 2px;
-          }
-          
-          /* ===== CARDS ===== */
-          .print-card {
-            background: #fafbfc;
-            padding: 16px 18px;
-            border-radius: 10px;
-            margin-bottom: 10px;
-            border: 1px solid #e5e7eb;
-          }
-          .print-card:last-child {
-            margin-bottom: 0;
-          }
-          .print-card .print-info-item {
-            padding: 6px 0;
-            grid-template-columns: 120px 1fr;
-          }
-          .print-card .print-info-item:first-child {
-            padding-top: 0;
-          }
-          .print-card .print-info-item:last-child {
-            padding-bottom: 0;
-          }
-          
-          /* ===== UPLOADED DOCUMENTS ===== */
-          .print-uploaded-docs {
-            margin: 12px 0 16px 0;
-            padding: 14px 16px;
-            background: linear-gradient(135deg, #f8faf8 0%, #f1f5f2 100%);
-            border-radius: 8px;
-            border: 1px dashed #c5d1c7;
-          }
-          .print-doc-item {
-            font-size: 13px;
-            color: #4b5563;
-            padding: 6px 0;
-            border-bottom: 1px solid #e5e7eb;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-          }
-          .print-doc-item:last-child {
-            border-bottom: none;
-            padding-bottom: 0;
-          }
-          .print-doc-item:first-child {
-            padding-top: 0;
-          }
-          
-          /* ===== DISCLAIMER ===== */
-          .print-disclaimer {
-            margin-top: 48px;
-            padding: 20px 24px;
-            background: linear-gradient(135deg, #fefefe 0%, #f8faf8 100%);
-            border-radius: 12px;
-            font-size: 12px;
-            color: #6b7280;
-            text-align: center;
-            border: 1px solid #e5e7eb;
-            line-height: 1.7;
-            font-style: italic;
-          }
-          
-          /* ===== FOOTER ===== */
-          .print-footer {
-            margin-top: 40px;
-            padding-top: 24px;
-            border-top: 1px solid #e5e7eb;
-            text-align: center;
-          }
-          .print-footer-note {
-            font-size: 13px;
-            color: #6b8f71;
-            margin-bottom: 16px;
-            font-style: italic;
-            font-weight: 500;
-          }
-          .print-footer-links {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-bottom: 12px;
-            font-size: 12px;
-            color: #9ca3af;
-          }
-          .print-footer-links span:nth-child(2) {
-            color: #d1d5db;
-          }
-          .print-footer-copyright {
-            font-size: 11px;
-            color: #9ca3af;
-          }
-          .print-footer-website {
-            font-size: 13px;
-            color: #6b8f71;
-            margin-top: 8px;
-            font-weight: 500;
-          }
-          
-          /* ===== PRINT MEDIA ===== */
           @media print {
-            .print-container {
-              padding: 20px;
-              max-width: 100%;
-            }
-            .print-profile {
-              page-break-before: auto;
-            }
-            .print-section {
-              page-break-inside: avoid;
-              box-shadow: none;
-            }
-            .print-profile-header {
-              box-shadow: none;
-              -webkit-print-color-adjust: exact;
-              print-color-adjust: exact;
-            }
-            .print-logo-icon {
-              box-shadow: none;
-              -webkit-print-color-adjust: exact;
-              print-color-adjust: exact;
-            }
-            .print-section-icon {
-              box-shadow: none;
-              -webkit-print-color-adjust: exact;
-              print-color-adjust: exact;
-            }
-            .print-footer {
-              page-break-inside: avoid;
-            }
+            @page { margin: 15mm; size: A4; }
+            .page-break { page-break-before: always; }
+            .no-break { page-break-inside: avoid; }
           }
         `}</style>
 
-        {/* Header with Logo */}
-        <div className="print-header">
-          <div className="print-logo">
-            <div className="print-logo-icon">
-              <Anchor size={28} color="#ffffff" />
-            </div>
-            <span className="print-logo-text">Mein Lebensanker</span>
-          </div>
-          <h1 className="print-title">{texts.title}</h1>
-          <p className="print-date">{texts.generatedOn}: {currentDate}</p>
-        </div>
+        {profiles.map((profile, profileIndex) => {
+          const profileData = data.filter(d => d.person_profile_id === profile.id);
 
-        {/* Profile Sections */}
-        {dataByProfile.map(({ profile, data: profileData }) => (
-          <div key={profile.id} className="print-profile">
-            <div className="print-profile-header">
-              <div className="print-profile-icon">
-                <User size={24} color="#ffffff" />
-              </div>
-              <span className="print-profile-name">{profile.name || texts.unknownProfile}</span>
-            </div>
-
-            {profileData.map((item) => {
-              const Icon = sectionIcons[item.section_key] || FileText;
-              return (
-                <div key={item.section_key} className="print-section">
-                  <div className="print-section-header">
-                    <div className="print-section-icon">
-                      <Icon size={16} color="#ffffff" />
-                    </div>
-                    <span className="print-section-title">{sectionNames[item.section_key]}</span>
-                  </div>
-                  {renderSection(item.section_key, item.data, profile.id)}
+          return (
+            <div key={profile.id} className={profileIndex > 0 ? 'page-break' : ''}>
+              {/* Header */}
+              <div style={{
+                background: 'linear-gradient(135deg, #6b8f71 0%, #4a6b50 100%)',
+                padding: '40px',
+                borderRadius: '12px',
+                marginBottom: '24px',
+                textAlign: 'center',
+              }}>
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '12px',
+                  marginBottom: '8px',
+                }}>
+                  <span style={{ fontSize: '32px' }}>⚓</span>
+                  <span style={{
+                    fontFamily: 'Playfair Display, Georgia, serif',
+                    fontSize: '28px',
+                    fontWeight: 600,
+                    color: 'white',
+                  }}>
+                    {texts.title}
+                  </span>
                 </div>
-              );
-            })}
-          </div>
-        ))}
+                <div style={{ color: 'rgba(255,255,255,0.9)', fontSize: '14px', marginBottom: '20px' }}>
+                  {texts.subtitle}
+                </div>
+                <div style={{
+                  display: 'inline-block',
+                  background: 'rgba(255,255,255,0.15)',
+                  padding: '12px 24px',
+                  borderRadius: '8px',
+                }}>
+                  <div style={{ color: 'white', fontSize: '20px', fontWeight: 600, fontFamily: 'Playfair Display, Georgia, serif' }}>
+                    {profile.name}
+                  </div>
+                  {profile.birth_date && (
+                    <div style={{ color: 'rgba(255,255,255,0.8)', fontSize: '13px', marginTop: '4px' }}>
+                      {new Date(profile.birth_date).toLocaleDateString(language === 'de' ? 'de-DE' : 'en-US')}
+                    </div>
+                  )}
+                </div>
+                <div style={{ color: 'rgba(255,255,255,0.7)', fontSize: '12px', marginTop: '16px' }}>
+                  {texts.generatedOn}: {currentDate}
+                </div>
+              </div>
 
-        {/* Disclaimer */}
-        <div className="print-disclaimer">
-          {texts.disclaimer}
-        </div>
+              {/* Sections */}
+              {sectionConfig.map(section => {
+                const sectionData = profileData.find(d => d.section_key === section.key);
+                if (!sectionData) return null;
 
-        {/* Footer */}
-        <div className="print-footer">
-          <p className="print-footer-note">{texts.footerNote}</p>
-          <div className="print-footer-links">
-            <span>{texts.footerImprint}</span>
-            <span>•</span>
-            <span>{texts.footerPrivacy}</span>
-          </div>
-          <p className="print-footer-website">{texts.footerWebsite}</p>
-          <p className="print-footer-copyright">{texts.footerCopyright}</p>
-        </div>
+                return (
+                  <div key={section.key} className="no-break" style={{ marginBottom: '16px' }}>
+                    <SectionHeader title={section.title} icon={section.icon} />
+                    {sectionRenderers[section.key]?.(sectionData.data, profile.id)}
+                  </div>
+                );
+              })}
+
+              {/* Footer */}
+              <div style={{
+                marginTop: '40px',
+                padding: '20px',
+                background: '#f9fafb',
+                borderRadius: '8px',
+                border: '1px solid #e5e5e5',
+              }}>
+                <div style={{
+                  fontSize: '11px',
+                  color: '#6b7280',
+                  textAlign: 'center',
+                  marginBottom: '12px',
+                  fontStyle: 'italic',
+                }}>
+                  {texts.disclaimer}
+                </div>
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '8px',
+                  color: '#6b8f71',
+                  fontSize: '12px',
+                  fontWeight: 500,
+                }}>
+                  <span>⚓</span>
+                  <span>{texts.footer}</span>
+                </div>
+              </div>
+            </div>
+          );
+        })}
       </div>
     );
   }
