@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/browserClient';
@@ -13,12 +13,13 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { KeyRound, Loader2, Eye, EyeOff, AlertTriangle } from 'lucide-react';
+import { KeyRound, Loader2, Eye, EyeOff, AlertTriangle, Link2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { logger } from '@/lib/logger';
 import { createPasswordVerifier } from '@/lib/encryption';
 import { generateRecoveryKey, encryptPasswordWithRecoveryKey, formatRecoveryKey } from '@/lib/recoveryKey';
 import { RecoveryKeyDialog } from './RecoveryKeyDialog';
+import { invalidateShareTokenEncryption, countAffectedShareTokens } from '@/lib/shareTokenSync';
 
 interface ChangeEncryptionPasswordDialogProps {
   open: boolean;
@@ -42,6 +43,7 @@ export const ChangeEncryptionPasswordDialog: React.FC<ChangeEncryptionPasswordDi
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [affectedTokenCount, setAffectedTokenCount] = useState(0);
   const [newRecoveryKey, setNewRecoveryKey] = useState<string | null>(null);
 
   const translations = {
@@ -57,6 +59,7 @@ export const ChangeEncryptionPasswordDialog: React.FC<ChangeEncryptionPasswordDi
       success: 'Neues Passwort erfolgreich gespeichert!',
       error: 'Fehler beim Speichern des Passworts',
       recommendation: 'Wir empfehlen Dir, ein neues Passwort zu setzen, das Du Dir gut merken kannst.',
+      shareLinksWarning: 'Achtung: Du hast {count} aktive Angehörigen-Link(s). Diese müssen nach der Passwortänderung neu erstellt werden.',
     },
     en: {
       title: 'Set New Encryption Password',
@@ -70,10 +73,22 @@ export const ChangeEncryptionPasswordDialog: React.FC<ChangeEncryptionPasswordDi
       success: 'New password saved successfully!',
       error: 'Error saving password',
       recommendation: 'We recommend setting a new password that you can easily remember.',
+      shareLinksWarning: 'Warning: You have {count} active relative link(s). These will need to be recreated after the password change.',
     },
   };
 
   const t = translations[language];
+
+  // Check for affected share tokens when dialog opens
+  useEffect(() => {
+    const checkTokens = async () => {
+      if (open && user) {
+        const count = await countAffectedShareTokens(user.id);
+        setAffectedTokenCount(count);
+      }
+    };
+    checkTokens();
+  }, [open, user]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -122,6 +137,11 @@ export const ChangeEncryptionPasswordDialog: React.FC<ChangeEncryptionPasswordDi
         .eq('user_id', user.id);
 
       if (profileError) throw profileError;
+
+      // Invalidate encrypted_recovery_key on all share tokens
+      if (affectedTokenCount > 0) {
+        await invalidateShareTokenEncryption(user.id);
+      }
 
       // Show the new recovery key
       setNewRecoveryKey(recoveryKey);
@@ -179,6 +199,16 @@ export const ChangeEncryptionPasswordDialog: React.FC<ChangeEncryptionPasswordDi
               {t.recommendation}
             </AlertDescription>
           </Alert>
+
+          {/* Share Links Warning */}
+          {affectedTokenCount > 0 && (
+            <Alert className="border-destructive/30 bg-destructive/5">
+              <Link2 className="h-4 w-4 text-destructive" />
+              <AlertDescription className="text-sm text-destructive">
+                {t.shareLinksWarning.replace('{count}', affectedTokenCount.toString())}
+              </AlertDescription>
+            </Alert>
+          )}
 
           <div className="space-y-2">
             <Label htmlFor="new-enc-password">{t.newPassword}</Label>

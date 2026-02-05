@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useEncryption } from '@/contexts/EncryptionContext';
@@ -14,12 +14,13 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { KeyRound, Loader2, Eye, EyeOff, Lock, CheckCircle2 } from 'lucide-react';
+import { KeyRound, Loader2, Eye, EyeOff, Lock, CheckCircle2, AlertTriangle, Link2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { logger } from '@/lib/logger';
 import { createPasswordVerifier, verifyPassword } from '@/lib/encryption';
 import { generateRecoveryKey, encryptPasswordWithRecoveryKey } from '@/lib/recoveryKey';
 import { RecoveryKeyDialog } from './RecoveryKeyDialog';
+import { invalidateShareTokenEncryption, countAffectedShareTokens } from '@/lib/shareTokenSync';
 
 interface ChangeEncryptionPasswordWithCurrentDialogProps {
   open: boolean;
@@ -41,6 +42,7 @@ export const ChangeEncryptionPasswordWithCurrentDialog: React.FC<ChangeEncryptio
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [affectedTokenCount, setAffectedTokenCount] = useState(0);
   const [newRecoveryKey, setNewRecoveryKey] = useState<string | null>(null);
 
   const translations = {
@@ -58,6 +60,7 @@ export const ChangeEncryptionPasswordWithCurrentDialog: React.FC<ChangeEncryptio
       success: 'Verschlüsselungs-Passwort erfolgreich geändert!',
       error: 'Fehler beim Ändern des Passworts.',
       recoveryKeyNote: 'Hinweis: Nach der Änderung erhältst Du einen neuen Ersatzschlüssel.',
+      shareLinksWarning: 'Achtung: Du hast {count} aktive Angehörigen-Link(s). Diese müssen nach der Passwortänderung neu erstellt werden, damit Deine Angehörigen weiterhin Zugang haben.',
     },
     en: {
       title: 'Change Encryption Password',
@@ -73,10 +76,22 @@ export const ChangeEncryptionPasswordWithCurrentDialog: React.FC<ChangeEncryptio
       success: 'Encryption password changed successfully!',
       error: 'Error changing password.',
       recoveryKeyNote: 'Note: You will receive a new recovery key after the change.',
+      shareLinksWarning: 'Warning: You have {count} active relative link(s). These will need to be recreated after the password change so your relatives can continue to access.',
     },
   };
 
   const t = translations[language];
+
+  // Check for affected share tokens when dialog opens
+  useEffect(() => {
+    const checkTokens = async () => {
+      if (open && user) {
+        const count = await countAffectedShareTokens(user.id);
+        setAffectedTokenCount(count);
+      }
+    };
+    checkTokens();
+  }, [open, user]);
 
   const resetForm = () => {
     setCurrentPassword('');
@@ -166,6 +181,12 @@ export const ChangeEncryptionPasswordWithCurrentDialog: React.FC<ChangeEncryptio
         .eq('user_id', user.id);
 
       if (profileError) throw profileError;
+
+      // Invalidate encrypted_recovery_key on all share tokens
+      // (they will need to be recreated with the new password)
+      if (affectedTokenCount > 0) {
+        await invalidateShareTokenEncryption(user.id);
+      }
 
       // Unlock with the new password to update the session
       await unlock(newPassword);
@@ -277,6 +298,17 @@ export const ChangeEncryptionPasswordWithCurrentDialog: React.FC<ChangeEncryptio
             <CheckCircle2 className="h-3.5 w-3.5 text-primary" />
             {t.recoveryKeyNote}
           </p>
+
+          {/* Share Links Warning */}
+          {affectedTokenCount > 0 && (
+            <Alert className="border-destructive/30 bg-destructive/5">
+              <AlertTriangle className="h-4 w-4 text-destructive" />
+              <AlertDescription className="text-sm text-destructive flex items-center gap-2">
+                <Link2 className="h-4 w-4 flex-shrink-0" />
+                {t.shareLinksWarning.replace('{count}', affectedTokenCount.toString())}
+              </AlertDescription>
+            </Alert>
+          )}
 
           {error && (
             <Alert variant="destructive">
