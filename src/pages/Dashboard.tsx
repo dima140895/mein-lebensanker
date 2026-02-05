@@ -314,21 +314,26 @@ const DashboardContent = () => {
   return (
     <>
       <div className="container mx-auto px-4 py-4 md:py-8">
-        <div className="text-center mb-4 md:mb-6 relative">
-          <h1 className="font-serif text-2xl md:text-3xl font-bold text-foreground">{texts.title}</h1>
-          <p className="mt-1 md:mt-2 text-sm md:text-base text-muted-foreground">{texts.subtitle}</p>
-          
-          {/* Tour restart button */}
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleStartTour}
-            className="absolute right-0 top-0 text-muted-foreground hover:text-foreground gap-1.5"
-            title={language === 'de' ? 'Tour starten' : 'Start tour'}
-          >
-            <HelpCircle className="h-4 w-4" />
-            <span className="hidden md:inline text-xs">{language === 'de' ? 'Tour' : 'Tour'}</span>
-          </Button>
+        {/* Header with title and tour button */}
+        <div className="flex items-center justify-between mb-4 md:mb-6">
+          <div className="flex-1" />
+          <div className="text-center flex-shrink-0">
+            <h1 className="font-serif text-2xl md:text-3xl font-bold text-foreground">{texts.title}</h1>
+            <p className="mt-1 md:mt-2 text-sm md:text-base text-muted-foreground">{texts.subtitle}</p>
+          </div>
+          <div className="flex-1 flex justify-end">
+            {/* Tour restart button */}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleStartTour}
+              className="text-muted-foreground hover:text-primary hover:border-primary/30 gap-1.5"
+              title={language === 'de' ? 'Tour starten' : 'Start tour'}
+            >
+              <HelpCircle className="h-4 w-4" />
+              <span className="text-xs">{language === 'de' ? 'Tour' : 'Tour'}</span>
+            </Button>
+          </div>
         </div>
 
         {/* Progress bar */}
