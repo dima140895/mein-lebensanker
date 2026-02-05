@@ -266,35 +266,34 @@ const DashboardContent = () => {
     return (
       <>
         <div className="container mx-auto px-4 py-4 md:py-8">
-          {/* Mobile: Stack vertically with proper spacing */}
+          {/* Mobile: Three-row layout */}
           <div className="flex flex-col gap-2 mb-4 md:flex-row md:items-center md:justify-between md:gap-0 md:mb-6">
-            <div className="flex items-center justify-between">
+            {/* Row 1: Back button left, profile name right (mobile) */}
+            <div className="flex items-center justify-between md:contents">
               <Button variant="ghost" size="sm" onClick={() => handleSectionChange(null)} className="flex-shrink-0 -ml-2">
                 <ArrowLeft className="mr-1.5 h-4 w-4" /> 
                 <span className="hidden sm:inline">{texts.back}</span>
                 <span className="sm:hidden text-sm">{language === 'de' ? 'Zurück' : 'Back'}</span>
               </Button>
-              {/* Mobile: Show active profile name */}
-              {isMobile && activeProfile && (
-                <span className="text-xs font-medium text-muted-foreground flex items-center gap-1.5">
-                  <User className="h-3.5 w-3.5" />
-                  {activeProfile.name}
-                </span>
-              )}
+              {/* Desktop: Show active profile name on the right */}
+              <div className="hidden md:flex md:w-[140px] md:justify-end">
+                {activeProfile && (
+                  <span className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                    <User className="h-4 w-4" />
+                    {activeProfile.name}
+                  </span>
+                )}
+              </div>
             </div>
             
+            {/* Row 2: Section title (centered) */}
             <h2 className="font-serif text-lg md:text-xl font-semibold text-foreground text-center md:absolute md:left-1/2 md:-translate-x-1/2">
               {texts[activeSection as keyof typeof texts]}
             </h2>
             
-            {/* Desktop: Show active profile name on the right */}
-            <div className="hidden md:flex md:w-[140px] md:justify-end">
-              {activeProfile && (
-                <span className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                  <User className="h-4 w-4" />
-                  {activeProfile.name}
-                </span>
-              )}
+            {/* Row 3: ProfileSwitcher centered (mobile only) */}
+            <div className="flex justify-center md:hidden">
+              <ProfileSwitcher />
             </div>
           </div>
 
