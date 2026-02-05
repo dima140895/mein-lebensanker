@@ -539,6 +539,7 @@ const Header = () => {
                           variant="outline" 
                           size="sm" 
                           className="border-border hover:bg-primary/10 hover:text-primary hover:border-primary/30 transition-colors"
+                          data-tour="encryption-status"
                         >
                           <Settings className="h-4 w-4" />
                         </Button>

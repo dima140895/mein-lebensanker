@@ -63,12 +63,12 @@ const tourSteps: TourStep[] = [
   {
     id: 'encryption',
     icon: Shield,
-    titleDe: 'Verschlüsselung empfohlen',
-    titleEn: 'Encryption Recommended',
-    messageDe: 'Für maximale Sicherheit empfehlen wir Dir, die Ende-zu-Ende-Verschlüsselung zu aktivieren. Du wirst gleich danach gefragt.',
-    messageEn: 'For maximum security, we recommend enabling end-to-end encryption. You\'ll be asked about it shortly.',
+    titleDe: 'Verschlüsselung & Einstellungen',
+    titleEn: 'Encryption & Settings',
+    messageDe: 'Unter dem Zahnrad-Icon findest Du alle Konto-Einstellungen. Hier kannst Du auch die Ende-zu-Ende-Verschlüsselung aktivieren – für maximale Sicherheit.',
+    messageEn: 'Under the gear icon you\'ll find all account settings. Here you can also enable end-to-end encryption – for maximum security.',
     highlightSelector: '[data-tour="encryption-status"]',
-    highlightPosition: 'bottom',
+    highlightPosition: 'top',
   },
 ];
 
