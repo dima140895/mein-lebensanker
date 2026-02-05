@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
+import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 
 // Allowed origins for CORS
 const ALLOWED_ORIGINS = [
@@ -39,6 +40,20 @@ const FAMILY_PRICING = {
   maxProfiles: 10,
 };
 
+const VALID_PAYMENT_TYPES = ["single", "couple", "family"] as const;
+
+// Input validation schemas
+const PaymentRequestSchema = z.object({
+  paymentType: z.enum(["single", "couple", "family"]),
+  isUpgrade: z.boolean().optional().default(false),
+  currentTier: z.enum(["single", "couple", "family"]).optional(),
+  includeUpdateService: z.boolean().optional().default(false),
+  familyProfileCount: z.number().int().min(4).max(10).optional(),
+  isAddingProfiles: z.boolean().optional().default(false),
+  additionalProfileCount: z.number().int().min(1).max(6).optional(),
+  currentMaxProfiles: z.number().int().min(1).max(10).optional(),
+});
+
 const calculateFamilyPrice = (profileCount: number): number => {
   const clampedCount = Math.max(FAMILY_PRICING.minProfiles, Math.min(FAMILY_PRICING.maxProfiles, profileCount));
   const additionalProfiles = clampedCount - FAMILY_PRICING.minProfiles;
@@ -64,29 +79,53 @@ serve(async (req) => {
     const token = authHeader.replace("Bearer ", "");
     const { data } = await supabaseClient.auth.getUser(token);
     const user = data.user;
-    
+
     if (!user?.email) {
       throw new Error("User not authenticated or email not available");
     }
 
-    const { paymentType, isUpgrade, currentTier, includeUpdateService, familyProfileCount, isAddingProfiles, additionalProfileCount, currentMaxProfiles } = await req.json();
-    
-    const validTypes = ["single", "couple", "family"];
-    if (!paymentType || !validTypes.includes(paymentType)) {
-      throw new Error("Invalid payment type. Must be 'single', 'couple', or 'family'");
+    // Parse and validate request body with Zod
+    const rawBody = await req.json();
+    const parseResult = PaymentRequestSchema.safeParse(rawBody);
+
+    if (!parseResult.success) {
+      return new Response(JSON.stringify({ error: "Invalid request parameters" }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 400,
+      });
     }
+
+    const {
+      paymentType,
+      isUpgrade,
+      currentTier,
+      includeUpdateService,
+      familyProfileCount,
+      isAddingProfiles,
+      additionalProfileCount,
+      currentMaxProfiles,
+    } = parseResult.data;
 
     // Validate additional profile purchase for existing family users
     if (isAddingProfiles) {
       if (paymentType !== "family") {
-        throw new Error("Adding profiles is only available for family package");
+        return new Response(JSON.stringify({ error: "Invalid request parameters" }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 400,
+        });
       }
-      if (!additionalProfileCount || additionalProfileCount < 1) {
-        throw new Error("Invalid additional profile count");
+      if (!additionalProfileCount) {
+        return new Response(JSON.stringify({ error: "Invalid request parameters" }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 400,
+        });
       }
-      const newTotal = (currentMaxProfiles || 4) + additionalProfileCount;
+      const newTotal = (currentMaxProfiles || 4) + (additionalProfileCount || 0);
       if (newTotal > FAMILY_PRICING.maxProfiles) {
-        throw new Error(`Maximum ${FAMILY_PRICING.maxProfiles} profiles allowed`);
+        return new Response(JSON.stringify({ error: "Invalid request parameters" }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 400,
+        });
       }
     }
 
@@ -120,14 +159,14 @@ serve(async (req) => {
     };
 
     const selectedMaxProfiles = isAddingProfiles 
-      ? (currentMaxProfiles || 4) + additionalProfileCount
+      ? (currentMaxProfiles || 4) + (additionalProfileCount || 0)
       : getMaxProfiles(paymentType, familyProfileCount);
     const packagePrice = getPackagePrice(paymentType, familyProfileCount);
 
     if (isAddingProfiles) {
       // Adding profiles to existing family package
-      const addProfilesAmount = additionalProfileCount * FAMILY_PRICING.pricePerAdditionalProfile;
-      
+      const addProfilesAmount = (additionalProfileCount || 0) * FAMILY_PRICING.pricePerAdditionalProfile;
+
       const addProfilesPrice = await stripe.prices.create({
         unit_amount: addProfilesAmount,
         currency: "eur",
@@ -140,13 +179,16 @@ serve(async (req) => {
         price: addProfilesPrice.id,
         quantity: 1,
       });
-    } else if (isUpgrade && currentTier && validTypes.includes(currentTier)) {
+    } else if (isUpgrade && currentTier && VALID_PAYMENT_TYPES.includes(currentTier)) {
       // Calculate upgrade price
       const currentPrice = getPackagePrice(currentTier);
       const upgradeAmount = packagePrice - currentPrice;
 
       if (upgradeAmount <= 0) {
-        throw new Error("Invalid upgrade: new package must be more expensive");
+        return new Response(JSON.stringify({ error: "Invalid upgrade request" }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 400,
+        });
       }
 
       // Create a price for the upgrade amount

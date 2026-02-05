@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
@@ -39,11 +40,18 @@ const getCorsHeaders = (origin: string | null) => {
   };
 };
 
-interface VerificationRequest {
-  email: string;
-  confirmationUrl: string;
-  userName?: string;
-}
+// Input validation schema with strict patterns
+const VerificationRequestSchema = z.object({
+  email: z.string().email().max(255).transform(val => val.toLowerCase().trim()),
+  confirmationUrl: z.string().url().max(2000),
+  userName: z.string().max(100).optional().transform(val => val ? val.replace(/[<>]/g, '') : undefined),
+});
+
+// Allowed URL prefixes for confirmation URLs
+const VALID_URL_PREFIXES = [
+  "https://mein-lebensanker.lovable.app",
+  "https://id-preview--3aceebdb-8fff-4d04-bf5f-d8b882169f3d.lovable.app",
+];
 
 const handler = async (req: Request): Promise<Response> => {
   const corsHeaders = getCorsHeaders(req.headers.get("origin"));
@@ -57,62 +65,48 @@ const handler = async (req: Request): Promise<Response> => {
     // Cleanup old rate limit entries
     cleanupRateLimits();
 
-    const { email, confirmationUrl, userName }: VerificationRequest = await req.json();
+    // Parse and validate request body with Zod
+    const rawBody = await req.json();
+    const parseResult = VerificationRequestSchema.safeParse(rawBody);
 
-    // Validate required fields
-    if (!email || !confirmationUrl) {
-      return new Response(JSON.stringify({ error: "Missing required fields" }), {
+    if (!parseResult.success) {
+      return new Response(JSON.stringify({ error: "Invalid request" }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
-    // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return new Response(JSON.stringify({ error: "Invalid email format" }), {
+    const { email, confirmationUrl, userName } = parseResult.data;
+
+    // Validate confirmation URL against allowlist
+    const isValidUrl = VALID_URL_PREFIXES.some(prefix => confirmationUrl.startsWith(prefix)) ||
+                       confirmationUrl.includes('.lovableproject.com');
+
+    if (!isValidUrl) {
+      return new Response(JSON.stringify({ error: "Invalid request" }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
     // Normalize email for rate limiting
-    const normalizedEmail = email.toLowerCase().trim();
+    const normalizedEmail = email;
 
     // Check rate limit for this email
     const lastRequestTime = emailRateLimits.get(normalizedEmail);
     if (lastRequestTime && Date.now() - lastRequestTime < EMAIL_RATE_LIMIT_MS) {
       const remainingSeconds = Math.ceil((EMAIL_RATE_LIMIT_MS - (Date.now() - lastRequestTime)) / 1000);
-      console.log(`Rate limited email request for: ${normalizedEmail.substring(0, 3)}***`);
       return new Response(
-        JSON.stringify({ 
-          error: "Too many requests. Please wait before requesting another verification email.",
-          retryAfter: remainingSeconds
-        }), 
+        JSON.stringify({ error: "Too many requests" }),
         {
           status: 429,
-          headers: { 
+          headers: {
             ...corsHeaders, 
             "Content-Type": "application/json",
             "Retry-After": String(remainingSeconds)
           },
         }
       );
-    }
-
-    // Validate confirmation URL
-    const validUrlPrefixes = [
-      "https://mein-lebensanker.lovable.app",
-      "https://id-preview--3aceebdb-8fff-4d04-bf5f-d8b882169f3d.lovable.app",
-    ];
-    const isValidUrl = validUrlPrefixes.some(prefix => confirmationUrl.startsWith(prefix)) ||
-                       confirmationUrl.includes('.lovableproject.com');
-    
-    if (!isValidUrl) {
-      return new Response(JSON.stringify({ error: "Invalid confirmation URL" }), {
-        status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
     }
 
     // Create Supabase admin client
@@ -123,22 +117,13 @@ const handler = async (req: Request): Promise<Response> => {
       },
     });
 
-    // Validate that this email exists in the auth system (prevents spam to arbitrary addresses)
-    const { data: users, error: listError } = await supabaseAdmin.auth.admin.listUsers({
-      page: 1,
-      perPage: 1,
-    });
-
     // Search for user with this email
     const { data: userByEmail } = await supabaseAdmin.auth.admin.listUsers();
     const userExists = userByEmail?.users?.some(u => u.email?.toLowerCase() === normalizedEmail);
 
     if (!userExists) {
-      // Log attempt but return generic success to prevent email enumeration
-      console.log(`Verification email requested for non-existent user: ${normalizedEmail.substring(0, 3)}***`);
-      // Still record rate limit to prevent abuse
+      // Record rate limit to prevent abuse and return generic success to prevent email enumeration
       emailRateLimits.set(normalizedEmail, Date.now());
-      // Return success to prevent email enumeration attacks
       return new Response(JSON.stringify({ success: true }), {
         status: 200,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -161,7 +146,6 @@ const handler = async (req: Request): Promise<Response> => {
     let fullConfirmationUrl = confirmationUrl;
     
     if (linkError) {
-      console.error("Error generating verification link");
       // If we can't generate a link (user might not exist yet), just use the base URL
       // The verification will need to be done via Supabase's built-in flow
     } else if (linkData?.properties?.hashed_token) {
@@ -170,7 +154,8 @@ const handler = async (req: Request): Promise<Response> => {
       fullConfirmationUrl = `${confirmationUrl}?token_hash=${verificationToken}&type=magiclink`;
     }
 
-    const displayName = userName || "Nutzer";
+    // Sanitize display name for HTML context
+    const displayName = userName ? userName.replace(/[<>&"']/g, '') : "Nutzer";
 
     const emailResponse = await fetch("https://api.resend.com/emails", {
       method: "POST",
@@ -254,9 +239,8 @@ const handler = async (req: Request): Promise<Response> => {
     });
 
     if (!emailResponse.ok) {
-      console.error("Failed to send verification email");
       return new Response(
-        JSON.stringify({ error: "Failed to send verification email" }),
+        JSON.stringify({ error: "Operation failed" }),
         {
           status: 500,
           headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -265,16 +249,14 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     const responseData = await emailResponse.json();
-    console.log("Verification email sent successfully");
 
     return new Response(JSON.stringify({ success: true, id: responseData.id }), {
       status: 200,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (error: unknown) {
-    console.error("Error in send-verification-email function");
     return new Response(
-      JSON.stringify({ error: "Failed to send verification email" }),
+      JSON.stringify({ error: "Operation failed" }),
       {
         status: 500,
         headers: { ...corsHeaders, "Content-Type": "application/json" },

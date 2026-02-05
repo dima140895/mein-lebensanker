@@ -1,11 +1,13 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
+import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 
 // Allowed origins for CORS
 const ALLOWED_ORIGINS = [
   "https://mein-lebensanker.lovable.app",
   "https://id-preview--3aceebdb-8fff-4d04-bf5f-d8b882169f3d.lovable.app",
+  "https://3aceebdb-8fff-4d04-bf5f-d8b882169f3d.lovableproject.com",
 ];
 
 const getCorsHeaders = (origin: string | null) => {
@@ -24,9 +26,16 @@ const DEFAULT_MAX_PROFILES: Record<string, number> = {
   family: 4, // Minimum for family, can be higher from metadata
 };
 
+// Input validation schema
+const VerifyPaymentSchema = z.object({
+  sessionId: z.string().min(1).max(500),
+  userId: z.string().uuid().optional(),
+  paymentType: z.enum(["single", "couple", "family"]).optional(),
+});
+
 serve(async (req) => {
   const corsHeaders = getCorsHeaders(req.headers.get("origin"));
-  
+
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
@@ -61,15 +70,18 @@ serve(async (req) => {
 
     const authenticatedUserId = authData.user.id;
 
-    // Parse request body
-    const { sessionId, userId, paymentType } = await req.json();
+    // Parse and validate request body with Zod
+    const rawBody = await req.json();
+    const parseResult = VerifyPaymentSchema.safeParse(rawBody);
 
-    if (!sessionId) {
-      return new Response(JSON.stringify({ error: "Missing sessionId" }), {
+    if (!parseResult.success) {
+      return new Response(JSON.stringify({ error: "Invalid request" }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 400,
       });
     }
+
+    const { sessionId, userId, paymentType } = parseResult.data;
 
     // Security check: Verify the authenticated user matches the claimed userId
     if (userId && userId !== authenticatedUserId) {
