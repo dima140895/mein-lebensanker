@@ -10,7 +10,7 @@ import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import { logger } from '@/lib/logger';
 
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || "https://mkwnlztpyzjjhzfxgixx.supabase.co";
+
 
 interface AuthFormProps {
   onSuccess?: () => void;
@@ -106,19 +106,16 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange }: Auth
     try {
       const confirmationUrl = `${window.location.origin}/verify-email`;
       
-      const response = await fetch(`${SUPABASE_URL}/functions/v1/send-verification-email`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
+      // Use supabase client to invoke edge function (handles correct URL automatically)
+      const { error } = await supabase.functions.invoke('send-verification-email', {
+        body: {
           email: userEmail,
           confirmationUrl,
-        }),
+        },
       });
 
-      if (!response.ok) {
-        logger.error('Failed to send verification email');
+      if (error) {
+        logger.error('Failed to send verification email:', error);
       }
     } catch (err) {
       logger.error('Error sending verification email:', err);
