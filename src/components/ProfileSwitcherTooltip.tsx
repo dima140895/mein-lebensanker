@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 const TOOLTIP_DISMISSED_KEY = 'vorsorge_profile_switcher_tooltip_shown';
+const PROFILE_SETUP_COMPLETED_FLAG = 'profile_setup_just_completed';
 
 interface ProfileSwitcherTooltipProps {
   children: React.ReactNode;
@@ -16,7 +17,7 @@ export const ProfileSwitcherTooltip: React.FC<ProfileSwitcherTooltipProps> = ({ 
   const location = useLocation();
   const isMobile = useIsMobile();
   const [showTooltip, setShowTooltip] = useState(false);
-  const hasShown = useRef(false);
+  const hasChecked = useRef(false);
 
 
   const t = {
@@ -32,16 +33,29 @@ export const ProfileSwitcherTooltip: React.FC<ProfileSwitcherTooltipProps> = ({ 
 
   const texts = t[language];
 
-  // Show once on the first dashboard visit (for all package types), unless dismissed.
+  // Show once after profile setup completion, unless permanently dismissed.
   useEffect(() => {
     if (location.pathname !== '/dashboard') return;
-    if (hasShown.current) return;
+    if (hasChecked.current) return;
 
+    // Check if permanently dismissed
     const wasShownPermanently = localStorage.getItem(TOOLTIP_DISMISSED_KEY) === 'true';
     if (wasShownPermanently) return;
 
-    hasShown.current = true;
-    const t = window.setTimeout(() => setShowTooltip(true), 600);
+    // Check if profile setup just completed (set by ProfileSetupWizard)
+    const setupJustCompleted = sessionStorage.getItem(PROFILE_SETUP_COMPLETED_FLAG) === 'true';
+    if (!setupJustCompleted) return;
+
+    hasChecked.current = true;
+    
+    // Clear the flag immediately to prevent showing again on refresh
+    sessionStorage.removeItem(PROFILE_SETUP_COMPLETED_FLAG);
+    
+    // Show tooltip after a short delay to let the page render
+    const t = window.setTimeout(() => {
+      console.log('[ProfileSwitcherTooltip] Showing tooltip after profile setup');
+      setShowTooltip(true);
+    }, 800);
     return () => window.clearTimeout(t);
   }, [location.pathname]);
 
