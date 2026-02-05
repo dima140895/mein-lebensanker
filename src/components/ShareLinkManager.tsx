@@ -396,7 +396,9 @@ const ShareLinkManager = () => {
   };
 
   const copyLink = async (token: string, id: string) => {
-    const link = `${window.location.origin}/fuer-angehoerige/${token}`;
+    // Always use the published production URL, not the preview URL
+    const productionOrigin = 'https://mein-lebensanker.lovable.app';
+    const link = `${productionOrigin}/fuer-angehoerige/${token}`;
     await navigator.clipboard.writeText(link);
     setCopiedId(id);
     toast.success(texts.copied);
