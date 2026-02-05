@@ -320,6 +320,10 @@ export type Database = {
         Returns: string
       }
       user_has_access: { Args: { _user_id: string }; Returns: boolean }
+      user_owns_token_hash: {
+        Args: { _token_hash: string; _user_id: string }
+        Returns: boolean
+      }
       validate_share_token: {
         Args: { _token: string }
         Returns: {
