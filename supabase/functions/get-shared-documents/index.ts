@@ -1,5 +1,6 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 
 // Allowed origins for CORS
 const ALLOWED_ORIGINS = [
@@ -31,37 +32,47 @@ interface DocumentInfo {
   profileName: string;
 }
 
+// Input validation schema
+const SharedDocumentsSchema = z.object({
+  token: z.string().min(1).max(128),
+  pin: z.string().length(6).regex(/^\d{6}$/).optional().nullable(),
+});
+
 serve(async (req) => {
   const corsHeaders = getCorsHeaders(req.headers.get("origin"));
-  
+
   // Handle CORS preflight
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders })
   }
 
   try {
-    const { token, pin } = await req.json()
+    // Parse and validate request body with Zod
+    const rawBody = await req.json();
+    const parseResult = SharedDocumentsSchema.safeParse(rawBody);
 
-    if (!token) {
+    if (!parseResult.success) {
       return new Response(
-        JSON.stringify({ error: 'Token is required' }),
+        JSON.stringify({ error: 'Invalid request' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       )
     }
 
+    const { token, pin } = parseResult.data;
+
     // Create Supabase client with service role key for storage access
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
-    
+
     const supabase = createClient(supabaseUrl, supabaseServiceKey)
 
     // Validate the token AND PIN using the PIN-aware validation function
     const { data: tokenData, error: tokenError } = await supabase
-      .rpc('validate_share_token_with_pin', { _token: token, _pin: pin || null })
+      .rpc('validate_share_token_with_pin', { _token: token, _pin: pin ?? null })
 
     if (tokenError || !tokenData || tokenData.length === 0) {
       return new Response(
-        JSON.stringify({ error: 'Invalid or expired token' }),
+        JSON.stringify({ error: 'Access denied' }),
         { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       )
     }
@@ -70,7 +81,7 @@ serve(async (req) => {
     // Check both is_valid AND pin_valid to ensure proper authorization
     if (!validation.is_valid || !validation.pin_valid) {
       return new Response(
-        JSON.stringify({ error: 'Invalid or expired token, or incorrect PIN' }),
+        JSON.stringify({ error: 'Access denied' }),
         { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       )
     }
@@ -86,9 +97,8 @@ serve(async (req) => {
       .rpc('get_shared_sections_by_token', { _token: token, _pin: pin || null })
 
     if (profileSectionsError && sectionsError) {
-      console.error('Section retrieval failed')
       return new Response(
-        JSON.stringify({ error: 'Failed to get shared sections' }),
+        JSON.stringify({ error: 'Operation failed' }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       )
     }
@@ -98,9 +108,8 @@ serve(async (req) => {
       .rpc('get_profiles_by_token', { _token: token, _pin: pin || null })
 
     if (profilesError) {
-      console.error('Failed to get profiles')
       return new Response(
-        JSON.stringify({ error: 'Failed to get profiles' }),
+        JSON.stringify({ error: 'Operation failed' }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       )
     }
@@ -240,7 +249,6 @@ serve(async (req) => {
     )
 
   } catch (error) {
-    console.error('Document retrieval error occurred')
     return new Response(
       JSON.stringify({ error: 'Internal server error' }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
