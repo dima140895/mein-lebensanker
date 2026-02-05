@@ -8,6 +8,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { useEncryption } from '@/contexts/EncryptionContext';
 import { FormProvider } from '@/contexts/FormContext';
 import Header from '@/components/Header';
+import ProfileSwitcher from '@/components/ProfileSwitcher';
 import Footer from '@/components/Footer';
 import Disclaimer from '@/components/Disclaimer';
 import AuthForm from '@/components/AuthForm';
@@ -314,24 +315,38 @@ const DashboardContent = () => {
   return (
     <>
       <div className="container mx-auto px-4 py-4 md:py-8">
-        {/* Tour restart button - top right */}
-        <div className="flex justify-end mb-2">
+        {/* Header with title */}
+        <div className="text-center mb-3 md:mb-4">
+          <h1 className="font-serif text-2xl md:text-3xl font-bold text-foreground">{texts.title}</h1>
+          <p className="mt-1 md:mt-2 text-sm md:text-base text-muted-foreground">{texts.subtitle}</p>
+        </div>
+
+        {/* Mobile: Profile switcher + Tour button row */}
+        <div className="flex items-center justify-between mb-4 md:hidden">
+          <ProfileSwitcher />
           <Button
             variant="outline"
             size="icon"
             onClick={handleStartTour}
-            className="h-9 w-9 md:w-auto md:px-3 text-muted-foreground hover:text-primary hover:border-primary/30"
+            className="h-9 w-9 text-muted-foreground hover:text-primary hover:border-primary/30"
             title={language === 'de' ? 'Tour starten' : 'Start tour'}
           >
             <HelpCircle className="h-4 w-4" />
-            <span className="hidden md:inline ml-1.5 text-xs">{language === 'de' ? 'Tour' : 'Tour'}</span>
           </Button>
         </div>
 
-        {/* Header with title */}
-        <div className="text-center mb-4 md:mb-6">
-          <h1 className="font-serif text-2xl md:text-3xl font-bold text-foreground">{texts.title}</h1>
-          <p className="mt-1 md:mt-2 text-sm md:text-base text-muted-foreground">{texts.subtitle}</p>
+        {/* Desktop: Tour button only (ProfileSwitcher is in header) */}
+        <div className="hidden md:flex justify-end mb-4">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleStartTour}
+            className="text-muted-foreground hover:text-primary hover:border-primary/30 gap-1.5"
+            title={language === 'de' ? 'Tour starten' : 'Start tour'}
+          >
+            <HelpCircle className="h-4 w-4" />
+            <span className="text-xs">{language === 'de' ? 'Tour' : 'Tour'}</span>
+          </Button>
         </div>
 
         {/* Progress bar */}
