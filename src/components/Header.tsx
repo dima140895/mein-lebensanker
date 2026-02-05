@@ -334,6 +334,13 @@ const Header = () => {
 
                 {/* Mobile Menu Footer */}
                 <div className="border-t border-border p-4 space-y-3">
+                  {/* Language Toggle */}
+                  <div className="flex items-center justify-between pb-3 border-b border-border">
+                    <span className="text-sm text-muted-foreground">
+                      {language === 'de' ? 'Sprache' : 'Language'}
+                    </span>
+                    <LanguageToggle />
+                  </div>
                   {user ? (
                     <div className="space-y-2">
                       <Button 
