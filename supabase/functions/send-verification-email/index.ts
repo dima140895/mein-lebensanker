@@ -1,9 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
-const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
-const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -26,26 +23,6 @@ serve(async (req: Request): Promise<Response> => {
     }
 
     const normalizedEmail = email.toLowerCase().trim();
-
-    // Create Supabase admin client
-    const supabaseAdmin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
-      auth: { autoRefreshToken: false, persistSession: false },
-    });
-
-    // Generate magic link for verification
-    const { data: linkData, error: linkError } = await supabaseAdmin.auth.admin.generateLink({
-      type: 'magiclink',
-      email: normalizedEmail,
-      options: { redirectTo: confirmationUrl },
-    });
-
-    let fullConfirmationUrl = confirmationUrl;
-    
-    if (!linkError && linkData?.properties?.hashed_token) {
-      const verificationToken = linkData.properties.hashed_token;
-      fullConfirmationUrl = `${confirmationUrl}?token_hash=${verificationToken}&type=magiclink`;
-    }
-
     const displayName = userName ? userName.replace(/[<>&"']/g, '') : "Nutzer";
 
     const emailResponse = await fetch("https://api.resend.com/emails", {
@@ -84,7 +61,7 @@ serve(async (req: Request): Promise<Response> => {
                         <table role="presentation" style="margin: 30px 0;">
                           <tr>
                             <td align="center">
-                              <a href="${fullConfirmationUrl}" style="display: inline-block; padding: 16px 32px; background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%); color: #ffffff; text-decoration: none; font-size: 16px; font-weight: 600; border-radius: 8px;">
+                              <a href="${confirmationUrl}" style="display: inline-block; padding: 16px 32px; background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%); color: #ffffff; text-decoration: none; font-size: 16px; font-weight: 600; border-radius: 8px;">
                                 E-Mail-Adresse bestätigen
                               </a>
                             </td>
@@ -94,7 +71,7 @@ serve(async (req: Request): Promise<Response> => {
                           Falls der Button nicht funktioniert, kopieren Sie diesen Link:
                         </p>
                         <p style="margin: 10px 0 0 0; color: #1e3a5f; font-size: 14px; word-break: break-all;">
-                          ${fullConfirmationUrl}
+                          ${confirmationUrl}
                         </p>
                         <hr style="margin: 30px 0; border: none; border-top: 1px solid #eeeeee;">
                         <p style="margin: 0; color: #999999; font-size: 13px;">
@@ -122,13 +99,15 @@ serve(async (req: Request): Promise<Response> => {
     if (!emailResponse.ok) {
       const errorText = await emailResponse.text();
       console.error("Resend error:", errorText);
-      return new Response(JSON.stringify({ error: "Failed to send email" }), {
+      return new Response(JSON.stringify({ error: "Failed to send email", details: errorText }), {
         status: 500,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
     const responseData = await emailResponse.json();
+    console.log("Email sent successfully:", responseData);
+    
     return new Response(JSON.stringify({ success: true, id: responseData.id }), {
       status: 200,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
