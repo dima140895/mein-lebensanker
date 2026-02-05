@@ -359,7 +359,7 @@ const DashboardContent = () => {
         </div>
 
         {/* Data sections with status indicators */}
-        <div className="max-w-4xl mx-auto mb-4 md:mb-6">
+        <div className="max-w-4xl mx-auto mb-4 md:mb-6" data-tour="dashboard-tiles">
           <div className="grid gap-2.5 md:gap-4 grid-cols-2 lg:grid-cols-3">
             {dataSections.map((section, i) => {
               const Icon = section.icon;
@@ -373,6 +373,7 @@ const DashboardContent = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.05 }}
                   onClick={() => handleSectionChange(section.key)}
+                  data-tour={section.key === 'documents' ? 'documents-tile' : undefined}
                   className={`relative flex flex-col md:flex-row md:items-start gap-2 md:gap-4 p-3 md:p-5 rounded-xl border shadow-card hover:shadow-elevated transition-all text-left h-full min-h-[80px] md:min-h-[100px] ${
                     isFilled 
                       ? 'border-primary/30 bg-primary/5' 
@@ -415,6 +416,7 @@ const DashboardContent = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3 + i * 0.05 }}
                   onClick={() => handleSectionChange(section.key)}
+                  data-tour={section.key === 'share' ? 'relatives-link' : undefined}
                   className="flex flex-col md:flex-row items-center gap-1.5 md:gap-2 p-2.5 md:p-3 rounded-xl border border-border bg-card/50 hover:bg-card shadow-sm hover:shadow-card transition-all text-center md:text-left min-w-0"
                 >
                   <div className={`h-6 w-6 md:h-7 md:w-7 rounded-lg flex items-center justify-center flex-shrink-0 ${section.color}`}>
