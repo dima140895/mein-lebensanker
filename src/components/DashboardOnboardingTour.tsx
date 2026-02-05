@@ -244,76 +244,17 @@ export const DashboardOnboardingTour: React.FC = () => {
   const Icon = step.icon;
   const isLastStep = currentStep === tourSteps.length - 1;
 
-  // Calculate modal position and arrow based on highlight
+  // Calculate modal position - always centered on mobile, positioned near highlight on desktop
   const getModalPositionAndArrow = () => {
-    if (!highlightRect) {
-      return {
-        position: { top: '50%', left: '50%', transform: 'translate(-50%, -50%)' },
-        arrowDirection: null as 'up' | 'down' | null,
-        arrowOffset: 0,
-      };
-    }
-
-    const margin = 16;
-    const windowHeight = window.innerHeight;
-    const windowWidth = window.innerWidth;
-    const gap = 16;
-
-    const clamp = (v: number, min: number, max: number) => Math.min(max, Math.max(min, v));
-
-    const modalW = Math.min(400, windowWidth - margin * 2);
-    const modalH = Math.min(modalHeight, windowHeight - margin * 2);
-
-    // Calculate highlight center
-    const highlightCenterX = highlightRect.left + highlightRect.width / 2;
-
-    const left = clamp(highlightCenterX - modalW / 2, margin, windowWidth - modalW - margin);
-
-    const canPlaceBelow =
-      highlightRect.top + highlightRect.height + gap + modalH <= windowHeight - margin;
-    const canPlaceAbove = highlightRect.top - gap - modalH >= margin;
-
-    const preferredOrder =
-      step.highlightPosition === 'bottom'
-        ? (['above', 'below', 'center'] as const)
-        : (['below', 'above', 'center'] as const);
-
-    let placement: 'above' | 'below' | 'center' = 'center';
-    for (const p of preferredOrder) {
-      if (p === 'below' && canPlaceBelow) {
-        placement = 'below';
-        break;
-      }
-      if (p === 'above' && canPlaceAbove) {
-        placement = 'above';
-        break;
-      }
-      if (p === 'center') {
-        placement = 'center';
-      }
-    }
-
-    let top = (windowHeight - modalH) / 2;
-    let arrowDirection: 'up' | 'down' | null = null;
-
-    if (placement === 'below') {
-      top = highlightRect.top + highlightRect.height + gap;
-      arrowDirection = 'up';
-    } else if (placement === 'above') {
-      top = highlightRect.top - modalH - gap;
-      arrowDirection = 'down';
-    }
-
-    top = clamp(top, margin, windowHeight - modalH - margin);
-
-    const arrowOffset = arrowDirection
-      ? clamp(highlightCenterX - left, 24, modalW - 24)
-      : 0;
-
+    // Always center the modal
     return {
-      position: { top: `${top}px`, left: `${left}px` },
-      arrowDirection,
-      arrowOffset,
+      position: { 
+        top: '50%', 
+        left: '50%', 
+        transform: 'translate(-50%, -50%)' 
+      },
+      arrowDirection: null as 'up' | 'down' | null,
+      arrowOffset: 0,
     };
   };
 
