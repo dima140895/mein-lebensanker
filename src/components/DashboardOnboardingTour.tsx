@@ -115,9 +115,11 @@ export const DashboardOnboardingTour: React.FC = () => {
     const element = document.querySelector(step.highlightSelector);
     if (element) {
       const rect = element.getBoundingClientRect();
-      const padding = 8;
+      const padding = 12;
+      
+      // Use viewport-relative coordinates (no scrollY) since overlay is position:fixed
       setHighlightRect({
-        top: rect.top - padding + window.scrollY,
+        top: rect.top - padding,
         left: rect.left - padding,
         width: rect.width + padding * 2,
         height: rect.height + padding * 2,
@@ -125,7 +127,19 @@ export const DashboardOnboardingTour: React.FC = () => {
 
       // Scroll element into view if needed
       element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      
+      // Re-calculate after scroll completes
+      setTimeout(() => {
+        const newRect = element.getBoundingClientRect();
+        setHighlightRect({
+          top: newRect.top - padding,
+          left: newRect.left - padding,
+          width: newRect.width + padding * 2,
+          height: newRect.height + padding * 2,
+        });
+      }, 500);
     } else {
+      console.warn('[Tour] Element not found:', step.highlightSelector);
       setHighlightRect(null);
     }
   }, [currentStep]);
@@ -284,13 +298,14 @@ export const DashboardOnboardingTour: React.FC = () => {
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.3 }}
-                className="absolute rounded-xl border-2 border-primary shadow-lg"
+                className="fixed rounded-xl border-2 border-primary pointer-events-none"
                 style={{
                   top: highlightRect.top,
                   left: highlightRect.left,
                   width: highlightRect.width,
                   height: highlightRect.height,
-                  boxShadow: '0 0 0 4px rgba(var(--primary), 0.2), 0 0 20px rgba(var(--primary), 0.3)',
+                  boxShadow: '0 0 0 4px hsl(var(--primary) / 0.2), 0 0 20px hsl(var(--primary) / 0.3)',
+                  zIndex: 51,
                 }}
               />
             )}
