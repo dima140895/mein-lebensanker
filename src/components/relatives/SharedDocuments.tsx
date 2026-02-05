@@ -3,6 +3,7 @@ import { FileText, Download, Loader2, ExternalLink, User } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/browserClient';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
+import { logger } from '@/lib/logger';
 
 interface SharedDocument {
   name: string;
@@ -76,7 +77,7 @@ const SharedDocuments = ({ token, pin, profileId }: SharedDocumentsProps) => {
         });
 
         if (funcError) {
-          console.error('Function error:', funcError);
+          logger.error('Function error:', funcError);
           setError(texts.error);
           return;
         }
@@ -88,7 +89,7 @@ const SharedDocuments = ({ token, pin, profileId }: SharedDocumentsProps) => {
 
         setDocuments(data.documents || []);
       } catch (err) {
-        console.error('Error fetching documents:', err);
+        logger.error('Error fetching documents:', err);
         setError(texts.error);
       } finally {
         setLoading(false);

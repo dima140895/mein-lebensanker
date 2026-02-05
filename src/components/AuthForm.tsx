@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
+import { logger } from '@/lib/logger';
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || "https://mkwnlztpyzjjhzfxgixx.supabase.co";
 
@@ -117,10 +118,10 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange }: Auth
       });
 
       if (!response.ok) {
-        console.error('Failed to send verification email');
+        logger.error('Failed to send verification email');
       }
     } catch (err) {
-      console.error('Error sending verification email:', err);
+      logger.error('Error sending verification email:', err);
     }
   };
 
