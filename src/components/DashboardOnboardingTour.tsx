@@ -112,11 +112,27 @@ export const DashboardOnboardingTour: React.FC = () => {
       return;
     }
 
-    const element = document.querySelector(step.highlightSelector);
+    const getVisibleElement = (selector: string) => {
+      const elements = Array.from(document.querySelectorAll(selector));
+      return (
+        elements.find((el) => {
+          const htmlEl = el as HTMLElement;
+          const rect = htmlEl.getBoundingClientRect();
+          const style = window.getComputedStyle(htmlEl);
+
+          // Filter out elements that are hidden (e.g. `hidden md:flex`) or off-layout.
+          if (style.display === 'none' || style.visibility === 'hidden') return false;
+          if (rect.width <= 0 || rect.height <= 0) return false;
+          return true;
+        }) ?? null
+      );
+    };
+
+    const element = getVisibleElement(step.highlightSelector);
     if (element) {
       const rect = element.getBoundingClientRect();
       const padding = 12;
-      
+
       // Use viewport-relative coordinates (no scrollY) since overlay is position:fixed
       setHighlightRect({
         top: rect.top - padding,
@@ -127,7 +143,7 @@ export const DashboardOnboardingTour: React.FC = () => {
 
       // Scroll element into view if needed
       element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      
+
       // Re-calculate after scroll completes
       setTimeout(() => {
         const newRect = element.getBoundingClientRect();
@@ -139,7 +155,7 @@ export const DashboardOnboardingTour: React.FC = () => {
         });
       }, 500);
     } else {
-      console.warn('[Tour] Element not found:', step.highlightSelector);
+      console.warn('[Tour] Visible element not found:', step.highlightSelector);
       setHighlightRect(null);
     }
   }, [currentStep]);
