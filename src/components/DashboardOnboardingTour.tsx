@@ -191,41 +191,57 @@ export const DashboardOnboardingTour: React.FC = () => {
   const Icon = step.icon;
   const isLastStep = currentStep === tourSteps.length - 1;
 
-  // Calculate modal position based on highlight
-  const getModalPosition = () => {
+  // Calculate modal position and arrow based on highlight
+  const getModalPositionAndArrow = () => {
     if (!highlightRect) {
-      return { top: '50%', left: '50%', transform: 'translate(-50%, -50%)' };
+      return { 
+        position: { top: '50%', left: '50%', transform: 'translate(-50%, -50%)' },
+        arrowPosition: null,
+        arrowDirection: null
+      };
     }
 
     const windowHeight = window.innerHeight;
-    const modalHeight = 300; // Approximate modal height
-    const padding = 20;
+    const windowWidth = window.innerWidth;
+    const modalHeight = 340; // Approximate modal height
+    const modalWidth = Math.min(400, windowWidth - 32); // Max modal width
+    const padding = 24;
+    
+    // Calculate highlight center
+    const highlightCenterX = highlightRect.left + highlightRect.width / 2;
+    const highlightCenterY = highlightRect.top + highlightRect.height / 2;
+    
+    let position: React.CSSProperties;
+    let arrowDirection: 'up' | 'down' | 'left' | 'right';
+    let arrowOffset: number;
 
     if (step.highlightPosition === 'top') {
       // Element is at top, show modal below it
-      return {
-        top: `${Math.min(highlightRect.top + highlightRect.height + padding, windowHeight - modalHeight - padding)}px`,
-        left: '50%',
-        transform: 'translateX(-50%)',
-      };
+      const top = Math.min(highlightRect.top + highlightRect.height + padding, windowHeight - modalHeight - padding);
+      const left = Math.max(16, Math.min(highlightCenterX - modalWidth / 2, windowWidth - modalWidth - 16));
+      position = { top: `${top}px`, left: `${left}px` };
+      arrowDirection = 'up';
+      arrowOffset = Math.max(24, Math.min(highlightCenterX - left, modalWidth - 24));
     } else if (step.highlightPosition === 'bottom') {
       // Element is at bottom, show modal above it
-      return {
-        top: `${Math.max(highlightRect.top - modalHeight - padding, padding)}px`,
-        left: '50%',
-        transform: 'translateX(-50%)',
-      };
+      const top = Math.max(highlightRect.top - modalHeight - padding, padding);
+      const left = Math.max(16, Math.min(highlightCenterX - modalWidth / 2, windowWidth - modalWidth - 16));
+      position = { top: `${top}px`, left: `${left}px` };
+      arrowDirection = 'down';
+      arrowOffset = Math.max(24, Math.min(highlightCenterX - left, modalWidth - 24));
     } else {
       // Center - show below element
-      return {
-        top: `${Math.min(highlightRect.top + highlightRect.height + padding, windowHeight - modalHeight - padding)}px`,
-        left: '50%',
-        transform: 'translateX(-50%)',
-      };
+      const top = Math.min(highlightRect.top + highlightRect.height + padding, windowHeight - modalHeight - padding);
+      const left = Math.max(16, Math.min(highlightCenterX - modalWidth / 2, windowWidth - modalWidth - 16));
+      position = { top: `${top}px`, left: `${left}px` };
+      arrowDirection = 'up';
+      arrowOffset = Math.max(24, Math.min(highlightCenterX - left, modalWidth - 24));
     }
+
+    return { position, arrowDirection, arrowOffset };
   };
 
-  const modalPosition = getModalPosition();
+  const { position: modalPosition, arrowDirection, arrowOffset } = getModalPositionAndArrow();
 
   return (
     <AnimatePresence>
@@ -291,9 +307,26 @@ export const DashboardOnboardingTour: React.FC = () => {
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            className="fixed z-50 w-[calc(100%-2rem)] max-w-md mx-4"
+            className="fixed z-50 w-[calc(100%-2rem)] max-w-md"
             style={modalPosition}
           >
+            {/* Arrow pointing to highlighted element */}
+            {arrowDirection && arrowOffset && (
+              <div
+                className={`absolute w-0 h-0 ${
+                  arrowDirection === 'up' 
+                    ? '-top-3 border-l-[12px] border-r-[12px] border-b-[12px] border-l-transparent border-r-transparent border-b-card'
+                    : arrowDirection === 'down'
+                    ? '-bottom-3 border-l-[12px] border-r-[12px] border-t-[12px] border-l-transparent border-r-transparent border-t-card'
+                    : ''
+                }`}
+                style={{ 
+                  left: `${arrowOffset}px`,
+                  transform: 'translateX(-50%)',
+                  filter: 'drop-shadow(0 -2px 2px rgba(0,0,0,0.1))'
+                }}
+              />
+            )}
             <div className="bg-card rounded-2xl shadow-elevated border border-border overflow-hidden">
               {/* Header */}
               <div className="bg-primary/10 p-4 flex items-center justify-between">
