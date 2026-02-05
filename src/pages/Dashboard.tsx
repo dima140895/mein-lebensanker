@@ -325,13 +325,13 @@ const DashboardContent = () => {
             {/* Tour restart button */}
             <Button
               variant="outline"
-              size="sm"
+              size="icon"
               onClick={handleStartTour}
-              className="text-muted-foreground hover:text-primary hover:border-primary/30 gap-1.5"
+              className="h-9 w-9 md:w-auto md:px-3 text-muted-foreground hover:text-primary hover:border-primary/30"
               title={language === 'de' ? 'Tour starten' : 'Start tour'}
             >
               <HelpCircle className="h-4 w-4" />
-              <span className="text-xs">{language === 'de' ? 'Tour' : 'Tour'}</span>
+              <span className="hidden md:inline ml-1.5 text-xs">{language === 'de' ? 'Tour' : 'Tour'}</span>
             </Button>
           </div>
         </div>
