@@ -283,21 +283,22 @@ const Header = () => {
                 <span className="sr-only">{tx.openMenu}</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="left" className="w-72 bg-background p-0">
-              <div className="flex flex-col h-full">
-                {/* Mobile Menu Header */}
-                <div className="flex items-center justify-between border-b border-border p-4">
-                  <Logo size="sm" />
-                </div>
+            <SheetContent side="left" className="w-80 bg-background p-0 flex flex-col">
+              {/* Mobile Menu Header - fixed */}
+              <div className="flex items-center justify-between border-b border-border p-4 shrink-0">
+                <Logo size="sm" />
+              </div>
 
-                {/* My Package for paid users (mobile) - now before nav */}
+              {/* Scrollable Content */}
+              <div className="flex-1 overflow-y-auto">
+                {/* My Package for paid users (mobile) */}
                 {user && profile?.has_paid && (
                   <div className="p-4 border-b border-border bg-primary/5">
                     <p className="text-xs text-muted-foreground mb-1">{tx.currentTier}</p>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2 bg-primary/10 px-2.5 py-1 rounded-md border border-primary/20">
-                        <Package className="h-4 w-4 text-primary" />
-                        <span className="font-medium text-foreground">
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-2 bg-primary/10 px-2.5 py-1.5 rounded-md border border-primary/20">
+                        <Package className="h-4 w-4 text-primary shrink-0" />
+                        <span className="font-medium text-foreground text-sm">
                           {profile.purchased_tier === 'single' && tx.single}
                           {profile.purchased_tier === 'couple' && tx.couple}
                           {profile.purchased_tier === 'family' && tx.family}
@@ -306,7 +307,7 @@ const Header = () => {
                       <Button 
                         variant="link" 
                         size="sm" 
-                        className="text-primary p-0 h-auto"
+                        className="text-primary p-0 h-auto text-sm shrink-0"
                         onClick={() => navigateTo('/dashboard?section=payment')}
                       >
                         {tx.managePackage}
@@ -316,7 +317,7 @@ const Header = () => {
                 )}
 
                 {/* Mobile Menu Items */}
-                <nav className="flex-1 p-4">
+                <nav className="p-4">
                   <ul className="space-y-1">
                     {visibleMenuItems.map((item) => (
                       <li key={item.label}>
@@ -329,141 +330,176 @@ const Header = () => {
                         </button>
                       </li>
                     ))}
-                    </ul>
-                  </nav>
+                  </ul>
+                </nav>
 
-                {/* Mobile Menu Footer */}
-                <div className="border-t border-border p-4 space-y-3">
-                  {/* Language Toggle */}
-                  <div className="flex items-center justify-between pb-3 border-b border-border">
-                    <span className="text-sm text-muted-foreground">
-                      {language === 'de' ? 'Sprache' : 'Language'}
-                    </span>
-                    <LanguageToggle />
-                  </div>
-                  {user ? (
-                    <div className="space-y-2">
-                      <Button 
-                        variant="ghost" 
-                        className="w-full justify-start" 
-                        onClick={() => {
-                          setMobileMenuOpen(false);
-                          setChangePasswordOpen(true);
-                        }}
-                      >
-                        <Key className="mr-2 h-4 w-4" />
-                        {tx.changePassword}
-                      </Button>
-                      {!encryptionEnabled && (
-                        <Button 
-                          variant="ghost" 
-                          className="w-full justify-start" 
-                          onClick={() => {
-                            setMobileMenuOpen(false);
-                            setEncryptionSetupOpen(true);
-                          }}
-                        >
-                          <Shield className="mr-2 h-4 w-4" />
-                          {tx.encryption}
-                        </Button>
-                      )}
-                      {encryptionEnabled && (
-                        <>
-                          {isUnlocked ? (
-                            <>
-                              <div className="flex items-center gap-2 px-4 py-2 text-sm text-muted-foreground">
-                                <Shield className="h-4 w-4 text-primary" />
-                                {tx.encryptionEnabled}
-                              </div>
-                              <Button 
-                                variant="ghost" 
-                                className="w-full justify-start" 
-                                onClick={() => {
-                                  lock();
-                                  setMobileMenuOpen(false);
-                                }}
-                              >
-                                <Lock className="mr-2 h-4 w-4" />
-                                {tx.lockData}
-                              </Button>
-                              <Button 
-                                variant="ghost" 
-                                className="w-full justify-start" 
-                                onClick={() => {
-                                  setMobileMenuOpen(false);
-                                  setRecoveryKeyDialogOpen(true);
-                                }}
-                              >
-                                <KeyRound className="mr-2 h-4 w-4" />
-                                {tx.recoveryKey}
-                              </Button>
-                            </>
-                          ) : (
-                            <>
-                              <Button 
-                                variant="ghost" 
-                                className="w-full justify-start text-primary" 
-                                onClick={() => {
-                                  setMobileMenuOpen(false);
-                                  setEncryptionUnlockOpen(true);
-                                }}
-                              >
-                                <Unlock className="mr-2 h-4 w-4" />
-                                {tx.unlockData}
-                              </Button>
-                              {encryptedPasswordRecovery && (
-                                <Button 
-                                  variant="ghost" 
-                                  className="w-full justify-start text-muted-foreground" 
-                                  onClick={() => {
-                                    setMobileMenuOpen(false);
-                                    setRecoveryKeyRecoveryOpen(true);
-                                  }}
-                                >
-                                  <Key className="mr-2 h-4 w-4" />
-                                  {tx.forgotPassword}
-                                </Button>
-                              )}
-                            </>
-                          )}
-                        </>
-                      )}
-                      <Button variant="outline" className="w-full" onClick={handleLogout}>
-                        <LogOut className="mr-2 h-4 w-4" />
-                        {tx.logout}
-                      </Button>
+                {/* Account & Settings Section for logged-in users */}
+                {user && (
+                  <div className="px-4 pb-4">
+                    <div className="border-t border-border pt-4">
+                      <p className="text-xs text-muted-foreground uppercase tracking-wider mb-2 px-4">
+                        {tx.account}
+                      </p>
+                      <ul className="space-y-1">
+                        <li>
+                          <button
+                            onClick={() => {
+                              setMobileMenuOpen(false);
+                              setChangePasswordOpen(true);
+                            }}
+                            className="w-full flex items-center gap-3 rounded-lg px-4 py-3 text-left text-foreground transition-colors hover:bg-muted"
+                          >
+                            <Key className="h-4 w-4" />
+                            {tx.changePassword}
+                          </button>
+                        </li>
+                        
+                        {/* Encryption options */}
+                        {!encryptionEnabled && (
+                          <li>
+                            <button
+                              onClick={() => {
+                                setMobileMenuOpen(false);
+                                setEncryptionSetupOpen(true);
+                              }}
+                              className="w-full flex items-center gap-3 rounded-lg px-4 py-3 text-left text-foreground transition-colors hover:bg-muted"
+                            >
+                              <Shield className="h-4 w-4" />
+                              {tx.encryption}
+                            </button>
+                          </li>
+                        )}
+                        
+                        {encryptionEnabled && (
+                          <>
+                            {isUnlocked ? (
+                              <>
+                                <li className="flex items-center gap-3 px-4 py-2 text-sm text-primary">
+                                  <Shield className="h-4 w-4" />
+                                  {tx.encryptionEnabled}
+                                </li>
+                                <li>
+                                  <button
+                                    onClick={() => {
+                                      lock();
+                                      setMobileMenuOpen(false);
+                                    }}
+                                    className="w-full flex items-center gap-3 rounded-lg px-4 py-3 text-left text-foreground transition-colors hover:bg-muted"
+                                  >
+                                    <Lock className="h-4 w-4" />
+                                    {tx.lockData}
+                                  </button>
+                                </li>
+                                <li>
+                                  <button
+                                    onClick={() => {
+                                      setMobileMenuOpen(false);
+                                      setChangeEncryptionPasswordOpen(true);
+                                    }}
+                                    className="w-full flex items-center gap-3 rounded-lg px-4 py-3 text-left text-foreground transition-colors hover:bg-muted"
+                                  >
+                                    <KeyRound className="h-4 w-4" />
+                                    {tx.changeEncryptionPassword}
+                                  </button>
+                                </li>
+                                <li>
+                                  <button
+                                    onClick={() => {
+                                      setMobileMenuOpen(false);
+                                      setRecoveryKeyDialogOpen(true);
+                                    }}
+                                    className="w-full flex items-center gap-3 rounded-lg px-4 py-3 text-left text-foreground transition-colors hover:bg-muted"
+                                  >
+                                    <KeyRound className="h-4 w-4" />
+                                    {tx.recoveryKey}
+                                  </button>
+                                </li>
+                              </>
+                            ) : (
+                              <>
+                                <li>
+                                  <button
+                                    onClick={() => {
+                                      setMobileMenuOpen(false);
+                                      setEncryptionUnlockOpen(true);
+                                    }}
+                                    className="w-full flex items-center gap-3 rounded-lg px-4 py-3 text-left text-primary transition-colors hover:bg-muted"
+                                  >
+                                    <Unlock className="h-4 w-4" />
+                                    {tx.unlockData}
+                                  </button>
+                                </li>
+                                {encryptedPasswordRecovery && (
+                                  <li>
+                                    <button
+                                      onClick={() => {
+                                        setMobileMenuOpen(false);
+                                        setRecoveryKeyRecoveryOpen(true);
+                                      }}
+                                      className="w-full flex items-center gap-3 rounded-lg px-4 py-3 text-left text-muted-foreground transition-colors hover:bg-muted"
+                                    >
+                                      <Key className="h-4 w-4" />
+                                      {tx.forgotPassword}
+                                    </button>
+                                  </li>
+                                )}
+                              </>
+                            )}
+                          </>
+                        )}
+                      </ul>
                     </div>
-                  ) : (
-                    <>
-                      <Button 
-                        variant="outline" 
-                        className="w-full"
-                        onClick={() => {
-                          setMobileMenuOpen(false);
-                          setAuthMode('login');
-                          setAuthOpen(true);
-                        }}
-                      >
-                        <LogIn className="mr-2 h-4 w-4" />
-                        {tx.login}
-                      </Button>
-                      <Button 
-                        className="w-full"
-                        onClick={() => {
-                          setMobileMenuOpen(false);
-                          setAuthMode('register');
-                          setAuthOpen(true);
-                        }}
-                      >
-                        <UserPlus className="mr-2 h-4 w-4" />
-                        {tx.register}
-                      </Button>
-                    </>
-                  )}
-                  <div className="pt-2">
-                    <LanguageToggle />
                   </div>
+                )}
+              </div>
+
+              {/* Mobile Menu Footer - fixed at bottom */}
+              <div className="border-t border-border p-4 space-y-3 shrink-0 bg-background">
+                {/* Language Toggle */}
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-muted-foreground">
+                    {language === 'de' ? 'Sprache' : 'Language'}
+                  </span>
+                  <LanguageToggle />
                 </div>
+                
+                {/* Auth buttons */}
+                {user ? (
+                  <Button 
+                    variant="outline" 
+                    className="w-full text-destructive border-destructive/30 hover:bg-destructive/10 hover:text-destructive" 
+                    onClick={handleLogout}
+                  >
+                    <LogOut className="mr-2 h-4 w-4" />
+                    {tx.logout}
+                  </Button>
+                ) : (
+                  <div className="space-y-2">
+                    <Button 
+                      variant="outline" 
+                      className="w-full"
+                      onClick={() => {
+                        setMobileMenuOpen(false);
+                        setAuthMode('login');
+                        setAuthOpen(true);
+                      }}
+                    >
+                      <LogIn className="mr-2 h-4 w-4" />
+                      {tx.login}
+                    </Button>
+                    <Button 
+                      className="w-full"
+                      onClick={() => {
+                        setMobileMenuOpen(false);
+                        setAuthMode('register');
+                        setAuthOpen(true);
+                      }}
+                    >
+                      <UserPlus className="mr-2 h-4 w-4" />
+                      {tx.register}
+                    </Button>
+                  </div>
+                )}
               </div>
             </SheetContent>
           </Sheet>
