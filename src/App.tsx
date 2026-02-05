@@ -22,6 +22,7 @@ import Sicherheitsgrenzen from "./pages/Sicherheitsgrenzen";
 import PromoVideo from "./pages/PromoVideo";
 import NotFound from "./pages/NotFound";
 import InstallApp from "./pages/InstallApp";
+import InstagramDownload from "./pages/InstagramDownload";
 import CookieConsent from "./components/CookieConsent";
 import { EncryptionReminder } from "./components/EncryptionReminder";
 
@@ -51,6 +52,7 @@ const App = () => (
                     <Route path="/sicherheitsgrenzen" element={<Sicherheitsgrenzen />} />
                     <Route path="/promo" element={<PromoVideo />} />
                     <Route path="/installieren" element={<InstallApp />} />
+                    <Route path="/instagram-download" element={<InstagramDownload />} />
                     <Route path="/fuer-angehoerige/:token" element={<RelativesView />} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>
