@@ -179,14 +179,20 @@ const RelativesViewContent = () => {
             return;
           } catch (autoDecryptErr) {
             logger.error('Error auto-decrypting with PIN:', autoDecryptErr);
-            // Fallback to recovery key entry
-            setRequiresDecryption(true);
+            // Show error - the link is outdated (encryption password was changed after link creation)
+            setError(language === 'de' 
+              ? 'Dieser Link ist nicht mehr gültig. Das Verschlüsselungs-Passwort wurde geändert. Bitte kontaktiere die Person, die Dir diesen Link gegeben hat, für einen neuen Zugangslink.'
+              : 'This link is no longer valid. The encryption password was changed. Please contact the person who shared this link with you for a new access link.');
             setLoading(false);
+            return;
           }
         } else {
-          // No PIN-based decryption available, need recovery key
-          setRequiresDecryption(true);
+          // No PIN-based decryption available - link is outdated
+          setError(language === 'de' 
+            ? 'Dieser Link ist veraltet und unterstützt keine automatische Entschlüsselung. Bitte kontaktiere die Person, die Dir diesen Link gegeben hat, für einen neuen Zugangslink.'
+            : 'This link is outdated and does not support automatic decryption. Please contact the person who shared this link with you for a new access link.');
           setLoading(false);
+          return;
         }
       } else {
         // Not encrypted, load directly
