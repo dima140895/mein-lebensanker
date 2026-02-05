@@ -321,113 +321,97 @@ export const DashboardOnboardingTour: React.FC = () => {
           {/* Clickable backdrop */}
           <div className="fixed inset-0 z-[200]" onClick={handleClose} />
 
-          {/* Tour Modal */}
-          <motion.div
-            ref={modalRef}
-            initial={{ opacity: 0, scale: 0.9, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            className="fixed z-[210] w-[calc(100%-2rem)] max-w-md"
-            style={modalPosition}
-          >
-            {/* Arrow pointing to highlighted element */}
-            {arrowDirection && arrowOffset && (
-              <div
-                className={`absolute w-0 h-0 ${
-                  arrowDirection === 'up' 
-                    ? '-top-3 border-l-[12px] border-r-[12px] border-b-[12px] border-l-transparent border-r-transparent border-b-card'
-                    : arrowDirection === 'down'
-                    ? '-bottom-3 border-l-[12px] border-r-[12px] border-t-[12px] border-l-transparent border-r-transparent border-t-card'
-                    : ''
-                }`}
-                style={{ 
-                  left: `${arrowOffset}px`,
-                  transform: 'translateX(-50%)',
-                  filter: 'drop-shadow(0 -2px 2px rgba(0,0,0,0.1))'
-                }}
-              />
-            )}
-            <div className="bg-card rounded-2xl shadow-elevated border border-border overflow-auto max-h-[calc(100vh-2rem)]">
-              {/* Header */}
-              <div className="bg-primary/10 p-4 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 rounded-xl bg-primary/20 flex items-center justify-center">
-                    <Icon className="h-5 w-5 text-primary" />
+          {/* Tour Modal - use flex container for centering to avoid framer-motion overriding transform */}
+          <div className="fixed inset-0 z-[210] flex items-center justify-center p-4 pointer-events-none">
+            <motion.div
+              ref={modalRef}
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="w-full max-w-md pointer-events-auto"
+            >
+              <div className="bg-card rounded-2xl shadow-elevated border border-border overflow-auto max-h-[calc(100vh-2rem)]">
+                {/* Header */}
+                <div className="bg-primary/10 p-4 flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="h-10 w-10 rounded-xl bg-primary/20 flex items-center justify-center">
+                      <Icon className="h-5 w-5 text-primary" />
+                    </div>
+                    <span className="text-sm font-medium text-muted-foreground">
+                      {currentStep + 1} {texts.stepOf} {tourSteps.length}
+                    </span>
                   </div>
-                  <span className="text-sm font-medium text-muted-foreground">
-                    {currentStep + 1} {texts.stepOf} {tourSteps.length}
-                  </span>
-                </div>
-                <button
-                  onClick={handleClose}
-                  className="text-muted-foreground hover:text-foreground transition-colors p-1"
-                  aria-label="Close"
-                >
-                  <X className="h-5 w-5" />
-                </button>
-              </div>
-
-              {/* Content */}
-              <div className="p-6">
-                <h3 className="font-serif text-xl font-semibold text-foreground mb-3">
-                  {language === 'de' ? step.titleDe : step.titleEn}
-                </h3>
-                <p className="text-muted-foreground text-sm leading-relaxed">
-                  {language === 'de' ? step.messageDe : step.messageEn}
-                </p>
-              </div>
-
-              {/* Progress dots */}
-              <div className="flex justify-center gap-1.5 pb-4">
-                {tourSteps.map((_, index) => (
                   <button
-                    key={index}
-                    onClick={() => setCurrentStep(index)}
-                    className={`h-2 rounded-full transition-all ${
-                      index === currentStep
-                        ? 'w-6 bg-primary'
-                        : 'w-2 bg-muted-foreground/30 hover:bg-muted-foreground/50'
-                    }`}
-                  />
-                ))}
-              </div>
+                    onClick={handleClose}
+                    className="text-muted-foreground hover:text-foreground transition-colors p-1"
+                    aria-label="Close"
+                  >
+                    <X className="h-5 w-5" />
+                  </button>
+                </div>
 
-              {/* Actions */}
-              <div className="p-4 pt-0 flex items-center justify-between gap-3">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={handleClose}
-                  className="text-muted-foreground hover:text-foreground"
-                >
-                  {texts.skip}
-                </Button>
+                {/* Content */}
+                <div className="p-6">
+                  <h3 className="font-serif text-xl font-semibold text-foreground mb-3">
+                    {language === 'de' ? step.titleDe : step.titleEn}
+                  </h3>
+                  <p className="text-muted-foreground text-sm leading-relaxed">
+                    {language === 'de' ? step.messageDe : step.messageEn}
+                  </p>
+                </div>
 
-                <div className="flex items-center gap-2">
-                  {currentStep > 0 && (
+                {/* Progress dots */}
+                <div className="flex justify-center gap-1.5 pb-4">
+                  {tourSteps.map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setCurrentStep(index)}
+                      className={`h-2 rounded-full transition-all ${
+                        index === currentStep
+                          ? 'w-6 bg-primary'
+                          : 'w-2 bg-muted-foreground/30 hover:bg-muted-foreground/50'
+                      }`}
+                    />
+                  ))}
+                </div>
+
+                {/* Actions */}
+                <div className="p-4 pt-0 flex items-center justify-between gap-3">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleClose}
+                    className="text-muted-foreground hover:text-foreground"
+                  >
+                    {texts.skip}
+                  </Button>
+
+                  <div className="flex items-center gap-2">
+                    {currentStep > 0 && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={handlePrev}
+                        className="gap-1"
+                      >
+                        <ChevronLeft className="h-4 w-4" />
+                        {texts.prev}
+                      </Button>
+                    )}
                     <Button
-                      variant="outline"
+                      variant="default"
                       size="sm"
-                      onClick={handlePrev}
+                      onClick={handleNext}
                       className="gap-1"
                     >
-                      <ChevronLeft className="h-4 w-4" />
-                      {texts.prev}
+                      {isLastStep ? texts.finish : texts.next}
+                      {!isLastStep && <ChevronRight className="h-4 w-4" />}
                     </Button>
-                  )}
-                  <Button
-                    variant="default"
-                    size="sm"
-                    onClick={handleNext}
-                    className="gap-1"
-                  >
-                    {isLastStep ? texts.finish : texts.next}
-                    {!isLastStep && <ChevronRight className="h-4 w-4" />}
-                  </Button>
+                  </div>
                 </div>
               </div>
-            </div>
-          </motion.div>
+            </motion.div>
+          </div>
         </>
       )}
     </AnimatePresence>
