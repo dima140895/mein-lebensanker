@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useLayoutEffect, useRef } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useLocation } from 'react-router-dom';
 import { X, ChevronRight, ChevronLeft, Users, LayoutGrid, FileText, Link2, Shield } from 'lucide-react';
@@ -85,6 +85,8 @@ export const DashboardOnboardingTour: React.FC = () => {
   const [showTour, setShowTour] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
   const [highlightRect, setHighlightRect] = useState<HighlightRect | null>(null);
+  const modalRef = useRef<HTMLDivElement | null>(null);
+  const [modalHeight, setModalHeight] = useState<number>(340);
 
   const t = {
     de: {
@@ -194,6 +196,19 @@ export const DashboardOnboardingTour: React.FC = () => {
     }
   }, [showTour, currentStep, updateHighlight]);
 
+  // Measure modal height for better positioning on small screens
+  useLayoutEffect(() => {
+    if (!showTour) return;
+    const el = modalRef.current;
+    if (!el) return;
+
+    const rect = el.getBoundingClientRect();
+    if (rect.height > 0) {
+      // Clamp to viewport (margin handled in positioning)
+      setModalHeight(rect.height);
+    }
+  }, [showTour, currentStep, language]);
+
   const handleClose = () => {
     localStorage.setItem(TOUR_COMPLETED_KEY, 'true');
     setShowTour(false);
@@ -224,50 +239,74 @@ export const DashboardOnboardingTour: React.FC = () => {
   // Calculate modal position and arrow based on highlight
   const getModalPositionAndArrow = () => {
     if (!highlightRect) {
-      return { 
+      return {
         position: { top: '50%', left: '50%', transform: 'translate(-50%, -50%)' },
         arrowDirection: null as 'up' | 'down' | null,
-        arrowOffset: 0
+        arrowOffset: 0,
       };
     }
 
+    const margin = 16;
     const windowHeight = window.innerHeight;
     const windowWidth = window.innerWidth;
-    const modalHeight = 340; // Approximate modal height
-    const modalWidth = Math.min(400, windowWidth - 32); // Max modal width
-    const gap = 16; // Gap between highlight and modal
-    
+    const gap = 16;
+
+    const clamp = (v: number, min: number, max: number) => Math.min(max, Math.max(min, v));
+
+    const modalW = Math.min(400, windowWidth - margin * 2);
+    const modalH = Math.min(modalHeight, windowHeight - margin * 2);
+
     // Calculate highlight center
     const highlightCenterX = highlightRect.left + highlightRect.width / 2;
-    
-    let position: React.CSSProperties;
-    let arrowDirection: 'up' | 'down';
-    let arrowOffset: number;
 
-    if (step.highlightPosition === 'top') {
-      // Element is at top of page, show modal BELOW the highlight, arrow points UP to element
-      const top = highlightRect.top + highlightRect.height + gap;
-      const left = Math.max(16, Math.min(highlightCenterX - modalWidth / 2, windowWidth - modalWidth - 16));
-      position = { top: `${top}px`, left: `${left}px` };
-      arrowDirection = 'up';
-      arrowOffset = Math.max(24, Math.min(highlightCenterX - left, modalWidth - 24));
-    } else if (step.highlightPosition === 'bottom') {
-      // Element is at bottom of page, show modal ABOVE the highlight, arrow points DOWN to element
-      const top = Math.max(highlightRect.top - modalHeight - gap, 16);
-      const left = Math.max(16, Math.min(highlightCenterX - modalWidth / 2, windowWidth - modalWidth - 16));
-      position = { top: `${top}px`, left: `${left}px` };
-      arrowDirection = 'down';
-      arrowOffset = Math.max(24, Math.min(highlightCenterX - left, modalWidth - 24));
-    } else {
-      // Center - show below element, arrow points UP
-      const top = Math.min(highlightRect.top + highlightRect.height + gap, windowHeight - modalHeight - 16);
-      const left = Math.max(16, Math.min(highlightCenterX - modalWidth / 2, windowWidth - modalWidth - 16));
-      position = { top: `${top}px`, left: `${left}px` };
-      arrowDirection = 'up';
-      arrowOffset = Math.max(24, Math.min(highlightCenterX - left, modalWidth - 24));
+    const left = clamp(highlightCenterX - modalW / 2, margin, windowWidth - modalW - margin);
+
+    const canPlaceBelow =
+      highlightRect.top + highlightRect.height + gap + modalH <= windowHeight - margin;
+    const canPlaceAbove = highlightRect.top - gap - modalH >= margin;
+
+    const preferredOrder =
+      step.highlightPosition === 'bottom'
+        ? (['above', 'below', 'center'] as const)
+        : (['below', 'above', 'center'] as const);
+
+    let placement: 'above' | 'below' | 'center' = 'center';
+    for (const p of preferredOrder) {
+      if (p === 'below' && canPlaceBelow) {
+        placement = 'below';
+        break;
+      }
+      if (p === 'above' && canPlaceAbove) {
+        placement = 'above';
+        break;
+      }
+      if (p === 'center') {
+        placement = 'center';
+      }
     }
 
-    return { position, arrowDirection, arrowOffset };
+    let top = (windowHeight - modalH) / 2;
+    let arrowDirection: 'up' | 'down' | null = null;
+
+    if (placement === 'below') {
+      top = highlightRect.top + highlightRect.height + gap;
+      arrowDirection = 'up';
+    } else if (placement === 'above') {
+      top = highlightRect.top - modalH - gap;
+      arrowDirection = 'down';
+    }
+
+    top = clamp(top, margin, windowHeight - modalH - margin);
+
+    const arrowOffset = arrowDirection
+      ? clamp(highlightCenterX - left, 24, modalW - 24)
+      : 0;
+
+    return {
+      position: { top: `${top}px`, left: `${left}px` },
+      arrowDirection,
+      arrowOffset,
+    };
   };
 
   const { position: modalPosition, arrowDirection, arrowOffset } = getModalPositionAndArrow();
@@ -281,7 +320,7 @@ export const DashboardOnboardingTour: React.FC = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 pointer-events-none"
+            className="fixed inset-0 z-[200] pointer-events-none"
           >
             <svg width="100%" height="100%" className="absolute inset-0">
               <defs>
@@ -320,24 +359,22 @@ export const DashboardOnboardingTour: React.FC = () => {
                   width: highlightRect.width,
                   height: highlightRect.height,
                   boxShadow: '0 0 0 4px hsl(var(--primary) / 0.2), 0 0 20px hsl(var(--primary) / 0.3)',
-                  zIndex: 51,
+                  zIndex: 201,
                 }}
               />
             )}
           </motion.div>
 
           {/* Clickable backdrop */}
-          <div
-            className="fixed inset-0 z-50"
-            onClick={handleClose}
-          />
+          <div className="fixed inset-0 z-[200]" onClick={handleClose} />
 
           {/* Tour Modal */}
           <motion.div
+            ref={modalRef}
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            className="fixed z-50 w-[calc(100%-2rem)] max-w-md"
+            className="fixed z-[210] w-[calc(100%-2rem)] max-w-md"
             style={modalPosition}
           >
             {/* Arrow pointing to highlighted element */}
@@ -357,7 +394,7 @@ export const DashboardOnboardingTour: React.FC = () => {
                 }}
               />
             )}
-            <div className="bg-card rounded-2xl shadow-elevated border border-border overflow-hidden">
+            <div className="bg-card rounded-2xl shadow-elevated border border-border overflow-auto max-h-[calc(100vh-2rem)]">
               {/* Header */}
               <div className="bg-primary/10 p-4 flex items-center justify-between">
                 <div className="flex items-center gap-3">
