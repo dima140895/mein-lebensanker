@@ -58,7 +58,7 @@ const tourSteps: TourStep[] = [
     messageDe: 'Unter "Für Angehörige" kannst Du einen sicheren Link erstellen, über den Deine Vertrauenspersonen im Ernstfall Zugriff auf Deine Daten erhalten.',
     messageEn: 'Under "For Relatives", you can create a secure link that gives your trusted persons access to your data in case of emergency.',
     highlightSelector: '[data-tour="relatives-link"]',
-    highlightPosition: 'bottom',
+    highlightPosition: 'top', // Modal appears ABOVE the element, arrow points DOWN
   },
   {
     id: 'encryption',
@@ -68,7 +68,7 @@ const tourSteps: TourStep[] = [
     messageDe: 'Unter dem Zahnrad-Icon findest Du alle Konto-Einstellungen. Hier kannst Du auch die Ende-zu-Ende-Verschlüsselung aktivieren – für maximale Sicherheit.',
     messageEn: 'Under the gear icon you\'ll find all account settings. Here you can also enable end-to-end encryption – for maximum security.',
     highlightSelector: '[data-tour="encryption-status"]',
-    highlightPosition: 'top',
+    highlightPosition: 'bottom', // Modal appears BELOW the element, arrow points UP
   },
 ];
 
@@ -210,8 +210,8 @@ export const DashboardOnboardingTour: React.FC = () => {
     if (!highlightRect) {
       return { 
         position: { top: '50%', left: '50%', transform: 'translate(-50%, -50%)' },
-        arrowPosition: null,
-        arrowDirection: null
+        arrowDirection: null as 'up' | 'down' | null,
+        arrowOffset: 0
       };
     }
 
@@ -219,33 +219,32 @@ export const DashboardOnboardingTour: React.FC = () => {
     const windowWidth = window.innerWidth;
     const modalHeight = 340; // Approximate modal height
     const modalWidth = Math.min(400, windowWidth - 32); // Max modal width
-    const padding = 24;
+    const gap = 16; // Gap between highlight and modal
     
     // Calculate highlight center
     const highlightCenterX = highlightRect.left + highlightRect.width / 2;
-    const highlightCenterY = highlightRect.top + highlightRect.height / 2;
     
     let position: React.CSSProperties;
-    let arrowDirection: 'up' | 'down' | 'left' | 'right';
+    let arrowDirection: 'up' | 'down';
     let arrowOffset: number;
 
     if (step.highlightPosition === 'top') {
-      // Element is at top, show modal below it
-      const top = Math.min(highlightRect.top + highlightRect.height + padding, windowHeight - modalHeight - padding);
+      // Element is at top of page, show modal BELOW the highlight, arrow points UP to element
+      const top = highlightRect.top + highlightRect.height + gap;
       const left = Math.max(16, Math.min(highlightCenterX - modalWidth / 2, windowWidth - modalWidth - 16));
       position = { top: `${top}px`, left: `${left}px` };
       arrowDirection = 'up';
       arrowOffset = Math.max(24, Math.min(highlightCenterX - left, modalWidth - 24));
     } else if (step.highlightPosition === 'bottom') {
-      // Element is at bottom, show modal above it
-      const top = Math.max(highlightRect.top - modalHeight - padding, padding);
+      // Element is at bottom of page, show modal ABOVE the highlight, arrow points DOWN to element
+      const top = Math.max(highlightRect.top - modalHeight - gap, 16);
       const left = Math.max(16, Math.min(highlightCenterX - modalWidth / 2, windowWidth - modalWidth - 16));
       position = { top: `${top}px`, left: `${left}px` };
       arrowDirection = 'down';
       arrowOffset = Math.max(24, Math.min(highlightCenterX - left, modalWidth - 24));
     } else {
-      // Center - show below element
-      const top = Math.min(highlightRect.top + highlightRect.height + padding, windowHeight - modalHeight - padding);
+      // Center - show below element, arrow points UP
+      const top = Math.min(highlightRect.top + highlightRect.height + gap, windowHeight - modalHeight - 16);
       const left = Math.max(16, Math.min(highlightCenterX - modalWidth / 2, windowWidth - modalWidth - 16));
       position = { top: `${top}px`, left: `${left}px` };
       arrowDirection = 'up';
