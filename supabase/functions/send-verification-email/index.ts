@@ -1,10 +1,20 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
+const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
+const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers":
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
+};
+
+type GenerateLinkResponse = {
+  action_link?: string;
+  properties?: {
+    hashed_token?: string;
+  };
 };
 
 serve(async (req: Request): Promise<Response> => {
@@ -13,6 +23,13 @@ serve(async (req: Request): Promise<Response> => {
   }
 
   try {
+    if (!RESEND_API_KEY) {
+      return new Response(JSON.stringify({ error: "Missing RESEND_API_KEY" }), {
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const { email, confirmationUrl, userName } = await req.json();
 
     if (!email || !confirmationUrl) {
@@ -22,13 +39,55 @@ serve(async (req: Request): Promise<Response> => {
       });
     }
 
-    const normalizedEmail = email.toLowerCase().trim();
-    const displayName = userName ? userName.replace(/[<>&"']/g, '') : "Nutzer";
+    const normalizedEmail = String(email).toLowerCase().trim();
+    const redirectTo = String(confirmationUrl);
+    const displayName = userName ? String(userName).replace(/[<>&"']/g, "") : "Nutzer";
+
+    // Build a verification URL that our /verify-email page can actually verify.
+    // We generate a secure token server-side (service role) and append it as token_hash.
+    let verificationUrl = redirectTo;
+
+    if (SUPABASE_URL && SUPABASE_SERVICE_ROLE_KEY) {
+      const generateLinkRes = await fetch(`${SUPABASE_URL}/auth/v1/admin/generate_link`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
+          apikey: SUPABASE_SERVICE_ROLE_KEY,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          type: "signup",
+          email: normalizedEmail,
+          options: {
+            // We redirect to our app's verification page after verification.
+            redirectTo,
+          },
+        }),
+      });
+
+      if (!generateLinkRes.ok) {
+        const errorText = await generateLinkRes.text();
+        console.error("generate_link error:", errorText);
+      } else {
+        const linkData = (await generateLinkRes.json()) as GenerateLinkResponse;
+        const hashed = linkData?.properties?.hashed_token;
+
+        if (hashed) {
+          const joiner = redirectTo.includes("?") ? "&" : "?";
+          verificationUrl = `${redirectTo}${joiner}token_hash=${encodeURIComponent(hashed)}&type=signup`;
+        } else if (linkData?.action_link) {
+          // Fallback: use action_link (will go through /auth/v1/verify and redirect back)
+          verificationUrl = linkData.action_link;
+        }
+      }
+    } else {
+      console.error("Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY in function env");
+    }
 
     const emailResponse = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${RESEND_API_KEY}`,
+        Authorization: `Bearer ${RESEND_API_KEY}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
@@ -61,7 +120,7 @@ serve(async (req: Request): Promise<Response> => {
                         <table role="presentation" style="margin: 30px 0;">
                           <tr>
                             <td align="center">
-                              <a href="${confirmationUrl}" style="display: inline-block; padding: 16px 32px; background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%); color: #ffffff; text-decoration: none; font-size: 16px; font-weight: 600; border-radius: 8px;">
+                              <a href="${verificationUrl}" style="display: inline-block; padding: 16px 32px; background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%); color: #ffffff; text-decoration: none; font-size: 16px; font-weight: 600; border-radius: 8px;">
                                 E-Mail-Adresse bestätigen
                               </a>
                             </td>
@@ -71,7 +130,7 @@ serve(async (req: Request): Promise<Response> => {
                           Falls der Button nicht funktioniert, kopieren Sie diesen Link:
                         </p>
                         <p style="margin: 10px 0 0 0; color: #1e3a5f; font-size: 14px; word-break: break-all;">
-                          ${confirmationUrl}
+                          ${verificationUrl}
                         </p>
                         <hr style="margin: 30px 0; border: none; border-top: 1px solid #eeeeee;">
                         <p style="margin: 0; color: #999999; font-size: 13px;">
@@ -99,15 +158,18 @@ serve(async (req: Request): Promise<Response> => {
     if (!emailResponse.ok) {
       const errorText = await emailResponse.text();
       console.error("Resend error:", errorText);
-      return new Response(JSON.stringify({ error: "Failed to send email", details: errorText }), {
-        status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+      return new Response(
+        JSON.stringify({ error: "Failed to send email", details: errorText }),
+        {
+          status: 500,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        },
+      );
     }
 
     const responseData = await emailResponse.json();
     console.log("Email sent successfully:", responseData);
-    
+
     return new Response(JSON.stringify({ success: true, id: responseData.id }), {
       status: 200,
       headers: { ...corsHeaders, "Content-Type": "application/json" },

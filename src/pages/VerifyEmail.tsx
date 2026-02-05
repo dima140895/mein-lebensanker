@@ -83,11 +83,13 @@ const VerifyEmail = () => {
           return;
         }
 
-        // Handle token_hash verification (works for both 'email' and 'magiclink' types)
-        if (token_hash && (type === 'email' || type === 'magiclink')) {
+        // Handle token_hash verification (works for 'signup' and 'magiclink' types)
+        // Some providers/flows may send `type=email` historically; treat it as `signup`.
+        const otpType = type === 'email' ? 'signup' : type;
+        if (token_hash && (otpType === 'signup' || otpType === 'magiclink')) {
           const { error } = await supabase.auth.verifyOtp({
             token_hash,
-            type: type as 'email' | 'magiclink',
+            type: otpType as 'signup' | 'magiclink',
           });
 
           if (error) {
