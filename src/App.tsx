@@ -25,6 +25,7 @@ import InstallApp from "./pages/InstallApp";
 import InstagramDownload from "./pages/InstagramDownload";
 import CookieConsent from "./components/CookieConsent";
 import { EncryptionReminder } from "./components/EncryptionReminder";
+import VorsorgeAssistant from "./components/VorsorgeAssistant";
 
 const queryClient = new QueryClient();
 
@@ -58,6 +59,7 @@ const App = () => (
                   </Routes>
                   <CookieConsent />
                   <EncryptionReminder />
+                  <VorsorgeAssistant />
                 </BrowserRouter>
               </TooltipProvider>
             </FormProvider>
