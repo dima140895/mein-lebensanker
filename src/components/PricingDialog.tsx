@@ -7,12 +7,19 @@ import { supabase } from '@/integrations/supabase/browserClient';
 import { toast } from 'sonner';
 import { logger } from '@/lib/logger';
 import { PRICING, calculateFamilyPrice, type PackageType } from '@/lib/pricing';
+import { useIsMobile } from '@/hooks/use-mobile';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import {
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+} from '@/components/ui/drawer';
 
 interface PricingDialogProps {
   open: boolean;
@@ -25,6 +32,7 @@ const PricingDialog = ({ open, onOpenChange, onSelectPackage }: PricingDialogPro
   const { user, profile } = useAuth();
   const [loading, setLoading] = useState<string | null>(null);
   const [familyProfileCount, setFamilyProfileCount] = useState(4);
+  const isMobile = useIsMobile();
 
   const hasPaid = profile?.has_paid;
 
@@ -132,7 +140,6 @@ const PricingDialog = ({ open, onOpenChange, onSelectPackage }: PricingDialogPro
 
   const handlePurchase = async (packageType: PackageType) => {
     if (!user) {
-      // Not logged in - use the old flow
       onSelectPackage();
       return;
     }
@@ -164,122 +171,183 @@ const PricingDialog = ({ open, onOpenChange, onSelectPackage }: PricingDialogPro
     }
   };
 
-  return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-3xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader className="text-center pb-4">
-          <DialogTitle className="font-serif text-2xl">{texts.title}</DialogTitle>
-          <p className="text-muted-foreground">{texts.subtitle}</p>
-        </DialogHeader>
+  const PricingContent = () => (
+    <>
+      <div className={`grid gap-3 ${isMobile ? 'grid-cols-1' : 'md:grid-cols-3'}`}>
+        {packages.map(({ key, icon: Icon, name, price, desc, badge, highlight, iconBg, iconColor, showProfileSelector }) => {
+          const isLoading = loading === key;
+          
+          return (
+            <div
+              key={key}
+              className={`relative rounded-xl border p-3 sm:p-4 flex ${isMobile ? 'flex-row items-center gap-3' : 'flex-col'} ${
+                highlight 
+                  ? 'border-2 border-primary bg-primary/5 shadow-md' 
+                  : 'border-border bg-card'
+              }`}
+            >
+              {badge && (
+                <div className={`absolute ${isMobile ? '-top-2 left-3' : '-top-2.5 left-1/2 -translate-x-1/2'} bg-primary text-primary-foreground px-2 py-0.5 rounded-full text-xs font-medium whitespace-nowrap`}>
+                  {badge}
+                </div>
+              )}
 
-        <div className="grid gap-4 md:grid-cols-3">
-          {packages.map(({ key, icon: Icon, name, price, desc, badge, highlight, iconBg, iconColor, showProfileSelector }) => {
-            const isLoading = loading === key;
-            
-            return (
-              <div
-                key={key}
-                className={`relative rounded-xl border p-4 flex flex-col ${
-                  highlight 
-                    ? 'border-2 border-primary bg-primary/5 shadow-md' 
-                    : 'border-border bg-card'
-                }`}
-              >
-                {badge && (
-                  <div className="absolute -top-2.5 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground px-2 py-0.5 rounded-full text-xs font-medium whitespace-nowrap">
-                    {badge}
-                  </div>
-                )}
-
-                {/* Header section - fixed height for alignment */}
-                <div className="flex items-start gap-3 mb-3 mt-1 h-[60px]">
+              {/* Mobile Layout */}
+              {isMobile ? (
+                <>
                   <div className={`h-10 w-10 rounded-lg flex items-center justify-center flex-shrink-0 ${iconBg}`}>
                     <Icon className={`h-5 w-5 ${iconColor}`} />
                   </div>
-                  <div className="flex flex-col justify-center">
-                    <h3 className="font-serif text-lg font-semibold text-foreground leading-tight">
-                      {name}
-                    </h3>
-                    <p className="text-xs text-muted-foreground leading-tight">{desc}</p>
-                  </div>
-                </div>
-
-                {/* Profile selector section - fixed height placeholder for alignment */}
-                <div className="h-[44px] mb-3">
-                  {showProfileSelector ? (
-                    <div className="flex items-center justify-center gap-3 p-2 bg-muted/50 rounded-lg h-full">
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        className="h-7 w-7"
-                        onClick={() => setFamilyProfileCount(Math.max(4, familyProfileCount - 1))}
-                        disabled={familyProfileCount <= 4}
-                      >
-                        <Minus className="h-3 w-3" />
-                      </Button>
-                      <span className="font-medium text-sm min-w-[70px] text-center">
-                        {familyProfileCount} {texts.profiles}
-                      </span>
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        className="h-7 w-7"
-                        onClick={() => setFamilyProfileCount(Math.min(10, familyProfileCount + 1))}
-                        disabled={familyProfileCount >= 10}
-                      >
-                        <Plus className="h-3 w-3" />
-                      </Button>
+                  
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between gap-2">
+                      <div>
+                        <h3 className="font-serif text-base font-semibold text-foreground leading-tight">
+                          {name}
+                        </h3>
+                        <p className="text-xs text-muted-foreground">{desc}</p>
+                      </div>
+                      <div className="text-right flex-shrink-0">
+                        <span className="font-mono text-xl font-bold text-primary">
+                          {price}
+                        </span>
+                        <span className="text-xs text-muted-foreground block">{texts.inclVat}</span>
+                      </div>
                     </div>
-                  ) : (
-                    <div className="h-full" /> 
-                  )}
-                </div>
-
-                {/* Price section - aligned */}
-                <div className="mb-3">
-                  <span className="font-mono text-3xl font-bold text-primary">
-                    {price}
-                  </span>
-                  <span className="text-xs text-muted-foreground ml-1">{texts.inclVat}</span>
-                </div>
-
-                {/* Features section - aligned */}
-                <ul className="space-y-1.5 text-xs flex-1">
-                  {texts.features.slice(0, 3).map((feature, i) => (
-                    <li key={i} className="flex items-start gap-1.5 text-foreground">
-                      <Check className="h-3.5 w-3.5 text-primary flex-shrink-0 mt-0.5" />
-                      <span>{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-
-                {/* Buy button for logged-in users */}
-                {user && !hasPaid && (
-                  <Button
-                    className="mt-4 w-full"
-                    variant={highlight ? 'default' : 'outline'}
-                    onClick={() => handlePurchase(key)}
-                    disabled={isLoading || loading !== null}
-                  >
-                    {isLoading ? (
-                      <>
-                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                        {texts.processing}
-                      </>
-                    ) : (
-                      <>
-                        <CreditCard className="h-4 w-4 mr-2" />
-                        {texts.buyNow}
-                      </>
+                    
+                    {showProfileSelector && (
+                      <div className="flex items-center gap-2 mt-2 p-1.5 bg-muted/50 rounded-lg">
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          className="h-6 w-6"
+                          onClick={() => setFamilyProfileCount(Math.max(4, familyProfileCount - 1))}
+                          disabled={familyProfileCount <= 4}
+                        >
+                          <Minus className="h-3 w-3" />
+                        </Button>
+                        <span className="font-medium text-xs min-w-[50px] text-center">
+                          {familyProfileCount} {texts.profiles}
+                        </span>
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          className="h-6 w-6"
+                          onClick={() => setFamilyProfileCount(Math.min(10, familyProfileCount + 1))}
+                          disabled={familyProfileCount >= 10}
+                        >
+                          <Plus className="h-3 w-3" />
+                        </Button>
+                      </div>
                     )}
-                  </Button>
-                )}
-              </div>
-            );
-          })}
-        </div>
+                  </div>
 
-        {/* All features list */}
+                  {user && !hasPaid && (
+                    <Button
+                      size="sm"
+                      variant={highlight ? 'default' : 'outline'}
+                      onClick={() => handlePurchase(key)}
+                      disabled={isLoading || loading !== null}
+                      className="flex-shrink-0"
+                    >
+                      {isLoading ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <CreditCard className="h-4 w-4" />
+                      )}
+                    </Button>
+                  )}
+                </>
+              ) : (
+                /* Desktop/Tablet Layout */
+                <>
+                  <div className="flex items-start gap-3 mb-3 mt-1 h-[60px]">
+                    <div className={`h-10 w-10 rounded-lg flex items-center justify-center flex-shrink-0 ${iconBg}`}>
+                      <Icon className={`h-5 w-5 ${iconColor}`} />
+                    </div>
+                    <div className="flex flex-col justify-center">
+                      <h3 className="font-serif text-lg font-semibold text-foreground leading-tight">
+                        {name}
+                      </h3>
+                      <p className="text-xs text-muted-foreground leading-tight">{desc}</p>
+                    </div>
+                  </div>
+
+                  <div className="h-[44px] mb-3">
+                    {showProfileSelector ? (
+                      <div className="flex items-center justify-center gap-3 p-2 bg-muted/50 rounded-lg h-full">
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          className="h-7 w-7"
+                          onClick={() => setFamilyProfileCount(Math.max(4, familyProfileCount - 1))}
+                          disabled={familyProfileCount <= 4}
+                        >
+                          <Minus className="h-3 w-3" />
+                        </Button>
+                        <span className="font-medium text-sm min-w-[70px] text-center">
+                          {familyProfileCount} {texts.profiles}
+                        </span>
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          className="h-7 w-7"
+                          onClick={() => setFamilyProfileCount(Math.min(10, familyProfileCount + 1))}
+                          disabled={familyProfileCount >= 10}
+                        >
+                          <Plus className="h-3 w-3" />
+                        </Button>
+                      </div>
+                    ) : (
+                      <div className="h-full" /> 
+                    )}
+                  </div>
+
+                  <div className="mb-3">
+                    <span className="font-mono text-3xl font-bold text-primary">
+                      {price}
+                    </span>
+                    <span className="text-xs text-muted-foreground ml-1">{texts.inclVat}</span>
+                  </div>
+
+                  <ul className="space-y-1.5 text-xs flex-1">
+                    {texts.features.slice(0, 3).map((feature, i) => (
+                      <li key={i} className="flex items-start gap-1.5 text-foreground">
+                        <Check className="h-3.5 w-3.5 text-primary flex-shrink-0 mt-0.5" />
+                        <span>{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  {user && !hasPaid && (
+                    <Button
+                      className="mt-4 w-full"
+                      variant={highlight ? 'default' : 'outline'}
+                      onClick={() => handlePurchase(key)}
+                      disabled={isLoading || loading !== null}
+                    >
+                      {isLoading ? (
+                        <>
+                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                          {texts.processing}
+                        </>
+                      ) : (
+                        <>
+                          <CreditCard className="h-4 w-4 mr-2" />
+                          {texts.buyNow}
+                        </>
+                      )}
+                    </Button>
+                  )}
+                </>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      {/* All features list - hidden on mobile */}
+      {!isMobile && (
         <div className="mt-4 pt-4 border-t border-border">
           <p className="text-sm font-medium text-foreground mb-2">{texts.allInclude}</p>
           <div className="grid grid-cols-2 gap-2">
@@ -291,16 +359,44 @@ const PricingDialog = ({ open, onOpenChange, onSelectPackage }: PricingDialogPro
             ))}
           </div>
         </div>
+      )}
 
-        {/* CTA for non-logged-in users */}
-        {!user && (
-          <div className="mt-3 flex justify-center">
-            <Button size="lg" onClick={onSelectPackage} className="px-8">
-              <CreditCard className="mr-2 h-4 w-4" />
-              {texts.getStarted}
-            </Button>
+      {/* CTA for non-logged-in users */}
+      {!user && (
+        <div className="mt-4 flex justify-center">
+          <Button size={isMobile ? 'default' : 'lg'} onClick={onSelectPackage} className="w-full sm:w-auto px-8">
+            <CreditCard className="mr-2 h-4 w-4" />
+            {texts.getStarted}
+          </Button>
+        </div>
+      )}
+    </>
+  );
+
+  if (isMobile) {
+    return (
+      <Drawer open={open} onOpenChange={onOpenChange}>
+        <DrawerContent className="px-4 pb-6 max-h-[85vh]">
+          <DrawerHeader className="text-center pb-2">
+            <DrawerTitle className="font-serif text-xl">{texts.title}</DrawerTitle>
+            <p className="text-sm text-muted-foreground">{texts.subtitle}</p>
+          </DrawerHeader>
+          <div className="overflow-y-auto">
+            <PricingContent />
           </div>
-        )}
+        </DrawerContent>
+      </Drawer>
+    );
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-3xl max-h-[90vh] overflow-y-auto p-4 sm:p-6">
+        <DialogHeader className="text-center pb-4">
+          <DialogTitle className="font-serif text-2xl">{texts.title}</DialogTitle>
+          <p className="text-muted-foreground">{texts.subtitle}</p>
+        </DialogHeader>
+        <PricingContent />
       </DialogContent>
     </Dialog>
   );
