@@ -262,6 +262,12 @@ const Header = () => {
       onClick: () => navigateTo('/dashboard?section=contacts'), 
       showWhen: 'authenticated' 
     },
+    { 
+      label: language === 'de' ? 'Für Angehörige' : 'For Relatives', 
+      icon: <Link2 className="h-4 w-4" />,
+      onClick: () => navigateTo('/dashboard?section=share'), 
+      showWhen: 'authenticated' 
+    },
   ];
 
   const visibleMenuItems = menuItems.filter(item => 
