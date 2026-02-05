@@ -417,15 +417,16 @@ const ShareLinkManager = () => {
       animate={{ opacity: 1 }}
       className="space-y-6"
     >
-      <div className="flex items-start justify-between">
+      {/* Header Section - Mobile Optimized */}
+      <div className="space-y-4">
         <div>
           <h2 className="font-serif text-2xl font-bold text-foreground">{texts.title}</h2>
-          <p className="mt-1 text-muted-foreground">{texts.description}</p>
+          <p className="mt-2 text-muted-foreground text-sm sm:text-base">{texts.description}</p>
         </div>
 
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
-            <Button>
+            <Button className="w-full sm:w-auto">
               <Plus className="mr-2 h-4 w-4" />
               {texts.create}
             </Button>
