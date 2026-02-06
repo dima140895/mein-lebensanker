@@ -13,7 +13,7 @@ const HeroSection = () => {
       <div className="absolute inset-0 bg-background" />
       
       {/* Tree of Life - positioned on the right side */}
-      <div className="absolute right-0 md:right-[5%] top-1/2 -translate-y-1/2 w-[60%] sm:w-[55%] md:w-[50%] lg:w-[45%] h-full flex items-center justify-center pointer-events-none">
+      <div className="absolute right-0 md:right-[2%] top-1/2 -translate-y-1/2 w-[75%] sm:w-[70%] md:w-[60%] lg:w-[55%] h-full flex items-center justify-center pointer-events-none">
         <div
           aria-hidden="true"
           className="w-full h-full max-h-[95%] bg-background bg-no-repeat bg-center bg-contain opacity-50 md:opacity-60"
