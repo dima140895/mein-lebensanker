@@ -9,11 +9,14 @@ const HeroSection = () => {
 
   return (
     <section className="relative isolate min-h-[55vh] sm:min-h-[70vh] md:min-h-[85vh] flex items-center overflow-hidden">
-      {/* Gradient background - cream left to soft sage-tinted right */}
+      {/* Gradient background - matches header bg-background, subtle sage tint bottom-right only */}
+      <div
+        className="absolute inset-0 bg-background"
+      />
       <div
         className="absolute inset-0"
         style={{
-          background: 'linear-gradient(to right, hsl(40 30% 97%) 0%, hsl(40 30% 97%) 30%, hsl(42 28% 96%) 50%, hsl(120 12% 94%) 80%, hsl(140 15% 92%) 100%)',
+          background: 'radial-gradient(ellipse 60% 70% at 85% 80%, hsl(140 15% 92% / 0.5) 0%, transparent 70%)',
         }}
       />
       
