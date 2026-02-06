@@ -218,6 +218,7 @@ Solche Hinweise sind rechtlich nicht bindend, können Angehörigen aber helfen.`
         },
       ],
       moreQuestions: 'Weitere Fragen?',
+      supportMessage: 'Zu dieser Frage kann ich leider keine Auskunft geben. Für weitere Unterstützung kontaktiere uns bitte unter **service@mein-lebensanker.de**.',
     },
     en: {
       title: 'Estate Planning Assistant',
@@ -412,10 +413,55 @@ Such notes are not legally binding but can help family members.`,
         },
       ],
       moreQuestions: 'More questions?',
+      supportMessage: 'I\'m sorry, I cannot provide information on this question. For further assistance, please contact us at **service@mein-lebensanker.de**.',
     },
   };
 
   const texts = t[language];
+
+  // Find matching predefined answer based on user input
+  const findMatchingAnswer = (userInput: string): string | null => {
+    const normalizedInput = userInput.toLowerCase().trim();
+    
+    // Keywords for each question to match against user input
+    const keywordMap: { [key: string]: string[] } = {
+      'patientenverfügung': ['patientenverfügung', 'patient', 'verfügung', 'medizinische maßnahmen', 'advance directive'],
+      'vorsorgevollmacht': ['vorsorgevollmacht', 'vollmacht', 'power of attorney', 'bevollmächtigt'],
+      'testament': ['testament', 'will', 'erbe', 'vermögen', 'erbschaft', 'vererben'],
+      'betreuungsverfügung': ['betreuungsverfügung', 'betreuung', 'healthcare proxy', 'guardian'],
+      'beginnen': ['beginnen', 'anfangen', 'start', 'wann', 'when should'],
+      'aufbewahren': ['aufbewahren', 'aufbewahrung', 'store', 'wo bewahre', 'where should i store', 'dokumente'],
+      'informiert': ['informiert', 'wissen', 'who should know', 'wer sollte'],
+      'aktualisieren': ['aktualisieren', 'update', 'überprüfen', 'how often', 'wie oft'],
+      'digital': ['digital', 'online', 'rechtlich gültig', 'legally valid'],
+      'nichts regle': ['nichts regle', 'keine regelung', 'don\'t make', 'what happens if', 'was passiert'],
+      'passwörter': ['passwort', 'passwörter', 'password', 'zugangsdaten', 'credentials'],
+      'mehrere': ['mehrere', 'multiple', 'bevollmächtigt werden', 'can multiple'],
+      'ausland': ['ausland', 'abroad', 'eu', 'international', 'gilt'],
+      'wünsche': ['wünsche', 'wishes', 'persönliche', 'personal', 'hinterlassen', 'leave'],
+    };
+
+    for (const suggestion of texts.suggestions) {
+      const questionLower = suggestion.question.toLowerCase();
+      
+      // Direct match check
+      if (normalizedInput.includes(questionLower) || questionLower.includes(normalizedInput)) {
+        return suggestion.answer;
+      }
+      
+      // Keyword matching
+      for (const [, keywords] of Object.entries(keywordMap)) {
+        const matchesKeyword = keywords.some(keyword => normalizedInput.includes(keyword));
+        const questionMatchesKeyword = keywords.some(keyword => questionLower.includes(keyword));
+        
+        if (matchesKeyword && questionMatchesKeyword) {
+          return suggestion.answer;
+        }
+      }
+    }
+    
+    return null;
+  };
 
   // Handle predefined suggestion click
   const handleSuggestionClick = (suggestion: { question: string; answer: string }) => {
@@ -497,20 +543,21 @@ Such notes are not legally binding but can help family members.`,
   const handleSend = async () => {
     if (!input.trim() || isLoading) return;
 
-    const userMessage: Message = { role: 'user', content: input.trim() };
-    const newMessages = [...messages, userMessage];
-    setMessages(newMessages);
+    const userInput = input.trim();
+    const userMessage: Message = { role: 'user', content: userInput };
+    setMessages(prev => [...prev, userMessage]);
     setInput('');
-    setIsLoading(true);
     setShowSuggestions(false);
 
-    try {
-      await streamChat(newMessages);
-    } catch (error) {
-      console.error('Chat error:', error);
-      setMessages(prev => [...prev, { role: 'assistant', content: texts.error }]);
-    } finally {
-      setIsLoading(false);
+    // Try to find a matching predefined answer
+    const matchedAnswer = findMatchingAnswer(userInput);
+    
+    if (matchedAnswer) {
+      // Use predefined answer
+      setMessages(prev => [...prev, { role: 'assistant', content: matchedAnswer }]);
+    } else {
+      // No match found - show support message
+      setMessages(prev => [...prev, { role: 'assistant', content: texts.supportMessage }]);
     }
   };
 
