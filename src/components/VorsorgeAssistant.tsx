@@ -31,10 +31,13 @@ const VorsorgeAssistant: React.FC = () => {
       welcome: 'Hallo! Ich bin dein Vorsorge-Assistent. Frag mich alles rund um Patientenverfügung, Vorsorgevollmacht oder Testament.',
       disclaimer: 'Hinweis: Die folgenden Informationen dienen der allgemeinen Orientierung und stellen keine Rechtsberatung dar. Für eine verbindliche rechtliche Beratung wende Dich bitte an eine Notarin, einen Notar oder eine Rechtsanwältin bzw. einen Rechtsanwalt.',
       error: 'Entschuldigung, es ist ein Fehler aufgetreten. Bitte versuche es erneut.',
-      suggestions: [
+      categories: [
         {
-          question: 'Was ist eine Patientenverfügung?',
-          answer: `Eine Patientenverfügung ist ein schriftliches Dokument, in dem du festlegst, welche medizinischen Maßnahmen du wünschst oder ablehnst, falls du dich selbst nicht mehr äußern kannst (z. B. bei Bewusstlosigkeit oder schwerer Erkrankung).
+          name: 'Grundlagen',
+          questions: [
+            {
+              question: 'Was ist eine Patientenverfügung?',
+              answer: `Eine Patientenverfügung ist ein schriftliches Dokument, in dem du festlegst, welche medizinischen Maßnahmen du wünschst oder ablehnst, falls du dich selbst nicht mehr äußern kannst (z. B. bei Bewusstlosigkeit oder schwerer Erkrankung).
 
 Du kannst darin z. B. regeln:
 - ob lebenserhaltende Maßnahmen gewünscht sind
@@ -47,10 +50,10 @@ Du kannst darin z. B. regeln:
 - Sie sollte möglichst konkret formuliert sein
 - Sie gilt erst, wenn du nicht mehr einwilligungsfähig bist
 - Für rechtssichere Formulierungen kann fachlicher Rat sinnvoll sein.`,
-        },
-        {
-          question: 'Brauche ich eine Vorsorgevollmacht?',
-          answer: `Mit einer Vorsorgevollmacht bestimmst du eine Person deines Vertrauens, die für dich Entscheidungen treffen darf, wenn du selbst dazu nicht mehr in der Lage bist.
+            },
+            {
+              question: 'Brauche ich eine Vorsorgevollmacht?',
+              answer: `Mit einer Vorsorgevollmacht bestimmst du eine Person deines Vertrauens, die für dich Entscheidungen treffen darf, wenn du selbst dazu nicht mehr in der Lage bist.
 
 Das kann betreffen:
 - Gesundheitsangelegenheiten
@@ -65,10 +68,10 @@ Ohne Vorsorgevollmacht kann ein Gericht eine Betreuung anordnen.
 - Die bevollmächtigte Person sollte absolut vertrauenswürdig sein
 - Die Vollmacht sollte klar formuliert sein
 - Für bestimmte Geschäfte kann eine notarielle Form sinnvoll oder nötig sein`,
-        },
-        {
-          question: 'Wie erstelle ich ein Testament?',
-          answer: `Ein Testament regelt, wer dein Vermögen nach deinem Tod erhalten soll.
+            },
+            {
+              question: 'Wie erstelle ich ein Testament?',
+              answer: `Ein Testament regelt, wer dein Vermögen nach deinem Tod erhalten soll.
 
 In Deutschland ist ein privates Testament gültig, wenn:
 - es vollständig handschriftlich geschrieben ist
@@ -84,10 +87,10 @@ Ein Testament kann z. B. regeln:
 - Testamentsvollstreckung
 
 Bei komplexen Vermögensverhältnissen oder Familienkonstellationen ist rechtliche Beratung empfehlenswert.`,
-        },
-        {
-          question: 'Was ist eine Betreuungsverfügung?',
-          answer: `Mit einer Betreuungsverfügung legst du fest, wen ein Gericht als rechtliche Betreuung einsetzen soll, falls eine Betreuung notwendig wird.
+            },
+            {
+              question: 'Was ist eine Betreuungsverfügung?',
+              answer: `Mit einer Betreuungsverfügung legst du fest, wen ein Gericht als rechtliche Betreuung einsetzen soll, falls eine Betreuung notwendig wird.
 
 Du kannst darin:
 - eine Wunschperson benennen
@@ -99,22 +102,15 @@ Das Gericht berücksichtigt diese Wünsche in der Regel, ist aber rechtlich nich
 Eine Betreuungsverfügung ist sinnvoll, wenn:
 - keine Vorsorgevollmacht besteht
 - zusätzliche Absicherung gewünscht ist`,
+            },
+          ],
         },
         {
-          question: 'Wann sollte ich mit Vorsorgeplanung beginnen?',
-          answer: `Grundsätzlich kann jede volljährige Person vorsorgen. Nicht nur im Alter – auch bei Krankheit oder Unfall kann Vorsorge wichtig werden.
-
-Viele Menschen beginnen, wenn:
-- sie Kinder bekommen
-- Eigentum oder Vermögen vorhanden ist
-- sie Angehörige entlasten möchten
-- sie selbstbestimmt vorsorgen wollen
-
-Es gibt kein „zu früh", aber manchmal ein „zu spät".`,
-        },
-        {
-          question: 'Wo bewahre ich meine Vorsorgedokumente auf?',
-          answer: `Wichtig ist, dass Dokumente:
+          name: 'Dokumente',
+          questions: [
+            {
+              question: 'Wo bewahre ich meine Vorsorgedokumente auf?',
+              answer: `Wichtig ist, dass Dokumente:
 - sicher aufbewahrt werden
 - im Ernstfall auffindbar sind
 - aktuell gehalten werden
@@ -126,32 +122,10 @@ Es gibt kein „zu früh", aber manchmal ein „zu spät".`,
 - notarielle Hinterlegung (z. B. Testament)
 
 Entscheidend ist: Angehörige sollten wissen, dass Dokumente existieren und wo sie zu finden sind.`,
-        },
-        {
-          question: 'Wer sollte über meine Vorsorge informiert sein?',
-          answer: `Das ist eine persönliche Entscheidung.
-
-Oft informiert man:
-- nahe Angehörige
-- bevollmächtigte Personen
-- Vertrauenspersonen
-
-Es kann helfen, zumindest mitzuteilen, dass Regelungen existieren.`,
-        },
-        {
-          question: 'Wie oft sollte ich meine Vorsorge aktualisieren?',
-          answer: `Eine Überprüfung ist sinnvoll:
-- alle paar Jahre
-- bei Heirat oder Scheidung
-- bei Geburt eines Kindes
-- bei größeren Vermögensänderungen
-- bei Umzug ins Ausland
-
-Aktualität sorgt dafür, dass Dokumente deinem aktuellen Willen entsprechen.`,
-        },
-        {
-          question: 'Ist digitale Vorsorge rechtlich gültig?',
-          answer: `Digitale Übersichten helfen bei Struktur und Orientierung.
+            },
+            {
+              question: 'Ist digitale Vorsorge rechtlich gültig?',
+              answer: `Digitale Übersichten helfen bei Struktur und Orientierung.
 
 Rechtlich verbindliche Dokumente (z. B. Testament, Patientenverfügung) unterliegen jedoch bestimmten Formvorschriften.
 
@@ -162,22 +136,18 @@ Eine digitale Plattform kann unterstützen bei:
 - Informationsweitergabe
 
 Für formgültige Dokumente gelten gesetzliche Regeln.`,
-        },
-        {
-          question: 'Was passiert, wenn ich nichts regle?',
-          answer: `Ohne Regelungen greifen gesetzliche Vorgaben.
+            },
+            {
+              question: 'Gilt meine Vorsorge auch im Ausland?',
+              answer: `Das kann vom jeweiligen Land abhängen.
 
-Das kann bedeuten:
-- gesetzliche Erbfolge tritt ein
-- ein Gericht kann Betreuung anordnen
-- Angehörige müssen Entscheidungen treffen
-- Abstimmungen können länger dauern
+Innerhalb der EU gibt es teils Anerkennung, aber nicht automatisch in jedem Fall.
 
-Vorsorge kann helfen, Klarheit zu schaffen.`,
-        },
-        {
-          question: 'Sollte ich Passwörter hinterlegen?',
-          answer: `Passwörter sind sehr sensible Daten.
+Bei dauerhaftem Auslandsaufenthalt kann fachlicher Rat sinnvoll sein.`,
+            },
+            {
+              question: 'Sollte ich Passwörter hinterlegen?',
+              answer: `Passwörter sind sehr sensible Daten.
 
 Wenn sie dokumentiert werden:
 - sicher speichern
@@ -186,10 +156,61 @@ Wenn sie dokumentiert werden:
 - keine PINs oder TANs offen weitergeben
 
 Manche Menschen dokumentieren nur, wo Zugangsdaten zu finden sind.`,
+            },
+          ],
         },
         {
-          question: 'Können mehrere Personen bevollmächtigt werden?',
-          answer: `Ja, das ist möglich.
+          name: 'Praktisches',
+          questions: [
+            {
+              question: 'Wann sollte ich mit Vorsorgeplanung beginnen?',
+              answer: `Grundsätzlich kann jede volljährige Person vorsorgen. Nicht nur im Alter – auch bei Krankheit oder Unfall kann Vorsorge wichtig werden.
+
+Viele Menschen beginnen, wenn:
+- sie Kinder bekommen
+- Eigentum oder Vermögen vorhanden ist
+- sie Angehörige entlasten möchten
+- sie selbstbestimmt vorsorgen wollen
+
+Es gibt kein „zu früh", aber manchmal ein „zu spät".`,
+            },
+            {
+              question: 'Wer sollte über meine Vorsorge informiert sein?',
+              answer: `Das ist eine persönliche Entscheidung.
+
+Oft informiert man:
+- nahe Angehörige
+- bevollmächtigte Personen
+- Vertrauenspersonen
+
+Es kann helfen, zumindest mitzuteilen, dass Regelungen existieren.`,
+            },
+            {
+              question: 'Wie oft sollte ich meine Vorsorge aktualisieren?',
+              answer: `Eine Überprüfung ist sinnvoll:
+- alle paar Jahre
+- bei Heirat oder Scheidung
+- bei Geburt eines Kindes
+- bei größeren Vermögensänderungen
+- bei Umzug ins Ausland
+
+Aktualität sorgt dafür, dass Dokumente deinem aktuellen Willen entsprechen.`,
+            },
+            {
+              question: 'Was passiert, wenn ich nichts regle?',
+              answer: `Ohne Regelungen greifen gesetzliche Vorgaben.
+
+Das kann bedeuten:
+- gesetzliche Erbfolge tritt ein
+- ein Gericht kann Betreuung anordnen
+- Angehörige müssen Entscheidungen treffen
+- Abstimmungen können länger dauern
+
+Vorsorge kann helfen, Klarheit zu schaffen.`,
+            },
+            {
+              question: 'Können mehrere Personen bevollmächtigt werden?',
+              answer: `Ja, das ist möglich.
 
 Dabei kann geregelt werden:
 - Einzelvertretung
@@ -197,24 +218,18 @@ Dabei kann geregelt werden:
 - Zuständigkeitsbereiche
 
 Klare Regelungen helfen, Konflikte zu vermeiden.`,
-        },
-        {
-          question: 'Gilt meine Vorsorge auch im Ausland?',
-          answer: `Das kann vom jeweiligen Land abhängen.
-
-Innerhalb der EU gibt es teils Anerkennung, aber nicht automatisch in jedem Fall.
-
-Bei dauerhaftem Auslandsaufenthalt kann fachlicher Rat sinnvoll sein.`,
-        },
-        {
-          question: 'Kann ich persönliche Wünsche hinterlassen?',
-          answer: `Ja. Viele Menschen halten fest:
+            },
+            {
+              question: 'Kann ich persönliche Wünsche hinterlassen?',
+              answer: `Ja. Viele Menschen halten fest:
 - Wünsche zur Bestattung
 - persönliche Botschaften
 - organisatorische Hinweise
 - Kontakte wichtiger Personen
 
 Solche Hinweise sind rechtlich nicht bindend, können Angehörigen aber helfen.`,
+            },
+          ],
         },
       ],
       moreQuestions: 'Weitere Fragen?',
@@ -226,10 +241,13 @@ Solche Hinweise sind rechtlich nicht bindend, können Angehörigen aber helfen.`
       welcome: 'Hello! I\'m your estate planning assistant. Ask me anything about advance directives, powers of attorney, or wills.',
       disclaimer: 'Note: The following information is for general guidance only and does not constitute legal advice. For binding legal advice, please consult a notary or attorney.',
       error: 'Sorry, an error occurred. Please try again.',
-      suggestions: [
+      categories: [
         {
-          question: 'What is an advance directive?',
-          answer: `An advance directive is a written document in which you specify which medical measures you want or refuse if you can no longer express yourself (e.g., in case of unconsciousness or serious illness).
+          name: 'Basics',
+          questions: [
+            {
+              question: 'What is an advance directive?',
+              answer: `An advance directive is a written document in which you specify which medical measures you want or refuse if you can no longer express yourself (e.g., in case of unconsciousness or serious illness).
 
 You can specify:
 - whether life-sustaining measures are desired
@@ -242,10 +260,10 @@ You can specify:
 - It should be formulated as specifically as possible
 - It only applies when you are no longer able to give consent
 - Professional advice may be useful for legally sound formulations.`,
-        },
-        {
-          question: 'Do I need a power of attorney?',
-          answer: `With a power of attorney, you designate a trusted person who can make decisions for you when you are no longer able to do so yourself.
+            },
+            {
+              question: 'Do I need a power of attorney?',
+              answer: `With a power of attorney, you designate a trusted person who can make decisions for you when you are no longer able to do so yourself.
 
 This can include:
 - Health matters
@@ -260,10 +278,10 @@ Without a power of attorney, a court may order guardianship.
 - The authorized person should be absolutely trustworthy
 - The power of attorney should be clearly formulated
 - For certain transactions, notarial form may be advisable or necessary`,
-        },
-        {
-          question: 'How do I create a will?',
-          answer: `A will regulates who should receive your assets after your death.
+            },
+            {
+              question: 'How do I create a will?',
+              answer: `A will regulates who should receive your assets after your death.
 
 In Germany, a private will is valid if:
 - it is written entirely by hand
@@ -279,10 +297,10 @@ A will can regulate:
 - Executor of the will
 
 For complex financial situations or family constellations, legal advice is recommended.`,
-        },
-        {
-          question: 'What is a healthcare proxy?',
-          answer: `With a healthcare proxy (Betreuungsverfügung), you specify whom a court should appoint as your legal guardian if guardianship becomes necessary.
+            },
+            {
+              question: 'What is a healthcare proxy?',
+              answer: `With a healthcare proxy (Betreuungsverfügung), you specify whom a court should appoint as your legal guardian if guardianship becomes necessary.
 
 You can:
 - name a preferred person
@@ -294,22 +312,15 @@ The court generally considers these wishes but is not legally bound by them in e
 A healthcare proxy is useful when:
 - no power of attorney exists
 - additional security is desired`,
+            },
+          ],
         },
         {
-          question: 'When should I start estate planning?',
-          answer: `In principle, any adult can plan ahead. Not just in old age – estate planning can also become important in case of illness or accident.
-
-Many people start when:
-- they have children
-- they own property or assets
-- they want to relieve family members
-- they want to plan ahead independently
-
-There is no "too early", but sometimes "too late".`,
-        },
-        {
-          question: 'Where should I store my estate documents?',
-          answer: `It's important that documents:
+          name: 'Documents',
+          questions: [
+            {
+              question: 'Where should I store my estate documents?',
+              answer: `It's important that documents:
 - are stored securely
 - can be found in an emergency
 - are kept up to date
@@ -321,32 +332,10 @@ There is no "too early", but sometimes "too late".`,
 - notarial deposit (e.g., will)
 
 The key is: family members should know that documents exist and where to find them.`,
-        },
-        {
-          question: 'Who should know about my estate planning?',
-          answer: `This is a personal decision.
-
-Often people inform:
-- close family members
-- authorized persons
-- trusted contacts
-
-It can help to at least communicate that arrangements exist.`,
-        },
-        {
-          question: 'How often should I update my estate planning?',
-          answer: `A review is advisable:
-- every few years
-- upon marriage or divorce
-- upon birth of a child
-- with major changes in assets
-- when moving abroad
-
-Keeping things current ensures documents reflect your current wishes.`,
-        },
-        {
-          question: 'Is digital estate planning legally valid?',
-          answer: `Digital overviews help with structure and orientation.
+            },
+            {
+              question: 'Is digital estate planning legally valid?',
+              answer: `Digital overviews help with structure and orientation.
 
 However, legally binding documents (e.g., wills, advance directives) are subject to specific formal requirements.
 
@@ -357,22 +346,18 @@ A digital platform can support:
 - Information sharing
 
 Legally valid documents are subject to statutory rules.`,
-        },
-        {
-          question: 'What happens if I don\'t make any arrangements?',
-          answer: `Without arrangements, statutory provisions apply.
+            },
+            {
+              question: 'Does my estate planning apply abroad?',
+              answer: `This can depend on the respective country.
 
-This can mean:
-- statutory succession takes effect
-- a court may order guardianship
-- family members must make decisions
-- coordination may take longer
+Within the EU there is partial recognition, but not automatically in every case.
 
-Estate planning can help create clarity.`,
-        },
-        {
-          question: 'Should I document my passwords?',
-          answer: `Passwords are very sensitive data.
+Professional advice may be useful for permanent residence abroad.`,
+            },
+            {
+              question: 'Should I document my passwords?',
+              answer: `Passwords are very sensitive data.
 
 If they are documented:
 - store them securely
@@ -381,10 +366,61 @@ If they are documented:
 - don't share PINs or TANs openly
 
 Some people only document where access data can be found.`,
+            },
+          ],
         },
         {
-          question: 'Can multiple people be authorized?',
-          answer: `Yes, this is possible.
+          name: 'Practical',
+          questions: [
+            {
+              question: 'When should I start estate planning?',
+              answer: `In principle, any adult can plan ahead. Not just in old age – estate planning can also become important in case of illness or accident.
+
+Many people start when:
+- they have children
+- they own property or assets
+- they want to relieve family members
+- they want to plan ahead independently
+
+There is no "too early", but sometimes "too late".`,
+            },
+            {
+              question: 'Who should know about my estate planning?',
+              answer: `This is a personal decision.
+
+Often people inform:
+- close family members
+- authorized persons
+- trusted contacts
+
+It can help to at least communicate that arrangements exist.`,
+            },
+            {
+              question: 'How often should I update my estate planning?',
+              answer: `A review is advisable:
+- every few years
+- upon marriage or divorce
+- upon birth of a child
+- with major changes in assets
+- when moving abroad
+
+Keeping things current ensures documents reflect your current wishes.`,
+            },
+            {
+              question: 'What happens if I don\'t make any arrangements?',
+              answer: `Without arrangements, statutory provisions apply.
+
+This can mean:
+- statutory succession takes effect
+- a court may order guardianship
+- family members must make decisions
+- coordination may take longer
+
+Estate planning can help create clarity.`,
+            },
+            {
+              question: 'Can multiple people be authorized?',
+              answer: `Yes, this is possible.
 
 It can be arranged:
 - individual representation
@@ -392,24 +428,18 @@ It can be arranged:
 - areas of responsibility
 
 Clear arrangements help avoid conflicts.`,
-        },
-        {
-          question: 'Does my estate planning apply abroad?',
-          answer: `This can depend on the respective country.
-
-Within the EU there is partial recognition, but not automatically in every case.
-
-Professional advice may be useful for permanent residence abroad.`,
-        },
-        {
-          question: 'Can I leave personal wishes?',
-          answer: `Yes. Many people record:
+            },
+            {
+              question: 'Can I leave personal wishes?',
+              answer: `Yes. Many people record:
 - funeral wishes
 - personal messages
 - organizational notes
 - contacts of important people
 
 Such notes are not legally binding but can help family members.`,
+            },
+          ],
         },
       ],
       moreQuestions: 'More questions?',
@@ -418,6 +448,9 @@ Such notes are not legally binding but can help family members.`,
   };
 
   const texts = t[language];
+
+  // Get all questions from all categories
+  const allQuestions = texts.categories.flatMap(cat => cat.questions);
 
   // Find matching predefined answer based on user input
   const findMatchingAnswer = (userInput: string): string | null => {
@@ -441,12 +474,12 @@ Such notes are not legally binding but can help family members.`,
       'wünsche': ['wünsche', 'wishes', 'persönliche', 'personal', 'hinterlassen', 'leave'],
     };
 
-    for (const suggestion of texts.suggestions) {
-      const questionLower = suggestion.question.toLowerCase();
+    for (const question of allQuestions) {
+      const questionLower = question.question.toLowerCase();
       
       // Direct match check
       if (normalizedInput.includes(questionLower) || questionLower.includes(normalizedInput)) {
-        return suggestion.answer;
+        return question.answer;
       }
       
       // Keyword matching
@@ -455,7 +488,7 @@ Such notes are not legally binding but can help family members.`,
         const questionMatchesKeyword = keywords.some(keyword => questionLower.includes(keyword));
         
         if (matchesKeyword && questionMatchesKeyword) {
-          return suggestion.answer;
+          return question.answer;
         }
       }
     }
@@ -627,21 +660,28 @@ Such notes are not legally binding but can help family members.`,
                 </div>
                 
                 {messages.length === 0 && (
-                  <div className="space-y-3">
+                  <div className="space-y-4">
                     <div className="text-muted-foreground text-sm bg-muted/50 rounded-lg p-3">
                       {texts.welcome}
                     </div>
-                    <div className="flex flex-wrap gap-2">
-                      {texts.suggestions.map((suggestion, idx) => (
-                        <button
-                          key={idx}
-                          onClick={() => handleSuggestionClick(suggestion)}
-                          className="text-xs px-3 py-1.5 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors border border-primary/20"
-                        >
-                          {suggestion.question}
-                        </button>
-                      ))}
-                    </div>
+                    {texts.categories.map((category, catIdx) => (
+                      <div key={catIdx} className="space-y-2">
+                        <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                          {category.name}
+                        </div>
+                        <div className="flex flex-wrap gap-2">
+                          {category.questions.map((q, qIdx) => (
+                            <button
+                              key={qIdx}
+                              onClick={() => handleSuggestionClick(q)}
+                              className="text-xs px-3 py-1.5 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors border border-primary/20 text-left"
+                            >
+                              {q.question}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 )}
                 {messages.map((msg, i) => (
@@ -676,18 +716,25 @@ Such notes are not legally binding but can help family members.`,
                 
                 {/* Show suggestions after conversation */}
                 {messages.length > 0 && !isLoading && showSuggestions && (
-                  <div className="space-y-2 pt-2">
-                    <div className="flex flex-wrap gap-2">
-                      {texts.suggestions.map((suggestion, idx) => (
-                        <button
-                          key={idx}
-                          onClick={() => handleSuggestionClick(suggestion)}
-                          className="text-xs px-3 py-1.5 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors border border-primary/20"
-                        >
-                          {suggestion.question}
-                        </button>
-                      ))}
-                    </div>
+                  <div className="space-y-3 pt-2">
+                    {texts.categories.map((category, catIdx) => (
+                      <div key={catIdx} className="space-y-2">
+                        <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                          {category.name}
+                        </div>
+                        <div className="flex flex-wrap gap-2">
+                          {category.questions.map((q, qIdx) => (
+                            <button
+                              key={qIdx}
+                              onClick={() => handleSuggestionClick(q)}
+                              className="text-xs px-3 py-1.5 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors border border-primary/20 text-left"
+                            >
+                              {q.question}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 )}
                 
