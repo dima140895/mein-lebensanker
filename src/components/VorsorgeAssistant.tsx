@@ -32,10 +32,74 @@ const VorsorgeAssistant: React.FC = () => {
       disclaimer: 'Hinweis: Die folgenden Informationen dienen der allgemeinen Orientierung und stellen keine Rechtsberatung dar. Für eine verbindliche rechtliche Beratung wende Dich bitte an eine Notarin, einen Notar oder eine Rechtsanwältin bzw. einen Rechtsanwalt.',
       error: 'Entschuldigung, es ist ein Fehler aufgetreten. Bitte versuche es erneut.',
       suggestions: [
-        'Was ist eine Patientenverfügung?',
-        'Brauche ich eine Vorsorgevollmacht?',
-        'Wie erstelle ich ein Testament?',
-        'Was ist eine Betreuungsverfügung?',
+        {
+          question: 'Was ist eine Patientenverfügung?',
+          answer: `Eine Patientenverfügung ist ein schriftliches Dokument, in dem du festlegst, welche medizinischen Maßnahmen du wünschst oder ablehnst, falls du dich selbst nicht mehr äußern kannst (z. B. bei Bewusstlosigkeit oder schwerer Erkrankung).
+
+Du kannst darin z. B. regeln:
+- ob lebenserhaltende Maßnahmen gewünscht sind
+- ob künstliche Ernährung erfolgen soll
+- welche Behandlungen du ablehnst
+- wer deinen Willen gegenüber Ärztinnen und Ärzten vertreten soll
+
+**Wichtig:**
+- Sie muss schriftlich vorliegen
+- Sie sollte möglichst konkret formuliert sein
+- Sie gilt erst, wenn du nicht mehr einwilligungsfähig bist
+- Für rechtssichere Formulierungen kann fachlicher Rat sinnvoll sein.`,
+        },
+        {
+          question: 'Brauche ich eine Vorsorgevollmacht?',
+          answer: `Mit einer Vorsorgevollmacht bestimmst du eine Person deines Vertrauens, die für dich Entscheidungen treffen darf, wenn du selbst dazu nicht mehr in der Lage bist.
+
+Das kann betreffen:
+- Gesundheitsangelegenheiten
+- Bankgeschäfte
+- Verträge
+- Behördenangelegenheiten
+- Wohnungsfragen
+
+Ohne Vorsorgevollmacht kann ein Gericht eine Betreuung anordnen.
+
+**Wichtig:**
+- Die bevollmächtigte Person sollte absolut vertrauenswürdig sein
+- Die Vollmacht sollte klar formuliert sein
+- Für bestimmte Geschäfte kann eine notarielle Form sinnvoll oder nötig sein`,
+        },
+        {
+          question: 'Wie erstelle ich ein Testament?',
+          answer: `Ein Testament regelt, wer dein Vermögen nach deinem Tod erhalten soll.
+
+In Deutschland ist ein privates Testament gültig, wenn:
+- es vollständig handschriftlich geschrieben ist
+- Ort und Datum enthalten sind
+- es unterschrieben ist
+
+Alternativ kann ein notarielles Testament erstellt werden.
+
+Ein Testament kann z. B. regeln:
+- Erben und Erbquoten
+- Vermächtnisse
+- Auflagen
+- Testamentsvollstreckung
+
+Bei komplexen Vermögensverhältnissen oder Familienkonstellationen ist rechtliche Beratung empfehlenswert.`,
+        },
+        {
+          question: 'Was ist eine Betreuungsverfügung?',
+          answer: `Mit einer Betreuungsverfügung legst du fest, wen ein Gericht als rechtliche Betreuung einsetzen soll, falls eine Betreuung notwendig wird.
+
+Du kannst darin:
+- eine Wunschperson benennen
+- Personen ausschließen
+- Wünsche zur Lebensführung festhalten
+
+Das Gericht berücksichtigt diese Wünsche in der Regel, ist aber rechtlich nicht in jedem Fall daran gebunden.
+
+Eine Betreuungsverfügung ist sinnvoll, wenn:
+- keine Vorsorgevollmacht besteht
+- zusätzliche Absicherung gewünscht ist`,
+        },
       ],
       moreQuestions: 'Weitere Fragen?',
     },
@@ -46,16 +110,88 @@ const VorsorgeAssistant: React.FC = () => {
       disclaimer: 'Note: The following information is for general guidance only and does not constitute legal advice. For binding legal advice, please consult a notary or attorney.',
       error: 'Sorry, an error occurred. Please try again.',
       suggestions: [
-        'What is an advance directive?',
-        'Do I need a power of attorney?',
-        'How do I create a will?',
-        'What is a healthcare proxy?',
+        {
+          question: 'What is an advance directive?',
+          answer: `An advance directive is a written document in which you specify which medical measures you want or refuse if you can no longer express yourself (e.g., in case of unconsciousness or serious illness).
+
+You can specify:
+- whether life-sustaining measures are desired
+- whether artificial nutrition should be provided
+- which treatments you refuse
+- who should represent your wishes to doctors
+
+**Important:**
+- It must be in writing
+- It should be formulated as specifically as possible
+- It only applies when you are no longer able to give consent
+- Professional advice may be useful for legally sound formulations.`,
+        },
+        {
+          question: 'Do I need a power of attorney?',
+          answer: `With a power of attorney, you designate a trusted person who can make decisions for you when you are no longer able to do so yourself.
+
+This can include:
+- Health matters
+- Banking transactions
+- Contracts
+- Government matters
+- Housing issues
+
+Without a power of attorney, a court may order guardianship.
+
+**Important:**
+- The authorized person should be absolutely trustworthy
+- The power of attorney should be clearly formulated
+- For certain transactions, notarial form may be advisable or necessary`,
+        },
+        {
+          question: 'How do I create a will?',
+          answer: `A will regulates who should receive your assets after your death.
+
+In Germany, a private will is valid if:
+- it is written entirely by hand
+- it contains place and date
+- it is signed
+
+Alternatively, a notarial will can be created.
+
+A will can regulate:
+- Heirs and inheritance shares
+- Bequests
+- Conditions
+- Executor of the will
+
+For complex financial situations or family constellations, legal advice is recommended.`,
+        },
+        {
+          question: 'What is a healthcare proxy?',
+          answer: `With a healthcare proxy (Betreuungsverfügung), you specify whom a court should appoint as your legal guardian if guardianship becomes necessary.
+
+You can:
+- name a preferred person
+- exclude certain people
+- record wishes about your lifestyle
+
+The court generally considers these wishes but is not legally bound by them in every case.
+
+A healthcare proxy is useful when:
+- no power of attorney exists
+- additional security is desired`,
+        },
       ],
       moreQuestions: 'More questions?',
     },
   };
 
   const texts = t[language];
+
+  // Handle predefined suggestion click
+  const handleSuggestionClick = (suggestion: { question: string; answer: string }) => {
+    const userMessage: Message = { role: 'user', content: suggestion.question };
+    const assistantMessage: Message = { role: 'assistant', content: suggestion.answer };
+    setMessages(prev => [...prev, userMessage, assistantMessage]);
+    setShowSuggestions(false);
+  };
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -220,13 +356,10 @@ const VorsorgeAssistant: React.FC = () => {
                       {texts.suggestions.map((suggestion, idx) => (
                         <button
                           key={idx}
-                          onClick={() => {
-                            setInput(suggestion);
-                            inputRef.current?.focus();
-                          }}
+                          onClick={() => handleSuggestionClick(suggestion)}
                           className="text-xs px-3 py-1.5 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors border border-primary/20"
                         >
-                          {suggestion}
+                          {suggestion.question}
                         </button>
                       ))}
                     </div>
@@ -269,13 +402,10 @@ const VorsorgeAssistant: React.FC = () => {
                       {texts.suggestions.map((suggestion, idx) => (
                         <button
                           key={idx}
-                          onClick={() => {
-                            setInput(suggestion);
-                            inputRef.current?.focus();
-                          }}
+                          onClick={() => handleSuggestionClick(suggestion)}
                           className="text-xs px-3 py-1.5 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors border border-primary/20"
                         >
-                          {suggestion}
+                          {suggestion.question}
                         </button>
                       ))}
                     </div>
