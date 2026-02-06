@@ -27,12 +27,24 @@ const VorsorgeAssistant: React.FC = () => {
       placeholder: 'Stelle eine Frage...',
       welcome: 'Hallo! Ich bin dein Vorsorge-Assistent. Frag mich alles rund um Patientenverfügung, Vorsorgevollmacht oder Testament.',
       error: 'Entschuldigung, es ist ein Fehler aufgetreten. Bitte versuche es erneut.',
+      suggestions: [
+        'Was ist eine Patientenverfügung?',
+        'Brauche ich eine Vorsorgevollmacht?',
+        'Wie erstelle ich ein Testament?',
+        'Was ist eine Betreuungsverfügung?',
+      ],
     },
     en: {
       title: 'Estate Planning Assistant',
       placeholder: 'Ask a question...',
       welcome: 'Hello! I\'m your estate planning assistant. Ask me anything about advance directives, powers of attorney, or wills.',
       error: 'Sorry, an error occurred. Please try again.',
+      suggestions: [
+        'What is an advance directive?',
+        'Do I need a power of attorney?',
+        'How do I create a will?',
+        'What is a healthcare proxy?',
+      ],
     },
   };
 
@@ -181,11 +193,26 @@ const VorsorgeAssistant: React.FC = () => {
                 </button>
               </div>
 
-              {/* Messages */}
               <div className="flex-1 overflow-y-auto p-4 space-y-4 min-h-[200px]">
                 {messages.length === 0 && (
-                  <div className="text-muted-foreground text-sm bg-muted/50 rounded-lg p-3">
-                    {texts.welcome}
+                  <div className="space-y-3">
+                    <div className="text-muted-foreground text-sm bg-muted/50 rounded-lg p-3">
+                      {texts.welcome}
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {texts.suggestions.map((suggestion, idx) => (
+                        <button
+                          key={idx}
+                          onClick={() => {
+                            setInput(suggestion);
+                            inputRef.current?.focus();
+                          }}
+                          className="text-xs px-3 py-1.5 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors border border-primary/20"
+                        >
+                          {suggestion}
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 )}
                 {messages.map((msg, i) => (
