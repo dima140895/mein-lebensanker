@@ -1,7 +1,7 @@
 import { ArrowRight } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useNavigate } from 'react-router-dom';
-import TreeOfLife from './TreeOfLife';
+import treeOfLifeImage from '@/assets/tree-of-life.png';
 
 const HeroSection = () => {
   const { t, language } = useLanguage();
@@ -13,15 +13,19 @@ const HeroSection = () => {
       <div className="absolute inset-0 bg-gradient-to-br from-background via-cream to-sage-light/20" />
       
       {/* Tree of Life - positioned on the right side */}
-      <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[50%] md:w-[45%] lg:w-[40%] h-full flex items-center justify-center pointer-events-none">
-        <TreeOfLife className="w-full h-auto max-h-[90%] text-sage-dark" />
+      <div className="absolute right-0 md:right-[5%] top-1/2 -translate-y-1/2 w-[60%] sm:w-[55%] md:w-[50%] lg:w-[45%] h-full flex items-center justify-center pointer-events-none">
+        <img 
+          src={treeOfLifeImage} 
+          alt="" 
+          className="w-full h-auto max-h-[95%] object-contain opacity-40 md:opacity-50"
+          aria-hidden="true"
+        />
       </div>
 
       {/* Decorative elements - smaller on mobile */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-4 md:top-20 left-[5%] w-16 sm:w-32 md:w-64 h-16 sm:h-32 md:h-64 rounded-full bg-sage/10 blur-3xl opacity-60" />
         <div className="absolute bottom-8 md:bottom-32 left-[15%] w-12 sm:w-24 md:w-48 h-12 sm:h-24 md:h-48 rounded-full bg-amber/15 blur-3xl opacity-40" />
-        <div className="absolute top-[30%] right-[20%] w-20 sm:w-40 md:w-72 h-20 sm:h-40 md:h-72 rounded-full bg-sage-light/30 blur-3xl opacity-50" />
       </div>
 
       <div className="container relative mx-auto px-4 py-4 sm:py-10 md:py-20">
