@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Combobox } from "@/components/ui/combobox";
+import CurrencySelect from './CurrencySelect';
 import SectionNavigation from './SectionNavigation';
 
 const AssetsForm = () => {
@@ -217,17 +218,19 @@ const AssetsForm = () => {
           ownership: "",
           ownershipOther: "",
           rentalIncome: "",
+          rentalIncomeCurrency: "EUR",
           financingStatus: "",
           outstandingLoan: "",
+          outstandingLoanCurrency: "EUR",
         },
       ],
       vehicles: [
         ...(data.vehicles || []),
-        { type: "", brand: "", model: "", licensePlate: "", location: "", estimatedValue: "", documentsLocation: "" },
+        { type: "", brand: "", model: "", licensePlate: "", location: "", estimatedValue: "", estimatedValueCurrency: "EUR", documentsLocation: "" },
       ],
       insurances: [
         ...data.insurances,
-        { type: "", typeOther: "", company: "", companyOther: "", policyNumber: "", surrenderValue: "" },
+        { type: "", typeOther: "", company: "", companyOther: "", policyNumber: "", surrenderValue: "", surrenderValueCurrency: "EUR" },
       ],
       valuables: [...data.valuables, { description: "", location: "" }],
     };
@@ -297,32 +300,13 @@ const AssetsForm = () => {
                   placeholder={texts.balance}
                   className="flex-1"
                 />
-                <Select
+                <CurrencySelect
                   value={account.currency || "EUR"}
                   onValueChange={(value) => {
                     updateItem("bankAccounts", i, "currency", value);
                     handleBlur();
                   }}
-                >
-                  <SelectTrigger className="w-[90px] shrink-0">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent className="bg-background border border-border shadow-lg z-50">
-                    <SelectItem value="EUR">EUR €</SelectItem>
-                    <SelectItem value="USD">USD $</SelectItem>
-                    <SelectItem value="GBP">GBP £</SelectItem>
-                    <SelectItem value="CHF">CHF</SelectItem>
-                    <SelectItem value="JPY">JPY ¥</SelectItem>
-                    <SelectItem value="TRY">TRY ₺</SelectItem>
-                    <SelectItem value="PLN">PLN zł</SelectItem>
-                    <SelectItem value="CZK">CZK Kč</SelectItem>
-                    <SelectItem value="SEK">SEK kr</SelectItem>
-                    <SelectItem value="NOK">NOK kr</SelectItem>
-                    <SelectItem value="DKK">DKK kr</SelectItem>
-                    <SelectItem value="CAD">CAD $</SelectItem>
-                    <SelectItem value="AUD">AUD $</SelectItem>
-                  </SelectContent>
-                </Select>
+                />
               </div>
             </div>
             {data.bankAccounts.length > 1 && (
@@ -397,12 +381,22 @@ const AssetsForm = () => {
               {(property.ownership === "self-occupied" || property.ownership === "rented-out") && (
                 <>
                   {property.ownership === "rented-out" && (
-                    <Input
-                      value={property.rentalIncome || ""}
-                      onChange={(e) => updateItem("properties", i, "rentalIncome", e.target.value)}
-                      onBlur={handleBlur}
-                      placeholder={texts.rentalIncome}
-                    />
+                    <div className="flex gap-2">
+                      <Input
+                        value={property.rentalIncome || ""}
+                        onChange={(e) => updateItem("properties", i, "rentalIncome", e.target.value)}
+                        onBlur={handleBlur}
+                        placeholder={texts.rentalIncome}
+                        className="flex-1"
+                      />
+                      <CurrencySelect
+                        value={property.rentalIncomeCurrency || "EUR"}
+                        onValueChange={(value) => {
+                          updateItem("properties", i, "rentalIncomeCurrency", value);
+                          handleBlur();
+                        }}
+                      />
+                    </div>
                   )}
                   <div className="grid gap-3 md:grid-cols-2">
                     <Select
@@ -427,12 +421,22 @@ const AssetsForm = () => {
                       </SelectContent>
                     </Select>
                     {property.financingStatus === "financed" && (
-                      <Input
-                        value={property.outstandingLoan || ""}
-                        onChange={(e) => updateItem("properties", i, "outstandingLoan", e.target.value)}
-                        onBlur={handleBlur}
-                        placeholder={texts.outstandingLoan}
-                      />
+                      <div className="flex gap-2">
+                        <Input
+                          value={property.outstandingLoan || ""}
+                          onChange={(e) => updateItem("properties", i, "outstandingLoan", e.target.value)}
+                          onBlur={handleBlur}
+                          placeholder={texts.outstandingLoan}
+                          className="flex-1"
+                        />
+                        <CurrencySelect
+                          value={property.outstandingLoanCurrency || "EUR"}
+                          onValueChange={(value) => {
+                            updateItem("properties", i, "outstandingLoanCurrency", value);
+                            handleBlur();
+                          }}
+                        />
+                      </div>
                     )}
                   </div>
                 </>
@@ -501,12 +505,22 @@ const AssetsForm = () => {
                 />
               </div>
               <div className="grid gap-3 md:grid-cols-2">
-                <Input
-                  value={vehicle.estimatedValue || ""}
-                  onChange={(e) => updateItem("vehicles", i, "estimatedValue", e.target.value)}
-                  onBlur={handleBlur}
-                  placeholder={texts.estimatedValue}
-                />
+                <div className="flex gap-2">
+                  <Input
+                    value={vehicle.estimatedValue || ""}
+                    onChange={(e) => updateItem("vehicles", i, "estimatedValue", e.target.value)}
+                    onBlur={handleBlur}
+                    placeholder={texts.estimatedValue}
+                    className="flex-1"
+                  />
+                  <CurrencySelect
+                    value={vehicle.estimatedValueCurrency || "EUR"}
+                    onValueChange={(value) => {
+                      updateItem("vehicles", i, "estimatedValueCurrency", value);
+                      handleBlur();
+                    }}
+                  />
+                </div>
                 <Input
                   value={vehicle.documentsLocation || ""}
                   onChange={(e) => updateItem("vehicles", i, "documentsLocation", e.target.value)}
@@ -594,12 +608,22 @@ const AssetsForm = () => {
                   onBlur={handleBlur}
                   placeholder={texts.policyNumber}
                 />
-                <Input
-                  value={ins.surrenderValue || ""}
-                  onChange={(e) => updateItem("insurances", i, "surrenderValue", e.target.value)}
-                  onBlur={handleBlur}
-                  placeholder={texts.surrenderValue}
-                />
+                <div className="flex gap-2">
+                  <Input
+                    value={ins.surrenderValue || ""}
+                    onChange={(e) => updateItem("insurances", i, "surrenderValue", e.target.value)}
+                    onBlur={handleBlur}
+                    placeholder={texts.surrenderValue}
+                    className="flex-1"
+                  />
+                  <CurrencySelect
+                    value={ins.surrenderValueCurrency || "EUR"}
+                    onValueChange={(value) => {
+                      updateItem("insurances", i, "surrenderValueCurrency", value);
+                      handleBlur();
+                    }}
+                  />
+                </div>
               </div>
             </div>
             <Button variant="ghost" size="icon" onClick={() => removeItem("insurances", i)}>
