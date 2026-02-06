@@ -166,7 +166,7 @@ const DashboardSections = () => {
   };
 
   return (
-    <section id="sections" className="relative pt-6 pb-12 md:pt-12 md:pb-28 overflow-hidden bg-background">
+    <section id="sections" className="relative pt-6 pb-12 md:pt-12 md:pb-28 overflow-hidden bg-muted/40">
       <div className="container mx-auto px-4">
         {/* Main Sections Header */}
         <div
