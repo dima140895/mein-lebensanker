@@ -20,17 +20,15 @@ const HeroSection = () => {
         }}
       />
       
-      {/* Tree of Life - positioned on the right side with soft left fade */}
-      <div className="absolute right-[-5%] md:right-[-8%] lg:right-[-5%] bottom-[-25%] sm:bottom-[-25%] md:bottom-[-25%] lg:bottom-[-30%] w-[80%] sm:w-[75%] md:w-[65%] lg:w-[60%] h-[145%] flex items-end justify-center pointer-events-none">
+      {/* Tree of Life - positioned on the right side, extends beyond top for seamless bleed */}
+      <div className="absolute right-[-5%] md:right-[-8%] lg:right-[-5%] bottom-[-25%] sm:bottom-[-25%] md:bottom-[-25%] lg:bottom-[-30%] w-[80%] sm:w-[75%] md:w-[65%] lg:w-[60%] h-[160%] flex items-end justify-center pointer-events-none">
         <div
           aria-hidden="true"
           className="w-full h-full bg-no-repeat bg-bottom bg-contain opacity-50 md:opacity-60"
           style={{
             backgroundImage: `url(${treeOfLifeImage})`,
-            maskImage: 'linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.5) 8%, black 15%), linear-gradient(to right, transparent 0%, rgba(0,0,0,0.3) 10%, rgba(0,0,0,0.7) 20%, black 35%)',
-            maskComposite: 'intersect',
-            WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.5) 8%, black 15%), linear-gradient(to right, transparent 0%, rgba(0,0,0,0.3) 10%, rgba(0,0,0,0.7) 20%, black 35%)',
-            WebkitMaskComposite: 'source-in',
+            maskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.3) 10%, rgba(0,0,0,0.7) 20%, black 35%)',
+            WebkitMaskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.3) 10%, rgba(0,0,0,0.7) 20%, black 35%)',
           }}
         />
       </div>
