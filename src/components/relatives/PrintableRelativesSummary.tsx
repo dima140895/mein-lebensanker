@@ -1226,6 +1226,12 @@ const PrintableRelativesSummary = forwardRef<HTMLDivElement, PrintableRelativesS
             @page {
               size: A4;
               margin: 14mm;
+              @bottom-center {
+                content: counter(page) " / " counter(pages);
+                font-size: 10px;
+                color: #6b7280;
+                font-family: Inter, -apple-system, BlinkMacSystemFont, sans-serif;
+              }
             }
 
             .print-container {
