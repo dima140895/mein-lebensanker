@@ -9,8 +9,13 @@ const HeroSection = () => {
 
   return (
     <section className="relative isolate min-h-[55vh] sm:min-h-[70vh] md:min-h-[85vh] flex items-center overflow-hidden">
-      {/* Uniform background */}
-      <div className="absolute inset-0 bg-background" />
+      {/* Gradient background - cream left to soft sage-tinted right */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background: 'linear-gradient(to right, hsl(40 30% 97%) 0%, hsl(40 30% 97%) 35%, hsl(140 18% 94%) 75%, hsl(150 20% 90%) 100%)',
+        }}
+      />
       
       {/* Tree of Life - positioned on the right side */}
       <div className="absolute right-[-5%] md:right-[-8%] lg:right-[-5%] bottom-[-25%] sm:bottom-[-25%] md:bottom-[-25%] lg:bottom-[-30%] w-[80%] sm:w-[75%] md:w-[65%] lg:w-[60%] h-[145%] flex items-end justify-center pointer-events-none">
