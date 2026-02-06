@@ -21,6 +21,7 @@ const translations = {
     'hero.description': 'Dein digitaler Lebensordner – damit Deine Liebsten im Ernstfall nicht suchen müssen.',
     'hero.cta': 'Ordnung schaffen',
     'hero.learnMore': 'So funktioniert\'s',
+    'hero.treeMetaphor': 'Verwurzelt in Fürsorge.\nGewachsen für Generationen.',
     
     // Value Propositions
     'value.structure': 'Struktur',
@@ -95,6 +96,7 @@ const translations = {
     'hero.description': 'Structure your personal, financial, and organizational information - to ease the burden on those you care about.',
     'hero.cta': 'Get Started',
     'hero.learnMore': 'Learn More',
+    'hero.treeMetaphor': 'Rooted in care.\nGrown for generations.',
     
     // Value Propositions
     'value.structure': 'Structure',
