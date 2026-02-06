@@ -22,12 +22,6 @@ const HeroSection = () => {
         />
       </div>
 
-      {/* Decorative elements - smaller on mobile */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-4 md:top-20 left-[5%] w-16 sm:w-32 md:w-64 h-16 sm:h-32 md:h-64 rounded-full bg-sage/10 blur-3xl opacity-60" />
-        <div className="absolute bottom-8 md:bottom-32 left-[15%] w-12 sm:w-24 md:w-48 h-12 sm:h-24 md:h-48 rounded-full bg-amber/15 blur-3xl opacity-40" />
-      </div>
-
       <div className="container relative mx-auto px-4 py-4 sm:py-10 md:py-20">
         <div className="grid lg:grid-cols-2 gap-4 sm:gap-8 md:gap-12 items-center">
           {/* Content - Left side */}
