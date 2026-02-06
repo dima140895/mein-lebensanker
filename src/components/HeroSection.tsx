@@ -8,11 +8,7 @@ const HeroSection = () => {
   const navigate = useNavigate();
 
   return (
-    <section className="relative isolate min-h-[55vh] sm:min-h-[70vh] md:min-h-[85vh] flex items-center">
-      {/* Gradient background - matches header bg-background, subtle sage tint bottom-right only */}
-      <div
-        className="absolute inset-0 bg-background"
-      />
+    <section className="relative min-h-[55vh] sm:min-h-[70vh] md:min-h-[85vh] flex items-center">
       <div
         className="absolute inset-0 -bottom-[50vh] pointer-events-none"
         style={{
