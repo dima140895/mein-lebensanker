@@ -14,9 +14,9 @@ const HeroSection = () => {
         className="absolute inset-0 bg-background"
       />
       <div
-        className="absolute inset-0"
+        className="absolute inset-0 -bottom-[50vh] pointer-events-none"
         style={{
-          background: 'radial-gradient(ellipse 60% 70% at 85% 80%, hsl(140 15% 92% / 0.5) 0%, transparent 70%)',
+          background: 'radial-gradient(ellipse 60% 50% at 85% 60%, hsl(140 15% 92% / 0.5) 0%, transparent 70%)',
         }}
       />
       
@@ -27,8 +27,10 @@ const HeroSection = () => {
           className="w-full h-full bg-no-repeat bg-bottom bg-cover opacity-40 sm:opacity-50 md:opacity-60 lg:opacity-90"
           style={{
             backgroundImage: `url(${treeOfLifeImage})`,
-            maskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.05) 10%, rgba(0,0,0,0.2) 20%, rgba(0,0,0,0.5) 35%, rgba(0,0,0,0.8) 50%, black 65%)',
-            WebkitMaskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.05) 10%, rgba(0,0,0,0.2) 20%, rgba(0,0,0,0.5) 35%, rgba(0,0,0,0.8) 50%, black 65%)',
+            maskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.05) 10%, rgba(0,0,0,0.2) 20%, rgba(0,0,0,0.5) 35%, rgba(0,0,0,0.8) 50%, black 65%), linear-gradient(to bottom, black 0%, black 85%, transparent 100%)',
+            WebkitMaskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.05) 10%, rgba(0,0,0,0.2) 20%, rgba(0,0,0,0.5) 35%, rgba(0,0,0,0.8) 50%, black 65%), linear-gradient(to bottom, black 0%, black 85%, transparent 100%)',
+            maskComposite: 'intersect',
+            WebkitMaskComposite: 'source-in',
           }}
         />
       </div>
