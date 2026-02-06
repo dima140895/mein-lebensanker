@@ -1,4 +1,4 @@
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, TreePine } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useNavigate } from 'react-router-dom';
 import treeOfLifeImage from '@/assets/tree-of-life.png';
@@ -23,11 +23,14 @@ const HeroSection = () => {
         />
       </div>
 
-      {/* Tree metaphor text - connecting tree symbolism with Vorsorge theme */}
-      <div className="absolute right-[8%] sm:right-[10%] md:right-[8%] lg:right-[12%] bottom-[8%] sm:bottom-[10%] md:bottom-[12%] pointer-events-none hidden sm:block">
-        <p className="font-serif text-xs md:text-sm text-sage-dark/30 md:text-sage-dark/40 whitespace-pre-line text-right italic leading-relaxed tracking-wide">
-          {t('hero.treeMetaphor')}
-        </p>
+      {/* Tree metaphor badge - connecting tree symbolism with Vorsorge theme */}
+      <div className="absolute right-[6%] sm:right-[8%] md:right-[6%] lg:right-[10%] bottom-[6%] sm:bottom-[8%] md:bottom-[10%] pointer-events-none hidden sm:block">
+        <div className="inline-flex items-center gap-2 rounded-full border border-sage/20 bg-white/70 backdrop-blur-sm px-3 md:px-4 py-1.5 md:py-2 shadow-sm">
+          <TreePine className="h-3.5 w-3.5 md:h-4 md:w-4 text-sage" />
+          <span className="font-serif text-xs md:text-sm text-sage-dark/70 italic">
+            {t('hero.treeMetaphor')}
+          </span>
+        </div>
       </div>
 
       <div className="container relative mx-auto px-4 py-4 sm:py-10 md:py-20">
