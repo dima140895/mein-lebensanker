@@ -66,7 +66,7 @@ const WhatIsThisTool = () => {
               {texts.badge}
             </span>
             <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-4">{texts.title}</h2>
-            <p className="text-muted-foreground leading-relaxed max-w-2xl mx-auto">{texts.intro}</p>
+            <p className="text-foreground/80 leading-relaxed max-w-2xl mx-auto">{texts.intro}</p>
           </div>
 
           {/* Two columns */}
