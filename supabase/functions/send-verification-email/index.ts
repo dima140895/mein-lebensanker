@@ -56,7 +56,7 @@ serve(async (req: Request): Promise<Response> => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          type: "signup",
+          type: "magiclink",
           email: normalizedEmail,
           options: {
             // We redirect to our app's verification page after verification.
@@ -74,7 +74,7 @@ serve(async (req: Request): Promise<Response> => {
 
         if (hashed) {
           const joiner = redirectTo.includes("?") ? "&" : "?";
-          verificationUrl = `${redirectTo}${joiner}token_hash=${encodeURIComponent(hashed)}&type=signup`;
+          verificationUrl = `${redirectTo}${joiner}token_hash=${encodeURIComponent(hashed)}&type=magiclink`;
         } else if (linkData?.action_link) {
           // Fallback: use action_link (will go through /auth/v1/verify and redirect back)
           verificationUrl = linkData.action_link;
