@@ -27,8 +27,10 @@ const HeroSection = () => {
           className="w-full h-full bg-no-repeat bg-bottom bg-cover opacity-70 md:opacity-80"
           style={{
             backgroundImage: `url(${treeOfLifeImage})`,
-            maskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.15) 8%, rgba(0,0,0,0.5) 18%, rgba(0,0,0,0.85) 30%, black 45%)',
-            WebkitMaskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.15) 8%, rgba(0,0,0,0.5) 18%, rgba(0,0,0,0.85) 30%, black 45%)',
+            maskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.15) 8%, rgba(0,0,0,0.5) 18%, rgba(0,0,0,0.85) 30%, black 45%), linear-gradient(to top, transparent 0%, rgba(0,0,0,0.3) 5%, rgba(0,0,0,0.7) 10%, black 18%)',
+            WebkitMaskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.15) 8%, rgba(0,0,0,0.5) 18%, rgba(0,0,0,0.85) 30%, black 45%), linear-gradient(to top, transparent 0%, rgba(0,0,0,0.3) 5%, rgba(0,0,0,0.7) 10%, black 18%)',
+            maskComposite: 'intersect',
+            WebkitMaskComposite: 'source-in',
           }}
         />
       </div>
