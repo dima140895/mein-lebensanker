@@ -9,8 +9,8 @@ const HeroSection = () => {
 
   return (
     <section className="relative min-h-[55vh] sm:min-h-[70vh] md:min-h-[85vh] flex items-center overflow-hidden">
-      {/* Uniform background matching image */}
-      <div className="absolute inset-0" style={{ backgroundColor: '#FAF8F3' }} />
+      {/* Uniform background */}
+      <div className="absolute inset-0 bg-background" />
       
       {/* Tree of Life - positioned on the right side */}
       <div className="absolute right-0 md:right-[5%] top-1/2 -translate-y-1/2 w-[60%] sm:w-[55%] md:w-[50%] lg:w-[45%] h-full flex items-center justify-center pointer-events-none">
