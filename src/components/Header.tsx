@@ -77,23 +77,24 @@ const Header = () => {
     }
   };
 
-  // Handle verified=true query param - show success toast (user is already logged in after verification)
+  // Handle verified=true query param - show success toast
+  const [emailVerified, setEmailVerified] = useState(false);
+
   useEffect(() => {
-    const isVerified = searchParams.get('verified');
-    if (isVerified === 'true') {
-      // Show success toast - user is already logged in after email verification
-      toast.success(
-        language === 'de' ? 'E-Mail erfolgreich bestätigt!' : 'Email verified successfully!',
-        {
-          description: language === 'de' 
-            ? 'Du bist jetzt angemeldet.' 
-            : 'You are now signed in.',
-        }
-      );
-      // Clear the query param from URL (don't open login dialog - user is already logged in)
-      navigate('/', { replace: true });
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('verified') === 'true') {
+      params.delete('verified');
+      const newUrl = params.toString()
+        ? `${window.location.pathname}?${params.toString()}`
+        : window.location.pathname;
+      window.history.replaceState({}, '', newUrl);
+      setEmailVerified(true);
+      // Auto-hide after 6 seconds
+      const timer = setTimeout(() => setEmailVerified(false), 6000);
+      return () => clearTimeout(timer);
     }
-  }, [searchParams, language, navigate]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const currentSection = searchParams.get('section');
 
@@ -108,8 +109,8 @@ const Header = () => {
   ];
 
   const pricingItems = [
-    { key: 'single', label: { de: 'Einzelperson', en: 'Individual' }, price: '39 €', profiles: 1 },
-    { key: 'couple', label: { de: 'Ehepaar-Paket', en: 'Couple Package' }, price: '49 €', profiles: 2 },
+    { key: 'single', label: { de: 'Einzelperson', en: 'Individual' }, price: '49 €', profiles: 1 },
+    { key: 'couple', label: { de: 'Ehepaar-Paket', en: 'Couple Package' }, price: '69 €', profiles: 2 },
     { key: 'family', label: { de: 'Familien-Paket', en: 'Family Package' }, price: '99 €', profiles: 4 },
   ];
 
@@ -277,7 +278,15 @@ const Header = () => {
   );
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border/50 bg-background/95 backdrop-blur-md animate-fade-in">
+    <>
+      {emailVerified && (
+        <div className="fixed top-0 left-0 right-0 z-[100] flex items-center justify-center bg-primary text-primary-foreground py-3 px-4 text-sm font-medium shadow-lg animate-fade-in">
+          <span className="mr-2">✓</span>
+          {language === 'de' ? 'E-Mail erfolgreich bestätigt! Du bist jetzt angemeldet.' : 'Email verified successfully! You are now signed in.'}
+          <button onClick={() => setEmailVerified(false)} className="ml-4 opacity-80 hover:opacity-100">✕</button>
+        </div>
+      )}
+      <header className={`sticky top-0 z-50 border-b border-border/50 bg-background/95 backdrop-blur-md animate-fade-in ${emailVerified ? 'mt-10' : ''}`}>
       <div className="container mx-auto flex items-center justify-between px-4 py-3 md:py-4">
         {/* Left side: Burger Menu + Logo */}
         <div className="flex items-center gap-3">
@@ -795,6 +804,7 @@ const Header = () => {
         onOpenChange={setChangeEncryptionPasswordOpen}
       />
     </header>
+    </>
   );
 };
 
