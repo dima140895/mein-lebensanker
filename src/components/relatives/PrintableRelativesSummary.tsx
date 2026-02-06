@@ -1238,6 +1238,10 @@ const PrintableRelativesSummary = forwardRef<HTMLDivElement, PrintableRelativesS
               page-break-before: auto;
             }
 
+            .print-profile:not(:first-of-type) {
+              page-break-before: always;
+            }
+
             .print-section {
               page-break-inside: avoid;
             }
