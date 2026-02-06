@@ -1,7 +1,7 @@
-import { ArrowRight, Heart } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useNavigate } from 'react-router-dom';
-import heroImage from '@/assets/hero-illustration.jpg';
+import TreeOfLife from './TreeOfLife';
 
 const HeroSection = () => {
   const { t, language } = useLanguage();
@@ -9,25 +9,19 @@ const HeroSection = () => {
 
   return (
     <section className="relative min-h-[55vh] sm:min-h-[70vh] md:min-h-[85vh] flex items-center overflow-hidden">
-      {/* Background image with overlay - adjusted for mobile */}
-      <div className="absolute inset-0">
-        <img 
-          src={heroImage} 
-          alt="" 
-          className="absolute inset-0 w-full h-full object-cover object-center"
-          fetchPriority="high"
-          loading="eager"
-          decoding="async"
-        />
-        {/* Stronger overlay on mobile for better text readability */}
-        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/98 to-background/80 md:from-background md:via-background/95 md:to-background/70" />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-background/60 md:from-background md:via-transparent md:to-background/50" />
+      {/* Background with subtle gradient */}
+      <div className="absolute inset-0 bg-gradient-to-br from-background via-cream to-sage-light/20" />
+      
+      {/* Tree of Life - positioned on the right side */}
+      <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[50%] md:w-[45%] lg:w-[40%] h-full flex items-center justify-center pointer-events-none">
+        <TreeOfLife className="w-full h-auto max-h-[90%] text-sage-dark" />
       </div>
 
       {/* Decorative elements - smaller on mobile */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-4 md:top-20 left-[5%] w-16 sm:w-32 md:w-64 h-16 sm:h-32 md:h-64 rounded-full bg-sage/20 blur-3xl opacity-60" />
-        <div className="absolute bottom-8 md:bottom-32 left-[15%] w-12 sm:w-24 md:w-48 h-12 sm:h-24 md:h-48 rounded-full bg-amber/20 blur-3xl opacity-40" />
+        <div className="absolute top-4 md:top-20 left-[5%] w-16 sm:w-32 md:w-64 h-16 sm:h-32 md:h-64 rounded-full bg-sage/10 blur-3xl opacity-60" />
+        <div className="absolute bottom-8 md:bottom-32 left-[15%] w-12 sm:w-24 md:w-48 h-12 sm:h-24 md:h-48 rounded-full bg-amber/15 blur-3xl opacity-40" />
+        <div className="absolute top-[30%] right-[20%] w-20 sm:w-40 md:w-72 h-20 sm:h-40 md:h-72 rounded-full bg-sage-light/30 blur-3xl opacity-50" />
       </div>
 
       <div className="container relative mx-auto px-4 py-4 sm:py-10 md:py-20">
@@ -82,43 +76,8 @@ const HeroSection = () => {
 
           </div>
 
-          {/* Image highlight - Right side (visible on larger screens as decorative frame) */}
-          <div
-            key={`hero-image-${language}`}
-            className="hidden lg:block relative animate-fade-in-right"
-          >
-            <div className="relative">
-              {/* Decorative frame */}
-              <div className="absolute -inset-4 rounded-3xl bg-gradient-to-br from-sage/20 to-amber/20 blur-2xl" />
-              <div className="relative overflow-hidden rounded-2xl border border-white/20 shadow-2xl">
-                <img
-                  src={heroImage}
-                  alt="Peaceful illustration representing care and legacy"
-                  className="w-full h-[500px] object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-background/40 via-transparent to-transparent" />
-                
-                {/* Floating card overlay */}
-                <div
-                  className="absolute bottom-6 left-6 right-6 rounded-xl bg-white/90 backdrop-blur-md p-4 shadow-lg border border-white/50"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-sage-light">
-                      <Heart className="h-5 w-5 text-sage-dark" />
-                    </div>
-                    <div>
-                      <p className="font-medium text-foreground text-sm">
-                        {language === 'de' ? 'Für Dich und die Menschen, die Dir wichtig sind' : 'For you and the people who matter to you'}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        {language === 'de' ? 'Mein Lebensanker' : 'My Life Anchor'}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          {/* Right side is now occupied by the Tree of Life background */}
+          <div className="hidden lg:block" aria-hidden="true" />
         </div>
 
       </div>
