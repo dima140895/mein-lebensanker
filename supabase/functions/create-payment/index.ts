@@ -28,14 +28,14 @@ const PRICES = {
 };
 
 const PACKAGE_PRICES = {
-  single: 3900,
-  couple: 4900,
+  single: 4900,
+  couple: 6900,
 };
 
 // Family pricing configuration
 const FAMILY_PRICING = {
-  basePrice: 5900, // 59 EUR in cents
-  pricePerAdditionalProfile: 1900, // 19 EUR in cents
+  basePrice: 9900, // 99 EUR in cents
+  pricePerAdditionalProfile: 1000, // 10 EUR in cents
   minProfiles: 4,
   maxProfiles: 10,
 };
