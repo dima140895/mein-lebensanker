@@ -100,6 +100,122 @@ Eine Betreuungsverfügung ist sinnvoll, wenn:
 - keine Vorsorgevollmacht besteht
 - zusätzliche Absicherung gewünscht ist`,
         },
+        {
+          question: 'Wann sollte ich mit Vorsorgeplanung beginnen?',
+          answer: `Grundsätzlich kann jede volljährige Person vorsorgen. Nicht nur im Alter – auch bei Krankheit oder Unfall kann Vorsorge wichtig werden.
+
+Viele Menschen beginnen, wenn:
+- sie Kinder bekommen
+- Eigentum oder Vermögen vorhanden ist
+- sie Angehörige entlasten möchten
+- sie selbstbestimmt vorsorgen wollen
+
+Es gibt kein „zu früh", aber manchmal ein „zu spät".`,
+        },
+        {
+          question: 'Wo bewahre ich meine Vorsorgedokumente auf?',
+          answer: `Wichtig ist, dass Dokumente:
+- sicher aufbewahrt werden
+- im Ernstfall auffindbar sind
+- aktuell gehalten werden
+
+**Möglichkeiten:**
+- zu Hause an einem bekannten Ort
+- bei einer Vertrauensperson
+- digital strukturiert hinterlegt
+- notarielle Hinterlegung (z. B. Testament)
+
+Entscheidend ist: Angehörige sollten wissen, dass Dokumente existieren und wo sie zu finden sind.`,
+        },
+        {
+          question: 'Wer sollte über meine Vorsorge informiert sein?',
+          answer: `Das ist eine persönliche Entscheidung.
+
+Oft informiert man:
+- nahe Angehörige
+- bevollmächtigte Personen
+- Vertrauenspersonen
+
+Es kann helfen, zumindest mitzuteilen, dass Regelungen existieren.`,
+        },
+        {
+          question: 'Wie oft sollte ich meine Vorsorge aktualisieren?',
+          answer: `Eine Überprüfung ist sinnvoll:
+- alle paar Jahre
+- bei Heirat oder Scheidung
+- bei Geburt eines Kindes
+- bei größeren Vermögensänderungen
+- bei Umzug ins Ausland
+
+Aktualität sorgt dafür, dass Dokumente deinem aktuellen Willen entsprechen.`,
+        },
+        {
+          question: 'Ist digitale Vorsorge rechtlich gültig?',
+          answer: `Digitale Übersichten helfen bei Struktur und Orientierung.
+
+Rechtlich verbindliche Dokumente (z. B. Testament, Patientenverfügung) unterliegen jedoch bestimmten Formvorschriften.
+
+Eine digitale Plattform kann unterstützen bei:
+- Übersicht
+- Dokumentation
+- Auffindbarkeit
+- Informationsweitergabe
+
+Für formgültige Dokumente gelten gesetzliche Regeln.`,
+        },
+        {
+          question: 'Was passiert, wenn ich nichts regle?',
+          answer: `Ohne Regelungen greifen gesetzliche Vorgaben.
+
+Das kann bedeuten:
+- gesetzliche Erbfolge tritt ein
+- ein Gericht kann Betreuung anordnen
+- Angehörige müssen Entscheidungen treffen
+- Abstimmungen können länger dauern
+
+Vorsorge kann helfen, Klarheit zu schaffen.`,
+        },
+        {
+          question: 'Sollte ich Passwörter hinterlegen?',
+          answer: `Passwörter sind sehr sensible Daten.
+
+Wenn sie dokumentiert werden:
+- sicher speichern
+- Zugriff gut überlegen
+- regelmäßig aktualisieren
+- keine PINs oder TANs offen weitergeben
+
+Manche Menschen dokumentieren nur, wo Zugangsdaten zu finden sind.`,
+        },
+        {
+          question: 'Können mehrere Personen bevollmächtigt werden?',
+          answer: `Ja, das ist möglich.
+
+Dabei kann geregelt werden:
+- Einzelvertretung
+- gemeinsame Vertretung
+- Zuständigkeitsbereiche
+
+Klare Regelungen helfen, Konflikte zu vermeiden.`,
+        },
+        {
+          question: 'Gilt meine Vorsorge auch im Ausland?',
+          answer: `Das kann vom jeweiligen Land abhängen.
+
+Innerhalb der EU gibt es teils Anerkennung, aber nicht automatisch in jedem Fall.
+
+Bei dauerhaftem Auslandsaufenthalt kann fachlicher Rat sinnvoll sein.`,
+        },
+        {
+          question: 'Kann ich persönliche Wünsche hinterlassen?',
+          answer: `Ja. Viele Menschen halten fest:
+- Wünsche zur Bestattung
+- persönliche Botschaften
+- organisatorische Hinweise
+- Kontakte wichtiger Personen
+
+Solche Hinweise sind rechtlich nicht bindend, können Angehörigen aber helfen.`,
+        },
       ],
       moreQuestions: 'Weitere Fragen?',
     },
@@ -177,6 +293,122 @@ The court generally considers these wishes but is not legally bound by them in e
 A healthcare proxy is useful when:
 - no power of attorney exists
 - additional security is desired`,
+        },
+        {
+          question: 'When should I start estate planning?',
+          answer: `In principle, any adult can plan ahead. Not just in old age – estate planning can also become important in case of illness or accident.
+
+Many people start when:
+- they have children
+- they own property or assets
+- they want to relieve family members
+- they want to plan ahead independently
+
+There is no "too early", but sometimes "too late".`,
+        },
+        {
+          question: 'Where should I store my estate documents?',
+          answer: `It's important that documents:
+- are stored securely
+- can be found in an emergency
+- are kept up to date
+
+**Options:**
+- at home in a known location
+- with a trusted person
+- digitally organized
+- notarial deposit (e.g., will)
+
+The key is: family members should know that documents exist and where to find them.`,
+        },
+        {
+          question: 'Who should know about my estate planning?',
+          answer: `This is a personal decision.
+
+Often people inform:
+- close family members
+- authorized persons
+- trusted contacts
+
+It can help to at least communicate that arrangements exist.`,
+        },
+        {
+          question: 'How often should I update my estate planning?',
+          answer: `A review is advisable:
+- every few years
+- upon marriage or divorce
+- upon birth of a child
+- with major changes in assets
+- when moving abroad
+
+Keeping things current ensures documents reflect your current wishes.`,
+        },
+        {
+          question: 'Is digital estate planning legally valid?',
+          answer: `Digital overviews help with structure and orientation.
+
+However, legally binding documents (e.g., wills, advance directives) are subject to specific formal requirements.
+
+A digital platform can support:
+- Overview
+- Documentation
+- Findability
+- Information sharing
+
+Legally valid documents are subject to statutory rules.`,
+        },
+        {
+          question: 'What happens if I don\'t make any arrangements?',
+          answer: `Without arrangements, statutory provisions apply.
+
+This can mean:
+- statutory succession takes effect
+- a court may order guardianship
+- family members must make decisions
+- coordination may take longer
+
+Estate planning can help create clarity.`,
+        },
+        {
+          question: 'Should I document my passwords?',
+          answer: `Passwords are very sensitive data.
+
+If they are documented:
+- store them securely
+- consider access carefully
+- update regularly
+- don't share PINs or TANs openly
+
+Some people only document where access data can be found.`,
+        },
+        {
+          question: 'Can multiple people be authorized?',
+          answer: `Yes, this is possible.
+
+It can be arranged:
+- individual representation
+- joint representation
+- areas of responsibility
+
+Clear arrangements help avoid conflicts.`,
+        },
+        {
+          question: 'Does my estate planning apply abroad?',
+          answer: `This can depend on the respective country.
+
+Within the EU there is partial recognition, but not automatically in every case.
+
+Professional advice may be useful for permanent residence abroad.`,
+        },
+        {
+          question: 'Can I leave personal wishes?',
+          answer: `Yes. Many people record:
+- funeral wishes
+- personal messages
+- organizational notes
+- contacts of important people
+
+Such notes are not legally binding but can help family members.`,
         },
       ],
       moreQuestions: 'More questions?',
