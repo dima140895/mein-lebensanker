@@ -41,7 +41,7 @@ export interface PersonalData {
 }
 
 export interface AssetsData {
-  bankAccounts: Array<{ institute: string; purpose: string; balance: string }>;
+  bankAccounts: Array<{ institute: string; purpose: string; balance: string; currency?: string }>;
   properties: Array<{ 
     address: string; 
     type: string; 
@@ -137,7 +137,7 @@ const defaultPersonalData: PersonalData = {
 };
 
 const defaultAssetsData: AssetsData = {
-  bankAccounts: [{ institute: '', purpose: '', balance: '' }],
+  bankAccounts: [{ institute: '', purpose: '', balance: '', currency: 'EUR' }],
   properties: [],
   vehicles: [],
   insurances: [],

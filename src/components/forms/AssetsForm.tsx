@@ -208,7 +208,7 @@ const AssetsForm = () => {
 
   const addItem = (field: "bankAccounts" | "properties" | "vehicles" | "insurances" | "valuables") => {
     const newItems = {
-      bankAccounts: [...data.bankAccounts, { institute: "", purpose: "", balance: "" }],
+      bankAccounts: [...data.bankAccounts, { institute: "", purpose: "", balance: "", currency: "EUR" }],
       properties: [
         ...data.properties,
         {
@@ -275,7 +275,7 @@ const AssetsForm = () => {
       <div className="space-y-4">
         <h3 className="font-serif text-lg font-semibold text-foreground">{texts.bankAccounts}</h3>
         {data.bankAccounts.map((account, i) => (
-          <div key={i} className="flex gap-3 items-start">
+        <div key={i} className="flex gap-3 items-start">
             <div className="flex-1 grid gap-3 md:grid-cols-3">
               <Input
                 value={account.institute}
@@ -289,12 +289,41 @@ const AssetsForm = () => {
                 onBlur={handleBlur}
                 placeholder={texts.purpose}
               />
-              <Input
-                value={account.balance || ""}
-                onChange={(e) => updateItem("bankAccounts", i, "balance", e.target.value)}
-                onBlur={handleBlur}
-                placeholder={texts.balance}
-              />
+              <div className="flex gap-2">
+                <Input
+                  value={account.balance || ""}
+                  onChange={(e) => updateItem("bankAccounts", i, "balance", e.target.value)}
+                  onBlur={handleBlur}
+                  placeholder={texts.balance}
+                  className="flex-1"
+                />
+                <Select
+                  value={account.currency || "EUR"}
+                  onValueChange={(value) => {
+                    updateItem("bankAccounts", i, "currency", value);
+                    handleBlur();
+                  }}
+                >
+                  <SelectTrigger className="w-[90px] shrink-0">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="bg-background border border-border shadow-lg z-50">
+                    <SelectItem value="EUR">EUR €</SelectItem>
+                    <SelectItem value="USD">USD $</SelectItem>
+                    <SelectItem value="GBP">GBP £</SelectItem>
+                    <SelectItem value="CHF">CHF</SelectItem>
+                    <SelectItem value="JPY">JPY ¥</SelectItem>
+                    <SelectItem value="TRY">TRY ₺</SelectItem>
+                    <SelectItem value="PLN">PLN zł</SelectItem>
+                    <SelectItem value="CZK">CZK Kč</SelectItem>
+                    <SelectItem value="SEK">SEK kr</SelectItem>
+                    <SelectItem value="NOK">NOK kr</SelectItem>
+                    <SelectItem value="DKK">DKK kr</SelectItem>
+                    <SelectItem value="CAD">CAD $</SelectItem>
+                    <SelectItem value="AUD">AUD $</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
             {data.bankAccounts.length > 1 && (
               <Button variant="ghost" size="icon" onClick={() => removeItem("bankAccounts", i)}>
