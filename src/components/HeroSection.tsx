@@ -21,7 +21,7 @@ const HeroSection = () => {
       />
       
       {/* Tree of Life - positioned on the right side, extends beyond top for seamless bleed */}
-      <div className="absolute right-[-5%] md:right-[-8%] lg:right-[-5%] bottom-[-25%] sm:bottom-[-25%] md:bottom-[-25%] lg:bottom-[-30%] w-[80%] sm:w-[75%] md:w-[65%] lg:w-[60%] h-[150%] flex items-end justify-center pointer-events-none">
+      <div className="absolute right-[-10%] md:right-[-12%] lg:right-[-10%] bottom-[-30%] sm:bottom-[-30%] md:bottom-[-30%] lg:bottom-[-35%] w-[95%] sm:w-[90%] md:w-[80%] lg:w-[75%] h-[170%] flex items-end justify-center pointer-events-none">
         <div
           aria-hidden="true"
           className="w-full h-full bg-no-repeat bg-bottom bg-cover opacity-50 md:opacity-60 mix-blend-multiply"
