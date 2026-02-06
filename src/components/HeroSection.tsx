@@ -1,4 +1,4 @@
-import { ArrowRight, Anchor } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useNavigate } from 'react-router-dom';
 
@@ -8,31 +8,19 @@ const HeroSection = () => {
 
   return (
     <section className="relative min-h-[55vh] sm:min-h-[70vh] md:min-h-[85vh] flex items-center">
-      {/* Tree metaphor badge */}
-      <div className="absolute right-[6%] sm:right-[8%] md:right-[4%] lg:right-[8%] bottom-[6%] sm:bottom-[8%] md:bottom-[10%] lg:bottom-[4%] pointer-events-none hidden sm:block z-10">
-        <div className="inline-flex items-center gap-2 rounded-full border border-sage/20 bg-white/80 backdrop-blur-sm px-3 md:px-4 py-1.5 md:py-2 shadow-sm">
-          <div className="flex h-4 w-4 md:h-5 md:w-5 items-center justify-center rounded bg-primary">
-            <Anchor className="h-2.5 w-2.5 md:h-3 md:w-3 text-primary-foreground" />
-          </div>
-          <span className="text-xs md:text-sm font-medium text-sage-dark">
-            {t('hero.treeMetaphor')}
-          </span>
-        </div>
-      </div>
-
       <div className="container relative mx-auto px-4 py-4 sm:py-10 md:py-20">
         <div className="grid lg:grid-cols-2 gap-4 sm:gap-8 md:gap-12 items-center">
           <div
             key={`hero-content-${language}`}
             className="max-w-xl animate-fade-in-up"
           >
-            {/* Badge */}
+            {/* Badge - tree metaphor text */}
             <div className="mb-3 sm:mb-4 md:mb-6 inline-flex items-center gap-2 rounded-full border border-sage/20 bg-white/80 backdrop-blur-sm px-3 sm:px-3 md:px-4 py-1.5 sm:py-1.5 md:py-2 text-xs sm:text-xs md:text-sm font-medium text-sage-dark shadow-sm">
               <span className="relative flex h-1.5 sm:h-1.5 md:h-2 w-1.5 sm:w-1.5 md:w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sage opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-1.5 sm:h-1.5 md:h-2 w-1.5 sm:w-1.5 md:w-2 bg-sage"></span>
               </span>
-              <span className="line-clamp-1">{t('disclaimer.short')}</span>
+              <span className="line-clamp-1">{t('hero.treeMetaphor')}</span>
             </div>
 
             <h1 className="font-serif text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold leading-tight text-foreground">
