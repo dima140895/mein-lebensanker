@@ -51,7 +51,7 @@ const WhatIsThisTool = () => {
   const texts = t[language];
 
   return (
-    <section className="relative py-12 md:py-16">
+    <section className="relative pt-24 md:pt-32 pb-12 md:pb-16">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
