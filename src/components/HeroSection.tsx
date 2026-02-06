@@ -13,10 +13,10 @@ const HeroSection = () => {
       <div className="absolute inset-0 bg-background" />
       
       {/* Tree of Life - positioned on the right side */}
-      <div className="absolute right-[-5%] md:right-[-8%] lg:right-[-5%] top-1/2 -translate-y-1/2 w-[80%] sm:w-[75%] md:w-[65%] lg:w-[60%] h-[120%] flex items-center justify-center pointer-events-none">
+      <div className="absolute right-[-5%] md:right-[-8%] lg:right-[-5%] bottom-0 w-[80%] sm:w-[75%] md:w-[65%] lg:w-[60%] h-[130%] flex items-end justify-center pointer-events-none">
         <div
           aria-hidden="true"
-          className="w-full h-full bg-background bg-no-repeat bg-center bg-contain opacity-50 md:opacity-60"
+          className="w-full h-full bg-background bg-no-repeat bg-bottom bg-contain opacity-50 md:opacity-60"
           style={{
             backgroundImage: `url(${treeOfLifeImage})`,
             backgroundBlendMode: 'multiply',
