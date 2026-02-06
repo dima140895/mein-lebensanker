@@ -48,8 +48,10 @@ export interface AssetsData {
     ownership: string; 
     ownershipOther: string;
     rentalIncome: string;
+    rentalIncomeCurrency?: string;
     financingStatus: string;
     outstandingLoan: string;
+    outstandingLoanCurrency?: string;
   }>;
   vehicles: Array<{ 
     type: string; 
@@ -58,9 +60,10 @@ export interface AssetsData {
     licensePlate: string; 
     location: string;
     estimatedValue: string;
+    estimatedValueCurrency?: string;
     documentsLocation: string;
   }>;
-  insurances: Array<{ type: string; typeOther: string; company: string; companyOther: string; policyNumber: string; surrenderValue: string }>;
+  insurances: Array<{ type: string; typeOther: string; company: string; companyOther: string; policyNumber: string; surrenderValue: string; surrenderValueCurrency?: string }>;
   valuables: Array<{ description: string; location: string }>;
   notes: string;
 }
