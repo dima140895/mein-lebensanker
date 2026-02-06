@@ -8,7 +8,7 @@ const HeroSection = () => {
   const navigate = useNavigate();
 
   return (
-    <section className="relative min-h-[55vh] sm:min-h-[70vh] md:min-h-[85vh] flex items-center overflow-hidden">
+    <section className="relative isolate min-h-[55vh] sm:min-h-[70vh] md:min-h-[85vh] flex items-center overflow-hidden">
       {/* Uniform background */}
       <div className="absolute inset-0 bg-background" />
       
@@ -17,7 +17,7 @@ const HeroSection = () => {
         <img 
           src={treeOfLifeImage} 
           alt="" 
-          className="w-full h-auto max-h-[95%] object-contain opacity-50 md:opacity-60"
+          className="w-full h-auto max-h-[95%] object-contain opacity-50 md:opacity-60 mix-blend-multiply"
           aria-hidden="true"
         />
       </div>
