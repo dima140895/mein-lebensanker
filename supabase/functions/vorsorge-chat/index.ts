@@ -38,7 +38,39 @@ serve(async (req) => {
   }
 
   try {
-    const { messages } = await req.json();
+    const body = await req.json().catch(() => null);
+
+    // Validate input: messages must be a non-empty array of {role, content} objects
+    if (
+      !body ||
+      !Array.isArray(body.messages) ||
+      body.messages.length === 0 ||
+      body.messages.length > 50
+    ) {
+      return new Response(JSON.stringify({ error: "Ungültige Anfrage" }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const validRoles = ["user", "assistant"];
+    const messages = body.messages.filter(
+      (m: unknown) =>
+        typeof m === "object" &&
+        m !== null &&
+        validRoles.includes((m as any).role) &&
+        typeof (m as any).content === "string" &&
+        (m as any).content.length > 0 &&
+        (m as any).content.length <= 10000
+    );
+
+    if (messages.length === 0) {
+      return new Response(JSON.stringify({ error: "Ungültige Anfrage" }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     
     if (!LOVABLE_API_KEY) {
