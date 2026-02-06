@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { MessageCircle, X, Send, Loader2, Bot } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { motion, AnimatePresence } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 
@@ -14,6 +15,7 @@ const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/vorsorge-cha
 
 const VorsorgeAssistant: React.FC = () => {
   const { language } = useLanguage();
+  const isMobile = useIsMobile();
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
@@ -149,9 +151,13 @@ const VorsorgeAssistant: React.FC = () => {
     }
   };
 
+  // Hide on mobile devices
+  if (isMobile) {
+    return null;
+  }
+
   return (
     <>
-      {/* Floating Button */}
       <AnimatePresence>
         {!isOpen && (
           <motion.div
