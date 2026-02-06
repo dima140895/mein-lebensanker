@@ -18,6 +18,7 @@ const VorsorgeAssistant: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [showSuggestions, setShowSuggestions] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -33,6 +34,7 @@ const VorsorgeAssistant: React.FC = () => {
         'Wie erstelle ich ein Testament?',
         'Was ist eine Betreuungsverfügung?',
       ],
+      moreQuestions: 'Weitere Fragen?',
     },
     en: {
       title: 'Estate Planning Assistant',
@@ -45,6 +47,7 @@ const VorsorgeAssistant: React.FC = () => {
         'How do I create a will?',
         'What is a healthcare proxy?',
       ],
+      moreQuestions: 'More questions?',
     },
   };
 
@@ -127,6 +130,7 @@ const VorsorgeAssistant: React.FC = () => {
     setMessages(newMessages);
     setInput('');
     setIsLoading(true);
+    setShowSuggestions(false);
 
     try {
       await streamChat(newMessages);
@@ -244,6 +248,39 @@ const VorsorgeAssistant: React.FC = () => {
                     </div>
                   </div>
                 )}
+                
+                {/* Show suggestions after conversation */}
+                {messages.length > 0 && !isLoading && showSuggestions && (
+                  <div className="space-y-2 pt-2">
+                    <div className="flex flex-wrap gap-2">
+                      {texts.suggestions.map((suggestion, idx) => (
+                        <button
+                          key={idx}
+                          onClick={() => {
+                            setInput(suggestion);
+                            inputRef.current?.focus();
+                          }}
+                          className="text-xs px-3 py-1.5 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors border border-primary/20"
+                        >
+                          {suggestion}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                
+                {/* "More questions?" button */}
+                {messages.length > 0 && !isLoading && !showSuggestions && (
+                  <div className="flex justify-center pt-2">
+                    <button
+                      onClick={() => setShowSuggestions(true)}
+                      className="text-xs px-4 py-2 rounded-full bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground transition-colors"
+                    >
+                      {texts.moreQuestions}
+                    </button>
+                  </div>
+                )}
+                
                 <div ref={messagesEndRef} />
               </div>
 
