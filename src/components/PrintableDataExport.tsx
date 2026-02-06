@@ -471,7 +471,16 @@ const PrintableDataExport = forwardRef<HTMLDivElement, PrintableDataExportProps>
         <style>{`
           @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap');
           @media print {
-            @page { margin: 15mm; size: A4; }
+            @page { 
+              margin: 15mm; 
+              size: A4;
+              @bottom-center {
+                content: counter(page) " / " counter(pages);
+                font-size: 10px;
+                color: #6b7280;
+                font-family: Inter, -apple-system, BlinkMacSystemFont, sans-serif;
+              }
+            }
             .page-break { page-break-before: always; }
             .no-break { page-break-inside: avoid; }
           }
