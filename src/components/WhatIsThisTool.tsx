@@ -51,8 +51,15 @@ const WhatIsThisTool = () => {
   const texts = t[language];
 
   return (
-    <section className="relative z-10 py-12 md:py-16 bg-background">
-      <div className="container mx-auto px-4">
+    <section className="relative py-12 md:py-16 bg-background">
+      {/* Same radial gradient as hero for seamless tree visibility */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: 'radial-gradient(ellipse 60% 70% at 85% 20%, hsl(140 15% 92% / 0.5) 0%, transparent 70%)',
+        }}
+      />
+      <div className="container relative mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -77,7 +84,7 @@ const WhatIsThisTool = () => {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.1 }}
-              className="rounded-xl border border-sage/30 bg-card p-6"
+              className="rounded-xl border border-sage/30 bg-background/95 backdrop-blur-sm p-6"
             >
               <h3 className="font-serif text-lg font-semibold text-sage-dark mb-4">{texts.isTitle}</h3>
               <ul className="space-y-3">
@@ -101,7 +108,7 @@ const WhatIsThisTool = () => {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="rounded-xl border border-amber/30 bg-card p-6"
+              className="rounded-xl border border-amber/30 bg-background/95 backdrop-blur-sm p-6"
             >
               <h3 className="font-serif text-lg font-semibold text-amber mb-4">{texts.isNotTitle}</h3>
               <ul className="space-y-3">
