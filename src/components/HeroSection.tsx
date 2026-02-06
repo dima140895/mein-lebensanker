@@ -12,21 +12,20 @@ const HeroSection = () => {
       {/* Uniform background */}
       <div className="absolute inset-0 bg-background" />
       
-      {/* Tree of Life - positioned on the right side, wider crown */}
-      <div className="absolute right-[-10%] md:right-[-12%] lg:right-[-8%] bottom-[-25%] sm:bottom-[-25%] md:bottom-[-25%] lg:bottom-[-30%] w-[90%] sm:w-[85%] md:w-[75%] lg:w-[70%] h-[145%] flex items-end justify-center pointer-events-none">
+      {/* Tree of Life - positioned on the right side */}
+      <div className="absolute right-[-5%] md:right-[-8%] lg:right-[-5%] bottom-[-25%] sm:bottom-[-25%] md:bottom-[-25%] lg:bottom-[-30%] w-[80%] sm:w-[75%] md:w-[65%] lg:w-[60%] h-[145%] flex items-end justify-center pointer-events-none">
         <div
           aria-hidden="true"
-          className="w-full h-full bg-background bg-no-repeat bg-bottom bg-contain opacity-50 md:opacity-60"
+          className="w-full h-full bg-no-repeat bg-bottom bg-contain opacity-50 md:opacity-60"
           style={{
             backgroundImage: `url(${treeOfLifeImage})`,
-            backgroundBlendMode: 'multiply',
           }}
         />
       </div>
 
       {/* Tree metaphor text - connecting tree symbolism with Vorsorge theme */}
       <div className="absolute right-[8%] sm:right-[10%] md:right-[8%] lg:right-[12%] bottom-[8%] sm:bottom-[10%] md:bottom-[12%] pointer-events-none hidden sm:block">
-        <p className="font-serif text-sm md:text-base lg:text-lg text-sage-dark/40 md:text-sage-dark/50 whitespace-pre-line text-right italic leading-relaxed tracking-wide">
+        <p className="font-serif text-xs md:text-sm text-sage-dark/30 md:text-sage-dark/40 whitespace-pre-line text-right italic leading-relaxed tracking-wide">
           {t('hero.treeMetaphor')}
         </p>
       </div>
