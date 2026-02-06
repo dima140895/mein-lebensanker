@@ -23,6 +23,7 @@ import PromoVideo from "./pages/PromoVideo";
 import NotFound from "./pages/NotFound";
 import InstallApp from "./pages/InstallApp";
 import InstagramDownload from "./pages/InstagramDownload";
+import SecurityAuditReport from "./pages/SecurityAuditReport";
 import CookieConsent from "./components/CookieConsent";
 import { EncryptionReminder } from "./components/EncryptionReminder";
 import VorsorgeAssistant from "./components/VorsorgeAssistant";
@@ -55,6 +56,7 @@ const App = () => (
                     <Route path="/installieren" element={<InstallApp />} />
                     <Route path="/instagram-download" element={<InstagramDownload />} />
                     <Route path="/fuer-angehoerige/:token" element={<RelativesView />} />
+                    <Route path="/security-audit-report" element={<SecurityAuditReport />} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>
                   <CookieConsent />
