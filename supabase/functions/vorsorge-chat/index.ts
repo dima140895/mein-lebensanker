@@ -1,8 +1,20 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
+// Allowed origins for CORS (matching other edge functions)
+const ALLOWED_ORIGINS = [
+  "https://mein-lebensanker.lovable.app",
+  "https://id-preview--3aceebdb-8fff-4d04-bf5f-d8b882169f3d.lovable.app",
+  "https://3aceebdb-8fff-4d04-bf5f-d8b882169f3d.lovableproject.com",
+];
+
+const getCorsHeaders = (origin: string | null) => {
+  const allowedOrigin = origin && ALLOWED_ORIGINS.some(o => origin.startsWith(o.replace(/\/$/, '')))
+    ? origin
+    : ALLOWED_ORIGINS[0];
+  return {
+    "Access-Control-Allow-Origin": allowedOrigin,
+    "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
+  };
 };
 
 const systemPrompt = `Du bist der "Vorsorge-Assistent", ein einfühlsamer und kompetenter Helfer für Fragen rund um Vorsorge und Nachlassplanung.
@@ -19,6 +31,8 @@ Deine Aufgaben:
 Du bist Teil der App "Mein Lebensanker", die Menschen hilft, ihre wichtigen Daten und Wünsche für den Notfall zu organisieren.`;
 
 serve(async (req) => {
+  const corsHeaders = getCorsHeaders(req.headers.get("origin"));
+
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
@@ -73,7 +87,7 @@ serve(async (req) => {
     });
   } catch (e) {
     console.error("chat error:", e);
-    return new Response(JSON.stringify({ error: e instanceof Error ? e.message : "Unbekannter Fehler" }), {
+    return new Response(JSON.stringify({ error: "Ein Fehler ist aufgetreten" }), {
       status: 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
