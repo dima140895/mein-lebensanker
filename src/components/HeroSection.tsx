@@ -12,13 +12,8 @@ const HeroSection = () => {
       {/* Uniform background matching image */}
       <div className="absolute inset-0" style={{ backgroundColor: '#FAF8F3' }} />
       
-      {/* Tree of Life - positioned on the right side with blend */}
+      {/* Tree of Life - positioned on the right side */}
       <div className="absolute right-0 md:right-[5%] top-1/2 -translate-y-1/2 w-[60%] sm:w-[55%] md:w-[50%] lg:w-[45%] h-full flex items-center justify-center pointer-events-none">
-        {/* Gradient overlay for seamless blend from left */}
-        <div 
-          className="absolute left-0 top-0 bottom-0 w-32 z-10" 
-          style={{ background: 'linear-gradient(to right, #FAF8F3, transparent)' }}
-        />
         <img 
           src={treeOfLifeImage} 
           alt="" 
