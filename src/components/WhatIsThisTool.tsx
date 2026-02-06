@@ -52,14 +52,7 @@ const WhatIsThisTool = () => {
 
   return (
     <section className="relative py-12 md:py-16">
-      {/* Same radial gradient as hero for seamless tree visibility */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background: 'radial-gradient(ellipse 60% 70% at 85% 20%, hsl(140 15% 92% / 0.5) 0%, transparent 70%)',
-        }}
-      />
-      <div className="container relative mx-auto px-4">
+      <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
