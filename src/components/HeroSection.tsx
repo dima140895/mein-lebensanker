@@ -25,9 +25,9 @@ const HeroSection = () => {
 
       {/* Tree metaphor badge - connecting tree symbolism with Vorsorge theme */}
       <div className="absolute right-[6%] sm:right-[8%] md:right-[6%] lg:right-[10%] bottom-[6%] sm:bottom-[8%] md:bottom-[10%] pointer-events-none hidden sm:block">
-        <div className="inline-flex items-center gap-2 rounded-full border border-sage/20 bg-white/70 backdrop-blur-sm px-3 md:px-4 py-1.5 md:py-2 shadow-sm">
+        <div className="inline-flex items-center gap-2 rounded-full border border-sage/20 bg-white/80 backdrop-blur-sm px-3 md:px-4 py-1.5 md:py-2 shadow-sm">
           <TreePine className="h-3.5 w-3.5 md:h-4 md:w-4 text-sage" />
-          <span className="font-serif text-xs md:text-sm text-sage-dark/70 italic">
+          <span className="text-xs md:text-sm font-medium text-sage-dark">
             {t('hero.treeMetaphor')}
           </span>
         </div>
