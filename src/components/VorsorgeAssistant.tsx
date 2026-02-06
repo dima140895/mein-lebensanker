@@ -378,7 +378,7 @@ A healthcare proxy is useful when:
                       }`}
                     >
                       {msg.role === 'assistant' ? (
-                        <div className="prose prose-sm dark:prose-invert max-w-none">
+                        <div className="prose prose-sm dark:prose-invert max-w-none [&_ul]:list-disc [&_ul]:pl-4 [&_ul]:my-2 [&_li]:my-0.5 [&_p]:my-2 [&_strong]:font-semibold">
                           <ReactMarkdown>{msg.content}</ReactMarkdown>
                         </div>
                       ) : (
