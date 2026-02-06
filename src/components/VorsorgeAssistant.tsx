@@ -29,6 +29,7 @@ const VorsorgeAssistant: React.FC = () => {
       title: 'Vorsorge-Assistent',
       placeholder: 'Stelle eine Frage...',
       welcome: 'Hallo! Ich bin dein Vorsorge-Assistent. Frag mich alles rund um Patientenverfügung, Vorsorgevollmacht oder Testament.',
+      disclaimer: 'Hinweis: Die folgenden Informationen dienen der allgemeinen Orientierung und stellen keine Rechtsberatung dar. Für eine verbindliche rechtliche Beratung wende Dich bitte an eine Notarin, einen Notar oder eine Rechtsanwältin bzw. einen Rechtsanwalt.',
       error: 'Entschuldigung, es ist ein Fehler aufgetreten. Bitte versuche es erneut.',
       suggestions: [
         'Was ist eine Patientenverfügung?',
@@ -42,6 +43,7 @@ const VorsorgeAssistant: React.FC = () => {
       title: 'Estate Planning Assistant',
       placeholder: 'Ask a question...',
       welcome: 'Hello! I\'m your estate planning assistant. Ask me anything about advance directives, powers of attorney, or wills.',
+      disclaimer: 'Note: The following information is for general guidance only and does not constitute legal advice. For binding legal advice, please consult a notary or attorney.',
       error: 'Sorry, an error occurred. Please try again.',
       suggestions: [
         'What is an advance directive?',
@@ -204,6 +206,11 @@ const VorsorgeAssistant: React.FC = () => {
               </div>
 
               <div className="flex-1 overflow-y-auto p-4 space-y-4 min-h-[200px]">
+                {/* Disclaimer - always visible */}
+                <div className="text-xs text-muted-foreground bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-lg p-2.5">
+                  {texts.disclaimer}
+                </div>
+                
                 {messages.length === 0 && (
                   <div className="space-y-3">
                     <div className="text-muted-foreground text-sm bg-muted/50 rounded-lg p-3">
