@@ -9,7 +9,7 @@ const HeroSection = () => {
   return (
     <section className="relative min-h-[55vh] sm:min-h-[70vh] md:min-h-[85vh] flex items-center">
       {/* Tree metaphor badge */}
-      <div className="absolute right-[6%] sm:right-[8%] md:right-[4%] lg:right-[8%] bottom-[6%] sm:bottom-[8%] md:bottom-[10%] pointer-events-none hidden sm:block z-10">
+      <div className="absolute right-[6%] sm:right-[8%] md:right-[4%] lg:right-[8%] bottom-[6%] sm:bottom-[8%] md:bottom-[10%] lg:bottom-[4%] pointer-events-none hidden sm:block z-10">
         <div className="inline-flex items-center gap-2 rounded-full border border-sage/20 bg-white/80 backdrop-blur-sm px-3 md:px-4 py-1.5 md:py-2 shadow-sm">
           <div className="flex h-4 w-4 md:h-5 md:w-5 items-center justify-center rounded bg-primary">
             <Anchor className="h-2.5 w-2.5 md:h-3 md:w-3 text-primary-foreground" />
