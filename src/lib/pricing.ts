@@ -21,12 +21,6 @@ export const PRICING = {
     minProfiles: 4,
     maxProfiles: 10,
   },
-  updateService: {
-    name: 'update_service',
-    price: 12,
-    priceId: 'price_1StQyfICzkfBNYhyTXftLV1j',
-    interval: 'year',
-  },
 } as const;
 
 // Upgrade-Preise (Differenzbeträge) - für Family wird dynamisch berechnet

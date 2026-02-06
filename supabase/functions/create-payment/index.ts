@@ -22,9 +22,8 @@ const getCorsHeaders = (origin: string | null) => {
 
 // Stripe Price IDs
 const PRICES = {
-  single: "price_1StQxpICzkfBNYhyfkFifG39",
-  couple: "price_1StQy5ICzkfBNYhyGqh7RUsk",
-  update_service: "price_1StQyfICzkfBNYhyTXftLV1j",
+  single: "price_1SxDbfICzkfBNYhyLR73x2G6",
+  couple: "price_1SxDc0ICzkfBNYhyLscc8Vmu",
 };
 
 const PACKAGE_PRICES = {
@@ -47,7 +46,7 @@ const PaymentRequestSchema = z.object({
   paymentType: z.enum(["single", "couple", "family"]),
   isUpgrade: z.boolean().optional().default(false),
   currentTier: z.enum(["single", "couple", "family"]).optional(),
-  includeUpdateService: z.boolean().optional().default(false),
+  includeUpdateService: z.literal(false).optional().default(false),
   familyProfileCount: z.number().int().min(4).max(10).optional(),
   isAddingProfiles: z.boolean().optional().default(false),
   additionalProfileCount: z.number().int().min(1).max(6).optional(),
@@ -236,19 +235,11 @@ serve(async (req) => {
       }
     }
 
-    // Add update service subscription if requested
-    if (includeUpdateService) {
-      lineItems.push({
-        price: PRICES.update_service,
-        quantity: 1,
-      });
-    }
-
     const sessionParams: Stripe.Checkout.SessionCreateParams = {
       customer: customerId,
       customer_email: customerId ? undefined : user.email,
       line_items: lineItems,
-      mode: includeUpdateService ? "subscription" : "payment",
+      mode: "payment",
       success_url: `${req.headers.get("origin")}/payment-success?session_id={CHECKOUT_SESSION_ID}&type=${paymentType}${isUpgrade ? "&upgrade=true" : ""}${isAddingProfiles ? "&add_profiles=true" : ""}&profiles=${selectedMaxProfiles}`,
       cancel_url: `${req.headers.get("origin")}/dashboard`,
       metadata: {
@@ -257,21 +248,8 @@ serve(async (req) => {
         is_upgrade: isUpgrade ? "true" : "false",
         is_adding_profiles: isAddingProfiles ? "true" : "false",
         max_profiles: String(selectedMaxProfiles),
-        include_update_service: includeUpdateService ? "true" : "false",
       },
     };
-
-    // For mixed mode (one-time + subscription), use subscription mode
-    if (includeUpdateService && !isUpgrade) {
-      // Add the one-time package as an invoice item
-      sessionParams.subscription_data = {
-        metadata: {
-          user_id: user.id,
-          payment_type: paymentType,
-          max_profiles: String(selectedMaxProfiles),
-        },
-      };
-    }
 
     const session = await stripe.checkout.sessions.create(sessionParams);
 
