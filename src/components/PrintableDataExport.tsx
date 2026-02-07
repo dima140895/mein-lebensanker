@@ -548,7 +548,7 @@ const PrintableDataExport = forwardRef<HTMLDivElement, PrintableDataExportProps>
           return (
             <div key={profile.id} className={profileIndex > 0 ? 'page-break' : ''}>
               {/* Header */}
-              <div style={{
+              <div data-pdf-section="header" style={{
                 background: 'linear-gradient(135deg, #6b8f71 0%, #4a6b50 100%)',
                 padding: '40px',
                 borderRadius: '12px',
@@ -611,7 +611,7 @@ const PrintableDataExport = forwardRef<HTMLDivElement, PrintableDataExportProps>
                 if (!sectionData) return null;
 
                 return (
-                  <div key={section.key} className="no-break" style={{ marginBottom: '16px' }}>
+                  <div key={section.key} data-pdf-section={section.key} className="no-break" style={{ marginBottom: '16px' }}>
                     <SectionHeader title={section.title} IconComponent={section.IconComponent} />
                     {sectionRenderers[section.key]?.(sectionData.data, profile.id)}
                   </div>
@@ -619,7 +619,7 @@ const PrintableDataExport = forwardRef<HTMLDivElement, PrintableDataExportProps>
               })}
 
               {/* Footer */}
-              <div style={{
+              <div data-pdf-section="footer" style={{
                 marginTop: '40px',
                 padding: '20px',
                 background: '#f9fafb',

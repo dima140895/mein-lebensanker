@@ -1021,7 +1021,7 @@ const PrintableRelativesSummary = forwardRef<HTMLDivElement, PrintableRelativesS
         {dataByProfile.map(({ profile, data: profileData }, profileIndex) => (
           <div key={profile.profile_id} className={profileIndex > 0 ? 'page-break' : ''}>
             {/* Header */}
-            <div style={{
+            <div data-pdf-section="header" style={{
               background: 'linear-gradient(135deg, #6b8f71 0%, #4a6b50 100%)',
               padding: '40px',
               borderRadius: '12px',
@@ -1079,7 +1079,7 @@ const PrintableRelativesSummary = forwardRef<HTMLDivElement, PrintableRelativesS
             {profileData.map((item) => {
               const Icon = sectionIcons[item.section_key] || FileText;
               return (
-                <div key={item.section_key} className="no-break" style={{ marginBottom: '16px' }}>
+                <div key={item.section_key} data-pdf-section={item.section_key} className="no-break" style={{ marginBottom: '16px' }}>
                   <div style={{
                     display: 'flex',
                     alignItems: 'center',
@@ -1114,7 +1114,7 @@ const PrintableRelativesSummary = forwardRef<HTMLDivElement, PrintableRelativesS
             })}
 
             {/* Footer */}
-            <div style={{
+            <div data-pdf-section="footer" style={{
               marginTop: '40px',
               padding: '20px',
               background: '#f9fafb',
