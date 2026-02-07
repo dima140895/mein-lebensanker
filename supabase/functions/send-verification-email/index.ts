@@ -68,15 +68,6 @@ serve(async (req: Request): Promise<Response> => {
         .replace(/`/g, "&#96;");
     };
 
-    // Validate and sanitize userName: allow only letters, numbers, spaces, hyphens, dots (max 100 chars)
-    let displayName = "Nutzer";
-    if (userName) {
-      const raw = String(userName).trim().slice(0, 100);
-      // Strip any characters that aren't alphanumeric, spaces, hyphens, dots, or common Unicode letters
-      const sanitized = raw.replace(/[^\p{L}\p{N}\s.\-]/gu, "");
-      displayName = sanitized.length > 0 ? escapeHtml(sanitized) : "Nutzer";
-    }
-
     // Build a verification URL that our /verify-email page can actually verify.
     // We generate a secure token server-side (service role) and append it as token_hash.
     let verificationUrl = redirectTo;
