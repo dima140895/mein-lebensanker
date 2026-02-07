@@ -242,6 +242,14 @@ serve(async (req) => {
       mode: "payment",
       success_url: `${req.headers.get("origin")}/payment-success?session_id={CHECKOUT_SESSION_ID}&type=${paymentType}${isUpgrade ? "&upgrade=true" : ""}${isAddingProfiles ? "&add_profiles=true" : ""}&profiles=${selectedMaxProfiles}`,
       cancel_url: `${req.headers.get("origin")}/dashboard`,
+      locale: "de",
+      branding_settings: {
+        display_name: "Mein Lebensanker",
+        background_color: "#FAF8F3",
+        button_color: "#437059",
+        font_family: "inter",
+        border_style: "rounded",
+      },
       metadata: {
         user_id: user.id,
         payment_type: paymentType,
