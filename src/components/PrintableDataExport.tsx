@@ -55,6 +55,18 @@ const PrintableDataExport = forwardRef<HTMLDivElement, PrintableDataExportProps>
         properties: 'Immobilien',
         insurances: 'Versicherungen',
         valuables: 'Wertgegenstände',
+        vehicles: 'Fahrzeuge',
+        vehicleType: 'Fahrzeugart',
+        brand: 'Marke',
+        model: 'Modell',
+        licensePlate: 'Kennzeichen',
+        vehicleLocation: 'Standort',
+        estimatedValue: 'Geschätzter Wert',
+        vehicleDocsLocation: 'Fahrzeugpapiere',
+        vehicleTypes: {
+          car: 'PKW', motorcycle: 'Motorrad', camper: 'Wohnmobil',
+          trailer: 'Anhänger', other: 'Sonstiges',
+        },
         emailAccounts: 'E-Mail-Konten',
         socialMedia: 'Soziale Medien',
         subscriptions: 'Abonnements',
@@ -122,6 +134,18 @@ const PrintableDataExport = forwardRef<HTMLDivElement, PrintableDataExportProps>
         properties: 'Properties',
         insurances: 'Insurance',
         valuables: 'Valuables',
+        vehicles: 'Vehicles',
+        vehicleType: 'Vehicle Type',
+        brand: 'Brand',
+        model: 'Model',
+        licensePlate: 'License Plate',
+        vehicleLocation: 'Location',
+        estimatedValue: 'Estimated Value',
+        vehicleDocsLocation: 'Vehicle Documents',
+        vehicleTypes: {
+          car: 'Car', motorcycle: 'Motorcycle', camper: 'Camper/RV',
+          trailer: 'Trailer', other: 'Other',
+        },
         emailAccounts: 'Email Accounts',
         socialMedia: 'Social Media',
         subscriptions: 'Subscriptions',
@@ -249,6 +273,7 @@ const PrintableDataExport = forwardRef<HTMLDivElement, PrintableDataExportProps>
     const renderAssets = (sectionData: Record<string, unknown>) => {
       const bankAccounts = (sectionData.bankAccounts as Array<Record<string, unknown>>)?.filter(a => a.institute) || [];
       const properties = (sectionData.properties as Array<Record<string, unknown>>)?.filter(p => p.address) || [];
+      const vehicles = (sectionData.vehicles as Array<Record<string, unknown>>)?.filter(v => v.brand || v.type || v.licensePlate) || [];
       const insurances = (sectionData.insurances as Array<Record<string, unknown>>)?.filter(i => i.type || i.company) || [];
       const valuables = (sectionData.valuables as Array<Record<string, unknown>>)?.filter(v => v.description) || [];
 
@@ -273,6 +298,24 @@ const PrintableDataExport = forwardRef<HTMLDivElement, PrintableDataExportProps>
                 <Card key={i}>
                   <div style={{ fontWeight: 600, color: '#1f2937', fontSize: '14px' }}>{String(prop.address)}</div>
                   {prop.type && <div style={{ fontSize: '12px', color: '#6b7280', marginTop: '4px' }}>{String(prop.type)}</div>}
+                </Card>
+              ))}
+            </div>
+          )}
+          {vehicles.length > 0 && (
+            <div style={{ marginBottom: '20px' }}>
+              <div style={{ fontSize: '14px', fontWeight: 600, color: '#374151', marginBottom: '12px' }}>{texts.vehicles}</div>
+              {vehicles.map((v, i) => (
+                <Card key={i}>
+                  <div style={{ fontWeight: 600, color: '#1f2937', fontSize: '14px' }}>
+                    {getLabel(texts.vehicleTypes, String(v.type || ''))}
+                    {v.brand && ` – ${v.brand}`}
+                    {v.model && ` ${v.model}`}
+                  </div>
+                  {v.licensePlate && <div style={{ fontSize: '12px', color: '#6b7280', marginTop: '4px' }}>{texts.licensePlate}: {String(v.licensePlate)}</div>}
+                  {v.location && <div style={{ fontSize: '12px', color: '#6b7280', marginTop: '2px' }}>{texts.vehicleLocation}: {String(v.location)}</div>}
+                  {v.estimatedValue && <div style={{ fontSize: '13px', color: '#059669', fontWeight: 500, marginTop: '4px' }}>{String(v.estimatedValue)}</div>}
+                  {v.documentsLocation && <div style={{ fontSize: '12px', color: '#6b7280', marginTop: '2px' }}>{texts.vehicleDocsLocation}: {String(v.documentsLocation)}</div>}
                 </Card>
               ))}
             </div>
@@ -302,7 +345,7 @@ const PrintableDataExport = forwardRef<HTMLDivElement, PrintableDataExportProps>
               ))}
             </div>
           )}
-          {bankAccounts.length === 0 && properties.length === 0 && insurances.length === 0 && valuables.length === 0 && (
+          {bankAccounts.length === 0 && properties.length === 0 && vehicles.length === 0 && insurances.length === 0 && valuables.length === 0 && (
             <div style={{ color: '#9ca3af', fontStyle: 'italic', fontSize: '13px' }}>{texts.noInfo}</div>
           )}
         </div>
