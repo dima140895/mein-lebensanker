@@ -1,6 +1,7 @@
 import { forwardRef } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { Anchor, User, Wallet, Globe, Heart, FileText, Phone } from 'lucide-react';
+import { formatWithCurrency } from '@/lib/currencyFormat';
 
 interface VorsorgeData {
   section_key: string;
@@ -712,7 +713,7 @@ const PrintableRelativesSummary = forwardRef<HTMLDivElement, PrintableRelativesS
                     <div key={i} style={cardStyle}>
                       {acc.institute && <div style={infoItemStyle}><span style={labelStyle}>{texts.institute}</span> <span style={valueStyle}>{String(acc.institute)}</span></div>}
                       {acc.purpose && <div style={infoItemStyle}><span style={labelStyle}>{texts.purpose}</span> <span style={valueStyle}>{String(acc.purpose)}</span></div>}
-                      {acc.balance && <div style={infoItemStyle}><span style={labelStyle}>{texts.balance}</span> <span style={valueStyle}>{String(acc.balance)}</span></div>}
+                      {acc.balance && <div style={infoItemStyle}><span style={labelStyle}>{texts.balance}</span> <span style={valueStyle}>{formatWithCurrency(acc.balance, acc.currency)}</span></div>}
                     </div>
                   ))}
                 </div>
@@ -725,9 +726,9 @@ const PrintableRelativesSummary = forwardRef<HTMLDivElement, PrintableRelativesS
                       {prop.address && <div style={infoItemStyle}><span style={labelStyle}>{texts.propertyAddress}</span> <span style={valueStyle}>{String(prop.address)}</span></div>}
                       {prop.type && <div style={infoItemStyle}><span style={labelStyle}>{texts.propertyType}</span> <span style={valueStyle}>{String(prop.type)}</span></div>}
                       {prop.ownership && <div style={infoItemStyle}><span style={labelStyle}>{texts.ownership}</span> <span style={valueStyle}>{getOwnershipLabel(String(prop.ownership), String(prop.ownershipOther || ''))}</span></div>}
-                      {prop.rentalIncome && <div style={infoItemStyle}><span style={labelStyle}>{texts.rentalIncome}</span> <span style={valueStyle}>{String(prop.rentalIncome)}</span></div>}
+                      {prop.rentalIncome && <div style={infoItemStyle}><span style={labelStyle}>{texts.rentalIncome}</span> <span style={valueStyle}>{formatWithCurrency(prop.rentalIncome, prop.rentalIncomeCurrency)}</span></div>}
                       {prop.financingStatus && <div style={infoItemStyle}><span style={labelStyle}>{texts.financingStatus}</span> <span style={valueStyle}>{getFinancingLabel(String(prop.financingStatus))}</span></div>}
-                      {prop.outstandingLoan && <div style={infoItemStyle}><span style={labelStyle}>{texts.outstandingLoan}</span> <span style={valueStyle}>{String(prop.outstandingLoan)}</span></div>}
+                      {prop.outstandingLoan && <div style={infoItemStyle}><span style={labelStyle}>{texts.outstandingLoan}</span> <span style={valueStyle}>{formatWithCurrency(prop.outstandingLoan, prop.outstandingLoanCurrency)}</span></div>}
                     </div>
                   ))}
                 </div>
@@ -742,7 +743,7 @@ const PrintableRelativesSummary = forwardRef<HTMLDivElement, PrintableRelativesS
                       {v.model && <div style={infoItemStyle}><span style={labelStyle}>{texts.model}</span> <span style={valueStyle}>{String(v.model)}</span></div>}
                       {v.licensePlate && <div style={infoItemStyle}><span style={labelStyle}>{texts.licensePlate}</span> <span style={valueStyle}>{String(v.licensePlate)}</span></div>}
                       {v.location && <div style={infoItemStyle}><span style={labelStyle}>{texts.vehicleLocation}</span> <span style={valueStyle}>{String(v.location)}</span></div>}
-                      {v.estimatedValue && <div style={infoItemStyle}><span style={labelStyle}>{texts.estimatedValue}</span> <span style={valueStyle}>{String(v.estimatedValue)}</span></div>}
+                      {v.estimatedValue && <div style={infoItemStyle}><span style={labelStyle}>{texts.estimatedValue}</span> <span style={valueStyle}>{formatWithCurrency(v.estimatedValue, v.estimatedValueCurrency)}</span></div>}
                       {v.documentsLocation && <div style={infoItemStyle}><span style={labelStyle}>{texts.vehicleDocsLocation}</span> <span style={valueStyle}>{String(v.documentsLocation)}</span></div>}
                     </div>
                   ))}
@@ -756,7 +757,7 @@ const PrintableRelativesSummary = forwardRef<HTMLDivElement, PrintableRelativesS
                       {ins.type && <div style={infoItemStyle}><span style={labelStyle}>{texts.insuranceType}</span> <span style={valueStyle}>{ins.type === 'other' && ins.typeOther ? String(ins.typeOther) : getInsuranceTypeLabel(String(ins.type))}</span></div>}
                       {ins.company && <div style={infoItemStyle}><span style={labelStyle}>{texts.insuranceCompany}</span> <span style={valueStyle}>{ins.company === 'other' && ins.companyOther ? String(ins.companyOther) : getCompanyLabel(String(ins.company))}</span></div>}
                       {ins.policyNumber && <div style={infoItemStyle}><span style={labelStyle}>{texts.policyNumber}</span> <span style={valueStyle}>{String(ins.policyNumber)}</span></div>}
-                      {ins.surrenderValue && <div style={infoItemStyle}><span style={labelStyle}>{texts.surrenderValue}</span> <span style={valueStyle}>{String(ins.surrenderValue)}</span></div>}
+                      {ins.surrenderValue && <div style={infoItemStyle}><span style={labelStyle}>{texts.surrenderValue}</span> <span style={valueStyle}>{formatWithCurrency(ins.surrenderValue, ins.surrenderValueCurrency)}</span></div>}
                     </div>
                   ))}
                 </div>
