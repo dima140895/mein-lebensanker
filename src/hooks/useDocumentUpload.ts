@@ -15,6 +15,8 @@ interface UploadedDocument {
 interface UseDocumentUploadOptions {
   onUploadComplete?: (documents: UploadedDocument[]) => void;
   maxFileSizeMB?: number;
+  maxDocsPerCategory?: number;
+  maxTotalStorageMB?: number;
   allowedTypes?: string[];
 }
 
@@ -26,17 +28,16 @@ const ALLOWED_EXTENSIONS: Record<string, string[]> = {
   'image/webp': ['.webp']
 };
 
+const DOCUMENT_TYPES = ['testament', 'power-of-attorney', 'living-will', 'insurance', 'property', 'other'];
+
 // Validate filename is safe (no path traversal, valid characters)
 const isValidFilename = (filename: string): boolean => {
-  // Check for path traversal attempts
   if (filename.includes('..') || filename.includes('/') || filename.includes('\\')) {
     return false;
   }
-  // Check for null bytes or other control characters
   if (/[\x00-\x1f\x7f]/.test(filename)) {
     return false;
   }
-  // Must have a file extension
   if (!filename.includes('.')) {
     return false;
   }
@@ -61,8 +62,72 @@ export const useDocumentUpload = (options: UseDocumentUploadOptions = {}) => {
   const {
     onUploadComplete,
     maxFileSizeMB = 10,
+    maxDocsPerCategory = 3,
+    maxTotalStorageMB = 50,
     allowedTypes = ['application/pdf', 'image/jpeg', 'image/png', 'image/webp']
   } = options;
+
+  /** Calculate total storage used across ALL profiles for this user */
+  const getTotalStorageUsed = useCallback(async (): Promise<number> => {
+    if (!user) return 0;
+
+    let totalBytes = 0;
+    try {
+      // List all profile folders for this user
+      const { data: profileFolders } = await supabase.storage
+        .from('user-documents')
+        .list(user.id);
+
+      if (!profileFolders) return 0;
+
+      for (const folder of profileFolders) {
+        if (folder.id === null) {
+          // It's a folder – list document type subfolders
+          for (const docType of DOCUMENT_TYPES) {
+            const folderPath = `${user.id}/${folder.name}/${docType}`;
+            const { data: files } = await supabase.storage
+              .from('user-documents')
+              .list(folderPath);
+
+            if (files) {
+              for (const file of files) {
+                if (file.name !== '.emptyFolderPlaceholder' && file.id !== null && !file.name.startsWith('.')) {
+                  totalBytes += file.metadata?.size || 0;
+                }
+              }
+            }
+          }
+        }
+      }
+    } catch (error) {
+      logger.error('Error calculating storage usage:', error);
+    }
+
+    return totalBytes;
+  }, [user]);
+
+  /** Count documents in a specific category for the active profile */
+  const getCategoryDocCount = useCallback(async (documentType: string): Promise<number> => {
+    if (!user || !activeProfileId) return 0;
+
+    try {
+      const folderPath = `${user.id}/${activeProfileId}/${documentType}`;
+      const { data: files } = await supabase.storage
+        .from('user-documents')
+        .list(folderPath);
+
+      if (!files) return 0;
+
+      return files.filter(f =>
+        f.name !== '.emptyFolderPlaceholder' &&
+        f.id !== null &&
+        !f.name.startsWith('.')
+      ).length;
+    } catch (error) {
+      logger.error('Error counting category docs:', error);
+      return 0;
+    }
+  }, [user, activeProfileId]);
 
   const uploadFile = useCallback(async (file: File, documentType: string): Promise<UploadedDocument | null> => {
     if (!user) {
@@ -96,7 +161,23 @@ export const useDocumentUpload = (options: UseDocumentUploadOptions = {}) => {
     // Validate file size
     const maxSizeBytes = maxFileSizeMB * 1024 * 1024;
     if (file.size > maxSizeBytes) {
-      toast.error(`Datei zu groß. Maximum: ${maxFileSizeMB}MB`);
+      toast.error(`Datei zu groß. Maximum: ${maxFileSizeMB} MB`);
+      return null;
+    }
+
+    // Check category limit
+    const categoryCount = await getCategoryDocCount(documentType);
+    if (categoryCount >= maxDocsPerCategory) {
+      toast.error(`Maximal ${maxDocsPerCategory} Dokumente pro Kategorie erlaubt. Bitte lösche zuerst ein bestehendes Dokument.`);
+      return null;
+    }
+
+    // Check total storage limit
+    const totalUsed = await getTotalStorageUsed();
+    const maxTotalBytes = maxTotalStorageMB * 1024 * 1024;
+    if (totalUsed + file.size > maxTotalBytes) {
+      const usedMB = (totalUsed / (1024 * 1024)).toFixed(1);
+      toast.error(`Speicherlimit erreicht (${usedMB} / ${maxTotalStorageMB} MB). Bitte lösche zuerst bestehende Dokumente.`);
       return null;
     }
 
@@ -104,13 +185,11 @@ export const useDocumentUpload = (options: UseDocumentUploadOptions = {}) => {
     setUploadProgress(0);
 
     try {
-      // Create unique file path: userId/profileId/documentType/timestamp-filename
       const timestamp = Date.now();
-      // Sanitize filename: only allow alphanumeric, dots, hyphens, underscores
       const sanitizedFileName = file.name
         .replace(/[^a-zA-Z0-9.-]/g, '_')
-        .replace(/\.{2,}/g, '.') // Prevent multiple dots
-        .substring(0, 100); // Limit filename length
+        .replace(/\.{2,}/g, '.')
+        .substring(0, 100);
       const filePath = `${user.id}/${activeProfileId}/${documentType}/${timestamp}-${sanitizedFileName}`;
 
       const { data, error } = await supabase.storage
@@ -141,12 +220,11 @@ export const useDocumentUpload = (options: UseDocumentUploadOptions = {}) => {
       setUploading(false);
       setUploadProgress(0);
     }
-  }, [user, activeProfileId, allowedTypes, maxFileSizeMB]);
+  }, [user, activeProfileId, allowedTypes, maxFileSizeMB, maxDocsPerCategory, maxTotalStorageMB, getCategoryDocCount, getTotalStorageUsed]);
 
   const deleteFile = useCallback(async (filePath: string): Promise<boolean> => {
     if (!user) return false;
 
-    // Security: Validate file path belongs to user
     if (!filePath.startsWith(`${user.id}/`)) {
       logger.error('Unauthorized delete attempt');
       return false;
@@ -171,7 +249,6 @@ export const useDocumentUpload = (options: UseDocumentUploadOptions = {}) => {
   const getFileUrl = useCallback(async (filePath: string): Promise<string | null> => {
     if (!user) return null;
 
-    // Security: Validate file path belongs to user
     if (!filePath.startsWith(`${user.id}/`)) {
       logger.error('Unauthorized URL access attempt');
       return null;
@@ -180,7 +257,7 @@ export const useDocumentUpload = (options: UseDocumentUploadOptions = {}) => {
     try {
       const { data, error } = await supabase.storage
         .from('user-documents')
-        .createSignedUrl(filePath, 3600); // 1 hour expiry
+        .createSignedUrl(filePath, 3600);
 
       if (error) throw error;
       return data.signedUrl;
@@ -194,7 +271,6 @@ export const useDocumentUpload = (options: UseDocumentUploadOptions = {}) => {
     if (!user || !activeProfileId) return [];
 
     try {
-      // Profile-specific path: userId/profileId/documentType
       const folderPath = documentType 
         ? `${user.id}/${activeProfileId}/${documentType}` 
         : `${user.id}/${activeProfileId}`;
@@ -205,8 +281,6 @@ export const useDocumentUpload = (options: UseDocumentUploadOptions = {}) => {
 
       if (error) throw error;
 
-      // Filter out placeholder files and folders (folders have id: null)
-      // Only include actual files that have a valid id
       return (data || [])
         .filter(file => 
           file.name !== '.emptyFolderPlaceholder' && 
@@ -231,6 +305,10 @@ export const useDocumentUpload = (options: UseDocumentUploadOptions = {}) => {
     getFileUrl,
     listFiles,
     uploading,
-    uploadProgress
+    uploadProgress,
+    getCategoryDocCount,
+    getTotalStorageUsed,
+    maxDocsPerCategory,
+    maxTotalStorageMB,
   };
 };
