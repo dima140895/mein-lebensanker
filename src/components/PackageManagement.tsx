@@ -189,9 +189,9 @@ const PackageManagement = () => {
       >
         <Card className="border-2 border-primary bg-primary/5">
           <CardHeader>
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
               <div className="flex items-center gap-4">
-                <div className="h-14 w-14 rounded-xl bg-primary text-primary-foreground flex items-center justify-center">
+                <div className="h-14 w-14 rounded-xl bg-primary text-primary-foreground flex items-center justify-center flex-shrink-0">
                   <CurrentIcon className="h-7 w-7" />
                 </div>
                 <div>
@@ -203,7 +203,7 @@ const PackageManagement = () => {
                   </CardDescription>
                 </div>
               </div>
-              <Badge variant="default" className="text-sm px-3 py-1">
+              <Badge variant="default" className="text-sm px-3 py-1 self-start sm:self-auto">
                 {texts.currentPackage}
               </Badge>
             </div>
