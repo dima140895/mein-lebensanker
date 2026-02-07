@@ -87,6 +87,22 @@ const PrintableDataExport = forwardRef<HTMLDivElement, PrintableDataExportProps>
         personalContacts: 'Persönliche Kontakte',
         professionalContacts: 'Fachliche Kontakte',
         notes: 'Hinweise',
+        housingSituation: 'Wohnsituation',
+        housingRent: 'Miete',
+        housingOwn: 'Eigentum',
+        rentAmount: 'Miethöhe',
+        landlordName: 'Vermieter',
+        landlordPhone: 'Vermieter Telefon',
+        landlordEmail: 'Vermieter E-Mail',
+        landlordAddress: 'Vermieter Adresse',
+        liabilities: 'Verbindlichkeiten',
+        creditor: 'Gläubiger',
+        totalAmount: 'Gesamtbetrag',
+        monthlyPayment: 'Monatliche Rate',
+        liabilityTypes: {
+          loan: 'Kredit', mortgage: 'Hypothek', 'credit-card': 'Kreditkarte',
+          leasing: 'Leasing', private: 'Privatdarlehen', other: 'Sonstiges',
+        },
         disclaimer: 'Diese Übersicht dient ausschließlich der persönlichen Orientierung und ersetzt keine rechtliche, notarielle, medizinische oder steuerliche Beratung.',
         footer: 'mein-lebensanker.lovable.app',
         insuranceTypes: {
@@ -166,6 +182,22 @@ const PrintableDataExport = forwardRef<HTMLDivElement, PrintableDataExportProps>
         personalContacts: 'Personal Contacts',
         professionalContacts: 'Professional Contacts',
         notes: 'Notes',
+        housingSituation: 'Housing Situation',
+        housingRent: 'Renting',
+        housingOwn: 'Owned',
+        rentAmount: 'Monthly Rent',
+        landlordName: 'Landlord',
+        landlordPhone: 'Landlord Phone',
+        landlordEmail: 'Landlord Email',
+        landlordAddress: 'Landlord Address',
+        liabilities: 'Liabilities',
+        creditor: 'Creditor',
+        totalAmount: 'Total Amount',
+        monthlyPayment: 'Monthly Payment',
+        liabilityTypes: {
+          loan: 'Loan', mortgage: 'Mortgage', 'credit-card': 'Credit Card',
+          leasing: 'Leasing', private: 'Private Loan', other: 'Other',
+        },
         disclaimer: 'This overview is for personal orientation only and does not replace legal, notarial, medical, or tax advice.',
         footer: 'mein-lebensanker.lovable.app',
         insuranceTypes: {
@@ -254,6 +286,23 @@ const PrintableDataExport = forwardRef<HTMLDivElement, PrintableDataExportProps>
         {renderValue(texts.birthDate, sectionData.birthDate)}
         {renderValue(texts.address, sectionData.address)}
         {renderValue(texts.phone, sectionData.phone)}
+        {sectionData.housingType && (
+          <div style={{ marginTop: '16px' }}>
+            <div style={{ fontSize: '14px', fontWeight: 600, color: '#374151', marginBottom: '8px' }}>{texts.housingSituation}</div>
+            <div style={{ fontSize: '13px', color: '#4b5563', padding: '4px 0' }}>
+              {sectionData.housingType === 'rent' ? texts.housingRent : texts.housingOwn}
+            </div>
+            {sectionData.housingType === 'rent' && (
+              <Card>
+                {sectionData.rentAmount && renderValue(texts.rentAmount, formatWithCurrency(sectionData.rentAmount, sectionData.rentCurrency))}
+                {sectionData.landlordName && renderValue(texts.landlordName, sectionData.landlordName)}
+                {sectionData.landlordPhone && renderValue(texts.landlordPhone, sectionData.landlordPhone)}
+                {sectionData.landlordEmail && renderValue(texts.landlordEmail, sectionData.landlordEmail)}
+                {sectionData.landlordAddress && renderValue(texts.landlordAddress, sectionData.landlordAddress)}
+              </Card>
+            )}
+          </div>
+        )}
         {(sectionData.trustedPerson1 || sectionData.trustedPerson2) && (
           <div style={{ marginTop: '16px' }}>
             <div style={{ fontSize: '14px', fontWeight: 600, color: '#374151', marginBottom: '8px' }}>{texts.trustedPersons}</div>
@@ -277,6 +326,7 @@ const PrintableDataExport = forwardRef<HTMLDivElement, PrintableDataExportProps>
       const vehicles = (sectionData.vehicles as Array<Record<string, unknown>>)?.filter(v => v.brand || v.type || v.licensePlate) || [];
       const insurances = (sectionData.insurances as Array<Record<string, unknown>>)?.filter(i => i.type || i.company) || [];
       const valuables = (sectionData.valuables as Array<Record<string, unknown>>)?.filter(v => v.description) || [];
+      const liabilities = (sectionData.liabilities as Array<Record<string, unknown>>)?.filter(l => l.creditor || l.type) || [];
 
       return (
         <div style={{ padding: '16px 20px', background: 'white', border: '1px solid #e5e5e5', borderTop: 'none', borderRadius: '0 0 8px 8px' }}>
@@ -336,7 +386,7 @@ const PrintableDataExport = forwardRef<HTMLDivElement, PrintableDataExportProps>
             </div>
           )}
           {valuables.length > 0 && (
-            <div>
+            <div style={{ marginBottom: '20px' }}>
               <div style={{ fontSize: '14px', fontWeight: 600, color: '#374151', marginBottom: '12px' }}>{texts.valuables}</div>
               {valuables.map((val, i) => (
                 <Card key={i}>
@@ -346,7 +396,23 @@ const PrintableDataExport = forwardRef<HTMLDivElement, PrintableDataExportProps>
               ))}
             </div>
           )}
-          {bankAccounts.length === 0 && properties.length === 0 && vehicles.length === 0 && insurances.length === 0 && valuables.length === 0 && (
+          {liabilities.length > 0 && (
+            <div style={{ marginBottom: '20px' }}>
+              <div style={{ fontSize: '14px', fontWeight: 600, color: '#374151', marginBottom: '12px' }}>{texts.liabilities}</div>
+              {liabilities.map((l, i) => (
+                <Card key={i}>
+                  <div style={{ fontWeight: 600, color: '#1f2937', fontSize: '14px' }}>
+                    {getLabel(texts.liabilityTypes, String(l.type || ''))}
+                    {l.creditor && ` – ${l.creditor}`}
+                  </div>
+                  {l.amount && <div style={{ fontSize: '13px', color: '#dc2626', fontWeight: 500, marginTop: '4px' }}>{texts.totalAmount}: {formatWithCurrency(l.amount, l.amountCurrency)}</div>}
+                  {l.monthlyPayment && <div style={{ fontSize: '12px', color: '#6b7280', marginTop: '2px' }}>{texts.monthlyPayment}: {formatWithCurrency(l.monthlyPayment, l.monthlyPaymentCurrency)}</div>}
+                  {l.notes && <div style={{ fontSize: '12px', color: '#6b7280', marginTop: '2px' }}>{String(l.notes)}</div>}
+                </Card>
+              ))}
+            </div>
+          )}
+          {bankAccounts.length === 0 && properties.length === 0 && vehicles.length === 0 && insurances.length === 0 && valuables.length === 0 && liabilities.length === 0 && (
             <div style={{ color: '#9ca3af', fontStyle: 'italic', fontSize: '13px' }}>{texts.noInfo}</div>
           )}
         </div>

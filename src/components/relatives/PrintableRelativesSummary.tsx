@@ -167,6 +167,22 @@ const PrintableRelativesSummary = forwardRef<HTMLDivElement, PrintableRelativesS
         notes: 'Hinweise',
         infoLabel: 'Info',
         reactionLabel: 'Reaktion',
+        housingSituation: 'Wohnsituation',
+        housingRent: 'Miete',
+        housingOwn: 'Eigentum',
+        rentAmount: 'Miethöhe',
+        landlordName: 'Vermieter',
+        landlordPhone: 'Vermieter Telefon',
+        landlordEmail: 'Vermieter E-Mail',
+        landlordAddress: 'Vermieter Adresse',
+        liabilities: 'Verbindlichkeiten',
+        creditor: 'Gläubiger',
+        totalAmount: 'Gesamtbetrag',
+        monthlyPayment: 'Monatliche Rate',
+        liabilityTypes: {
+          loan: 'Kredit', mortgage: 'Hypothek', 'credit-card': 'Kreditkarte',
+          leasing: 'Leasing', private: 'Privatdarlehen', other: 'Sonstiges',
+        },
         disclaimer: 'Diese Übersicht dient ausschließlich der persönlichen Orientierung und hat keinerlei rechtliche Wirkung. Sie ersetzt keine rechtliche, notarielle, medizinische oder steuerliche Beratung.',
         footerCopyright: `© ${new Date().getFullYear()} Mein Lebensanker`,
         footerImprint: 'Impressum',
@@ -306,6 +322,22 @@ const PrintableRelativesSummary = forwardRef<HTMLDivElement, PrintableRelativesS
         notes: 'Notes',
         infoLabel: 'Info',
         reactionLabel: 'Reaction',
+        housingSituation: 'Housing Situation',
+        housingRent: 'Renting',
+        housingOwn: 'Owned',
+        rentAmount: 'Monthly Rent',
+        landlordName: 'Landlord',
+        landlordPhone: 'Landlord Phone',
+        landlordEmail: 'Landlord Email',
+        landlordAddress: 'Landlord Address',
+        liabilities: 'Liabilities',
+        creditor: 'Creditor',
+        totalAmount: 'Total Amount',
+        monthlyPayment: 'Monthly Payment',
+        liabilityTypes: {
+          loan: 'Loan', mortgage: 'Mortgage', 'credit-card': 'Credit Card',
+          leasing: 'Leasing', private: 'Private Loan', other: 'Other',
+        },
         disclaimer: 'This overview is for personal orientation only and has no legal effect. It does not replace legal, notarial, medical, or tax advice.',
         footerCopyright: `© ${new Date().getFullYear()} Mein Lebensanker`,
         footerImprint: 'Imprint',
@@ -603,6 +635,24 @@ const PrintableRelativesSummary = forwardRef<HTMLDivElement, PrintableRelativesS
               {renderInfoItem(texts.bloodType, sectionData.bloodType)}
               {renderInfoItem(texts.preExistingConditions, sectionData.preExistingConditions)}
 
+              {sectionData.housingType && (
+                <div style={subsectionStyle}>
+                  <div style={subsectionTitleStyle}>{texts.housingSituation}</div>
+                  <div style={{ fontSize: '13px', color: '#4b5563', padding: '4px 0' }}>
+                    {sectionData.housingType === 'rent' ? texts.housingRent : texts.housingOwn}
+                  </div>
+                  {sectionData.housingType === 'rent' && (
+                    <div style={cardStyle}>
+                      {sectionData.rentAmount && renderInfoItem(texts.rentAmount, formatWithCurrency(sectionData.rentAmount, sectionData.rentCurrency))}
+                      {sectionData.landlordName && renderInfoItem(texts.landlordName, sectionData.landlordName)}
+                      {sectionData.landlordPhone && renderInfoItem(texts.landlordPhone, sectionData.landlordPhone)}
+                      {sectionData.landlordEmail && renderInfoItem(texts.landlordEmail, sectionData.landlordEmail)}
+                      {sectionData.landlordAddress && renderInfoItem(texts.landlordAddress, sectionData.landlordAddress)}
+                    </div>
+                  )}
+                </div>
+              )}
+
               {Array.isArray(sectionData.medications) && (sectionData.medications as Array<Record<string, unknown>>).some(m =>
                 Object.values(m || {}).some(v => typeof v === 'string' ? v.trim() !== '' : v != null)
               ) && (
@@ -763,7 +813,7 @@ const PrintableRelativesSummary = forwardRef<HTMLDivElement, PrintableRelativesS
                 </div>
               )}
               {valuables.length > 0 && (
-                <div>
+                <div style={{ marginBottom: '20px' }}>
                   <div style={subsectionTitleStyle}>{texts.valuables}</div>
                   {valuables.map((val, i) => (
                     <div key={i} style={cardStyle}>
@@ -773,6 +823,31 @@ const PrintableRelativesSummary = forwardRef<HTMLDivElement, PrintableRelativesS
                   ))}
                 </div>
               )}
+              {(() => {
+                const liabilities = (sectionData.liabilities as Array<Record<string, unknown>>)?.filter(l => 
+                  (l.creditor && typeof l.creditor === 'string' && l.creditor.trim()) ||
+                  (l.type && typeof l.type === 'string' && l.type.trim())
+                ) || [];
+                if (liabilities.length === 0) return null;
+                const getLiabilityTypeLabel = (type: string): string => {
+                  const key = type as keyof typeof texts.liabilityTypes;
+                  return texts.liabilityTypes[key] || type;
+                };
+                return (
+                  <div style={{ marginBottom: '20px' }}>
+                    <div style={subsectionTitleStyle}>{texts.liabilities}</div>
+                    {liabilities.map((l, i) => (
+                      <div key={i} style={cardStyle}>
+                        {l.type && <div style={infoItemStyle}><span style={labelStyle}>{texts.liabilities}</span> <span style={valueStyle}>{getLiabilityTypeLabel(String(l.type))}</span></div>}
+                        {l.creditor && <div style={infoItemStyle}><span style={labelStyle}>{texts.creditor}</span> <span style={valueStyle}>{String(l.creditor)}</span></div>}
+                        {l.amount && <div style={infoItemStyle}><span style={labelStyle}>{texts.totalAmount}</span> <span style={{ ...valueStyle, color: '#dc2626' }}>{formatWithCurrency(l.amount, l.amountCurrency)}</span></div>}
+                        {l.monthlyPayment && <div style={infoItemStyle}><span style={labelStyle}>{texts.monthlyPayment}</span> <span style={valueStyle}>{formatWithCurrency(l.monthlyPayment, l.monthlyPaymentCurrency)}</span></div>}
+                        {l.notes && <div style={infoItemStyle}><span style={labelStyle}>{texts.notes}</span> <span style={valueStyle}>{String(l.notes)}</span></div>}
+                      </div>
+                    ))}
+                  </div>
+                );
+              })()}
               {renderInfoItem(texts.notes, sectionData.notes)}
             </>
           );
