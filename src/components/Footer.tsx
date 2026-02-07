@@ -35,7 +35,7 @@ const Footer = () => {
 
   return (
     <footer className="border-t border-border bg-card/50 py-4 md:py-6">
-      <div className="container mx-auto px-8 sm:px-4">
+      <div className="container mx-auto px-6 sm:px-4">
         <div className="flex flex-col items-center gap-4 md:gap-6">
           {/* Primary Links */}
           <nav className="flex flex-wrap items-center justify-center gap-3 md:gap-6">
