@@ -273,6 +273,7 @@ const PersonalForm = () => {
             value={data.birthDate}
             onChange={(e) => handleChange('birthDate', e.target.value)}
             onBlur={handleBlur}
+            className="w-full max-w-full box-border"
           />
         </div>
       </div>
