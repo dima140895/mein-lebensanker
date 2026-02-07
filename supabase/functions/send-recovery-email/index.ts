@@ -59,6 +59,17 @@ Deno.serve(async (req) => {
     const email = String(body.email).toLowerCase().trim();
     const redirectTo = String(body.redirectTo);
 
+    // Validate redirectTo against allowed origins to prevent phishing
+    const isAllowedRedirect = ALLOWED_ORIGINS.some((o) =>
+      redirectTo.startsWith(o.replace(/\/$/, ""))
+    );
+    if (!isAllowedRedirect) {
+      return new Response(JSON.stringify({ error: "Invalid redirect URL" }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     // Validate email format
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       return new Response(JSON.stringify({ error: "Invalid email" }), {
