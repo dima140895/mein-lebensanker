@@ -56,11 +56,29 @@ const ResetPassword = () => {
   const texts = t[language];
 
   useEffect(() => {
-    // Check if we have a valid recovery session
     const checkSession = async () => {
+      // Check if there's a token_hash in URL (from our custom recovery email)
+      const tokenHash = searchParams.get('token_hash');
+      const type = searchParams.get('type');
+      
+      if (tokenHash && type === 'recovery') {
+        // Verify the token via Supabase
+        const { error } = await supabase.auth.verifyOtp({
+          token_hash: tokenHash,
+          type: 'recovery',
+        });
+        
+        if (!error) {
+          setIsValidSession(true);
+          setChecking(false);
+          return;
+        } else {
+          console.error('Recovery token verification failed:', error.message);
+        }
+      }
+
+      // Fallback: check if we already have a valid session (e.g. from action_link)
       const { data: { session } } = await supabase.auth.getSession();
-      // The user arrives here after clicking the reset link in their email
-      // Supabase automatically handles the token and creates a session
       if (session) {
         setIsValidSession(true);
       }
@@ -69,7 +87,7 @@ const ResetPassword = () => {
 
     checkSession();
 
-    // Listen for auth state changes (recovery flow)
+    // Listen for auth state changes (recovery flow via action_link)
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         if (event === 'PASSWORD_RECOVERY') {
@@ -80,7 +98,7 @@ const ResetPassword = () => {
     );
 
     return () => subscription.unsubscribe();
-  }, []);
+  }, [searchParams]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

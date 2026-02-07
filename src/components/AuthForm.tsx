@@ -171,8 +171,13 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange }: Auth
     setLoading(true);
 
     try {
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/reset-password`,
+      // Use custom edge function to send recovery email via Resend
+      // (built-in auth emails don't reliably deliver to all providers like web.de)
+      const { error } = await supabase.functions.invoke('send-recovery-email', {
+        body: {
+          email,
+          redirectTo: `${window.location.origin}/reset-password`,
+        },
       });
       
       if (error) throw error;
