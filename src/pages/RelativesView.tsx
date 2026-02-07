@@ -346,7 +346,7 @@ const RelativesViewContent = () => {
 
   if (loading) {
     return (
-      <div className="container mx-auto px-4 py-12">
+      <div className="container mx-auto px-6 sm:px-4 py-12">
         <div className="max-w-3xl mx-auto space-y-6">
           <Skeleton className="h-8 w-64 mx-auto" />
           <Skeleton className="h-24 w-full" />
@@ -359,7 +359,7 @@ const RelativesViewContent = () => {
 
   if (noPinConfigured) {
     return (
-      <div className="container mx-auto px-4 py-12">
+      <div className="container mx-auto px-6 sm:px-4 py-12">
         <div className="max-w-md mx-auto text-center">
           <div className="rounded-xl bg-amber-light/30 border border-amber/20 p-8">
             <Shield className="h-12 w-12 text-amber mx-auto mb-4" />
@@ -372,7 +372,7 @@ const RelativesViewContent = () => {
 
   if (requiresPIN && !pinVerified) {
     return (
-      <div className="container mx-auto px-4 py-12">
+      <div className="container mx-auto px-6 sm:px-4 py-12">
         <PINEntry 
           onSubmit={handlePINSubmit} 
           language={language} 
@@ -385,7 +385,7 @@ const RelativesViewContent = () => {
 
   if (requiresDecryption && encryptionInfo?.encrypted_password_recovery) {
     return (
-      <div className="container mx-auto px-4 py-12">
+      <div className="container mx-auto px-6 sm:px-4 py-12">
         <RecoveryKeyEntry
           language={language}
           encryptedPasswordRecovery={encryptionInfo.encrypted_password_recovery}
@@ -397,7 +397,7 @@ const RelativesViewContent = () => {
 
   if (error) {
     return (
-      <div className="container mx-auto px-4 py-12">
+      <div className="container mx-auto px-6 sm:px-4 py-12">
         <div className="max-w-md mx-auto text-center">
           <div className="rounded-xl bg-amber-light/30 border border-amber/20 p-8">
             <Shield className="h-12 w-12 text-amber mx-auto mb-4" />
@@ -409,7 +409,7 @@ const RelativesViewContent = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-6 sm:px-4 py-8">
       <div className="max-w-3xl mx-auto space-y-8">
         {/* Top Disclaimer */}
         <motion.div

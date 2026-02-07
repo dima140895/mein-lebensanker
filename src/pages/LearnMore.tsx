@@ -164,7 +164,7 @@ const LearnMore = () => {
       <main className="flex-1">
         {/* Hero Section with Slideshow */}
         <section className="relative bg-gradient-to-b from-sage-light/30 to-background py-12 md:py-20">
-          <div className="container mx-auto px-4">
+          <div className="container mx-auto px-6 sm:px-4">
             <motion.button
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -208,7 +208,7 @@ const LearnMore = () => {
 
         {/* Key Points Grid */}
         <section className="py-20">
-          <div className="container mx-auto px-4">
+          <div className="container mx-auto px-6 sm:px-4">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -257,7 +257,7 @@ const LearnMore = () => {
 
         {/* What This Tool Is NOT */}
         <section className="bg-muted/30 py-20">
-          <div className="container mx-auto px-4">
+          <div className="container mx-auto px-6 sm:px-4">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -298,7 +298,7 @@ const LearnMore = () => {
 
         {/* Encryption Security Section */}
         <section className="py-20">
-          <div className="container mx-auto px-4">
+          <div className="container mx-auto px-6 sm:px-4">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -487,7 +487,7 @@ const LearnMore = () => {
 
         {/* FAQ Section */}
         <section className="py-20">
-          <div className="container mx-auto px-4">
+          <div className="container mx-auto px-6 sm:px-4">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -531,7 +531,7 @@ const LearnMore = () => {
 
         {/* CTA Section */}
         <section className="bg-gradient-to-b from-background to-sage-light/20 py-20">
-          <div className="container mx-auto px-4 text-center">
+          <div className="container mx-auto px-6 sm:px-4 text-center">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
