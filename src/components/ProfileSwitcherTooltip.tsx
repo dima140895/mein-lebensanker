@@ -23,11 +23,11 @@ export const ProfileSwitcherTooltip: React.FC<ProfileSwitcherTooltipProps> = ({ 
 
   const t = {
     de: {
-      message: 'Hier kannst Du zwischen Deinen Profilen wechseln – wie in einem Tresor mit verschiedenen Fächern.',
+      message: 'Du kannst jederzeit zwischen Deinen Profilen wechseln – wie in einem Tresor mit verschiedenen Fächern.',
       dismiss: 'Verstanden',
     },
     en: {
-      message: 'Here you can switch between your profiles – like a safe with different compartments.',
+      message: 'You can switch between your profiles at any time – like a safe with different compartments.',
       dismiss: 'Got it',
     },
   };
