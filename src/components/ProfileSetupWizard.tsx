@@ -460,6 +460,14 @@ const ProfileSetupWizard = ({ maxProfiles, packageType, onAllProfilesExist }: Pr
       </div>
 
       {/* Form */}
+      <form onSubmit={(e) => {
+        e.preventDefault();
+        if (currentStep < profiles.length - 1) {
+          handleNext();
+        } else {
+          handleFinish();
+        }
+      }}>
       <AnimatePresence mode="wait">
         <motion.div
           key={currentStep}
@@ -522,6 +530,7 @@ const ProfileSetupWizard = ({ maxProfiles, packageType, onAllProfilesExist }: Pr
       {/* Navigation */}
       <div className="flex justify-between items-center mt-6">
         <Button
+          type="button"
           variant="ghost"
           onClick={handleBack}
           disabled={currentStep <= existingProfileCount || currentStep === 0}
@@ -532,12 +541,12 @@ const ProfileSetupWizard = ({ maxProfiles, packageType, onAllProfilesExist }: Pr
         </Button>
 
         {currentStep < totalProfiles - 1 ? (
-          <Button onClick={handleNext} disabled={!isCurrentProfileValid()}>
+          <Button type="submit" disabled={!isCurrentProfileValid()}>
             {texts.next}
             <ArrowRight className="h-4 w-4 ml-2" />
           </Button>
         ) : (
-          <Button onClick={handleFinish} disabled={saving || !isCurrentProfileValid()}>
+          <Button type="submit" disabled={saving || !isCurrentProfileValid()}>
             {saving ? (
               <>
                 <Loader2 className="h-4 w-4 mr-2 animate-spin" />
@@ -552,6 +561,7 @@ const ProfileSetupWizard = ({ maxProfiles, packageType, onAllProfilesExist }: Pr
           </Button>
         )}
       </div>
+      </form>
 
       {/* Skip option */}
       <div className="text-center mt-6">
