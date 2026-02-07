@@ -154,10 +154,16 @@ export function usePdfExport({
         for (let i = 0; i < sectionData.length; i++) {
           const { canvas, heightMM, forcePageBreak } = sectionData[i];
 
-          // Force page break for new profiles (except if we're already at page top)
-          if (forcePageBreak && currentY > MARGIN_MM) {
-            pdf.addPage();
-            currentY = MARGIN_MM;
+          // Force page break for new profiles
+          if (forcePageBreak) {
+            if (currentY > MARGIN_MM) {
+              pdf.addPage();
+              currentY = MARGIN_MM;
+            }
+            // Skip rendering tiny page-break marker elements (they're just signals)
+            if (heightMM < 2) {
+              continue;
+            }
           }
 
           const remainingSpace = A4_HEIGHT_MM - MARGIN_MM - currentY;
