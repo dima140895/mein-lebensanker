@@ -52,7 +52,7 @@ const WhatIsThisTool = () => {
 
   return (
     <section className="relative pt-24 md:pt-32 pb-12 md:pb-16">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-8 sm:px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
