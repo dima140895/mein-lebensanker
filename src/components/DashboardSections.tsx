@@ -6,7 +6,7 @@ import {
   Heart, 
   FileText, 
   Phone,
-  Info,
+  
   Compass,
   MessageCircle,
   Link2,
@@ -67,14 +67,6 @@ const sections = [
 ];
 
 const infoSections = [
-  { 
-    icon: Info, 
-    key: 'about', 
-    gradient: 'from-violet-100 to-violet-50',
-    iconBg: 'bg-violet-500/10',
-    iconColor: 'text-violet-600',
-    accent: 'group-hover:shadow-violet-500/20'
-  },
   { 
     icon: Compass, 
     key: 'guidance', 
