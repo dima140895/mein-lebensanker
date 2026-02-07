@@ -232,3 +232,10 @@
 .hover-lift:hover {
   transform: translateY(-4px);
 }
+
+/* Prevent iOS zoom on input focus – ensure inputs are at least 16px */
+@media screen and (max-width: 768px) {
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+}
