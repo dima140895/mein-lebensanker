@@ -44,7 +44,7 @@ serve(async (req: Request): Promise<Response> => {
       });
     }
 
-    const { email, confirmationUrl, userName } = await req.json();
+    const { email, confirmationUrl } = await req.json();
 
     if (!email || !confirmationUrl) {
       return new Response(JSON.stringify({ error: "Invalid request" }), {
@@ -151,9 +151,12 @@ serve(async (req: Request): Promise<Response> => {
                     <!-- Body -->
                     <tr>
                       <td style="padding: 36px 40px 32px 40px; background-color: #ffffff;">
-                        <h2 style="margin: 0 0 16px 0; color: #2d3b2e; font-size: 20px; font-weight: 600;">Hallo ${displayName}!</h2>
-                        <p style="margin: 0 0 24px 0; color: #555555; font-size: 15px; line-height: 1.7;">
+                        <h2 style="margin: 0 0 16px 0; color: #2d3b2e; font-size: 20px; font-weight: 600;">Willkommen bei Mein Lebensanker!</h2>
+                        <p style="margin: 0 0 20px 0; color: #555555; font-size: 15px; line-height: 1.7;">
                           Schön, dass Du dabei bist! Bitte bestätige Deine E-Mail-Adresse, um Dein Konto zu aktivieren.
+                        </p>
+                        <p style="margin: 0 0 28px 0; color: #6b8f71; font-size: 14px; line-height: 1.7; font-style: italic; border-left: 3px solid #6b8f71; padding-left: 16px;">
+                          Es ist völlig normal, dieses Thema aufzuschieben. Dass Du hier bist, zeigt, dass Du Verantwortung übernimmst – und das ist ein wertvoller Schritt.
                         </p>
                         <table role="presentation" style="width: 100%; margin: 0 0 28px 0;">
                           <tr>
