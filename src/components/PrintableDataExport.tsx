@@ -1,7 +1,7 @@
 import { forwardRef } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { Anchor, User, Wallet, Globe, Heart, FileText, Phone } from 'lucide-react';
-import { formatWithCurrency } from '@/lib/currencyFormat';
+import { formatWithCurrency, formatDate } from '@/lib/currencyFormat';
 
 interface VorsorgeData {
   section_key: string;
@@ -283,7 +283,7 @@ const PrintableDataExport = forwardRef<HTMLDivElement, PrintableDataExportProps>
     const renderPersonal = (sectionData: Record<string, unknown>) => (
       <div style={{ padding: '16px 20px', background: 'white', border: '1px solid #e5e5e5', borderTop: 'none', borderRadius: '0 0 8px 8px' }}>
         {renderValue(texts.name, sectionData.fullName)}
-        {renderValue(texts.birthDate, sectionData.birthDate)}
+        {renderValue(texts.birthDate, formatDate(sectionData.birthDate, language))}
         {renderValue(texts.address, sectionData.address)}
         {renderValue(texts.phone, sectionData.phone)}
         {sectionData.housingType && (
@@ -662,7 +662,7 @@ const PrintableDataExport = forwardRef<HTMLDivElement, PrintableDataExportProps>
                   </div>
                   {profile.birth_date && (
                     <div style={{ color: 'rgba(255,255,255,0.8)', fontSize: '13px', marginTop: '4px' }}>
-                      {new Date(profile.birth_date).toLocaleDateString(language === 'de' ? 'de-DE' : 'en-US')}
+                      {formatDate(profile.birth_date, language)}
                     </div>
                   )}
                 </div>

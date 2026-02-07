@@ -1,7 +1,7 @@
 import { forwardRef } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { Anchor, User, Wallet, Globe, Heart, FileText, Phone } from 'lucide-react';
-import { formatWithCurrency } from '@/lib/currencyFormat';
+import { formatWithCurrency, formatDate } from '@/lib/currencyFormat';
 
 interface VorsorgeData {
   section_key: string;
@@ -629,7 +629,7 @@ const PrintableRelativesSummary = forwardRef<HTMLDivElement, PrintableRelativesS
           return (
             <>
               {renderInfoItem(texts.name, sectionData.fullName)}
-              {renderInfoItem(texts.birthDate, sectionData.birthDate)}
+              {renderInfoItem(texts.birthDate, formatDate(sectionData.birthDate, language))}
               {renderInfoItem(texts.address, sectionData.address)}
               {renderInfoItem(texts.phone, sectionData.phone)}
               {renderInfoItem(texts.bloodType, sectionData.bloodType)}
