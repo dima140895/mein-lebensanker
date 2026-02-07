@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Upload, FileText, Trash2, Download, Loader2 } from 'lucide-react';
+import { Upload, FileText, Trash2, Download, Loader2, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useDocumentUpload } from '@/hooks/useDocumentUpload';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -21,7 +21,7 @@ interface DocumentUploadSectionProps {
 const DocumentUploadSection = ({ documentType, label, onDocumentsChange }: DocumentUploadSectionProps) => {
   const { language } = useLanguage();
   const { activeProfileId } = useProfiles();
-  const { uploadFile, deleteFile, getFileUrl, listFiles, uploading } = useDocumentUpload();
+  const { uploadFile, deleteFile, getFileUrl, listFiles, uploading, maxDocsPerCategory } = useDocumentUpload();
   const [documents, setDocuments] = useState<UploadedDoc[]>([]);
   const [loading, setLoading] = useState(true);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -33,7 +33,9 @@ const DocumentUploadSection = ({ documentType, label, onDocumentsChange }: Docum
       noFiles: 'Keine Dateien hochgeladen',
       delete: 'Löschen',
       download: 'Herunterladen',
-      allowedTypes: 'PDF, JPG, PNG, WEBP (max. 10MB)',
+      allowedTypes: 'PDF, JPG, PNG, WEBP (max. 10 MB)',
+      limitReached: 'Limit erreicht',
+      docsCount: (count: number, max: number) => `${count} / ${max} Dokumente`,
     },
     en: {
       upload: 'Upload file',
@@ -42,12 +44,13 @@ const DocumentUploadSection = ({ documentType, label, onDocumentsChange }: Docum
       delete: 'Delete',
       download: 'Download',
       allowedTypes: 'PDF, JPG, PNG, WEBP (max. 10MB)',
+      limitReached: 'Limit reached',
+      docsCount: (count: number, max: number) => `${count} / ${max} documents`,
     },
   };
 
   const texts = t[language];
 
-  // Reload documents when profile or document type changes
   useEffect(() => {
     loadDocuments();
   }, [documentType, activeProfileId]);
@@ -60,6 +63,8 @@ const DocumentUploadSection = ({ documentType, label, onDocumentsChange }: Docum
     setLoading(false);
   };
 
+  const isAtLimit = documents.length >= maxDocsPerCategory;
+
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -71,7 +76,6 @@ const DocumentUploadSection = ({ documentType, label, onDocumentsChange }: Docum
       onDocumentsChange?.(newDocs);
     }
 
-    // Reset input
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
@@ -89,16 +93,12 @@ const DocumentUploadSection = ({ documentType, label, onDocumentsChange }: Docum
   const handleDownload = async (doc: UploadedDoc) => {
     const url = await getFileUrl(doc.path);
     if (url) {
-      // Create an anchor element for reliable downloads
       const link = document.createElement('a');
       link.href = url;
       link.target = '_blank';
       link.rel = 'noopener noreferrer';
       
-      // Get display name for download
       const displayName = getDisplayName(doc.name);
-      
-      // Check if it's a PDF by extension - force download to avoid blank pages
       const isPdf = displayName.toLowerCase().endsWith('.pdf');
       if (isPdf) {
         link.download = displayName;
@@ -117,7 +117,6 @@ const DocumentUploadSection = ({ documentType, label, onDocumentsChange }: Docum
   };
 
   const getDisplayName = (name: string): string => {
-    // Remove timestamp prefix if present (format: timestamp-filename)
     const parts = name.split('-');
     if (parts.length > 1 && !isNaN(parseInt(parts[0]))) {
       return parts.slice(1).join('-');
@@ -129,7 +128,11 @@ const DocumentUploadSection = ({ documentType, label, onDocumentsChange }: Docum
     <div className="space-y-3">
       <div className="flex items-center justify-between">
         <span className="text-sm font-medium text-muted-foreground">{label}</span>
-        <span className="text-xs text-muted-foreground">{texts.allowedTypes}</span>
+        <div className="flex items-center gap-2">
+          <span className={`text-xs font-medium ${isAtLimit ? 'text-destructive' : 'text-muted-foreground'}`}>
+            {texts.docsCount(documents.length, maxDocsPerCategory)}
+          </span>
+        </div>
       </div>
 
       {/* Upload Button */}
@@ -142,26 +145,34 @@ const DocumentUploadSection = ({ documentType, label, onDocumentsChange }: Docum
           className="hidden"
           id={`upload-${documentType}`}
         />
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          disabled={uploading}
-          onClick={() => fileInputRef.current?.click()}
-          className="w-full border-dashed"
-        >
-          {uploading ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              {texts.uploading}
-            </>
-          ) : (
-            <>
-              <Upload className="mr-2 h-4 w-4" />
-              {texts.upload}
-            </>
-          )}
-        </Button>
+        {isAtLimit ? (
+          <div className="flex items-center gap-2 p-3 rounded-md bg-destructive/10 border border-destructive/20 text-sm text-destructive">
+            <AlertCircle className="h-4 w-4 flex-shrink-0" />
+            <span>{texts.limitReached} – {language === 'de' ? 'lösche ein Dokument, um ein neues hochzuladen' : 'delete a document to upload a new one'}</span>
+          </div>
+        ) : (
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            disabled={uploading}
+            onClick={() => fileInputRef.current?.click()}
+            className="w-full border-dashed"
+          >
+            {uploading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                {texts.uploading}
+              </>
+            ) : (
+              <>
+                <Upload className="mr-2 h-4 w-4" />
+                {texts.upload}
+              </>
+            )}
+          </Button>
+        )}
+        <p className="text-xs text-muted-foreground mt-1 text-center">{texts.allowedTypes}</p>
       </div>
 
       {/* File List */}
