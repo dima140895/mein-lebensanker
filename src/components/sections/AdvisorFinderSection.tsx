@@ -143,7 +143,6 @@ const AdvisorFinderSection = () => {
       className="space-y-6"
     >
       <div className="text-center max-w-2xl mx-auto">
-        <h2 className="font-serif text-2xl font-bold text-foreground mb-4">{texts.title}</h2>
         <p className="text-muted-foreground leading-relaxed">{texts.intro}</p>
       </div>
 
