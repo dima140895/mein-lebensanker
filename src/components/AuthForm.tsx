@@ -327,7 +327,7 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange }: Auth
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="pl-10"
-                  placeholder="name@example.com"
+                  placeholder={language === 'de' ? 'name@beispiel.de' : 'name@example.com'}
                   required
                 />
               </div>
@@ -367,7 +367,7 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange }: Auth
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="pl-10"
-                placeholder="name@example.com"
+                placeholder={language === 'de' ? 'name@beispiel.de' : 'name@example.com'}
                 required
               />
             </div>
