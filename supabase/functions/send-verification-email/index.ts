@@ -107,7 +107,7 @@ serve(async (req: Request): Promise<Response> => {
       body: JSON.stringify({
         from: "Mein Lebensanker <noreply@mein-lebensanker.de>",
         to: [normalizedEmail],
-        subject: "Bestätigen Sie Ihre E-Mail-Adresse",
+        subject: "Bestätige Deine E-Mail-Adresse – Mein Lebensanker",
         html: `
           <!DOCTYPE html>
           <html lang="de">
@@ -115,47 +115,62 @@ serve(async (req: Request): Promise<Response> => {
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
           </head>
-          <body style="margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; background-color: #f5f5f5;">
+          <body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f4f3;">
             <table role="presentation" style="width: 100%; border-collapse: collapse;">
               <tr>
-                <td align="center" style="padding: 40px 0;">
-                  <table role="presentation" style="width: 600px; max-width: 100%; background-color: #ffffff; border-radius: 12px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                <td align="center" style="padding: 40px 16px;">
+                  <table role="presentation" style="width: 560px; max-width: 100%; border-collapse: collapse;">
+                    <!-- Header -->
                     <tr>
-                      <td style="padding: 40px 40px 20px 40px; text-align: center; background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%); border-radius: 12px 12px 0 0;">
-                        <h1 style="margin: 0; color: #ffffff; font-size: 28px;">⚓ Mein Lebensanker</h1>
+                      <td style="padding: 32px 40px; text-align: center; background: linear-gradient(135deg, #6b8f71 0%, #5a7a60 100%); border-radius: 16px 16px 0 0;">
+                        <div style="font-size: 32px; margin-bottom: 8px;">⚓</div>
+                        <h1 style="margin: 0; color: #ffffff; font-size: 22px; font-weight: 700; letter-spacing: 0.5px;">Mein Lebensanker</h1>
+                        <p style="margin: 6px 0 0 0; color: rgba(255,255,255,0.85); font-size: 13px; font-weight: 400;">Deine Vorsorge. Deine Sicherheit.</p>
                       </td>
                     </tr>
+                    <!-- Body -->
                     <tr>
-                      <td style="padding: 40px;">
-                        <h2 style="margin: 0 0 20px 0; color: #1e3a5f; font-size: 24px;">Willkommen, ${displayName}!</h2>
-                        <p style="margin: 0 0 20px 0; color: #555555; font-size: 16px; line-height: 1.6;">
-                          Vielen Dank für Ihre Registrierung. Um Ihr Konto zu aktivieren, bestätigen Sie bitte Ihre E-Mail-Adresse.
+                      <td style="padding: 36px 40px 32px 40px; background-color: #ffffff;">
+                        <h2 style="margin: 0 0 16px 0; color: #2d3b2e; font-size: 20px; font-weight: 600;">Hallo ${displayName}!</h2>
+                        <p style="margin: 0 0 24px 0; color: #555555; font-size: 15px; line-height: 1.7;">
+                          Schön, dass Du dabei bist! Bitte bestätige Deine E-Mail-Adresse, um Dein Konto zu aktivieren.
                         </p>
-                        <table role="presentation" style="margin: 30px 0;">
+                        <table role="presentation" style="width: 100%; margin: 0 0 28px 0;">
                           <tr>
                             <td align="center">
-                              <a href="${verificationUrl}" style="display: inline-block; padding: 16px 32px; background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%); color: #ffffff; text-decoration: none; font-size: 16px; font-weight: 600; border-radius: 8px;">
-                                E-Mail-Adresse bestätigen
+                              <a href="${verificationUrl}" style="display: inline-block; padding: 14px 36px; background: linear-gradient(135deg, #6b8f71 0%, #5a7a60 100%); color: #ffffff; text-decoration: none; font-size: 15px; font-weight: 600; border-radius: 10px; box-shadow: 0 4px 14px rgba(107,143,113,0.35);">
+                                ✉️&nbsp; E-Mail bestätigen
                               </a>
                             </td>
                           </tr>
                         </table>
-                        <p style="margin: 20px 0 0 0; color: #777777; font-size: 14px;">
-                          Falls der Button nicht funktioniert, kopieren Sie diesen Link:
+                        <p style="margin: 0 0 8px 0; color: #888888; font-size: 13px;">
+                          Falls der Button nicht funktioniert, kopiere diesen Link:
                         </p>
-                        <p style="margin: 10px 0 0 0; color: #1e3a5f; font-size: 14px; word-break: break-all;">
+                        <p style="margin: 0 0 0 0; color: #6b8f71; font-size: 13px; word-break: break-all; line-height: 1.5;">
                           ${verificationUrl}
-                        </p>
-                        <hr style="margin: 30px 0; border: none; border-top: 1px solid #eeeeee;">
-                        <p style="margin: 0; color: #999999; font-size: 13px;">
-                          Falls Sie sich nicht registriert haben, können Sie diese E-Mail ignorieren.
                         </p>
                       </td>
                     </tr>
+                    <!-- Divider -->
                     <tr>
-                      <td style="padding: 20px 40px; background-color: #f8f9fa; border-radius: 0 0 12px 12px; text-align: center;">
-                        <p style="margin: 0; color: #999999; font-size: 12px;">
-                          © 2026 Mein Lebensanker. Alle Rechte vorbehalten.
+                      <td style="padding: 0 40px; background-color: #ffffff;">
+                        <div style="border-top: 1px solid #e8ece9;"></div>
+                      </td>
+                    </tr>
+                    <!-- Info -->
+                    <tr>
+                      <td style="padding: 20px 40px 28px 40px; background-color: #ffffff; border-radius: 0 0 16px 16px;">
+                        <p style="margin: 0; color: #aaaaaa; font-size: 12px; line-height: 1.6;">
+                          Falls Du Dich nicht registriert hast, kannst Du diese E-Mail einfach ignorieren.
+                        </p>
+                      </td>
+                    </tr>
+                    <!-- Footer -->
+                    <tr>
+                      <td style="padding: 20px 40px 0 40px; text-align: center;">
+                        <p style="margin: 0; color: #b0b8b1; font-size: 11px;">
+                          © ${new Date().getFullYear()} Mein Lebensanker · Alle Rechte vorbehalten
                         </p>
                       </td>
                     </tr>
