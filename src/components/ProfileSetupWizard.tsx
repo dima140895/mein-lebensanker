@@ -512,7 +512,7 @@ const ProfileSetupWizard = ({ maxProfiles, packageType, onAllProfilesExist }: Pr
                 type="date"
                 value={profiles[currentStep]?.birthDate || ''}
                 onChange={(e) => handleProfileChange(currentStep, 'birthDate', e.target.value)}
-                className="mt-1.5 w-full max-w-full box-border"
+                className="mt-1.5 w-full max-w-full box-border h-10"
               />
             </div>
           </div>
