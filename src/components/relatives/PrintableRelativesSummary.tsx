@@ -1095,6 +1095,14 @@ const PrintableRelativesSummary = forwardRef<HTMLDivElement, PrintableRelativesS
 
         {dataByProfile.map(({ profile, data: profileData }, profileIndex) => (
           <div key={profile.profile_id} className={profileIndex > 0 ? 'page-break' : ''}>
+            {/* Explicit page break marker for 2nd+ profiles */}
+            {profileIndex > 0 && (
+              <div
+                data-pdf-section="profile-page-break"
+                data-pdf-page-break="true"
+                style={{ height: '1px', overflow: 'hidden', margin: 0, padding: 0 }}
+              />
+            )}
             {/* Header */}
             <div data-pdf-section="header" style={{
               background: 'linear-gradient(135deg, #6b8f71 0%, #4a6b50 100%)',
