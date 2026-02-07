@@ -28,7 +28,7 @@ const VorsorgeAssistant: React.FC = () => {
     de: {
       title: 'Vorsorge-Assistent',
       placeholder: 'Stelle eine Frage...',
-      welcome: 'Hallo! Ich bin dein Vorsorge-Assistent. Frag mich alles rund um Patientenverfügung, Vorsorgevollmacht oder Testament.',
+      welcome: 'Hallo! Ich bin Dein Vorsorge-Assistent. Frag mich alles rund um Patientenverfügung, Vorsorgevollmacht oder Testament.',
       disclaimer: 'Hinweis: Die folgenden Informationen dienen der allgemeinen Orientierung und stellen keine Rechtsberatung dar. Für eine verbindliche rechtliche Beratung wende Dich bitte an eine Notarin, einen Notar oder eine Rechtsanwältin bzw. einen Rechtsanwalt.',
       error: 'Entschuldigung, es ist ein Fehler aufgetreten. Bitte versuche es erneut.',
       categories: [
@@ -37,23 +37,23 @@ const VorsorgeAssistant: React.FC = () => {
           questions: [
             {
               question: 'Was ist eine Patientenverfügung?',
-              answer: `Eine Patientenverfügung ist ein schriftliches Dokument, in dem du festlegst, welche medizinischen Maßnahmen du wünschst oder ablehnst, falls du dich selbst nicht mehr äußern kannst (z. B. bei Bewusstlosigkeit oder schwerer Erkrankung).
+              answer: `Eine Patientenverfügung ist ein schriftliches Dokument, in dem Du festlegst, welche medizinischen Maßnahmen Du wünschst oder ablehnst, falls Du Dich selbst nicht mehr äußern kannst (z. B. bei Bewusstlosigkeit oder schwerer Erkrankung).
 
 Du kannst darin z. B. regeln:
 - ob lebenserhaltende Maßnahmen gewünscht sind
 - ob künstliche Ernährung erfolgen soll
-- welche Behandlungen du ablehnst
-- wer deinen Willen gegenüber Ärztinnen und Ärzten vertreten soll
+- welche Behandlungen Du ablehnst
+- wer Deinen Willen gegenüber Ärztinnen und Ärzten vertreten soll
 
 **Wichtig:**
 - Sie muss schriftlich vorliegen
 - Sie sollte möglichst konkret formuliert sein
-- Sie gilt erst, wenn du nicht mehr einwilligungsfähig bist
+- Sie gilt erst, wenn Du nicht mehr einwilligungsfähig bist
 - Für rechtssichere Formulierungen kann fachlicher Rat sinnvoll sein.`,
             },
             {
               question: 'Brauche ich eine Vorsorgevollmacht?',
-              answer: `Mit einer Vorsorgevollmacht bestimmst du eine Person deines Vertrauens, die für dich Entscheidungen treffen darf, wenn du selbst dazu nicht mehr in der Lage bist.
+              answer: `Mit einer Vorsorgevollmacht bestimmst Du eine Person Deines Vertrauens, die für Dich Entscheidungen treffen darf, wenn Du selbst dazu nicht mehr in der Lage bist.
 
 Das kann betreffen:
 - Gesundheitsangelegenheiten
@@ -71,7 +71,7 @@ Ohne Vorsorgevollmacht kann ein Gericht eine Betreuung anordnen.
             },
             {
               question: 'Wie erstelle ich ein Testament?',
-              answer: `Ein Testament regelt, wer dein Vermögen nach deinem Tod erhalten soll.
+              answer: `Ein Testament regelt, wer Dein Vermögen nach Deinem Tod erhalten soll.
 
 In Deutschland ist ein privates Testament gültig, wenn:
 - es vollständig handschriftlich geschrieben ist
@@ -90,7 +90,7 @@ Bei komplexen Vermögensverhältnissen oder Familienkonstellationen ist rechtlic
             },
             {
               question: 'Was ist eine Betreuungsverfügung?',
-              answer: `Mit einer Betreuungsverfügung legst du fest, wen ein Gericht als rechtliche Betreuung einsetzen soll, falls eine Betreuung notwendig wird.
+              answer: `Mit einer Betreuungsverfügung legst Du fest, wen ein Gericht als rechtliche Betreuung einsetzen soll, falls eine Betreuung notwendig wird.
 
 Du kannst darin:
 - eine Wunschperson benennen
@@ -194,7 +194,7 @@ Es kann helfen, zumindest mitzuteilen, dass Regelungen existieren.`,
 - bei größeren Vermögensänderungen
 - bei Umzug ins Ausland
 
-Aktualität sorgt dafür, dass Dokumente deinem aktuellen Willen entsprechen.`,
+Aktualität sorgt dafür, dass Dokumente Deinem aktuellen Willen entsprechen.`,
             },
             {
               question: 'Was passiert, wenn ich nichts regle?',

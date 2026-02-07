@@ -30,7 +30,7 @@ const WishesForm = () => {
       disclaimer: 'Diese Angaben dienen der Kommunikation Deiner Wünsche. Sie ersetzen keine Patientenverfügung oder andere rechtliche Dokumente. Änderungen werden automatisch gespeichert.',
       legalNote: 'Für rechtlich bindende Dokumente wende Dich an einen Notar oder Rechtsanwalt.',
       medicalWishes: 'Medizinische Wünsche',
-      medicalPlaceholder: 'Welche medizinischen Wünsche möchtest du festhalten? (z.B. Behandlungswünsche, Therapieformen)',
+      medicalPlaceholder: 'Welche medizinischen Wünsche möchtest Du festhalten? (z.B. Behandlungswünsche, Therapieformen)',
       carePreferences: 'Pflege- und Betreuungswünsche',
       carePlaceholder: 'Wie stellst Du Dir Pflege und Betreuung vor? (z.B. zu Hause, Pflegeheim, bestimmte Personen)',
       funeralWishes: 'Beerdigungswünsche',
@@ -38,7 +38,7 @@ const WishesForm = () => {
       organDonation: 'Organspende',
       organPlaceholder: 'Wie stehst Du zur Organspende? (Diese Angabe ersetzt keinen Organspendeausweis)',
       otherWishes: 'Weitere Wünsche',
-      otherPlaceholder: 'Gibt es weitere Wünsche, die du festhalten möchtest?',
+      otherPlaceholder: 'Gibt es weitere Wünsche, die Du festhalten möchtest?',
       notes: 'Zusätzliche Hinweise',
     },
     en: {
