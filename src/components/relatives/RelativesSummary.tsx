@@ -1166,7 +1166,7 @@ const RelativesSummary = ({ data, profiles, sharedSections, sharedProfileSection
         </motion.div>
 
         {/* Hidden printable content */}
-        <div className="hidden">
+        <div style={{ display: 'none' }}>
           <PrintableRelativesSummary
             ref={printRef}
             data={data}

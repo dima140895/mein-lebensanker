@@ -112,15 +112,29 @@ const SharedDocuments = ({ token, pin, profileId }: SharedDocumentsProps) => {
     return texts.documentTypes[key] || type;
   };
 
-  const handleDownload = (doc: SharedDocument) => {
-    const link = document.createElement('a');
-    link.href = doc.signedUrl;
-    link.download = doc.name;
-    link.target = '_blank';
-    link.rel = 'noopener noreferrer';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  const handleDownload = async (doc: SharedDocument) => {
+    try {
+      // Fetch the file as a blob to avoid popup/iframe blocking issues
+      const response = await fetch(doc.signedUrl);
+      if (!response.ok) throw new Error('Download failed');
+      
+      const blob = await response.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      link.download = doc.name;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      // Clean up blob URL after a short delay
+      setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
+    } catch (err) {
+      logger.error('Download error:', err);
+      // Fallback: open in new tab
+      window.open(doc.signedUrl, '_blank', 'noopener,noreferrer');
+    }
   };
 
   if (loading) {
