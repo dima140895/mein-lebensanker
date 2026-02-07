@@ -180,11 +180,24 @@ const PricingDialog = ({ open, onOpenChange, onSelectPackage }: PricingDialogPro
           return (
             <div
               key={key}
-              className={`relative rounded-xl border p-3 sm:p-4 flex ${isMobile ? 'flex-row items-center gap-3' : 'flex-col'} ${
+              className={`relative rounded-xl border p-3 sm:p-4 flex ${isMobile ? 'flex-row items-center gap-3 cursor-pointer active:scale-[0.98] transition-transform' : 'flex-col'} ${
                 highlight 
                   ? 'border-2 border-primary bg-primary/5 shadow-md' 
                   : 'border-border bg-card'
               }`}
+              {...(isMobile ? { 
+                onClick: (e: React.MouseEvent) => {
+                  // Don't trigger if clicking on profile selector buttons
+                  if ((e.target as HTMLElement).closest('button[data-profile-selector]')) return;
+                  if (!user) {
+                    onSelectPackage();
+                  } else if (!hasPaid) {
+                    handlePurchase(key);
+                  }
+                },
+                role: 'button',
+                tabIndex: 0,
+              } : {})}
             >
               {badge && (
                 <div className={`absolute ${isMobile ? '-top-2 left-3' : '-top-2.5 left-1/2 -translate-x-1/2'} bg-primary text-primary-foreground px-2 py-0.5 rounded-full text-xs font-medium whitespace-nowrap`}>
@@ -221,7 +234,11 @@ const PricingDialog = ({ open, onOpenChange, onSelectPackage }: PricingDialogPro
                           variant="outline"
                           size="icon"
                           className="h-6 w-6"
-                          onClick={() => setFamilyProfileCount(Math.max(4, familyProfileCount - 1))}
+                          data-profile-selector
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setFamilyProfileCount(Math.max(4, familyProfileCount - 1));
+                          }}
                           disabled={familyProfileCount <= 4}
                         >
                           <Minus className="h-3 w-3" />
@@ -233,7 +250,11 @@ const PricingDialog = ({ open, onOpenChange, onSelectPackage }: PricingDialogPro
                           variant="outline"
                           size="icon"
                           className="h-6 w-6"
-                          onClick={() => setFamilyProfileCount(Math.min(10, familyProfileCount + 1))}
+                          data-profile-selector
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setFamilyProfileCount(Math.min(10, familyProfileCount + 1));
+                          }}
                           disabled={familyProfileCount >= 10}
                         >
                           <Plus className="h-3 w-3" />
@@ -241,22 +262,6 @@ const PricingDialog = ({ open, onOpenChange, onSelectPackage }: PricingDialogPro
                       </div>
                     )}
                   </div>
-
-                  {user && !hasPaid && (
-                    <Button
-                      size="sm"
-                      variant={highlight ? 'default' : 'outline'}
-                      onClick={() => handlePurchase(key)}
-                      disabled={isLoading || loading !== null}
-                      className="flex-shrink-0"
-                    >
-                      {isLoading ? (
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                      ) : (
-                        <CreditCard className="h-4 w-4" />
-                      )}
-                    </Button>
-                  )}
                 </>
               ) : (
                 /* Desktop/Tablet Layout */
