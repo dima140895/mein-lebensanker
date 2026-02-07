@@ -123,11 +123,11 @@ const DashboardSections = () => {
     return (
       <div
         onClick={() => handleSectionClick(section.key)}
-        className={`group relative cursor-pointer overflow-hidden rounded-xl md:rounded-2xl border border-border/50 bg-gradient-to-br ${section.gradient} p-4 md:p-6 shadow-sm hover-lift hover:shadow-xl ${section.accent} animate-stagger-fade-in ${getStaggerClass(index)} h-full flex flex-col`}
+        className={`group relative cursor-pointer overflow-hidden rounded-xl md:rounded-2xl border border-border/50 bg-gradient-to-br ${section.gradient} p-4 md:p-6 shadow-card transition-all duration-300 ease-out hover:shadow-elevated hover:-translate-y-1 hover:border-border ${section.accent} animate-stagger-fade-in ${getStaggerClass(index)} h-full flex flex-col`}
         data-tour={dataTourAttr}
       >
         {/* Decorative background element */}
-        <div className="absolute -right-6 -top-6 md:-right-8 md:-top-8 h-16 w-16 md:h-24 md:w-24 rounded-full bg-white/20 blur-2xl transition-all duration-500 group-hover:scale-150 group-hover:bg-white/30" />
+        <div className="absolute -right-6 -top-6 md:-right-8 md:-top-8 h-16 w-16 md:h-24 md:w-24 rounded-full bg-white/20 blur-2xl transition-all duration-700 ease-out group-hover:scale-[2] group-hover:bg-white/25" />
         
         <div className="relative z-10 flex flex-col flex-1">
           <div className="flex items-start justify-between">
