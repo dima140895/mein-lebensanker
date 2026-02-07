@@ -344,7 +344,7 @@ Data Protection Officer:
     <div className="flex min-h-screen flex-col bg-background">
       <Header />
       <main className="flex-1">
-        <div className="container mx-auto max-w-3xl px-4 py-8">
+        <div className="container mx-auto max-w-3xl px-6 sm:px-4 py-8">
           <Button variant="ghost" onClick={() => navigate(-1)} className="mb-6">
             <ArrowLeft className="mr-2 h-4 w-4" />
             {texts.back}

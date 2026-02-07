@@ -226,7 +226,7 @@ const DashboardContent = () => {
 
   if (!user) {
     return (
-      <div className="container mx-auto px-4 py-12">
+      <div className="container mx-auto px-6 sm:px-4 py-12">
         <AuthForm />
       </div>
     );
@@ -234,7 +234,7 @@ const DashboardContent = () => {
 
   if (!profile?.has_paid) {
     return (
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-6 sm:px-4 py-8">
         <p className="text-center text-muted-foreground mb-4">{texts.notPaid}</p>
         <PaymentOptions />
       </div>
@@ -265,7 +265,7 @@ const DashboardContent = () => {
   if (activeSection) {
     return (
       <>
-        <div className="container mx-auto px-4 py-4 md:py-8">
+        <div className="container mx-auto px-6 sm:px-4 py-4 md:py-8">
           {/* Mobile: Three-row layout */}
           <div className="flex flex-col gap-2 mb-4 md:flex-row md:items-center md:justify-between md:gap-0 md:mb-6">
             {/* Row 1: Back button left, profile name right (mobile) */}
@@ -313,7 +313,7 @@ const DashboardContent = () => {
 
   return (
     <>
-      <div className="container mx-auto px-4 py-4 md:py-8">
+      <div className="container mx-auto px-6 sm:px-4 py-4 md:py-8">
         {/* Header with title */}
         <div className="text-center mb-3 md:mb-4">
           <h1 className="font-serif text-2xl md:text-3xl font-bold text-foreground">{texts.title}</h1>
