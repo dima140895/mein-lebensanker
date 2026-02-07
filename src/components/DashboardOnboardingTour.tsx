@@ -55,8 +55,8 @@ const tourSteps: TourStep[] = [
     icon: Shield,
     titleDe: 'Verschlüsselung & Einstellungen',
     titleEn: 'Encryption & Settings',
-    messageDe: 'Unter dem Zahnrad-Icon findest Du alle Konto-Einstellungen. Hier kannst Du auch die Ende-zu-Ende-Verschlüsselung aktivieren – für maximale Sicherheit.',
-    messageEn: 'Under the gear icon you\'ll find all account settings. Here you can also enable end-to-end encryption – for maximum security.',
+    messageDe: 'In den Konto-Einstellungen findest Du alle Optionen rund um Dein Profil. Hier kannst Du auch die Ende-zu-Ende-Verschlüsselung aktivieren – für maximale Sicherheit.',
+    messageEn: 'In your account settings you\'ll find all options for your profile. Here you can also enable end-to-end encryption – for maximum security.',
   },
 ];
 
