@@ -25,6 +25,7 @@ import InstallApp from "./pages/InstallApp";
 import InstagramDownload from "./pages/InstagramDownload";
 import SecurityAuditReport from "./pages/SecurityAuditReport";
 import RLSDocumentation from "./pages/RLSDocumentation";
+import DevDocumentation from "./pages/DevDocumentation";
 import CookieConsent from "./components/CookieConsent";
 import { EncryptionReminder } from "./components/EncryptionReminder";
 import VorsorgeAssistant from "./components/VorsorgeAssistant";
@@ -59,6 +60,7 @@ const App = () => (
                     <Route path="/fuer-angehoerige/:token" element={<RelativesView />} />
                     <Route path="/security-audit-report" element={<SecurityAuditReport />} />
                     <Route path="/rls-documentation" element={<RLSDocumentation />} />
+                    <Route path="/dev-dokumentation" element={<DevDocumentation />} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>
                   <CookieConsent />
