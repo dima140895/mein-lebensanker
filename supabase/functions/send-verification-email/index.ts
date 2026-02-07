@@ -134,15 +134,31 @@ serve(async (req: Request): Promise<Response> => {
           <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <style>
+              @media only screen and (max-width: 480px) {
+                .email-outer-padding { padding: 20px 8px !important; }
+                .email-inner-table { width: 100% !important; }
+                .email-header { padding: 24px 20px !important; }
+                .email-header h1 { font-size: 20px !important; }
+                .email-body { padding: 28px 20px 24px 20px !important; }
+                .email-body h2 { font-size: 18px !important; }
+                .email-body p { font-size: 14px !important; }
+                .email-quote { font-size: 13px !important; padding-left: 12px !important; }
+                .email-btn { padding: 14px 24px !important; font-size: 14px !important; }
+                .email-divider { padding: 0 20px !important; }
+                .email-info { padding: 16px 20px 24px 20px !important; }
+                .email-footer { padding: 16px 20px 0 20px !important; }
+              }
+            </style>
           </head>
           <body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f4f3;">
             <table role="presentation" style="width: 100%; border-collapse: collapse;">
               <tr>
-                <td align="center" style="padding: 40px 16px;">
-                  <table role="presentation" style="width: 560px; max-width: 100%; border-collapse: collapse;">
+                <td align="center" class="email-outer-padding" style="padding: 40px 16px;">
+                  <table role="presentation" class="email-inner-table" style="width: 560px; max-width: 100%; border-collapse: collapse;">
                     <!-- Header -->
                     <tr>
-                      <td style="padding: 32px 40px; text-align: center; background: linear-gradient(135deg, #6b8f71 0%, #5a7a60 100%); border-radius: 16px 16px 0 0;">
+                      <td class="email-header" style="padding: 32px 40px; text-align: center; background: linear-gradient(135deg, #6b8f71 0%, #5a7a60 100%); border-radius: 16px 16px 0 0;">
                         <div style="font-size: 32px; margin-bottom: 8px;">⚓</div>
                         <h1 style="margin: 0; color: #ffffff; font-size: 22px; font-weight: 700; letter-spacing: 0.5px;">Mein Lebensanker</h1>
                         <p style="margin: 6px 0 0 0; color: rgba(255,255,255,0.85); font-size: 13px; font-weight: 400;">Deine Vorsorge. Deine Sicherheit.</p>
@@ -150,18 +166,18 @@ serve(async (req: Request): Promise<Response> => {
                     </tr>
                     <!-- Body -->
                     <tr>
-                      <td style="padding: 36px 40px 32px 40px; background-color: #ffffff;">
+                      <td class="email-body" style="padding: 36px 40px 32px 40px; background-color: #ffffff;">
                         <h2 style="margin: 0 0 16px 0; color: #2d3b2e; font-size: 20px; font-weight: 600;">Willkommen bei Mein Lebensanker!</h2>
                         <p style="margin: 0 0 20px 0; color: #555555; font-size: 15px; line-height: 1.7;">
                           Schön, dass Du dabei bist! Bitte bestätige Deine E-Mail-Adresse, um Dein Konto zu aktivieren.
                         </p>
-                        <p style="margin: 0 0 28px 0; color: #6b8f71; font-size: 14px; line-height: 1.7; font-style: italic; border-left: 3px solid #6b8f71; padding-left: 16px;">
+                        <p class="email-quote" style="margin: 0 0 28px 0; color: #6b8f71; font-size: 14px; line-height: 1.7; font-style: italic; border-left: 3px solid #6b8f71; padding-left: 16px;">
                           Es ist völlig normal, dieses Thema aufzuschieben. Dass Du hier bist, zeigt, dass Du Verantwortung übernimmst – und das ist ein wertvoller Schritt.
                         </p>
                         <table role="presentation" style="width: 100%; margin: 0 0 28px 0;">
                           <tr>
                             <td align="center">
-                              <a href="${verificationUrl}" style="display: inline-block; padding: 14px 36px; background: linear-gradient(135deg, #6b8f71 0%, #5a7a60 100%); color: #ffffff; text-decoration: none; font-size: 15px; font-weight: 600; border-radius: 10px; box-shadow: 0 4px 14px rgba(107,143,113,0.35);">
+                              <a href="${verificationUrl}" class="email-btn" style="display: inline-block; padding: 14px 36px; background: linear-gradient(135deg, #6b8f71 0%, #5a7a60 100%); color: #ffffff; text-decoration: none; font-size: 15px; font-weight: 600; border-radius: 10px; box-shadow: 0 4px 14px rgba(107,143,113,0.35);">
                                 ✉️&nbsp; E-Mail bestätigen
                               </a>
                             </td>
@@ -177,13 +193,13 @@ serve(async (req: Request): Promise<Response> => {
                     </tr>
                     <!-- Divider -->
                     <tr>
-                      <td style="padding: 0 40px; background-color: #ffffff;">
+                      <td class="email-divider" style="padding: 0 40px; background-color: #ffffff;">
                         <div style="border-top: 1px solid #e8ece9;"></div>
                       </td>
                     </tr>
                     <!-- Info -->
                     <tr>
-                      <td style="padding: 20px 40px 28px 40px; background-color: #ffffff; border-radius: 0 0 16px 16px;">
+                      <td class="email-info" style="padding: 20px 40px 28px 40px; background-color: #ffffff; border-radius: 0 0 16px 16px;">
                         <p style="margin: 0; color: #aaaaaa; font-size: 12px; line-height: 1.6;">
                           Falls Du Dich nicht registriert hast, kannst Du diese E-Mail einfach ignorieren.
                         </p>
@@ -191,7 +207,7 @@ serve(async (req: Request): Promise<Response> => {
                     </tr>
                     <!-- Footer -->
                     <tr>
-                      <td style="padding: 20px 40px 0 40px; text-align: center;">
+                      <td class="email-footer" style="padding: 20px 40px 0 40px; text-align: center;">
                         <p style="margin: 0; color: #b0b8b1; font-size: 11px;">
                           © ${new Date().getFullYear()} Mein Lebensanker · Alle Rechte vorbehalten
                         </p>
