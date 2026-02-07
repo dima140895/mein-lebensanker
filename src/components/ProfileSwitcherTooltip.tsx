@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { logger } from '@/lib/logger';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useLocation } from 'react-router-dom';
 import { X } from 'lucide-react';
@@ -53,7 +54,7 @@ export const ProfileSwitcherTooltip: React.FC<ProfileSwitcherTooltipProps> = ({ 
     
     // Show tooltip after a short delay to let the page render
     const t = window.setTimeout(() => {
-      console.log('[ProfileSwitcherTooltip] Showing tooltip after profile setup');
+      logger.debug('[ProfileSwitcherTooltip] Showing tooltip after profile setup');
       setShowTooltip(true);
     }, 800);
     return () => window.clearTimeout(t);

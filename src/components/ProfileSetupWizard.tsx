@@ -400,7 +400,7 @@ const ProfileSetupWizard = ({ maxProfiles, packageType, onAllProfilesExist }: Pr
           onClick={() => {
             // Set flag for profile switcher tooltip (must be set right before navigation)
             sessionStorage.setItem(PROFILE_SWITCHER_TOOLTIP_FLAG, 'true');
-            console.log('[ProfileSetupWizard] Setting tooltip flag and navigating to dashboard');
+            logger.debug('[ProfileSetupWizard] Setting tooltip flag and navigating to dashboard');
             // Set flag for encryption reminder (30 seconds after clicking "Go to Dashboard")
             sessionStorage.setItem('profile_setup_completed_time', Date.now().toString());
             // Trigger dashboard onboarding tour
