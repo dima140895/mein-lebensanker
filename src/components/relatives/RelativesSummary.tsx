@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { User, Wallet, Globe, Heart, FileText, Phone, Printer } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { supabase } from '@/integrations/supabase/browserClient';
-import { formatWithCurrency } from '@/lib/currencyFormat';
+import { formatWithCurrency, formatDate } from '@/lib/currencyFormat';
 import { logger } from '@/lib/logger';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -939,7 +939,7 @@ const RelativesSummary = ({ data, profiles, sharedSections, sharedProfileSection
         return (
           <div className="space-y-1">
             {renderInfoItem(texts.name, sectionData.fullName)}
-            {renderInfoItem(texts.birthDate, sectionData.birthDate)}
+            {renderInfoItem(texts.birthDate, formatDate(sectionData.birthDate, language))}
             {renderInfoItem(texts.address, sectionData.address)}
             {renderInfoItem(texts.phone, sectionData.phone)}
             {renderInfoItem(texts.bloodType, sectionData.bloodType)}
