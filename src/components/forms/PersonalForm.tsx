@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Info, Plus, Trash2, Pill, AlertTriangle } from 'lucide-react';
+import { Info, Plus, Trash2, Pill, AlertTriangle, Home } from 'lucide-react';
 import { useFormData, PersonalData, Medication, Allergy } from '@/contexts/FormContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
@@ -11,6 +11,8 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import CurrencySelect from './CurrencySelect';
 import SectionNavigation from './SectionNavigation';
 
 const PersonalForm = () => {
@@ -37,6 +39,14 @@ const PersonalForm = () => {
       fullName: 'Vollständiger Name',
       birthDate: 'Geburtsdatum',
       address: 'Anschrift',
+      housingType: 'Wohnsituation',
+      housingRent: 'Miete',
+      housingOwn: 'Eigentum',
+      rentAmount: 'Monatliche Miete (Warmmiete)',
+      landlordName: 'Name des Vermieters',
+      landlordPhone: 'Telefon des Vermieters',
+      landlordEmail: 'E-Mail des Vermieters',
+      landlordAddress: 'Anschrift des Vermieters',
       phone: 'Telefonnummer',
       bloodType: 'Blutgruppe',
       bloodTypePlaceholder: 'z.B. A+, B-, 0+, AB+',
@@ -110,6 +120,14 @@ const PersonalForm = () => {
       fullName: 'Full Name',
       birthDate: 'Date of Birth',
       address: 'Address',
+      housingType: 'Housing Situation',
+      housingRent: 'Rent',
+      housingOwn: 'Own Property',
+      rentAmount: 'Monthly Rent (incl. utilities)',
+      landlordName: 'Landlord Name',
+      landlordPhone: 'Landlord Phone',
+      landlordEmail: 'Landlord Email',
+      landlordAddress: 'Landlord Address',
       phone: 'Phone Number',
       bloodType: 'Blood Type',
       bloodTypePlaceholder: 'e.g. A+, B-, O+, AB+',
@@ -287,6 +305,109 @@ const PersonalForm = () => {
           placeholder={texts.address}
           rows={2}
         />
+      </div>
+
+      {/* Housing Type */}
+      <div className="space-y-4 rounded-lg border border-border p-4">
+        <div className="flex items-center gap-2">
+          <Home className="h-5 w-5 text-primary" />
+          <Label className="text-sm font-medium">{texts.housingType}</Label>
+        </div>
+        <RadioGroup
+          value={data.housingType || ''}
+          onValueChange={(value) => {
+            handleChange('housingType', value);
+            // Clear rent fields if switching to own
+            if (value === 'own') {
+              const updated = {
+                ...data,
+                housingType: value,
+                rentAmount: '',
+                landlordName: '',
+                landlordPhone: '',
+                landlordEmail: '',
+                landlordAddress: '',
+              };
+              updateSection('personal', updated);
+              handleBlurWithData(updated);
+            } else {
+              handleBlurWithData({ ...data, housingType: value });
+            }
+          }}
+          className="flex gap-6"
+        >
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="rent" id="housing-rent" />
+            <Label htmlFor="housing-rent" className="font-normal cursor-pointer">{texts.housingRent}</Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="own" id="housing-own" />
+            <Label htmlFor="housing-own" className="font-normal cursor-pointer">{texts.housingOwn}</Label>
+          </div>
+        </RadioGroup>
+
+        {data.housingType === 'rent' && (
+          <div className="space-y-4 pt-2 border-t border-border/50">
+            <div className="flex gap-2">
+              <Input
+                value={data.rentAmount || ''}
+                onChange={(e) => handleChange('rentAmount', e.target.value)}
+                onBlur={handleBlur}
+                placeholder={texts.rentAmount}
+                className="flex-1"
+              />
+              <CurrencySelect
+                value={data.rentCurrency || 'EUR'}
+                onValueChange={(value) => {
+                  handleChange('rentCurrency', value);
+                  handleBlurWithData({ ...data, rentCurrency: value });
+                }}
+              />
+            </div>
+            <div className="grid gap-3 md:grid-cols-2">
+              <div className="space-y-2">
+                <Label className="text-sm">{texts.landlordName}</Label>
+                <Input
+                  value={data.landlordName || ''}
+                  onChange={(e) => handleChange('landlordName', e.target.value)}
+                  onBlur={handleBlur}
+                  placeholder={texts.landlordName}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-sm">{texts.landlordPhone}</Label>
+                <Input
+                  type="tel"
+                  value={data.landlordPhone || ''}
+                  onChange={(e) => handleChange('landlordPhone', e.target.value)}
+                  onBlur={handleBlur}
+                  placeholder={texts.landlordPhone}
+                />
+              </div>
+            </div>
+            <div className="grid gap-3 md:grid-cols-2">
+              <div className="space-y-2">
+                <Label className="text-sm">{texts.landlordEmail}</Label>
+                <Input
+                  type="email"
+                  value={data.landlordEmail || ''}
+                  onChange={(e) => handleChange('landlordEmail', e.target.value)}
+                  onBlur={handleBlur}
+                  placeholder={texts.landlordEmail}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-sm">{texts.landlordAddress}</Label>
+                <Input
+                  value={data.landlordAddress || ''}
+                  onChange={(e) => handleChange('landlordAddress', e.target.value)}
+                  onBlur={handleBlur}
+                  placeholder={texts.landlordAddress}
+                />
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       <div className="space-y-2">

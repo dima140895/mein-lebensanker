@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { motion } from "framer-motion";
-import { Plus, Trash2, Info, AlertTriangle } from "lucide-react";
-import { useFormData, AssetsData } from "@/contexts/FormContext";
+import { Plus, Trash2, Info, AlertTriangle, Landmark } from "lucide-react";
+import { useFormData, AssetsData, Liability } from "@/contexts/FormContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useProfiles } from "@/contexts/ProfileContext";
@@ -116,6 +116,24 @@ const AssetsForm = () => {
       addItem: "Hinzufügen",
       notes: "Zusätzliche Hinweise",
       selectOwnership: "Nutzungsart wählen",
+      liabilities: "Verbindlichkeiten",
+      liabilitiesDesc: "Laufende Kredite, Darlehen und sonstige Verbindlichkeiten",
+      liabilityType: "Art der Verbindlichkeit",
+      selectLiabilityType: "Art wählen",
+      liabilityTypes: {
+        loan: "Ratenkredit",
+        mortgage: "Hypothek / Baufinanzierung",
+        creditCard: "Kreditkartenschulden",
+        leasing: "Leasing",
+        private: "Privatdarlehen",
+        other: "Sonstige",
+      },
+      creditor: "Gläubiger / Kreditgeber",
+      creditorPlaceholder: "z.B. Sparkasse, Privatperson",
+      totalAmount: "Gesamtbetrag (offen)",
+      monthlyPayment: "Monatliche Rate (optional)",
+      liabilityNotes: "Hinweise",
+      liabilityNotesPlaceholder: "z.B. Laufzeit bis 2030, Sondertilgung möglich",
     },
     en: {
       disclaimer:
@@ -202,13 +220,31 @@ const AssetsForm = () => {
       addItem: "Add",
       notes: "Additional Notes",
       selectOwnership: "Select usage type",
+      liabilities: "Liabilities",
+      liabilitiesDesc: "Outstanding loans, mortgages and other liabilities",
+      liabilityType: "Liability Type",
+      selectLiabilityType: "Select type",
+      liabilityTypes: {
+        loan: "Installment Loan",
+        mortgage: "Mortgage",
+        creditCard: "Credit Card Debt",
+        leasing: "Leasing",
+        private: "Private Loan",
+        other: "Other",
+      },
+      creditor: "Creditor / Lender",
+      creditorPlaceholder: "e.g. Bank, Private person",
+      totalAmount: "Total Amount (outstanding)",
+      monthlyPayment: "Monthly Payment (optional)",
+      liabilityNotes: "Notes",
+      liabilityNotesPlaceholder: "e.g. Term until 2030, early repayment possible",
     },
   };
 
   const texts = t[language];
 
-  const addItem = (field: "bankAccounts" | "properties" | "vehicles" | "insurances" | "valuables") => {
-    const newItems = {
+  const addItem = (field: "bankAccounts" | "properties" | "vehicles" | "insurances" | "valuables" | "liabilities") => {
+    const newItems: Record<string, unknown[]> = {
       bankAccounts: [...data.bankAccounts, { institute: "", purpose: "", balance: "", currency: "EUR" }],
       properties: [
         ...data.properties,
@@ -233,6 +269,10 @@ const AssetsForm = () => {
         { type: "", typeOther: "", company: "", companyOther: "", policyNumber: "", surrenderValue: "", surrenderValueCurrency: "EUR" },
       ],
       valuables: [...data.valuables, { description: "", location: "" }],
+      liabilities: [
+        ...(data.liabilities || []),
+        { type: "", creditor: "", amount: "", amountCurrency: "EUR", monthlyPayment: "", monthlyPaymentCurrency: "EUR", notes: "" } as Liability,
+      ],
     };
     updateSection("assets", { ...data, [field]: newItems[field] });
   };
@@ -246,7 +286,7 @@ const AssetsForm = () => {
     label: label as string,
   }));
 
-  const removeItem = (field: "bankAccounts" | "properties" | "vehicles" | "insurances" | "valuables", index: number) => {
+  const removeItem = (field: "bankAccounts" | "properties" | "vehicles" | "insurances" | "valuables" | "liabilities", index: number) => {
     const newArray = [...(data[field] || [])];
     newArray.splice(index, 1);
     updateSection("assets", { ...data, [field]: newArray });
@@ -661,6 +701,91 @@ const AssetsForm = () => {
           </div>
         ))}
         <Button variant="outline" size="sm" onClick={() => addItem("valuables")}>
+          <Plus className="mr-2 h-4 w-4" /> {texts.addItem}
+        </Button>
+      </div>
+
+      {/* Liabilities */}
+      <div className="space-y-4 border-t border-border pt-6">
+        <div className="flex items-center gap-2 mb-1">
+          <Landmark className="h-5 w-5 text-primary" />
+          <h3 className="font-serif text-lg font-semibold text-foreground">{texts.liabilities}</h3>
+        </div>
+        <p className="text-sm text-muted-foreground">{texts.liabilitiesDesc}</p>
+        {(data.liabilities || []).map((liability, i) => (
+          <div key={i} className="flex gap-3 items-start">
+            <div className="flex-1 space-y-3">
+              <div className="grid gap-3 md:grid-cols-2">
+                <Select
+                  value={liability.type || ""}
+                  onValueChange={(value) => {
+                    updateItem("liabilities", i, "type", value);
+                    handleBlur();
+                  }}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder={texts.selectLiabilityType} />
+                  </SelectTrigger>
+                  <SelectContent className="bg-background border border-border shadow-lg z-50">
+                    {Object.entries(texts.liabilityTypes).map(([key, label]) => (
+                      <SelectItem key={key} value={key}>{label}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Input
+                  value={liability.creditor || ""}
+                  onChange={(e) => updateItem("liabilities", i, "creditor", e.target.value)}
+                  onBlur={handleBlur}
+                  placeholder={texts.creditorPlaceholder}
+                />
+              </div>
+              <div className="grid gap-3 md:grid-cols-2">
+                <div className="flex gap-2">
+                  <Input
+                    value={liability.amount || ""}
+                    onChange={(e) => updateItem("liabilities", i, "amount", e.target.value)}
+                    onBlur={handleBlur}
+                    placeholder={texts.totalAmount}
+                    className="flex-1"
+                  />
+                  <CurrencySelect
+                    value={liability.amountCurrency || "EUR"}
+                    onValueChange={(value) => {
+                      updateItem("liabilities", i, "amountCurrency", value);
+                      handleBlur();
+                    }}
+                  />
+                </div>
+                <div className="flex gap-2">
+                  <Input
+                    value={liability.monthlyPayment || ""}
+                    onChange={(e) => updateItem("liabilities", i, "monthlyPayment", e.target.value)}
+                    onBlur={handleBlur}
+                    placeholder={texts.monthlyPayment}
+                    className="flex-1"
+                  />
+                  <CurrencySelect
+                    value={liability.monthlyPaymentCurrency || "EUR"}
+                    onValueChange={(value) => {
+                      updateItem("liabilities", i, "monthlyPaymentCurrency", value);
+                      handleBlur();
+                    }}
+                  />
+                </div>
+              </div>
+              <Input
+                value={liability.notes || ""}
+                onChange={(e) => updateItem("liabilities", i, "notes", e.target.value)}
+                onBlur={handleBlur}
+                placeholder={texts.liabilityNotesPlaceholder}
+              />
+            </div>
+            <Button variant="ghost" size="icon" onClick={() => removeItem("liabilities", i)}>
+              <Trash2 className="h-4 w-4 text-destructive" />
+            </Button>
+          </div>
+        ))}
+        <Button variant="outline" size="sm" onClick={() => addItem("liabilities")}>
           <Plus className="mr-2 h-4 w-4" /> {texts.addItem}
         </Button>
       </div>
