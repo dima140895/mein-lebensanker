@@ -8,7 +8,7 @@ const HeroSection = () => {
 
   return (
     <section className="relative min-h-[55vh] sm:min-h-[70vh] md:min-h-[85vh] flex items-center">
-      <div className="container relative mx-auto px-4 py-4 sm:py-10 md:py-20">
+      <div className="container relative mx-auto px-4 py-4 pt-16 sm:pt-10 sm:py-10 md:py-20">
         <div className="grid lg:grid-cols-2 gap-4 sm:gap-8 md:gap-12 items-center">
           <div
             key={`hero-content-${language}`}
@@ -16,11 +16,11 @@ const HeroSection = () => {
           >
             {/* Badge - tree metaphor text */}
             <div className="mb-3 sm:mb-4 md:mb-6 inline-flex items-center gap-2 rounded-full border border-sage/20 bg-white/80 backdrop-blur-sm px-3 sm:px-3 md:px-4 py-1.5 sm:py-1.5 md:py-2 text-xs sm:text-xs md:text-sm font-medium text-sage-dark shadow-sm">
-              <span className="relative flex h-1.5 sm:h-1.5 md:h-2 w-1.5 sm:w-1.5 md:w-2">
+              <span className="relative flex h-1.5 sm:h-1.5 md:h-2 w-1.5 sm:w-1.5 md:w-2 flex-shrink-0">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sage opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-1.5 sm:h-1.5 md:h-2 w-1.5 sm:w-1.5 md:w-2 bg-sage"></span>
               </span>
-              <span className="line-clamp-1">{t('hero.treeMetaphor')}</span>
+              <span>{t('hero.treeMetaphor')}</span>
             </div>
 
             <h1 className="font-serif text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold leading-tight text-foreground">
@@ -35,7 +35,7 @@ const HeroSection = () => {
               {t('hero.description')}
             </p>
 
-            <div className="mt-5 sm:mt-6 md:mt-8 flex flex-col sm:flex-row items-stretch sm:items-start gap-3 sm:gap-3 md:gap-4">
+            <div className="mt-5 sm:mt-6 md:mt-8 flex flex-col sm:flex-row items-stretch sm:items-start gap-3 sm:gap-3 md:gap-4 px-4 sm:px-0">
               <button
                 onClick={() => navigate('/dashboard')}
                 className="group relative inline-flex items-center justify-center gap-2 rounded-full bg-primary px-6 sm:px-6 md:px-7 py-3 sm:py-3 md:py-3.5 text-base sm:text-sm md:text-base font-medium text-primary-foreground shadow-lg transition-all hover:shadow-xl active:scale-[0.98]"
