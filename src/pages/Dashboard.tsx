@@ -20,7 +20,7 @@ import DigitalForm from '@/components/forms/DigitalForm';
 import WishesForm from '@/components/forms/WishesForm';
 import DocumentsForm from '@/components/forms/DocumentsForm';
 import ContactsForm from '@/components/forms/ContactsForm';
-import AboutSection from '@/components/sections/AboutSection';
+
 import AdvisorFinderSection from '@/components/sections/AdvisorFinderSection';
 
 import ShareLinkManager from '@/components/ShareLinkManager';
@@ -243,7 +243,6 @@ const DashboardContent = () => {
 
   const renderContent = () => {
     switch (activeSection) {
-      case 'about': return <AboutSection />;
       case 'advisors': return <AdvisorFinderSection />;
       case 'share': return <ShareLinkManager />;
       case 'export': return <DataExport />;
