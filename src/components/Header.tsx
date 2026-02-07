@@ -286,7 +286,9 @@ const Header = () => {
           <button onClick={() => setEmailVerified(false)} className="ml-4 opacity-80 hover:opacity-100">✕</button>
         </div>
       )}
-      <header className={`sticky top-0 z-50 bg-background/95 backdrop-blur-md animate-fade-in ${emailVerified ? 'mt-10' : ''}`} style={{ boxShadow: '0 4px 16px -4px hsl(40 30% 90% / 0.6)' }}>
+      <header className={`sticky top-0 z-50 bg-background/95 backdrop-blur-md animate-fade-in ${emailVerified ? 'mt-10' : ''}`}>
+        {/* Soft gradient fade below header */}
+        <div className="absolute left-0 right-0 bottom-0 translate-y-full h-8 pointer-events-none z-50" style={{ background: 'linear-gradient(to bottom, hsl(40 30% 97% / 0.95), transparent)' }} />
       <div className="container mx-auto flex items-center justify-between px-4 py-3 md:py-4">
         {/* Left side: Burger Menu + Logo */}
         <div className="flex items-center gap-3">
