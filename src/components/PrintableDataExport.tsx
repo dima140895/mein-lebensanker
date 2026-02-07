@@ -1,4 +1,6 @@
 import { forwardRef } from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
+import { Anchor, User, Wallet, Globe, Heart, FileText, Phone } from 'lucide-react';
 
 interface VorsorgeData {
   section_key: string;
@@ -182,7 +184,7 @@ const PrintableDataExport = forwardRef<HTMLDivElement, PrintableDataExportProps>
       );
     };
 
-    const SectionHeader = ({ title, icon }: { title: string; icon: string }) => (
+    const SectionHeader = ({ title, IconComponent }: { title: string; IconComponent: typeof User }) => (
       <div style={{
         display: 'flex',
         alignItems: 'center',
@@ -192,7 +194,17 @@ const PrintableDataExport = forwardRef<HTMLDivElement, PrintableDataExportProps>
         borderRadius: '8px 8px 0 0',
         marginTop: '24px',
       }}>
-        <span style={{ fontSize: '20px' }}>{icon}</span>
+        <div style={{
+          width: '34px',
+          height: '34px',
+          background: 'rgba(255,255,255,0.2)',
+          borderRadius: '10px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}>
+          <span dangerouslySetInnerHTML={{ __html: renderToStaticMarkup(<IconComponent size={18} color="white" />) }} />
+        </div>
         <span style={{ color: 'white', fontSize: '16px', fontWeight: 600, fontFamily: 'Playfair Display, Georgia, serif' }}>
           {title}
         </span>
@@ -453,12 +465,12 @@ const PrintableDataExport = forwardRef<HTMLDivElement, PrintableDataExportProps>
     };
 
     const sectionConfig = [
-      { key: 'personal', icon: '👤', title: texts.personal },
-      { key: 'assets', icon: '💰', title: texts.assets },
-      { key: 'digital', icon: '🌐', title: texts.digital },
-      { key: 'wishes', icon: '💚', title: texts.wishes },
-      { key: 'documents', icon: '📄', title: texts.documents },
-      { key: 'contacts', icon: '📞', title: texts.contacts },
+      { key: 'personal', IconComponent: User, title: texts.personal },
+      { key: 'assets', IconComponent: Wallet, title: texts.assets },
+      { key: 'digital', IconComponent: Globe, title: texts.digital },
+      { key: 'wishes', IconComponent: Heart, title: texts.wishes },
+      { key: 'documents', IconComponent: FileText, title: texts.documents },
+      { key: 'contacts', IconComponent: Phone, title: texts.contacts },
     ];
 
     return (
@@ -506,7 +518,17 @@ const PrintableDataExport = forwardRef<HTMLDivElement, PrintableDataExportProps>
                   gap: '12px',
                   marginBottom: '8px',
                 }}>
-                  <span style={{ fontSize: '32px' }}>⚓</span>
+                  <div style={{
+                    width: '56px',
+                    height: '56px',
+                    background: 'rgba(255,255,255,0.2)',
+                    borderRadius: '16px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                    <span dangerouslySetInnerHTML={{ __html: renderToStaticMarkup(<Anchor size={28} color="white" />) }} />
+                  </div>
                   <span style={{
                     fontFamily: 'Playfair Display, Georgia, serif',
                     fontSize: '28px',
@@ -546,7 +568,7 @@ const PrintableDataExport = forwardRef<HTMLDivElement, PrintableDataExportProps>
 
                 return (
                   <div key={section.key} className="no-break" style={{ marginBottom: '16px' }}>
-                    <SectionHeader title={section.title} icon={section.icon} />
+                    <SectionHeader title={section.title} IconComponent={section.IconComponent} />
                     {sectionRenderers[section.key]?.(sectionData.data, profile.id)}
                   </div>
                 );
@@ -578,7 +600,7 @@ const PrintableDataExport = forwardRef<HTMLDivElement, PrintableDataExportProps>
                   fontSize: '12px',
                   fontWeight: 500,
                 }}>
-                  <span>⚓</span>
+                  <span dangerouslySetInnerHTML={{ __html: renderToStaticMarkup(<Anchor size={14} color="#6b8f71" />) }} />
                   <span>{texts.footer}</span>
                 </div>
               </div>

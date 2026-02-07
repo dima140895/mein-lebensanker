@@ -1,4 +1,5 @@
 import { forwardRef } from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
 import { Anchor, User, Wallet, Globe, Heart, FileText, Phone } from 'lucide-react';
 
 interface VorsorgeData {
@@ -530,12 +531,20 @@ const PrintableRelativesSummary = forwardRef<HTMLDivElement, PrintableRelativesS
       return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
     };
 
+    const infoItemStyle: React.CSSProperties = { display: 'flex', padding: '8px 0', borderBottom: '1px solid #e8e8e8' };
+    const labelStyle: React.CSSProperties = { width: '140px', color: '#6b7280', fontSize: '13px', flexShrink: 0 };
+    const valueStyle: React.CSSProperties = { color: '#1f2937', fontSize: '13px', fontWeight: 500 };
+    const subsectionStyle: React.CSSProperties = { marginTop: '16px' };
+    const subsectionTitleStyle: React.CSSProperties = { fontSize: '14px', fontWeight: 600, color: '#374151', marginBottom: '12px' };
+    const cardStyle: React.CSSProperties = { background: '#fafafa', border: '1px solid #e5e5e5', borderRadius: '6px', padding: '12px 16px', marginBottom: '8px' };
+    const uploadedDocsStyle: React.CSSProperties = { margin: '10px 0 18px 0', padding: '14px 16px', background: '#f9fafb', borderRadius: '6px', border: '1px dashed #e5e5e5' };
+
     const renderInfoItem = (label: string, value: unknown) => {
       if (!value || (typeof value === 'string' && !value.trim())) return null;
       return (
-        <div className="print-info-item">
-          <span className="print-label">{label}:</span>
-          <span className="print-value">{String(value)}</span>
+        <div style={infoItemStyle}>
+          <span style={labelStyle}>{label}</span>
+          <span style={valueStyle}>{String(value)}</span>
         </div>
       );
     };
@@ -549,7 +558,7 @@ const PrintableRelativesSummary = forwardRef<HTMLDivElement, PrintableRelativesS
       switch (sectionKey) {
         case 'personal':
           return (
-            <div className="print-section-content">
+            <>
               {renderInfoItem(texts.name, sectionData.fullName)}
               {renderInfoItem(texts.birthDate, sectionData.birthDate)}
               {renderInfoItem(texts.address, sectionData.address)}
@@ -560,8 +569,8 @@ const PrintableRelativesSummary = forwardRef<HTMLDivElement, PrintableRelativesS
               {Array.isArray(sectionData.medications) && (sectionData.medications as Array<Record<string, unknown>>).some(m =>
                 Object.values(m || {}).some(v => typeof v === 'string' ? v.trim() !== '' : v != null)
               ) && (
-                <div className="print-subsection">
-                  <div className="print-subsection-title">{texts.medications}</div>
+                <div style={subsectionStyle}>
+                  <div style={subsectionTitleStyle}>{texts.medications}</div>
                   {renderArrayItems(sectionData.medications as Array<Record<string, unknown>>, (m, i) => {
                     const name = (m.name as string | undefined)?.trim();
                     const dosage = (m.dosage as string | undefined)?.trim();
@@ -572,10 +581,10 @@ const PrintableRelativesSummary = forwardRef<HTMLDivElement, PrintableRelativesS
                     const notes = (m.notes as string | undefined)?.trim();
                     const meta = [dosage, frequency, timing].filter(Boolean).join(' · ');
                     return (
-                      <div key={i} className="print-card">
-                        {name && <div className="print-info-item"><span className="print-label">{texts.name}:</span> <span className="print-value">{name}</span></div>}
-                        {meta && <div className="print-info-item"><span className="print-label">{texts.infoLabel}:</span> <span className="print-value">{meta}</span></div>}
-                        {notes && <div className="print-info-item"><span className="print-label">{texts.notes}:</span> <span className="print-value">{notes}</span></div>}
+                      <div key={i} style={cardStyle}>
+                        {name && <div style={infoItemStyle}><span style={labelStyle}>{texts.name}</span> <span style={valueStyle}>{name}</span></div>}
+                        {meta && <div style={infoItemStyle}><span style={labelStyle}>{texts.infoLabel}</span> <span style={valueStyle}>{meta}</span></div>}
+                        {notes && <div style={infoItemStyle}><span style={labelStyle}>{texts.notes}</span> <span style={valueStyle}>{notes}</span></div>}
                       </div>
                     );
                   })}
@@ -585,8 +594,8 @@ const PrintableRelativesSummary = forwardRef<HTMLDivElement, PrintableRelativesS
               {Array.isArray(sectionData.allergies) && (sectionData.allergies as Array<Record<string, unknown>>).some(a =>
                 Object.values(a || {}).some(v => typeof v === 'string' ? v.trim() !== '' : v != null)
               ) && (
-                <div className="print-subsection">
-                  <div className="print-subsection-title">{texts.allergies}</div>
+                <div style={subsectionStyle}>
+                  <div style={subsectionTitleStyle}>{texts.allergies}</div>
                   {renderArrayItems(sectionData.allergies as Array<Record<string, unknown>>, (a, i) => {
                     const name = (a.name as string | undefined)?.trim();
                     const typeKey = (a.type as string | undefined)?.trim();
@@ -597,11 +606,11 @@ const PrintableRelativesSummary = forwardRef<HTMLDivElement, PrintableRelativesS
                     const notes = (a.notes as string | undefined)?.trim();
                     const meta = [type, severity].filter(Boolean).join(' · ');
                     return (
-                      <div key={i} className="print-card">
-                        {name && <div className="print-info-item"><span className="print-label">{texts.name}:</span> <span className="print-value">{name}</span></div>}
-                        {meta && <div className="print-info-item"><span className="print-label">{texts.infoLabel}:</span> <span className="print-value">{meta}</span></div>}
-                        {reaction && <div className="print-info-item"><span className="print-label">{texts.reactionLabel}:</span> <span className="print-value">{reaction}</span></div>}
-                        {notes && <div className="print-info-item"><span className="print-label">{texts.notes}:</span> <span className="print-value">{notes}</span></div>}
+                      <div key={i} style={cardStyle}>
+                        {name && <div style={infoItemStyle}><span style={labelStyle}>{texts.name}</span> <span style={valueStyle}>{name}</span></div>}
+                        {meta && <div style={infoItemStyle}><span style={labelStyle}>{texts.infoLabel}</span> <span style={valueStyle}>{meta}</span></div>}
+                        {reaction && <div style={infoItemStyle}><span style={labelStyle}>{texts.reactionLabel}</span> <span style={valueStyle}>{reaction}</span></div>}
+                        {notes && <div style={infoItemStyle}><span style={labelStyle}>{texts.notes}</span> <span style={valueStyle}>{notes}</span></div>}
                       </div>
                     );
                   })}
@@ -609,33 +618,33 @@ const PrintableRelativesSummary = forwardRef<HTMLDivElement, PrintableRelativesS
               )}
 
               {(sectionData.trustedPerson1 || sectionData.trustedPerson2) && (
-                <div className="print-subsection">
-                  <div className="print-subsection-title">{texts.trustedPersons}</div>
+                <div style={subsectionStyle}>
+                  <div style={subsectionTitleStyle}>{texts.trustedPersons}</div>
                   {sectionData.trustedPerson1 && (
-                    <div className="print-value">
-                      {String(sectionData.trustedPerson1)}
+                    <div style={{ fontSize: '13px', color: '#4b5563', padding: '4px 0' }}>
+                      • {String(sectionData.trustedPerson1)}
                       {sectionData.trustedPerson1Phone && ` (${sectionData.trustedPerson1Phone})`}
                     </div>
                   )}
                   {sectionData.trustedPerson2 && (
-                    <div className="print-value">
-                      {String(sectionData.trustedPerson2)}
+                    <div style={{ fontSize: '13px', color: '#4b5563', padding: '4px 0' }}>
+                      • {String(sectionData.trustedPerson2)}
                       {sectionData.trustedPerson2Phone && ` (${sectionData.trustedPerson2Phone})`}
                     </div>
                   )}
                 </div>
               )}
               {sectionData.emergencyContact && (
-                <div className="print-subsection">
-                  <div className="print-subsection-title">{texts.emergencyContact}</div>
-                  <div className="print-value">
+                <div style={subsectionStyle}>
+                  <div style={subsectionTitleStyle}>{texts.emergencyContact}</div>
+                  <div style={{ fontSize: '13px', color: '#4b5563' }}>
                     {String(sectionData.emergencyContact)}
                     {sectionData.emergencyPhone && ` (${sectionData.emergencyPhone})`}
                   </div>
                 </div>
               )}
               {renderInfoItem(texts.notes, sectionData.notes)}
-            </div>
+            </>
           );
 
         case 'assets':
@@ -654,60 +663,60 @@ const PrintableRelativesSummary = forwardRef<HTMLDivElement, PrintableRelativesS
           ) || [];
 
           return (
-            <div className="print-section-content">
+            <>
               {bankAccounts.length > 0 && (
-                <div className="print-subsection">
-                  <div className="print-subsection-title">{texts.bankAccounts}</div>
+                <div style={{ marginBottom: '20px' }}>
+                  <div style={subsectionTitleStyle}>{texts.bankAccounts}</div>
                   {bankAccounts.map((acc, i) => (
-                    <div key={i} className="print-card">
-                      {acc.institute && <div className="print-info-item"><span className="print-label">{texts.institute}:</span> <span className="print-value">{String(acc.institute)}</span></div>}
-                      {acc.purpose && <div className="print-info-item"><span className="print-label">{texts.purpose}:</span> <span className="print-value">{String(acc.purpose)}</span></div>}
-                      {acc.balance && <div className="print-info-item"><span className="print-label">{texts.balance}:</span> <span className="print-value">{String(acc.balance)}</span></div>}
+                    <div key={i} style={cardStyle}>
+                      {acc.institute && <div style={infoItemStyle}><span style={labelStyle}>{texts.institute}</span> <span style={valueStyle}>{String(acc.institute)}</span></div>}
+                      {acc.purpose && <div style={infoItemStyle}><span style={labelStyle}>{texts.purpose}</span> <span style={valueStyle}>{String(acc.purpose)}</span></div>}
+                      {acc.balance && <div style={infoItemStyle}><span style={labelStyle}>{texts.balance}</span> <span style={valueStyle}>{String(acc.balance)}</span></div>}
                     </div>
                   ))}
                 </div>
               )}
               {properties.length > 0 && (
-                <div className="print-subsection">
-                  <div className="print-subsection-title">{texts.properties}</div>
+                <div style={{ marginBottom: '20px' }}>
+                  <div style={subsectionTitleStyle}>{texts.properties}</div>
                   {properties.map((prop, i) => (
-                    <div key={i} className="print-card">
-                      {prop.address && <div className="print-info-item"><span className="print-label">{texts.propertyAddress}:</span> <span className="print-value">{String(prop.address)}</span></div>}
-                      {prop.type && <div className="print-info-item"><span className="print-label">{texts.propertyType}:</span> <span className="print-value">{String(prop.type)}</span></div>}
-                      {prop.ownership && <div className="print-info-item"><span className="print-label">{texts.ownership}:</span> <span className="print-value">{getOwnershipLabel(String(prop.ownership), String(prop.ownershipOther || ''))}</span></div>}
-                      {prop.rentalIncome && <div className="print-info-item"><span className="print-label">{texts.rentalIncome}:</span> <span className="print-value">{String(prop.rentalIncome)}</span></div>}
-                      {prop.financingStatus && <div className="print-info-item"><span className="print-label">{texts.financingStatus}:</span> <span className="print-value">{getFinancingLabel(String(prop.financingStatus))}</span></div>}
-                      {prop.outstandingLoan && <div className="print-info-item"><span className="print-label">{texts.outstandingLoan}:</span> <span className="print-value">{String(prop.outstandingLoan)}</span></div>}
+                    <div key={i} style={cardStyle}>
+                      {prop.address && <div style={infoItemStyle}><span style={labelStyle}>{texts.propertyAddress}</span> <span style={valueStyle}>{String(prop.address)}</span></div>}
+                      {prop.type && <div style={infoItemStyle}><span style={labelStyle}>{texts.propertyType}</span> <span style={valueStyle}>{String(prop.type)}</span></div>}
+                      {prop.ownership && <div style={infoItemStyle}><span style={labelStyle}>{texts.ownership}</span> <span style={valueStyle}>{getOwnershipLabel(String(prop.ownership), String(prop.ownershipOther || ''))}</span></div>}
+                      {prop.rentalIncome && <div style={infoItemStyle}><span style={labelStyle}>{texts.rentalIncome}</span> <span style={valueStyle}>{String(prop.rentalIncome)}</span></div>}
+                      {prop.financingStatus && <div style={infoItemStyle}><span style={labelStyle}>{texts.financingStatus}</span> <span style={valueStyle}>{getFinancingLabel(String(prop.financingStatus))}</span></div>}
+                      {prop.outstandingLoan && <div style={infoItemStyle}><span style={labelStyle}>{texts.outstandingLoan}</span> <span style={valueStyle}>{String(prop.outstandingLoan)}</span></div>}
                     </div>
                   ))}
                 </div>
               )}
               {insurances.length > 0 && (
-                <div className="print-subsection">
-                  <div className="print-subsection-title">{texts.insurances}</div>
+                <div style={{ marginBottom: '20px' }}>
+                  <div style={subsectionTitleStyle}>{texts.insurances}</div>
                   {insurances.map((ins, i) => (
-                    <div key={i} className="print-card">
-                      {ins.type && <div className="print-info-item"><span className="print-label">{texts.insuranceType}:</span> <span className="print-value">{ins.type === 'other' && ins.typeOther ? String(ins.typeOther) : getInsuranceTypeLabel(String(ins.type))}</span></div>}
-                      {ins.company && <div className="print-info-item"><span className="print-label">{texts.insuranceCompany}:</span> <span className="print-value">{ins.company === 'other' && ins.companyOther ? String(ins.companyOther) : getCompanyLabel(String(ins.company))}</span></div>}
-                      {ins.policyNumber && <div className="print-info-item"><span className="print-label">{texts.policyNumber}:</span> <span className="print-value">{String(ins.policyNumber)}</span></div>}
-                      {ins.surrenderValue && <div className="print-info-item"><span className="print-label">{texts.surrenderValue}:</span> <span className="print-value">{String(ins.surrenderValue)}</span></div>}
+                    <div key={i} style={cardStyle}>
+                      {ins.type && <div style={infoItemStyle}><span style={labelStyle}>{texts.insuranceType}</span> <span style={valueStyle}>{ins.type === 'other' && ins.typeOther ? String(ins.typeOther) : getInsuranceTypeLabel(String(ins.type))}</span></div>}
+                      {ins.company && <div style={infoItemStyle}><span style={labelStyle}>{texts.insuranceCompany}</span> <span style={valueStyle}>{ins.company === 'other' && ins.companyOther ? String(ins.companyOther) : getCompanyLabel(String(ins.company))}</span></div>}
+                      {ins.policyNumber && <div style={infoItemStyle}><span style={labelStyle}>{texts.policyNumber}</span> <span style={valueStyle}>{String(ins.policyNumber)}</span></div>}
+                      {ins.surrenderValue && <div style={infoItemStyle}><span style={labelStyle}>{texts.surrenderValue}</span> <span style={valueStyle}>{String(ins.surrenderValue)}</span></div>}
                     </div>
                   ))}
                 </div>
               )}
               {valuables.length > 0 && (
-                <div className="print-subsection">
-                  <div className="print-subsection-title">{texts.valuables}</div>
+                <div>
+                  <div style={subsectionTitleStyle}>{texts.valuables}</div>
                   {valuables.map((val, i) => (
-                    <div key={i} className="print-card">
-                      {val.description && <div className="print-info-item"><span className="print-label">{texts.description}:</span> <span className="print-value">{String(val.description)}</span></div>}
-                      {val.location && <div className="print-info-item"><span className="print-label">{texts.location}:</span> <span className="print-value">{String(val.location)}</span></div>}
+                    <div key={i} style={cardStyle}>
+                      {val.description && <div style={infoItemStyle}><span style={labelStyle}>{texts.description}</span> <span style={valueStyle}>{String(val.description)}</span></div>}
+                      {val.location && <div style={infoItemStyle}><span style={labelStyle}>{texts.location}</span> <span style={valueStyle}>{String(val.location)}</span></div>}
                     </div>
                   ))}
                 </div>
               )}
               {renderInfoItem(texts.notes, sectionData.notes)}
-            </div>
+            </>
           );
 
         case 'digital':
@@ -722,58 +731,57 @@ const PrintableRelativesSummary = forwardRef<HTMLDivElement, PrintableRelativesS
           ) || [];
 
           return (
-            <div className="print-section-content">
+            <>
               {emailAccounts.length > 0 && (
-                <div className="print-subsection">
-                  <div className="print-subsection-title">{texts.emailAccounts}</div>
+                <div style={{ marginBottom: '16px' }}>
+                  <div style={subsectionTitleStyle}>{texts.emailAccounts}</div>
                   {emailAccounts.map((item, i) => (
-                    <div key={i} className="print-card">
-                      {item.provider && <div className="print-info-item"><span className="print-label">{texts.provider}:</span> <span className="print-value">{String(item.provider)}</span></div>}
-                      {item.email && <div className="print-info-item"><span className="print-label">{texts.emailAddress}:</span> <span className="print-value">{String(item.email)}</span></div>}
+                    <div key={i} style={cardStyle}>
+                      {item.provider && <div style={infoItemStyle}><span style={labelStyle}>{texts.provider}</span> <span style={valueStyle}>{String(item.provider)}</span></div>}
+                      {item.email && <div style={infoItemStyle}><span style={labelStyle}>{texts.emailAddress}</span> <span style={valueStyle}>{String(item.email)}</span></div>}
                     </div>
                   ))}
                 </div>
               )}
               {socialMedia.length > 0 && (
-                <div className="print-subsection">
-                  <div className="print-subsection-title">{texts.socialMedia}</div>
+                <div style={{ marginBottom: '16px' }}>
+                  <div style={subsectionTitleStyle}>{texts.socialMedia}</div>
                   {socialMedia.map((item, i) => (
-                    <div key={i} className="print-card">
-                      {item.platform && <div className="print-info-item"><span className="print-label">{texts.platform}:</span> <span className="print-value">{String(item.platform)}</span></div>}
-                      {item.username && <div className="print-info-item"><span className="print-label">{texts.username}:</span> <span className="print-value">{String(item.username)}</span></div>}
+                    <div key={i} style={cardStyle}>
+                      {item.platform && <div style={infoItemStyle}><span style={labelStyle}>{texts.platform}</span> <span style={valueStyle}>{String(item.platform)}</span></div>}
+                      {item.username && <div style={infoItemStyle}><span style={labelStyle}>{texts.username}</span> <span style={valueStyle}>{String(item.username)}</span></div>}
                     </div>
                   ))}
                 </div>
               )}
               {subscriptions.length > 0 && (
-                <div className="print-subsection">
-                  <div className="print-subsection-title">{texts.subscriptions}</div>
+                <div style={{ marginBottom: '16px' }}>
+                  <div style={subsectionTitleStyle}>{texts.subscriptions}</div>
                   {subscriptions.map((item, i) => (
-                    <div key={i} className="print-card">
-                      {item.service && <div className="print-info-item"><span className="print-label">{texts.service}:</span> <span className="print-value">{String(item.service)}</span></div>}
+                    <div key={i} style={cardStyle}>
+                      {item.service && <div style={infoItemStyle}><span style={labelStyle}>{texts.service}</span> <span style={valueStyle}>{String(item.service)}</span></div>}
                     </div>
                   ))}
                 </div>
               )}
               {renderInfoItem(texts.passwordManager, sectionData.passwordManagerInfo)}
               {renderInfoItem(texts.notes, sectionData.notes)}
-            </div>
+            </>
           );
 
         case 'wishes':
           return (
-            <div className="print-section-content">
+            <>
               {renderInfoItem(texts.medicalWishes, sectionData.medicalWishes)}
               {renderInfoItem(texts.carePreferences, sectionData.carePreferences)}
               {renderInfoItem(texts.funeralWishes, sectionData.funeralWishes)}
               {renderInfoItem(texts.organDonation, sectionData.organDonation)}
               {renderInfoItem(texts.otherWishes, sectionData.otherWishes)}
               {renderInfoItem(texts.notes, sectionData.notes)}
-            </div>
+            </>
           );
 
         case 'documents':
-          // Group uploaded documents by type - filter by profile if profileId is available
           const documentTypeOrder = ['testament', 'power-of-attorney', 'living-will', 'insurance', 'property', 'other'];
           const profileFilteredDocs = currentProfileId 
             ? sharedDocuments.filter(doc => doc.profileId === currentProfileId)
@@ -784,57 +792,57 @@ const PrintableRelativesSummary = forwardRef<HTMLDivElement, PrintableRelativesS
           }, {} as Record<string, SharedDocument[]>);
 
           return (
-            <div className="print-section-content">
+            <>
               {renderInfoItem(texts.testament, sectionData.testamentLocation)}
               {groupedUploadedDocs['testament']?.length > 0 && (
-                <div className="print-uploaded-docs">
+                <div style={uploadedDocsStyle}>
                   {groupedUploadedDocs['testament'].map((doc, i) => (
-                    <div key={i} className="print-doc-item">📄 {doc.name} ({formatFileSize(doc.size)})</div>
+                    <div key={i} style={{ fontSize: '13px', color: '#4b5563', padding: '4px 0' }}>📄 {doc.name} ({formatFileSize(doc.size)})</div>
                   ))}
                 </div>
               )}
               {renderInfoItem(texts.powerOfAttorney, sectionData.powerOfAttorneyLocation)}
               {groupedUploadedDocs['power-of-attorney']?.length > 0 && (
-                <div className="print-uploaded-docs">
+                <div style={uploadedDocsStyle}>
                   {groupedUploadedDocs['power-of-attorney'].map((doc, i) => (
-                    <div key={i} className="print-doc-item">📄 {doc.name} ({formatFileSize(doc.size)})</div>
+                    <div key={i} style={{ fontSize: '13px', color: '#4b5563', padding: '4px 0' }}>📄 {doc.name} ({formatFileSize(doc.size)})</div>
                   ))}
                 </div>
               )}
               {renderInfoItem(texts.livingWill, sectionData.livingWillLocation)}
               {groupedUploadedDocs['living-will']?.length > 0 && (
-                <div className="print-uploaded-docs">
+                <div style={uploadedDocsStyle}>
                   {groupedUploadedDocs['living-will'].map((doc, i) => (
-                    <div key={i} className="print-doc-item">📄 {doc.name} ({formatFileSize(doc.size)})</div>
+                    <div key={i} style={{ fontSize: '13px', color: '#4b5563', padding: '4px 0' }}>📄 {doc.name} ({formatFileSize(doc.size)})</div>
                   ))}
                 </div>
               )}
               {renderInfoItem(texts.insuranceDocs, sectionData.insuranceDocsLocation)}
               {groupedUploadedDocs['insurance']?.length > 0 && (
-                <div className="print-uploaded-docs">
+                <div style={uploadedDocsStyle}>
                   {groupedUploadedDocs['insurance'].map((doc, i) => (
-                    <div key={i} className="print-doc-item">📄 {doc.name} ({formatFileSize(doc.size)})</div>
+                    <div key={i} style={{ fontSize: '13px', color: '#4b5563', padding: '4px 0' }}>📄 {doc.name} ({formatFileSize(doc.size)})</div>
                   ))}
                 </div>
               )}
               {renderInfoItem(texts.propertyDocs, sectionData.propertyDocsLocation)}
               {groupedUploadedDocs['property']?.length > 0 && (
-                <div className="print-uploaded-docs">
+                <div style={uploadedDocsStyle}>
                   {groupedUploadedDocs['property'].map((doc, i) => (
-                    <div key={i} className="print-doc-item">📄 {doc.name} ({formatFileSize(doc.size)})</div>
+                    <div key={i} style={{ fontSize: '13px', color: '#4b5563', padding: '4px 0' }}>📄 {doc.name} ({formatFileSize(doc.size)})</div>
                   ))}
                 </div>
               )}
               {renderInfoItem(texts.otherDocs, sectionData.otherDocsLocation)}
               {groupedUploadedDocs['other']?.length > 0 && (
-                <div className="print-uploaded-docs">
+                <div style={uploadedDocsStyle}>
                   {groupedUploadedDocs['other'].map((doc, i) => (
-                    <div key={i} className="print-doc-item">📄 {doc.name} ({formatFileSize(doc.size)})</div>
+                    <div key={i} style={{ fontSize: '13px', color: '#4b5563', padding: '4px 0' }}>📄 {doc.name} ({formatFileSize(doc.size)})</div>
                   ))}
                 </div>
               )}
               {renderInfoItem(texts.notes, sectionData.notes)}
-            </div>
+            </>
           );
 
         case 'contacts':
@@ -849,51 +857,51 @@ const PrintableRelativesSummary = forwardRef<HTMLDivElement, PrintableRelativesS
           ) || [];
 
           return (
-            <div className="print-section-content">
+            <>
               {doctors.length > 0 && (
-                <div className="print-subsection">
-                  <div className="print-subsection-title">{texts.doctors}</div>
+                <div style={{ marginBottom: '20px' }}>
+                  <div style={subsectionTitleStyle}>{texts.doctors}</div>
                   {doctors.map((entry, i) => (
-                    <div key={i} className="print-card">
-                      {entry.name && <div className="print-info-item"><span className="print-label">{texts.contactName}:</span> <span className="print-value">{String(entry.name)}</span></div>}
-                      {entry.type && <div className="print-info-item"><span className="print-label">{texts.doctorType}:</span> <span className="print-value">{getContactTypeLabel(String(entry.type), 'doctors')}</span></div>}
-                      {entry.phone && <div className="print-info-item"><span className="print-label">{texts.contactPhone}:</span> <span className="print-value">{String(entry.phone)}</span></div>}
-                      {entry.email && <div className="print-info-item"><span className="print-label">{texts.contactEmail}:</span> <span className="print-value">{String(entry.email)}</span></div>}
-                      {entry.address && <div className="print-info-item"><span className="print-label">{texts.contactAddress}:</span> <span className="print-value">{String(entry.address)}</span></div>}
+                    <div key={i} style={cardStyle}>
+                      {entry.name && <div style={infoItemStyle}><span style={labelStyle}>{texts.contactName}</span> <span style={valueStyle}>{String(entry.name)}</span></div>}
+                      {entry.type && <div style={infoItemStyle}><span style={labelStyle}>{texts.doctorType}</span> <span style={valueStyle}>{getContactTypeLabel(String(entry.type), 'doctors')}</span></div>}
+                      {entry.phone && <div style={infoItemStyle}><span style={labelStyle}>{texts.contactPhone}</span> <span style={valueStyle}>{String(entry.phone)}</span></div>}
+                      {entry.email && <div style={infoItemStyle}><span style={labelStyle}>{texts.contactEmail}</span> <span style={valueStyle}>{String(entry.email)}</span></div>}
+                      {entry.address && <div style={infoItemStyle}><span style={labelStyle}>{texts.contactAddress}</span> <span style={valueStyle}>{String(entry.address)}</span></div>}
                     </div>
                   ))}
                 </div>
               )}
               {professionalsData.length > 0 && (
-                <div className="print-subsection">
-                  <div className="print-subsection-title">{texts.professionals}</div>
+                <div style={{ marginBottom: '20px' }}>
+                  <div style={subsectionTitleStyle}>{texts.professionals}</div>
                   {professionalsData.map((entry, i) => (
-                    <div key={i} className="print-card">
-                      {entry.name && <div className="print-info-item"><span className="print-label">{texts.contactName}:</span> <span className="print-value">{String(entry.name)}</span></div>}
-                      {entry.type && <div className="print-info-item"><span className="print-label">{texts.professionalType}:</span> <span className="print-value">{getContactTypeLabel(String(entry.type), 'professionals')}</span></div>}
-                      {entry.phone && <div className="print-info-item"><span className="print-label">{texts.contactPhone}:</span> <span className="print-value">{String(entry.phone)}</span></div>}
-                      {entry.email && <div className="print-info-item"><span className="print-label">{texts.contactEmail}:</span> <span className="print-value">{String(entry.email)}</span></div>}
-                      {entry.address && <div className="print-info-item"><span className="print-label">{texts.contactAddress}:</span> <span className="print-value">{String(entry.address)}</span></div>}
+                    <div key={i} style={cardStyle}>
+                      {entry.name && <div style={infoItemStyle}><span style={labelStyle}>{texts.contactName}</span> <span style={valueStyle}>{String(entry.name)}</span></div>}
+                      {entry.type && <div style={infoItemStyle}><span style={labelStyle}>{texts.professionalType}</span> <span style={valueStyle}>{getContactTypeLabel(String(entry.type), 'professionals')}</span></div>}
+                      {entry.phone && <div style={infoItemStyle}><span style={labelStyle}>{texts.contactPhone}</span> <span style={valueStyle}>{String(entry.phone)}</span></div>}
+                      {entry.email && <div style={infoItemStyle}><span style={labelStyle}>{texts.contactEmail}</span> <span style={valueStyle}>{String(entry.email)}</span></div>}
+                      {entry.address && <div style={infoItemStyle}><span style={labelStyle}>{texts.contactAddress}</span> <span style={valueStyle}>{String(entry.address)}</span></div>}
                     </div>
                   ))}
                 </div>
               )}
               {advisors.length > 0 && (
-                <div className="print-subsection">
-                  <div className="print-subsection-title">{texts.advisors}</div>
+                <div>
+                  <div style={subsectionTitleStyle}>{texts.advisors}</div>
                   {advisors.map((entry, i) => (
-                    <div key={i} className="print-card">
-                      {entry.name && <div className="print-info-item"><span className="print-label">{texts.contactName}:</span> <span className="print-value">{String(entry.name)}</span></div>}
-                      {entry.type && <div className="print-info-item"><span className="print-label">{texts.advisorType}:</span> <span className="print-value">{getContactTypeLabel(String(entry.type), 'advisors')}</span></div>}
-                      {entry.phone && <div className="print-info-item"><span className="print-label">{texts.contactPhone}:</span> <span className="print-value">{String(entry.phone)}</span></div>}
-                      {entry.email && <div className="print-info-item"><span className="print-label">{texts.contactEmail}:</span> <span className="print-value">{String(entry.email)}</span></div>}
-                      {entry.address && <div className="print-info-item"><span className="print-label">{texts.contactAddress}:</span> <span className="print-value">{String(entry.address)}</span></div>}
+                    <div key={i} style={cardStyle}>
+                      {entry.name && <div style={infoItemStyle}><span style={labelStyle}>{texts.contactName}</span> <span style={valueStyle}>{String(entry.name)}</span></div>}
+                      {entry.type && <div style={infoItemStyle}><span style={labelStyle}>{texts.advisorType}</span> <span style={valueStyle}>{getContactTypeLabel(String(entry.type), 'advisors')}</span></div>}
+                      {entry.phone && <div style={infoItemStyle}><span style={labelStyle}>{texts.contactPhone}</span> <span style={valueStyle}>{String(entry.phone)}</span></div>}
+                      {entry.email && <div style={infoItemStyle}><span style={labelStyle}>{texts.contactEmail}</span> <span style={valueStyle}>{String(entry.email)}</span></div>}
+                      {entry.address && <div style={infoItemStyle}><span style={labelStyle}>{texts.contactAddress}</span> <span style={valueStyle}>{String(entry.address)}</span></div>}
                     </div>
                   ))}
                 </div>
               )}
               {renderInfoItem(texts.notes, sectionData.notes)}
-            </div>
+            </>
           );
 
         default:
@@ -928,304 +936,18 @@ const PrintableRelativesSummary = forwardRef<HTMLDivElement, PrintableRelativesS
     });
 
     return (
-      <div ref={ref} className="print-container">
+      <div ref={ref} style={{
+        fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif',
+        background: 'white',
+        color: '#1f2937',
+        lineHeight: 1.5,
+      }}>
         <style>{`
-          .print-container {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
-            max-width: 820px;
-            margin: 0 auto;
-            padding: 48px 56px;
-            background: hsl(var(--background));
-            color: hsl(var(--foreground));
-            line-height: 1.55;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-          }
-
-          .print-header {
-            text-align: center;
-            margin-bottom: 44px;
-            padding-bottom: 28px;
-            border-bottom: 1px solid hsl(var(--border));
-          }
-
-          .print-logo {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 14px;
-            margin-bottom: 18px;
-          }
-
-          .print-logo-icon {
-            width: 56px;
-            height: 56px;
-            background: var(--gradient-hero);
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: var(--shadow-elevated);
-            color: hsl(var(--primary-foreground));
-          }
-
-          .print-logo-text {
-            font-family: 'Playfair Display', serif;
-            font-size: 34px;
-            font-weight: 650;
-            color: hsl(var(--foreground));
-            letter-spacing: -0.4px;
-          }
-
-          .print-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 24px;
-            font-weight: 600;
-            margin-bottom: 6px;
-            color: hsl(var(--sage-dark));
-          }
-
-          .print-date {
-            font-size: 13px;
-            color: hsl(var(--muted-foreground));
-          }
-
-          .print-profile {
-            margin-bottom: 44px;
-            page-break-inside: avoid;
-          }
-
-          .print-profile-header {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            padding: 18px 22px;
-            background: var(--gradient-hero);
-            border-radius: 18px;
-            margin-bottom: 26px;
-            box-shadow: var(--shadow-soft);
-            color: hsl(var(--primary-foreground));
-          }
-
-          .print-profile-icon {
-            width: 50px;
-            height: 50px;
-            background: hsl(var(--primary-foreground) / 0.16);
-            border-radius: 999px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-          }
-
-          .print-profile-name {
-            font-family: 'Playfair Display', serif;
-            font-size: 22px;
-            font-weight: 650;
-            color: hsl(var(--primary-foreground));
-          }
-
-          .print-section {
-            margin-bottom: 26px;
-            page-break-inside: avoid;
-          }
-
-          .print-section-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 14px 18px;
-            background: var(--gradient-card);
-            border: 1px solid hsl(var(--border));
-            border-radius: 12px 12px 0 0;
-          }
-
-          .print-section-icon {
-            width: 34px;
-            height: 34px;
-            background: var(--gradient-hero);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: var(--shadow-card);
-            color: hsl(var(--primary-foreground));
-          }
-
-          .print-section-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 16px;
-            font-weight: 650;
-            color: hsl(var(--sage-dark));
-          }
-
-          .print-section-content {
-            padding: 20px;
-            border: 1px solid hsl(var(--border));
-            border-top: none;
-            border-radius: 0 0 12px 12px;
-            background: hsl(var(--card));
-          }
-
-          .print-info-item {
-            padding: 10px 0;
-            border-bottom: 1px solid hsl(var(--border) / 0.6);
-            display: grid;
-            grid-template-columns: 150px 1fr;
-            column-gap: 14px;
-            row-gap: 4px;
-            align-items: start;
-          }
-
-          .print-info-item:last-child {
-            border-bottom: none;
-          }
-
-          .print-label {
-            font-size: 11px;
-            color: hsl(var(--muted-foreground));
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            font-weight: 600;
-          }
-
-          .print-value {
-            font-size: 13px;
-            color: hsl(var(--foreground));
-            font-weight: 500;
-            white-space: pre-wrap;
-            overflow-wrap: anywhere;
-          }
-
-          .print-subsection {
-            margin-top: 18px;
-            padding-top: 14px;
-            border-top: 1px dashed hsl(var(--border));
-          }
-
-          .print-subsection:first-child {
-            margin-top: 0;
-            padding-top: 0;
-            border-top: none;
-          }
-
-          .print-subsection-title {
-            font-size: 13px;
-            font-weight: 700;
-            color: hsl(var(--sage-dark));
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-          }
-
-          .print-subsection-title::before {
-            content: '';
-            width: 4px;
-            height: 16px;
-            background: var(--gradient-hero);
-            border-radius: 99px;
-          }
-
-          .print-card {
-            background: var(--gradient-card);
-            padding: 14px 16px;
-            border-radius: 12px;
-            margin-bottom: 12px;
-            border: 1px solid hsl(var(--border));
-            box-shadow: var(--shadow-card);
-          }
-
-          .print-card:last-child {
-            margin-bottom: 0;
-          }
-
-          .print-uploaded-docs {
-            margin: 10px 0 18px 0;
-            padding: 14px 16px;
-            background: hsl(var(--secondary));
-            border-radius: 12px;
-            border: 1px dashed hsl(var(--border));
-          }
-
-          .print-doc-item {
-            font-size: 12px;
-            color: hsl(var(--foreground));
-            padding: 8px 0;
-            border-bottom: 1px solid hsl(var(--border) / 0.7);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-          }
-
-          .print-doc-item::before {
-            content: '📄';
-            font-size: 12px;
-          }
-
-          .print-doc-item:last-child {
-            border-bottom: none;
-            padding-bottom: 0;
-          }
-
-          .print-doc-item:first-child {
-            padding-top: 0;
-          }
-
-          .print-disclaimer {
-            margin-top: 44px;
-            padding: 20px 22px;
-            background: hsl(var(--secondary));
-            border-radius: 14px;
-            font-size: 11px;
-            color: hsl(var(--muted-foreground));
-            text-align: center;
-            border: 1px solid hsl(var(--border));
-            line-height: 1.7;
-          }
-
-          .print-footer {
-            margin-top: 44px;
-            padding-top: 24px;
-            border-top: 1px solid hsl(var(--border));
-            text-align: center;
-          }
-
-          .print-footer-note {
-            font-size: 12px;
-            color: hsl(var(--sage-dark));
-            margin-bottom: 14px;
-            font-style: italic;
-          }
-
-          .print-footer-links {
-            display: flex;
-            justify-content: center;
-            gap: 16px;
-            margin-bottom: 12px;
-            font-size: 11px;
-            color: hsl(var(--muted-foreground));
-          }
-
-          .print-footer-links span:nth-child(2) {
-            color: hsl(var(--border));
-          }
-
-          .print-footer-copyright {
-            font-size: 11px;
-            color: hsl(var(--muted-foreground));
-          }
-
-          .print-footer-website {
-            font-size: 12px;
-            color: hsl(var(--sage-dark));
-            margin-top: 8px;
-            font-weight: 650;
-          }
-
+          @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap');
           @media print {
-            @page {
+            @page { 
+              margin: 15mm; 
               size: A4;
-              margin: 14mm;
               @bottom-center {
                 content: counter(page) " / " counter(pages);
                 font-size: 10px;
@@ -1233,94 +955,138 @@ const PrintableRelativesSummary = forwardRef<HTMLDivElement, PrintableRelativesS
                 font-family: Inter, -apple-system, BlinkMacSystemFont, sans-serif;
               }
             }
-
-            .print-container {
-              max-width: none;
-              padding: 0;
-              background: hsl(var(--background));
-            }
-
-            .print-profile {
-              page-break-before: auto;
-            }
-
-            .print-profile:not(:first-of-type) {
-              page-break-before: always;
-            }
-
-            .print-section {
-              page-break-inside: avoid;
-            }
-
-            .print-header,
-            .print-profile-header,
-            .print-logo-icon,
-            .print-section-icon {
-              -webkit-print-color-adjust: exact;
-              print-color-adjust: exact;
-            }
-
-            .print-footer {
-              page-break-inside: avoid;
-            }
+            .page-break { page-break-before: always; }
+            .no-break { page-break-inside: avoid; }
           }
         `}</style>
 
-        {/* Header with Logo */}
-        <div className="print-header">
-          <div className="print-logo">
-            <div className="print-logo-icon">
-              <Anchor size={28} />
-            </div>
-            <span className="print-logo-text">Mein Lebensanker</span>
-          </div>
-          <h1 className="print-title">{texts.title}</h1>
-          <p className="print-date">{texts.generatedOn}: {currentDate}</p>
-        </div>
-
-        {/* Profile Sections */}
-        {dataByProfile.map(({ profile, data: profileData }) => (
-          <div key={profile.profile_id} className="print-profile">
-            <div className="print-profile-header">
-              <div className="print-profile-icon">
-                <User size={24} />
+        {dataByProfile.map(({ profile, data: profileData }, profileIndex) => (
+          <div key={profile.profile_id} className={profileIndex > 0 ? 'page-break' : ''}>
+            {/* Header */}
+            <div style={{
+              background: 'linear-gradient(135deg, #6b8f71 0%, #4a6b50 100%)',
+              padding: '40px',
+              borderRadius: '12px',
+              marginBottom: '24px',
+              textAlign: 'center',
+              WebkitPrintColorAdjust: 'exact',
+              printColorAdjust: 'exact',
+            } as React.CSSProperties}>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '12px',
+                marginBottom: '8px',
+              }}>
+                <div style={{
+                  width: '56px',
+                  height: '56px',
+                  background: 'rgba(255,255,255,0.2)',
+                  borderRadius: '16px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                  <span dangerouslySetInnerHTML={{ __html: renderToStaticMarkup(<Anchor size={28} color="white" />) }} />
+                </div>
+                <span style={{
+                  fontFamily: 'Playfair Display, Georgia, serif',
+                  fontSize: '28px',
+                  fontWeight: 600,
+                  color: 'white',
+                }}>
+                  Mein Lebensanker
+                </span>
               </div>
-              <span className="print-profile-name">{profile.profile_name || texts.unknownProfile}</span>
+              <div style={{ color: 'rgba(255,255,255,0.9)', fontSize: '14px', marginBottom: '20px' }}>
+                {texts.title}
+              </div>
+              <div style={{
+                display: 'inline-block',
+                background: 'rgba(255,255,255,0.15)',
+                padding: '12px 24px',
+                borderRadius: '8px',
+              }}>
+                <div style={{ color: 'white', fontSize: '20px', fontWeight: 600, fontFamily: 'Playfair Display, Georgia, serif' }}>
+                  {profile.profile_name || texts.unknownProfile}
+                </div>
+              </div>
+              <div style={{ color: 'rgba(255,255,255,0.7)', fontSize: '12px', marginTop: '16px' }}>
+                {texts.generatedOn}: {currentDate}
+              </div>
             </div>
 
+            {/* Sections */}
             {profileData.map((item) => {
               const Icon = sectionIcons[item.section_key] || FileText;
               return (
-                <div key={item.section_key} className="print-section">
-                  <div className="print-section-header">
-                    <div className="print-section-icon">
-                      <Icon size={16} />
+                <div key={item.section_key} className="no-break" style={{ marginBottom: '16px' }}>
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '12px',
+                    padding: '16px 20px',
+                    background: 'linear-gradient(135deg, #6b8f71 0%, #5a7a60 100%)',
+                    borderRadius: '8px 8px 0 0',
+                    marginTop: '24px',
+                    WebkitPrintColorAdjust: 'exact',
+                    printColorAdjust: 'exact',
+                  } as React.CSSProperties}>
+                    <div style={{
+                      width: '34px',
+                      height: '34px',
+                      background: 'rgba(255,255,255,0.2)',
+                      borderRadius: '10px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}>
+                      <span dangerouslySetInnerHTML={{ __html: renderToStaticMarkup(<Icon size={18} color="white" />) }} />
                     </div>
-                    <span className="print-section-title">{sectionNames[item.section_key]}</span>
+                    <span style={{ color: 'white', fontSize: '16px', fontWeight: 600, fontFamily: 'Playfair Display, Georgia, serif' }}>
+                      {sectionNames[item.section_key]}
+                    </span>
                   </div>
-                  {renderSection(item.section_key, item.data, profile.profile_id)}
+                  <div style={{ padding: '16px 20px', background: 'white', border: '1px solid #e5e5e5', borderTop: 'none', borderRadius: '0 0 8px 8px' }}>
+                    {renderSection(item.section_key, item.data, profile.profile_id)}
+                  </div>
                 </div>
               );
             })}
+
+            {/* Footer */}
+            <div style={{
+              marginTop: '40px',
+              padding: '20px',
+              background: '#f9fafb',
+              borderRadius: '8px',
+              border: '1px solid #e5e5e5',
+            }}>
+              <div style={{
+                fontSize: '11px',
+                color: '#6b7280',
+                textAlign: 'center',
+                marginBottom: '12px',
+                fontStyle: 'italic',
+              }}>
+                {texts.disclaimer}
+              </div>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '8px',
+                color: '#6b8f71',
+                fontSize: '12px',
+                fontWeight: 500,
+              }}>
+                <span dangerouslySetInnerHTML={{ __html: renderToStaticMarkup(<Anchor size={14} color="#6b8f71" />) }} />
+                <span>{texts.footerWebsite}</span>
+              </div>
+            </div>
           </div>
         ))}
-
-        {/* Disclaimer */}
-        <div className="print-disclaimer">
-          {texts.disclaimer}
-        </div>
-
-        {/* Footer with Imprint */}
-        <div className="print-footer">
-          <p className="print-footer-note">{texts.footerNote}</p>
-          <div className="print-footer-links">
-            <span>{texts.footerImprint}</span>
-            <span>•</span>
-            <span>{texts.footerPrivacy}</span>
-          </div>
-          <p className="print-footer-website">{texts.footerWebsite}</p>
-          <p className="print-footer-copyright">{texts.footerCopyright}</p>
-        </div>
       </div>
     );
   }
