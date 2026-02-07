@@ -62,9 +62,12 @@ const hasMeaningfulData = (data: any, sectionKey: string): boolean => {
         const hasContent = value.some(item => {
           if (typeof item === 'string') return item.trim() !== '';
           if (typeof item === 'object' && item !== null) {
-            return Object.values(item).some(v => 
-              typeof v === 'string' ? v.trim() !== '' : v !== null && v !== undefined
-            );
+            // Ignore default-only fields like currency selectors when checking for real user input
+            return Object.entries(item).some(([k, v]) => {
+              // Skip currency fields - they are pre-filled defaults, not user data
+              if (k === 'currency' || k.endsWith('Currency')) return false;
+              return typeof v === 'string' ? v.trim() !== '' : v !== null && v !== undefined;
+            });
           }
           return item !== null && item !== undefined;
         });
