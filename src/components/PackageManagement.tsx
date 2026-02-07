@@ -117,7 +117,7 @@ const PackageManagement = () => {
 
   const handleUpgrade = async (targetTier: PackageType) => {
     if (!user) {
-      toast.error(language === 'de' ? 'Bitte melde dich an' : 'Please log in');
+      toast.error(language === 'de' ? 'Bitte melde Dich an' : 'Please log in');
       return;
     }
 

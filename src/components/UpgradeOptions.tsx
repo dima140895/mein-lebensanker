@@ -60,7 +60,7 @@ const UpgradeOptions = () => {
 
   const handleUpgrade = async (targetTier: PackageType) => {
     if (!user) {
-      toast.error(language === 'de' ? 'Bitte melde dich an' : 'Please sign in');
+      toast.error(language === 'de' ? 'Bitte melde Dich an' : 'Please sign in');
       return;
     }
 

@@ -13,7 +13,7 @@ const PromoVideo = () => {
 
   const shareUrl = 'https://mein-lebensanker.lovable.app/promo';
   const shareText = language === 'de' 
-    ? 'Schau dir das an – ein Tool, das uns hilft, wichtige Dinge für die Zukunft zu organisieren. Für Dich und die Menschen, die Dir wichtig sind. 🌿'
+    ? 'Schau Dir das an – ein Tool, das uns hilft, wichtige Dinge für die Zukunft zu organisieren. Für Dich und die Menschen, die Dir wichtig sind. 🌿'
     : 'Check this out – a tool that helps us organize important things for the future. For you and the people who matter to you. 🌿';
 
   const shareWhatsApp = () => {

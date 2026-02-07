@@ -32,10 +32,10 @@ const InstallApp = () => {
   const t = {
     de: {
       title: 'App installieren',
-      subtitle: 'Installiere Mein Lebensanker auf deinem Gerät für schnellen Zugriff',
+      subtitle: 'Installiere Mein Lebensanker auf Deinem Gerät für schnellen Zugriff',
       installButton: 'App installieren',
       installed: 'App ist installiert!',
-      installedDesc: 'Du kannst Mein Lebensanker jetzt von deinem Startbildschirm aus öffnen.',
+      installedDesc: 'Du kannst Mein Lebensanker jetzt von Deinem Startbildschirm aus öffnen.',
       iosTitle: 'Auf iPhone/iPad installieren',
       iosStep1: 'Tippe auf das Teilen-Symbol',
       iosStep2: 'Scrolle nach unten und tippe auf "Zum Home-Bildschirm"',

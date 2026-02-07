@@ -189,7 +189,7 @@ const LearnMore = () => {
               </h1>
               <p className="mt-4 text-lg leading-relaxed text-muted-foreground max-w-xl mx-auto">
                 {language === 'de' 
-                  ? 'Schau dir an, wie einfach es ist, deine wichtigen Informationen zu organisieren.'
+                  ? 'Schau Dir an, wie einfach es ist, Deine wichtigen Informationen zu organisieren.'
                   : 'See how easy it is to organize your important information.'
                 }
               </p>

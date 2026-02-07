@@ -31,7 +31,7 @@ const DocumentsForm = () => {
       title: "Dokumenten-Übersicht",
       disclaimer:
         "Notiere hier, wo wichtige Dokumente aufbewahrt werden. Du kannst auch Kopien hochladen. Änderungen werden automatisch gespeichert.",
-      documentNote: "Für Testament, Vorsorgevollmacht und Patientenverfügung wende dich an einen Notar.",
+      documentNote: "Für Testament, Vorsorgevollmacht und Patientenverfügung wende Dich an einen Notar.",
       testament: "Testament",
       testamentPlaceholder: "Wo befindet sich das Testament? (z.B. Notar, Schließfach, zu Hause)",
       testamentUpload: "Testament-Kopie hochladen",

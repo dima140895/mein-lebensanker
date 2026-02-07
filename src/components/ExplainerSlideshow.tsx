@@ -30,14 +30,14 @@ const slides: Record<'de' | 'en', Slide[]> = {
       id: 1,
       title: 'Willkommen bei Mein Lebensanker',
       description: 'Dein sicherer Ort für wichtige Lebensdokumente',
-      narration: 'Willkommen bei Mein Lebensanker. Hier kannst du alle wichtigen Informationen für dich und deine Familie sicher organisieren.',
+      narration: 'Willkommen bei Mein Lebensanker. Hier kannst Du alle wichtigen Informationen für Dich und Deine Familie sicher organisieren.',
       image: '/placeholder.svg',
       imageAlt: 'Startseite von Mein Lebensanker'
     },
     {
       id: 2,
       title: 'Einfache Registrierung',
-      description: 'Erstelle dein Konto in wenigen Sekunden',
+      description: 'Erstelle Dein Konto in wenigen Sekunden',
       narration: 'Die Registrierung ist einfach und schnell. Du brauchst nur eine E-Mail-Adresse und ein sicheres Passwort.',
       image: '/placeholder.svg',
       imageAlt: 'Registrierungsformular'
@@ -46,7 +46,7 @@ const slides: Record<'de' | 'en', Slide[]> = {
       id: 3,
       title: 'Dein persönliches Dashboard',
       description: 'Alle Bereiche auf einen Blick',
-      narration: 'Im Dashboard siehst du alle Bereiche auf einen Blick: Persönliche Daten, Kontakte, Vermögen, Wünsche und mehr.',
+      narration: 'Im Dashboard siehst Du alle Bereiche auf einen Blick: Persönliche Daten, Kontakte, Vermögen, Wünsche und mehr.',
       image: '/placeholder.svg',
       imageAlt: 'Dashboard Übersicht'
     },
@@ -54,15 +54,15 @@ const slides: Record<'de' | 'en', Slide[]> = {
       id: 4,
       title: 'Sichere Verschlüsselung',
       description: 'Deine Daten sind Ende-zu-Ende verschlüsselt',
-      narration: 'Deine Daten werden mit einem persönlichen Verschlüsselungspasswort geschützt. Nur du hast Zugriff auf deine Informationen.',
+      narration: 'Deine Daten werden mit einem persönlichen Verschlüsselungspasswort geschützt. Nur Du hast Zugriff auf Deine Informationen.',
       image: '/placeholder.svg',
       imageAlt: 'Verschlüsselungseinstellungen'
     },
     {
       id: 5,
       title: 'Mit Angehörigen teilen',
-      description: 'Erstelle sichere Links für deine Familie',
-      narration: 'Du kannst ausgewählte Informationen sicher mit deinen Angehörigen teilen. Erstelle dazu einfach einen geschützten Link.',
+      description: 'Erstelle sichere Links für Deine Familie',
+      narration: 'Du kannst ausgewählte Informationen sicher mit Deinen Angehörigen teilen. Erstelle dazu einfach einen geschützten Link.',
       image: '/placeholder.svg',
       imageAlt: 'Teilen-Funktion'
     },
@@ -70,7 +70,7 @@ const slides: Record<'de' | 'en', Slide[]> = {
       id: 6,
       title: 'Jetzt starten',
       description: 'Beginne noch heute mit der Vorsorge',
-      narration: 'Starte jetzt kostenlos und bringe Ordnung in deine wichtigsten Dokumente. Für dich und die Menschen, die dir wichtig sind.',
+      narration: 'Starte jetzt kostenlos und bringe Ordnung in Deine wichtigsten Dokumente. Für Dich und die Menschen, die Dir wichtig sind.',
       image: '/placeholder.svg',
       imageAlt: 'Call to Action'
     }
