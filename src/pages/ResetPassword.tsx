@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
+import { logger } from '@/lib/logger';
 
 const ResetPassword = () => {
   const navigate = useNavigate();
@@ -73,7 +74,7 @@ const ResetPassword = () => {
           setChecking(false);
           return;
         } else {
-          console.error('Recovery token verification failed:', error.message);
+          logger.error('Recovery token verification failed:', error.message);
         }
       }
 
