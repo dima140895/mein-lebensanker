@@ -98,15 +98,13 @@ const ProfileSwitcher = () => {
     if (!singleProfile) return null;
     
     return (
-      <ProfileSwitcherTooltip>
-        <div 
-          className="flex items-center gap-2 text-sm text-muted-foreground px-3 py-1.5 border rounded-md bg-background"
-          data-tour="profile-switcher"
-        >
-          <User className="h-4 w-4" />
-          <span className="max-w-[120px] truncate">{singleProfile.name}</span>
-        </div>
-      </ProfileSwitcherTooltip>
+      <div 
+        className="flex items-center gap-2 text-sm text-muted-foreground px-3 py-1.5 border rounded-md bg-background"
+        data-tour="profile-switcher"
+      >
+        <User className="h-4 w-4" />
+        <span className="max-w-[120px] truncate">{singleProfile.name}</span>
+      </div>
     );
   }
 
