@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { logger } from '@/lib/logger';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Download, Image, FileText, ArrowLeft } from 'lucide-react';
@@ -48,7 +49,7 @@ const InstagramDownload = () => {
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
     } catch (error) {
-      console.error('Download failed:', error);
+      logger.error('Download failed:', error);
     }
     setDownloading(null);
   };
