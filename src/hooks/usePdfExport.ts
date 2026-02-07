@@ -120,10 +120,11 @@ export function usePdfExport({
         await fallbackFullCapture(element, pdf, html2canvas, MARGIN_MM, CONTENT_WIDTH_MM, CONTENT_HEIGHT_MM, A4_HEIGHT_MM);
       } else {
         // Capture each section individually
-        const sectionData: { canvas: HTMLCanvasElement; heightMM: number }[] = [];
+        const sectionData: { canvas: HTMLCanvasElement; heightMM: number; forcePageBreak: boolean }[] = [];
 
         for (const section of sections) {
           try {
+            const forcePageBreak = section.hasAttribute('data-pdf-page-break');
             const canvas = await html2canvas(section, {
               scale: 2,
               useCORS: true,
@@ -140,7 +141,7 @@ export function usePdfExport({
             const scaleFactor = CONTENT_WIDTH_MM / widthPx;
             const heightMM = heightPx * scaleFactor;
 
-            sectionData.push({ canvas, heightMM });
+            sectionData.push({ canvas, heightMM, forcePageBreak });
           } catch (sectionError) {
             logger.error('PDF export: error capturing section', sectionError);
             // Skip this section but continue with others
@@ -151,7 +152,14 @@ export function usePdfExport({
         let currentY = MARGIN_MM;
 
         for (let i = 0; i < sectionData.length; i++) {
-          const { canvas, heightMM } = sectionData[i];
+          const { canvas, heightMM, forcePageBreak } = sectionData[i];
+
+          // Force page break for new profiles (except if we're already at page top)
+          if (forcePageBreak && currentY > MARGIN_MM) {
+            pdf.addPage();
+            currentY = MARGIN_MM;
+          }
+
           const remainingSpace = A4_HEIGHT_MM - MARGIN_MM - currentY;
 
           // If section doesn't fit on current page and we're not at the top, start new page
