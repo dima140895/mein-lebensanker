@@ -121,6 +121,14 @@ const RelativesSummary = ({ data, profiles, sharedSections, sharedProfileSection
       allergies: 'Allergien & Unverträglichkeiten',
       trustedPersons: 'Vertrauenspersonen',
       emergencyContact: 'Notfallkontakt',
+      housingSituation: 'Wohnsituation',
+      housingRent: 'Miete',
+      housingOwn: 'Eigentum',
+      rentAmount: 'Monatliche Miete',
+      landlordName: 'Vermieter',
+      landlordPhone: 'Telefon Vermieter',
+      landlordEmail: 'E-Mail Vermieter',
+      landlordAddress: 'Adresse Vermieter',
       
       // Assets fields
       bankAccounts: 'Bankkonten',
@@ -146,6 +154,18 @@ const RelativesSummary = ({ data, profiles, sharedSections, sharedProfileSection
       valuables: 'Wertgegenstände',
       description: 'Beschreibung',
       location: 'Aufbewahrungsort',
+      liabilities: 'Verbindlichkeiten',
+      liabilityTypes: {
+        loan: 'Kredit',
+        mortgage: 'Hypothek',
+        'credit-card': 'Kreditkarte',
+        leasing: 'Leasing',
+        private: 'Privatdarlehen',
+        other: 'Sonstige',
+      } as Record<string, string>,
+      totalAmount: 'Gesamtbetrag',
+      monthlyPayment: 'Monatliche Rate',
+      creditor: 'Gläubiger',
       
       // Vehicle fields
       vehicles: 'Fahrzeuge',
@@ -262,6 +282,14 @@ const RelativesSummary = ({ data, profiles, sharedSections, sharedProfileSection
       allergies: 'Allergies & Intolerances',
       trustedPersons: 'Trusted Persons',
       emergencyContact: 'Emergency Contact',
+      housingSituation: 'Housing Situation',
+      housingRent: 'Rent',
+      housingOwn: 'Property',
+      rentAmount: 'Monthly Rent',
+      landlordName: 'Landlord',
+      landlordPhone: 'Landlord Phone',
+      landlordEmail: 'Landlord Email',
+      landlordAddress: 'Landlord Address',
       
       // Assets fields
       bankAccounts: 'Bank Accounts',
@@ -287,6 +315,18 @@ const RelativesSummary = ({ data, profiles, sharedSections, sharedProfileSection
       valuables: 'Valuables',
       description: 'Description',
       location: 'Storage Location',
+      liabilities: 'Liabilities',
+      liabilityTypes: {
+        loan: 'Loan',
+        mortgage: 'Mortgage',
+        'credit-card': 'Credit Card',
+        leasing: 'Leasing',
+        private: 'Private Loan',
+        other: 'Other',
+      } as Record<string, string>,
+      totalAmount: 'Total Amount',
+      monthlyPayment: 'Monthly Payment',
+      creditor: 'Creditor',
       
       // Vehicle fields
       vehicles: 'Vehicles',
@@ -843,6 +883,35 @@ const RelativesSummary = ({ data, profiles, sharedSections, sharedProfileSection
     );
   };
 
+  const getLiabilityTypeLabel = (type: string): string => {
+    if (!type) return '';
+    return (texts.liabilityTypes as Record<string, string>)[type] || type;
+  };
+
+  const renderLiabilities = (liabilities: Array<Record<string, unknown>>) => {
+    const validLiabilities = liabilities?.filter(l => 
+      (l.creditor && typeof l.creditor === 'string' && l.creditor.trim()) ||
+      (l.amount && typeof l.amount === 'string' && l.amount.trim()) ||
+      (l.type && typeof l.type === 'string' && l.type.trim())
+    ) || [];
+    
+    if (validLiabilities.length === 0) return null;
+
+    return (
+      <div className="space-y-2">
+        <span className="text-sm font-medium text-foreground">{texts.liabilities}</span>
+        {validLiabilities.map((l, i) => (
+          <div key={i} className="rounded-lg bg-background/50 p-3 text-sm space-y-1">
+            {l.type && <p><span className="text-muted-foreground">{getLiabilityTypeLabel(String(l.type))}</span>{l.creditor ? ` – ${String(l.creditor)}` : ''}</p>}
+            {l.amount && <p className="text-destructive font-medium"><span className="text-muted-foreground">{texts.totalAmount}: </span>{formatWithCurrency(l.amount, l.amountCurrency)}</p>}
+            {l.monthlyPayment && <p><span className="text-muted-foreground">{texts.monthlyPayment}: </span>{formatWithCurrency(l.monthlyPayment, l.monthlyPaymentCurrency)}</p>}
+            {l.notes && typeof l.notes === 'string' && l.notes.trim() && <p><span className="text-muted-foreground">{texts.notes}: </span>{String(l.notes)}</p>}
+          </div>
+        ))}
+      </div>
+    );
+  };
+
   const renderDigitalItems = (items: Array<Record<string, unknown>>, type: 'email' | 'social' | 'subscription') => {
     const validItems = items?.filter(item => 
       Object.values(item).some(v => v && typeof v === 'string' && v.trim())
@@ -944,6 +1013,23 @@ const RelativesSummary = ({ data, profiles, sharedSections, sharedProfileSection
             {renderInfoItem(texts.phone, sectionData.phone)}
             {renderInfoItem(texts.bloodType, sectionData.bloodType)}
             {renderInfoItem(texts.preExistingConditions, sectionData.preExistingConditions)}
+            {sectionData.housingType && (
+              <div className="pt-4">
+                <span className="text-sm font-medium text-foreground">{texts.housingSituation}</span>
+                <p className="text-foreground text-sm mt-1">
+                  {sectionData.housingType === 'rent' ? texts.housingRent : texts.housingOwn}
+                </p>
+                {sectionData.housingType === 'rent' && (
+                  <div className="rounded-lg bg-background/50 p-3 text-sm space-y-1 mt-2">
+                    {sectionData.rentAmount && <p><span className="text-muted-foreground">{texts.rentAmount}: </span>{formatWithCurrency(sectionData.rentAmount, sectionData.rentCurrency)}</p>}
+                    {sectionData.landlordName && <p><span className="text-muted-foreground">{texts.landlordName}: </span>{String(sectionData.landlordName)}</p>}
+                    {sectionData.landlordPhone && <p><span className="text-muted-foreground">{texts.landlordPhone}: </span>{String(sectionData.landlordPhone)}</p>}
+                    {sectionData.landlordEmail && <p><span className="text-muted-foreground">{texts.landlordEmail}: </span>{String(sectionData.landlordEmail)}</p>}
+                    {sectionData.landlordAddress && <p><span className="text-muted-foreground">{texts.landlordAddress}: </span>{String(sectionData.landlordAddress)}</p>}
+                  </div>
+                )}
+              </div>
+            )}
             {renderMedications(sectionData.medications)}
             {renderAllergies(sectionData.allergies)}
             {(sectionData.trustedPerson1 || sectionData.trustedPerson2) && (
@@ -984,6 +1070,7 @@ const RelativesSummary = ({ data, profiles, sharedSections, sharedProfileSection
             {renderVehicles(sectionData.vehicles as Array<Record<string, unknown>>)}
             {renderInsurances(sectionData.insurances as Array<Record<string, unknown>>)}
             {renderValuables(sectionData.valuables as Array<Record<string, unknown>>)}
+            {renderLiabilities(sectionData.liabilities as Array<Record<string, unknown>>)}
             {renderInfoItem(texts.notes, sectionData.notes)}
           </div>
         );
