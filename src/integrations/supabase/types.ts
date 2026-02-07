@@ -315,6 +315,10 @@ export type Database = {
         Returns: boolean
       }
       hash_pin: { Args: { _pin: string }; Returns: string }
+      hash_pin_bcrypt: {
+        Args: { _pin: string; _salt: string }
+        Returns: string
+      }
       hash_pin_secure: {
         Args: { _pin: string; _salt: string }
         Returns: string

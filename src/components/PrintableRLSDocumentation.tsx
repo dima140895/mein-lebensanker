@@ -62,7 +62,7 @@ export const PrintableRLSDocumentation = forwardRef<HTMLDivElement>((_, ref) => 
         { operation: 'UPDATE', name: 'Users can update their own share tokens', rule: 'auth.uid() = user_id' },
         { operation: 'DELETE', name: 'Users can delete their own share tokens', rule: 'auth.uid() = user_id' },
       ],
-      securityNotes: ['PIN wird mit SHA-512 + Salt gehasht (hash_pin_secure)', 'Brute-Force-Schutz: 3 Fehlversuche → Token deaktiviert', 'Token sind 64-Zeichen High-Entropy Strings'],
+      securityNotes: ['PIN wird mit bcrypt (Arbeitsfaktor 12) + Salt gehasht (hash_pin_bcrypt)', 'Brute-Force-Schutz: 3 Fehlversuche → Token deaktiviert', 'Token sind 64-Zeichen High-Entropy Strings'],
     },
     {
       tableName: 'share_token_access_log',
@@ -111,9 +111,9 @@ export const PrintableRLSDocumentation = forwardRef<HTMLDivElement>((_, ref) => 
       implementation: 'SECURITY DEFINER, 30 req/min Limit, 3-Attempt Lockout',
     },
     {
-      name: 'hash_pin_secure(text, text)',
-      description: 'Sicheres PIN-Hashing mit Salt und Key Stretching',
-      implementation: 'IMMUTABLE, 10x SHA-512 Iterationen für erhöhte Sicherheit',
+      name: 'hash_pin_bcrypt(text, text)',
+      description: 'Sicheres PIN-Hashing mit bcrypt und Salt',
+      implementation: 'VOLATILE, bcrypt Arbeitsfaktor 12 für hohe Offline-Resistenz',
     },
   ];
 
