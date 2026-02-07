@@ -37,7 +37,7 @@ const HeroSection = () => {
 
             <div className="mt-5 sm:mt-6 md:mt-8 flex flex-col sm:flex-row items-stretch sm:items-start gap-3 sm:gap-3 md:gap-4 px-6 sm:px-0">
               <button
-                onClick={() => navigate('/dashboard')}
+                onClick={() => navigate('/dashboard?register=true')}
                 className="group relative inline-flex items-center justify-center gap-2 rounded-full bg-primary px-6 sm:px-6 md:px-7 py-3 sm:py-3 md:py-3.5 text-base sm:text-sm md:text-base font-medium text-primary-foreground shadow-lg transition-all hover:shadow-xl active:scale-[0.98]"
               >
                 <span className="absolute inset-0 rounded-full bg-gradient-to-r from-primary to-sage-dark opacity-0 transition-opacity group-hover:opacity-100" />
