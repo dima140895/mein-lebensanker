@@ -77,7 +77,7 @@ const WhatIsThisTool = () => {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.1 }}
-              className="rounded-xl border border-sage/30 bg-background p-6"
+              className="rounded-xl border border-sage/30 bg-background p-6 transition-shadow duration-300 hover:shadow-soft"
             >
               <h3 className="font-serif text-lg font-semibold text-sage-dark mb-4">{texts.isTitle}</h3>
               <ul className="space-y-3">
@@ -101,7 +101,7 @@ const WhatIsThisTool = () => {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="rounded-xl border border-amber/30 bg-background p-6"
+              className="rounded-xl border border-amber/30 bg-background p-6 transition-shadow duration-300 hover:shadow-soft"
             >
               <h3 className="font-serif text-lg font-semibold text-amber mb-4">{texts.isNotTitle}</h3>
               <ul className="space-y-3">
