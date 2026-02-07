@@ -141,6 +141,23 @@ const RelativesSummary = ({ data, profiles, sharedSections, sharedProfileSection
       description: 'Beschreibung',
       location: 'Aufbewahrungsort',
       
+      // Vehicle fields
+      vehicles: 'Fahrzeuge',
+      vehicleType: 'Fahrzeugart',
+      brand: 'Marke',
+      model: 'Modell',
+      licensePlate: 'Kennzeichen',
+      vehicleLocation: 'Standort',
+      estimatedValue: 'Geschätzter Wert',
+      documentsLocation: 'Aufbewahrungsort Fahrzeugpapiere',
+      vehicleTypes: {
+        car: 'PKW',
+        motorcycle: 'Motorrad',
+        camper: 'Wohnmobil',
+        trailer: 'Anhänger',
+        other: 'Sonstiges',
+      },
+      
       // Insurance types
       insuranceTypes: {
         life: 'Lebensversicherung',
@@ -264,6 +281,23 @@ const RelativesSummary = ({ data, profiles, sharedSections, sharedProfileSection
       valuables: 'Valuables',
       description: 'Description',
       location: 'Storage Location',
+      
+      // Vehicle fields
+      vehicles: 'Vehicles',
+      vehicleType: 'Vehicle Type',
+      brand: 'Brand',
+      model: 'Model',
+      licensePlate: 'License Plate',
+      vehicleLocation: 'Location',
+      estimatedValue: 'Estimated Value',
+      documentsLocation: 'Vehicle Documents Location',
+      vehicleTypes: {
+        car: 'Car',
+        motorcycle: 'Motorcycle',
+        camper: 'Camper/RV',
+        trailer: 'Trailer',
+        other: 'Other',
+      },
       
       // Insurance types
       insuranceTypes: {
@@ -750,6 +784,39 @@ const RelativesSummary = ({ data, profiles, sharedSections, sharedProfileSection
     );
   };
 
+  const getVehicleTypeLabel = (type: string): string => {
+    if (!type) return '';
+    const key = type as keyof typeof texts.vehicleTypes;
+    return texts.vehicleTypes[key] || type;
+  };
+
+  const renderVehicles = (vehicles: Array<Record<string, unknown>>) => {
+    const validVehicles = vehicles?.filter(v => 
+      (v.brand && typeof v.brand === 'string' && v.brand.trim()) ||
+      (v.type && typeof v.type === 'string' && v.type.trim()) ||
+      (v.licensePlate && typeof v.licensePlate === 'string' && v.licensePlate.trim())
+    ) || [];
+    
+    if (validVehicles.length === 0) return null;
+
+    return (
+      <div className="space-y-2">
+        <span className="text-sm font-medium text-foreground">{texts.vehicles}</span>
+        {validVehicles.map((v, i) => (
+          <div key={i} className="rounded-lg bg-background/50 p-3 text-sm space-y-1">
+            {v.type && <p><span className="text-muted-foreground">{texts.vehicleType}: </span>{getVehicleTypeLabel(String(v.type))}</p>}
+            {v.brand && <p><span className="text-muted-foreground">{texts.brand}: </span>{String(v.brand)}</p>}
+            {v.model && <p><span className="text-muted-foreground">{texts.model}: </span>{String(v.model)}</p>}
+            {v.licensePlate && <p><span className="text-muted-foreground">{texts.licensePlate}: </span>{String(v.licensePlate)}</p>}
+            {v.location && <p><span className="text-muted-foreground">{texts.vehicleLocation}: </span>{String(v.location)}</p>}
+            {v.estimatedValue && <p><span className="text-muted-foreground">{texts.estimatedValue}: </span>{String(v.estimatedValue)}</p>}
+            {v.documentsLocation && <p><span className="text-muted-foreground">{texts.documentsLocation}: </span>{String(v.documentsLocation)}</p>}
+          </div>
+        ))}
+      </div>
+    );
+  };
+
   const renderValuables = (valuables: Array<Record<string, unknown>>) => {
     const validValuables = valuables?.filter(val => 
       val.description && typeof val.description === 'string' && val.description.trim()
@@ -908,6 +975,7 @@ const RelativesSummary = ({ data, profiles, sharedSections, sharedProfileSection
           <div className="space-y-4">
             {renderBankAccounts(sectionData.bankAccounts as Array<Record<string, unknown>>)}
             {renderProperties(sectionData.properties as Array<Record<string, unknown>>)}
+            {renderVehicles(sectionData.vehicles as Array<Record<string, unknown>>)}
             {renderInsurances(sectionData.insurances as Array<Record<string, unknown>>)}
             {renderValuables(sectionData.valuables as Array<Record<string, unknown>>)}
             {renderInfoItem(texts.notes, sectionData.notes)}

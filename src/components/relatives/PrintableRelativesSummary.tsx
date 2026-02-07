@@ -78,6 +78,21 @@ const PrintableRelativesSummary = forwardRef<HTMLDivElement, PrintableRelativesS
         valuables: 'Wertgegenstände',
         description: 'Beschreibung',
         location: 'Aufbewahrungsort',
+        vehicles: 'Fahrzeuge',
+        vehicleType: 'Fahrzeugart',
+        brand: 'Marke',
+        model: 'Modell',
+        licensePlate: 'Kennzeichen',
+        vehicleLocation: 'Standort',
+        estimatedValue: 'Geschätzter Wert',
+        vehicleDocsLocation: 'Aufbewahrungsort Fahrzeugpapiere',
+        vehicleTypes: {
+          car: 'PKW',
+          motorcycle: 'Motorrad',
+          camper: 'Wohnmobil',
+          trailer: 'Anhänger',
+          other: 'Sonstiges',
+        },
         insuranceTypes: {
           life: 'Lebensversicherung',
           health: 'Krankenversicherung',
@@ -202,6 +217,21 @@ const PrintableRelativesSummary = forwardRef<HTMLDivElement, PrintableRelativesS
         valuables: 'Valuables',
         description: 'Description',
         location: 'Storage Location',
+        vehicles: 'Vehicles',
+        vehicleType: 'Vehicle Type',
+        brand: 'Brand',
+        model: 'Model',
+        licensePlate: 'License Plate',
+        vehicleLocation: 'Location',
+        estimatedValue: 'Estimated Value',
+        vehicleDocsLocation: 'Vehicle Documents Location',
+        vehicleTypes: {
+          car: 'Car',
+          motorcycle: 'Motorcycle',
+          camper: 'Camper/RV',
+          trailer: 'Trailer',
+          other: 'Other',
+        },
         insuranceTypes: {
           life: 'Life Insurance',
           health: 'Health Insurance',
@@ -520,6 +550,12 @@ const PrintableRelativesSummary = forwardRef<HTMLDivElement, PrintableRelativesS
       return status;
     };
 
+    const getVehicleTypeLabel = (type: string): string => {
+      if (!type) return '';
+      const key = type as keyof typeof texts.vehicleTypes;
+      return texts.vehicleTypes[key] || type;
+    };
+
     const getDocumentTypeLabel = (type: string): string => {
       const key = type as keyof typeof texts.documentTypes;
       return texts.documentTypes[key] || type;
@@ -661,6 +697,11 @@ const PrintableRelativesSummary = forwardRef<HTMLDivElement, PrintableRelativesS
           const valuables = (sectionData.valuables as Array<Record<string, unknown>>)?.filter(val => 
             val.description && typeof val.description === 'string' && val.description.trim()
           ) || [];
+          const vehicles = (sectionData.vehicles as Array<Record<string, unknown>>)?.filter(v => 
+            (v.brand && typeof v.brand === 'string' && v.brand.trim()) ||
+            (v.type && typeof v.type === 'string' && v.type.trim()) ||
+            (v.licensePlate && typeof v.licensePlate === 'string' && v.licensePlate.trim())
+          ) || [];
 
           return (
             <>
@@ -687,6 +728,22 @@ const PrintableRelativesSummary = forwardRef<HTMLDivElement, PrintableRelativesS
                       {prop.rentalIncome && <div style={infoItemStyle}><span style={labelStyle}>{texts.rentalIncome}</span> <span style={valueStyle}>{String(prop.rentalIncome)}</span></div>}
                       {prop.financingStatus && <div style={infoItemStyle}><span style={labelStyle}>{texts.financingStatus}</span> <span style={valueStyle}>{getFinancingLabel(String(prop.financingStatus))}</span></div>}
                       {prop.outstandingLoan && <div style={infoItemStyle}><span style={labelStyle}>{texts.outstandingLoan}</span> <span style={valueStyle}>{String(prop.outstandingLoan)}</span></div>}
+                    </div>
+                  ))}
+                </div>
+              )}
+              {vehicles.length > 0 && (
+                <div style={{ marginBottom: '20px' }}>
+                  <div style={subsectionTitleStyle}>{texts.vehicles}</div>
+                  {vehicles.map((v, i) => (
+                    <div key={i} style={cardStyle}>
+                      {v.type && <div style={infoItemStyle}><span style={labelStyle}>{texts.vehicleType}</span> <span style={valueStyle}>{getVehicleTypeLabel(String(v.type))}</span></div>}
+                      {v.brand && <div style={infoItemStyle}><span style={labelStyle}>{texts.brand}</span> <span style={valueStyle}>{String(v.brand)}</span></div>}
+                      {v.model && <div style={infoItemStyle}><span style={labelStyle}>{texts.model}</span> <span style={valueStyle}>{String(v.model)}</span></div>}
+                      {v.licensePlate && <div style={infoItemStyle}><span style={labelStyle}>{texts.licensePlate}</span> <span style={valueStyle}>{String(v.licensePlate)}</span></div>}
+                      {v.location && <div style={infoItemStyle}><span style={labelStyle}>{texts.vehicleLocation}</span> <span style={valueStyle}>{String(v.location)}</span></div>}
+                      {v.estimatedValue && <div style={infoItemStyle}><span style={labelStyle}>{texts.estimatedValue}</span> <span style={valueStyle}>{String(v.estimatedValue)}</span></div>}
+                      {v.documentsLocation && <div style={infoItemStyle}><span style={labelStyle}>{texts.vehicleDocsLocation}</span> <span style={valueStyle}>{String(v.documentsLocation)}</span></div>}
                     </div>
                   ))}
                 </div>
