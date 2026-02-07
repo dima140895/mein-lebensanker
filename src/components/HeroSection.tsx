@@ -8,7 +8,7 @@ const HeroSection = () => {
 
   return (
     <section className="relative min-h-[55vh] sm:min-h-[70vh] md:min-h-[85vh] flex items-center">
-      <div className="container relative mx-auto px-6 py-4 pt-16 sm:px-4 sm:pt-10 sm:py-10 md:py-20">
+      <div className="container relative mx-auto px-8 py-4 pt-16 sm:px-4 sm:pt-10 sm:py-10 md:py-20">
         <div className="grid lg:grid-cols-2 gap-4 sm:gap-8 md:gap-12 items-center">
           <div
             key={`hero-content-${language}`}
