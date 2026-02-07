@@ -1,6 +1,5 @@
 import { useState, useRef } from 'react';
 import { Download, FileText, Loader2, Printer } from 'lucide-react';
-import { useReactToPrint } from 'react-to-print';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useProfiles } from '@/contexts/ProfileContext';
@@ -10,6 +9,7 @@ import { supabase } from '@/integrations/supabase/browserClient';
 import { toast } from 'sonner';
 import PrintableDataExport from './PrintableDataExport';
 import { logger } from '@/lib/logger';
+import { usePdfExport } from '@/hooks/usePdfExport';
 
 interface VorsorgeData {
   section_key: string;
@@ -59,12 +59,16 @@ const DataExport = () => {
 
   const texts = t[language];
 
-  const handlePrint = useReactToPrint({
+  const handlePrint = usePdfExport({
     contentRef: printRef,
-    documentTitle: `${language === 'de' ? 'Mein-Lebensanker-Übersicht' : 'Mein-Lebensanker-Overview'}-${new Date().toISOString().split('T')[0]}`,
-    onAfterPrint: () => {
-      toast.success(texts.success);
+    documentTitle: language === 'de' ? 'Mein-Lebensanker-Übersicht' : 'Mein-Lebensanker-Overview',
+    onComplete: () => {
       setLoading(false);
+    },
+    toastMessages: {
+      preparing: texts.downloading,
+      success: texts.success,
+      error: texts.error,
     },
   });
 
@@ -138,10 +142,10 @@ const DataExport = () => {
       setProfilesToExport(selectedProfiles);
       setUploadedDocuments(allDocuments);
 
-      // Wait for state to update, then print
+      // Wait for state to update, then export PDF
       setTimeout(() => {
         handlePrint();
-      }, 100);
+      }, 200);
     } catch (error) {
       logger.error('Export error:', error);
       toast.error(texts.error);

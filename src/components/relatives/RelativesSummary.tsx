@@ -1,7 +1,6 @@
 import { useRef, useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { User, Wallet, Globe, Heart, FileText, Phone, Printer } from 'lucide-react';
-import { useReactToPrint } from 'react-to-print';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { supabase } from '@/integrations/supabase/browserClient';
 import { formatWithCurrency } from '@/lib/currencyFormat';
@@ -11,6 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import PrintableRelativesSummary from './PrintableRelativesSummary';
 import SharedDocuments from './SharedDocuments';
+import { usePdfExport } from '@/hooks/usePdfExport';
 
 interface VorsorgeData {
   section_key: string;
@@ -87,9 +87,14 @@ const RelativesSummary = ({ data, profiles, sharedSections, sharedProfileSection
     fetchDocuments();
   }, [token, pin, sharedSections, sharedProfileSections]);
 
-  const handlePrint = useReactToPrint({
+  const handlePrint = usePdfExport({
     contentRef: printRef,
-    documentTitle: language === 'de' ? 'Mein-Lebensanker-Übersicht' : 'Mein Lebensanker Overview',
+    documentTitle: language === 'de' ? 'Mein-Lebensanker-Übersicht' : 'Mein-Lebensanker-Overview',
+    toastMessages: {
+      preparing: language === 'de' ? 'PDF wird erstellt...' : 'Creating PDF...',
+      success: language === 'de' ? 'PDF erfolgreich erstellt!' : 'PDF created successfully!',
+      error: language === 'de' ? 'Fehler beim PDF-Erstellen' : 'Error creating PDF',
+    },
   });
 
   const t = {
@@ -1207,7 +1212,7 @@ const RelativesSummary = ({ data, profiles, sharedSections, sharedProfileSection
       </motion.div>
 
       {/* Hidden printable content */}
-      <div className="hidden">
+      <div style={{ display: 'none' }}>
         <PrintableRelativesSummary
           ref={printRef}
           data={data}
