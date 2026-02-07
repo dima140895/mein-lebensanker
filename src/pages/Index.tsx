@@ -20,7 +20,7 @@ const Index = () => {
         />
 
         {/* Layer 2 (z-10): Tree of Life spanning hero + explanation section */}
-        <div className="absolute z-10 right-[-5%] sm:right-[-10%] md:right-[-12%] lg:right-[-8%] top-0 w-[70%] sm:w-[55%] md:w-[55%] lg:w-[75%] pointer-events-none" style={{ height: '140vh' }}>
+        <div className="absolute z-10 right-[-5%] sm:right-[-10%] md:right-[-5%] lg:right-[-8%] top-0 w-[70%] sm:w-[55%] md:w-[60%] lg:w-[75%] pointer-events-none" style={{ height: '140vh' }}>
           <div
             aria-hidden="true"
             className="w-full h-full bg-no-repeat bg-[center_20%] bg-cover opacity-40 sm:opacity-50 md:opacity-60 lg:opacity-90"
