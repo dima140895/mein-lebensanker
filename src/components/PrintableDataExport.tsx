@@ -1,6 +1,7 @@
 import { forwardRef } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { Anchor, User, Wallet, Globe, Heart, FileText, Phone } from 'lucide-react';
+import { formatWithCurrency } from '@/lib/currencyFormat';
 
 interface VorsorgeData {
   section_key: string;
@@ -286,7 +287,7 @@ const PrintableDataExport = forwardRef<HTMLDivElement, PrintableDataExportProps>
                 <Card key={i}>
                   <div style={{ fontWeight: 600, color: '#1f2937', fontSize: '14px' }}>{String(acc.institute)}</div>
                   {acc.purpose && <div style={{ fontSize: '12px', color: '#6b7280', marginTop: '4px' }}>{String(acc.purpose)}</div>}
-                  {acc.balance && <div style={{ fontSize: '13px', color: '#059669', fontWeight: 500, marginTop: '4px' }}>{String(acc.balance)}</div>}
+                  {acc.balance && <div style={{ fontSize: '13px', color: '#059669', fontWeight: 500, marginTop: '4px' }}>{formatWithCurrency(acc.balance, acc.currency)}</div>}
                 </Card>
               ))}
             </div>
@@ -314,7 +315,7 @@ const PrintableDataExport = forwardRef<HTMLDivElement, PrintableDataExportProps>
                   </div>
                   {v.licensePlate && <div style={{ fontSize: '12px', color: '#6b7280', marginTop: '4px' }}>{texts.licensePlate}: {String(v.licensePlate)}</div>}
                   {v.location && <div style={{ fontSize: '12px', color: '#6b7280', marginTop: '2px' }}>{texts.vehicleLocation}: {String(v.location)}</div>}
-                  {v.estimatedValue && <div style={{ fontSize: '13px', color: '#059669', fontWeight: 500, marginTop: '4px' }}>{String(v.estimatedValue)}</div>}
+                  {v.estimatedValue && <div style={{ fontSize: '13px', color: '#059669', fontWeight: 500, marginTop: '4px' }}>{formatWithCurrency(v.estimatedValue, v.estimatedValueCurrency)}</div>}
                   {v.documentsLocation && <div style={{ fontSize: '12px', color: '#6b7280', marginTop: '2px' }}>{texts.vehicleDocsLocation}: {String(v.documentsLocation)}</div>}
                 </Card>
               ))}

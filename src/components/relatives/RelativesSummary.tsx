@@ -4,6 +4,7 @@ import { User, Wallet, Globe, Heart, FileText, Phone, Printer } from 'lucide-rea
 import { useReactToPrint } from 'react-to-print';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { supabase } from '@/integrations/supabase/browserClient';
+import { formatWithCurrency } from '@/lib/currencyFormat';
 import { logger } from '@/lib/logger';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -730,7 +731,7 @@ const RelativesSummary = ({ data, profiles, sharedSections, sharedProfileSection
           <div key={i} className="rounded-lg bg-background/50 p-3 text-sm space-y-1">
             {acc.institute && <p><span className="text-muted-foreground">{texts.institute}: </span>{String(acc.institute)}</p>}
             {acc.purpose && <p><span className="text-muted-foreground">{texts.purpose}: </span>{String(acc.purpose)}</p>}
-            {acc.balance && <p><span className="text-muted-foreground">{texts.balance}: </span>{String(acc.balance)}</p>}
+            {acc.balance && <p><span className="text-muted-foreground">{texts.balance}: </span>{formatWithCurrency(acc.balance, acc.currency)}</p>}
           </div>
         ))}
       </div>
@@ -752,9 +753,9 @@ const RelativesSummary = ({ data, profiles, sharedSections, sharedProfileSection
             {prop.address && <p><span className="text-muted-foreground">{texts.propertyAddress}: </span>{String(prop.address)}</p>}
             {prop.type && <p><span className="text-muted-foreground">{texts.propertyType}: </span>{String(prop.type)}</p>}
             {prop.ownership && <p><span className="text-muted-foreground">{texts.ownership}: </span>{getOwnershipLabel(String(prop.ownership), String(prop.ownershipOther || ''))}</p>}
-            {prop.rentalIncome && <p><span className="text-muted-foreground">{texts.rentalIncome}: </span>{String(prop.rentalIncome)}</p>}
+            {prop.rentalIncome && <p><span className="text-muted-foreground">{texts.rentalIncome}: </span>{formatWithCurrency(prop.rentalIncome, prop.rentalIncomeCurrency)}</p>}
             {prop.financingStatus && <p><span className="text-muted-foreground">{texts.financingStatus}: </span>{getFinancingLabel(String(prop.financingStatus))}</p>}
-            {prop.outstandingLoan && <p><span className="text-muted-foreground">{texts.outstandingLoan}: </span>{String(prop.outstandingLoan)}</p>}
+            {prop.outstandingLoan && <p><span className="text-muted-foreground">{texts.outstandingLoan}: </span>{formatWithCurrency(prop.outstandingLoan, prop.outstandingLoanCurrency)}</p>}
           </div>
         ))}
       </div>
@@ -777,7 +778,7 @@ const RelativesSummary = ({ data, profiles, sharedSections, sharedProfileSection
             {ins.type && <p><span className="text-muted-foreground">{texts.insuranceType}: </span>{ins.type === 'other' && ins.typeOther ? String(ins.typeOther) : getInsuranceTypeLabel(String(ins.type))}</p>}
             {ins.company && <p><span className="text-muted-foreground">{texts.insuranceCompany}: </span>{ins.company === 'other' && ins.companyOther ? String(ins.companyOther) : getCompanyLabel(String(ins.company))}</p>}
             {ins.policyNumber && <p><span className="text-muted-foreground">{texts.policyNumber}: </span>{String(ins.policyNumber)}</p>}
-            {ins.surrenderValue && <p><span className="text-muted-foreground">{texts.surrenderValue}: </span>{String(ins.surrenderValue)}</p>}
+            {ins.surrenderValue && <p><span className="text-muted-foreground">{texts.surrenderValue}: </span>{formatWithCurrency(ins.surrenderValue, ins.surrenderValueCurrency)}</p>}
           </div>
         ))}
       </div>
@@ -809,7 +810,7 @@ const RelativesSummary = ({ data, profiles, sharedSections, sharedProfileSection
             {v.model && <p><span className="text-muted-foreground">{texts.model}: </span>{String(v.model)}</p>}
             {v.licensePlate && <p><span className="text-muted-foreground">{texts.licensePlate}: </span>{String(v.licensePlate)}</p>}
             {v.location && <p><span className="text-muted-foreground">{texts.vehicleLocation}: </span>{String(v.location)}</p>}
-            {v.estimatedValue && <p><span className="text-muted-foreground">{texts.estimatedValue}: </span>{String(v.estimatedValue)}</p>}
+            {v.estimatedValue && <p><span className="text-muted-foreground">{texts.estimatedValue}: </span>{formatWithCurrency(v.estimatedValue, v.estimatedValueCurrency)}</p>}
             {v.documentsLocation && <p><span className="text-muted-foreground">{texts.documentsLocation}: </span>{String(v.documentsLocation)}</p>}
           </div>
         ))}
