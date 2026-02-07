@@ -49,7 +49,7 @@ export const PrintableSecurityAudit = forwardRef<HTMLDivElement, PrintableSecuri
     const shareLinkSecurity = [
       { label: 'Token-Format', value: '64-Zeichen High-Entropy String' },
       { label: 'PIN-Schutz', value: 'Obligatorisch (6-stellig)' },
-      { label: 'PIN-Hashing', value: 'SHA-512 mit Salt und Key Stretching (hash_pin_secure)' },
+      { label: 'PIN-Hashing', value: 'bcrypt (Arbeitsfaktor 12) mit Salt (hash_pin_bcrypt)' },
       { label: 'Brute-Force-Schutz', value: '3-Attempt Lockout (is_active = false)' },
       { label: 'Verschlüsselungs-Weitergabe', value: 'PIN verschlüsselt Owner-Passwort (encrypted_recovery_key)' },
       { label: 'Logging', value: 'Token-Hashes (nicht Tokens) in share_token_access_log' },

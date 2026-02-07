@@ -332,9 +332,9 @@ const ShareLinkManager = () => {
       crypto.getRandomValues(randomBytes);
       const pinSalt = Array.from(randomBytes).map(b => b.toString(16).padStart(2, '0')).join('');
       
-      // Use the secure hash function with salt
+      // Use bcrypt-based hash function for strong offline attack resistance
       const { data: hashData } = await supabase
-        .rpc('hash_pin_secure', { _pin: pin, _salt: pinSalt });
+        .rpc('hash_pin_bcrypt' as any, { _pin: pin, _salt: pinSalt });
       
       if (hashData) {
         const updateData: { pin_hash: string; pin_salt: string; encrypted_recovery_key?: string } = { 
