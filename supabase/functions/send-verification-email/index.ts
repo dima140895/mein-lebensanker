@@ -55,7 +55,27 @@ serve(async (req: Request): Promise<Response> => {
 
     const normalizedEmail = String(email).toLowerCase().trim();
     const redirectTo = String(confirmationUrl);
-    const displayName = userName ? String(userName).replace(/[<>&"']/g, "") : "Nutzer";
+
+    // Robust HTML escaping to prevent XSS in email templates
+    const escapeHtml = (str: string): string => {
+      return str
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#x27;")
+        .replace(/\//g, "&#x2F;")
+        .replace(/`/g, "&#96;");
+    };
+
+    // Validate and sanitize userName: allow only letters, numbers, spaces, hyphens, dots (max 100 chars)
+    let displayName = "Nutzer";
+    if (userName) {
+      const raw = String(userName).trim().slice(0, 100);
+      // Strip any characters that aren't alphanumeric, spaces, hyphens, dots, or common Unicode letters
+      const sanitized = raw.replace(/[^\p{L}\p{N}\s.\-]/gu, "");
+      displayName = sanitized.length > 0 ? escapeHtml(sanitized) : "Nutzer";
+    }
 
     // Build a verification URL that our /verify-email page can actually verify.
     // We generate a secure token server-side (service role) and append it as token_hash.
