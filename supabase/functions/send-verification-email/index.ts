@@ -1,5 +1,3 @@
-import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
@@ -29,7 +27,7 @@ type GenerateLinkResponse = {
   };
 };
 
-serve(async (req: Request): Promise<Response> => {
+Deno.serve(async (req: Request): Promise<Response> => {
   const corsHeaders = getCorsHeaders(req.headers.get("origin"));
 
   if (req.method === "OPTIONS") {
@@ -55,6 +53,17 @@ serve(async (req: Request): Promise<Response> => {
 
     const normalizedEmail = String(email).toLowerCase().trim();
     const redirectTo = String(confirmationUrl);
+
+    // Validate redirectTo against allowed origins to prevent phishing
+    const isAllowedRedirect = ALLOWED_ORIGINS.some((o) =>
+      redirectTo.startsWith(o.replace(/\/$/, ""))
+    );
+    if (!isAllowedRedirect) {
+      return new Response(JSON.stringify({ error: "Invalid redirect URL" }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
 
     // Robust HTML escaping to prevent XSS in email templates
     const escapeHtml = (str: string): string => {
@@ -218,7 +227,7 @@ serve(async (req: Request): Promise<Response> => {
       const errorText = await emailResponse.text();
       console.error("Resend error:", errorText);
       return new Response(
-        JSON.stringify({ error: "Failed to send email", details: errorText }),
+        JSON.stringify({ error: "Failed to send email" }),
         {
           status: 500,
           headers: { ...corsHeaders, "Content-Type": "application/json" },
