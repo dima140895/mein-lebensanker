@@ -26,6 +26,13 @@ export interface PersonalData {
   fullName: string;
   birthDate: string;
   address: string;
+  housingType: string; // 'rent' | 'own' | ''
+  rentAmount: string;
+  rentCurrency: string;
+  landlordName: string;
+  landlordPhone: string;
+  landlordEmail: string;
+  landlordAddress: string;
   phone: string;
   bloodType: string;
   preExistingConditions: string;
@@ -37,6 +44,16 @@ export interface PersonalData {
   emergencyPhone: string;
   medications: Medication[];
   allergies: Allergy[];
+  notes: string;
+}
+
+export interface Liability {
+  type: string; // 'loan' | 'mortgage' | 'credit-card' | 'leasing' | 'private' | 'other'
+  creditor: string;
+  amount: string;
+  amountCurrency: string;
+  monthlyPayment: string;
+  monthlyPaymentCurrency: string;
   notes: string;
 }
 
@@ -65,6 +82,7 @@ export interface AssetsData {
   }>;
   insurances: Array<{ type: string; typeOther: string; company: string; companyOther: string; policyNumber: string; surrenderValue: string; surrenderValueCurrency?: string }>;
   valuables: Array<{ description: string; location: string }>;
+  liabilities: Liability[];
   notes: string;
 }
 
@@ -125,6 +143,13 @@ const defaultPersonalData: PersonalData = {
   fullName: '',
   birthDate: '',
   address: '',
+  housingType: '',
+  rentAmount: '',
+  rentCurrency: 'EUR',
+  landlordName: '',
+  landlordPhone: '',
+  landlordEmail: '',
+  landlordAddress: '',
   phone: '',
   bloodType: '',
   preExistingConditions: '',
@@ -145,6 +170,7 @@ const defaultAssetsData: AssetsData = {
   vehicles: [],
   insurances: [],
   valuables: [],
+  liabilities: [],
   notes: '',
 };
 
