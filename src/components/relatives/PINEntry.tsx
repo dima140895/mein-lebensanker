@@ -98,7 +98,10 @@ const PINEntry = ({ onSubmit, language, initialRemainingAttempts = 3, isLocked =
       animate={{ opacity: 1, y: 0 }}
       className="max-w-sm mx-auto"
     >
-      <div className="rounded-2xl border border-border bg-card p-8 text-center shadow-lg">
+      <form
+        onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}
+        className="rounded-2xl border border-border bg-card p-8 text-center shadow-lg"
+      >
         <div className="inline-flex items-center justify-center h-16 w-16 rounded-full bg-primary/10 mb-6">
           <Lock className="h-8 w-8 text-primary" />
         </div>
@@ -153,13 +156,13 @@ const PINEntry = ({ onSubmit, language, initialRemainingAttempts = 3, isLocked =
         )}
         
         <Button
-          onClick={handleSubmit}
+          type="submit"
           disabled={pin.length !== 6 || loading}
           className="w-full"
         >
           {loading ? '...' : texts.submit}
         </Button>
-      </div>
+      </form>
     </motion.div>
   );
 };

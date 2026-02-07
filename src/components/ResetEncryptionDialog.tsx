@@ -152,7 +152,7 @@ export const ResetEncryptionDialog: React.FC<ResetEncryptionDialogProps> = ({
           <DialogDescription>{t.description}</DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-4">
+        <form onSubmit={(e) => { e.preventDefault(); handleReset(); }} className="space-y-4">
           <Alert variant="destructive">
             <AlertTriangle className="h-4 w-4" />
             <AlertDescription className="font-semibold">
@@ -213,8 +213,8 @@ export const ResetEncryptionDialog: React.FC<ResetEncryptionDialogProps> = ({
               {t.cancel}
             </Button>
             <Button 
+              type="submit"
               variant="destructive" 
-              onClick={handleReset} 
               disabled={!canReset || isLoading}
             >
               {isLoading ? (
@@ -224,7 +224,7 @@ export const ResetEncryptionDialog: React.FC<ResetEncryptionDialogProps> = ({
               )}
             </Button>
           </div>
-        </div>
+        </form>
       </DialogContent>
     </Dialog>
   );
