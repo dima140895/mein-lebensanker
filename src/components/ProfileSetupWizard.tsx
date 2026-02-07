@@ -507,16 +507,13 @@ const ProfileSetupWizard = ({ maxProfiles, packageType, onAllProfilesExist }: Pr
               <Label htmlFor="birthDate" className="text-sm font-medium">
                 {texts.birthDateLabel}
               </Label>
-              <div className="relative mt-1.5 w-full max-w-full overflow-hidden">
-                <Input
-                  id="birthDate"
-                  type="date"
-                  value={profiles[currentStep]?.birthDate || ''}
-                  onChange={(e) => handleProfileChange(currentStep, 'birthDate', e.target.value)}
-                  className="pl-10 w-full max-w-full box-border"
-                />
-                <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
-              </div>
+              <Input
+                id="birthDate"
+                type="date"
+                value={profiles[currentStep]?.birthDate || ''}
+                onChange={(e) => handleProfileChange(currentStep, 'birthDate', e.target.value)}
+                className="mt-1.5 w-full max-w-full box-border"
+              />
             </div>
           </div>
         </motion.div>
