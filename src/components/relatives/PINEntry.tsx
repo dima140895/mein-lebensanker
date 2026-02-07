@@ -1,12 +1,11 @@
-import { useState, useEffect, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Lock, AlertCircle, ShieldX, Loader2 } from 'lucide-react';
+import { useState } from 'react';
+import { motion } from 'framer-motion';
+import { Lock, AlertCircle, ShieldX } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   InputOTP,
   InputOTPGroup,
   InputOTPSlot,
-  InputOTPSeparator,
 } from '@/components/ui/input-otp';
 
 interface PINEntryProps {
@@ -48,8 +47,8 @@ const PINEntry = ({ onSubmit, language, initialRemainingAttempts = 3, isLocked =
 
   const texts = t[language];
 
-  const handleSubmit = useCallback(async () => {
-    if (pin.length !== 6 || locked || loading) return;
+  const handleSubmit = async () => {
+    if (pin.length !== 6 || locked) return;
     
     setLoading(true);
     setError(false);
@@ -67,40 +66,25 @@ const PINEntry = ({ onSubmit, language, initialRemainingAttempts = 3, isLocked =
     }
     
     setLoading(false);
-  }, [pin, locked, loading, onSubmit]);
-
-  // Auto-submit when all 6 digits are entered
-  useEffect(() => {
-    if (pin.length === 6 && !loading && !locked) {
-      // Small delay so the user sees the last digit appear
-      const timer = setTimeout(() => handleSubmit(), 300);
-      return () => clearTimeout(timer);
-    }
-  }, [pin, loading, locked, handleSubmit]);
+  };
 
   if (locked) {
     return (
       <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.4, ease: 'easeOut' }}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
         className="max-w-sm mx-auto"
       >
-        <div className="rounded-2xl border border-destructive/20 bg-gradient-to-b from-destructive/5 to-background p-8 text-center shadow-elevated">
-          <motion.div 
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
-            className="inline-flex items-center justify-center h-16 w-16 rounded-full bg-destructive/10 mb-6"
-          >
+        <div className="rounded-2xl border border-destructive/30 bg-destructive/5 p-8 text-center shadow-lg">
+          <div className="inline-flex items-center justify-center h-16 w-16 rounded-full bg-destructive/10 mb-6">
             <ShieldX className="h-8 w-8 text-destructive" />
-          </motion.div>
+          </div>
           
-          <h1 className="font-serif text-2xl font-bold text-foreground mb-3">
+          <h1 className="font-serif text-2xl font-bold text-foreground mb-2">
             {texts.lockedTitle}
           </h1>
           
-          <p className="text-muted-foreground leading-relaxed">
+          <p className="text-muted-foreground">
             {texts.lockedDescription}
           </p>
         </div>
@@ -110,77 +94,37 @@ const PINEntry = ({ onSubmit, language, initialRemainingAttempts = 3, isLocked =
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 24 }}
+      initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, ease: 'easeOut' }}
       className="max-w-sm mx-auto"
     >
       <form
         onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}
-        className="rounded-2xl border border-border/60 bg-gradient-to-b from-card to-background p-8 text-center shadow-elevated"
+        className="rounded-2xl border border-border bg-card p-8 text-center shadow-lg"
       >
-        {/* Icon with subtle pulse */}
-        <motion.div 
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ delay: 0.15, type: 'spring', stiffness: 200, damping: 15 }}
-          className="inline-flex items-center justify-center h-16 w-16 rounded-full bg-primary/10 mb-6"
-        >
+        <div className="inline-flex items-center justify-center h-16 w-16 rounded-full bg-primary/10 mb-6">
           <Lock className="h-8 w-8 text-primary" />
-        </motion.div>
+        </div>
         
-        <motion.h1 
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="font-serif text-2xl font-bold text-foreground mb-2"
-        >
+        <h1 className="font-serif text-2xl font-bold text-foreground mb-2">
           {texts.title}
-        </motion.h1>
+        </h1>
         
-        <motion.p 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.3 }}
-          className="text-muted-foreground mb-5 leading-relaxed"
-        >
+        <p className="text-muted-foreground mb-4">
           {texts.description}
-        </motion.p>
+        </p>
         
-        {/* Lock warning - softer design */}
-        <motion.div 
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.35 }}
-          className="rounded-xl bg-amber-light/40 border border-amber/15 p-3.5 mb-6"
-        >
-          <p className="text-sm text-amber font-medium leading-snug">
+        {/* Lock warning */}
+        <div className="rounded-lg bg-amber-light/30 border border-amber/20 p-3 mb-6">
+          <p className="text-sm text-amber font-medium">
             {texts.lockWarning}
           </p>
-          <div className="flex items-center justify-center gap-1.5 mt-2">
-            <span className="text-sm text-amber/80">{texts.attemptsRemaining}</span>
-            <div className="flex gap-1">
-              {[1, 2, 3].map((i) => (
-                <motion.div 
-                  key={i} 
-                  className={`h-2 w-2 rounded-full transition-colors duration-300 ${
-                    i <= remainingAttempts ? 'bg-amber' : 'bg-amber/20'
-                  }`}
-                  animate={i > remainingAttempts ? { scale: [1, 0.8] } : {}}
-                  transition={{ duration: 0.3 }}
-                />
-              ))}
-            </div>
-          </div>
-        </motion.div>
+          <p className="text-sm text-amber mt-1">
+            {texts.attemptsRemaining} <span className="font-bold">{remainingAttempts}</span>
+          </p>
+        </div>
         
-        {/* OTP Input - split into 2 groups of 3 */}
-        <motion.div 
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="flex justify-center mb-6"
-        >
+        <div className="flex justify-center mb-6">
           <InputOTP
             maxLength={6}
             value={pin}
@@ -188,48 +132,35 @@ const PINEntry = ({ onSubmit, language, initialRemainingAttempts = 3, isLocked =
               setPIN(value);
               setError(false);
             }}
-            disabled={loading}
           >
             <InputOTPGroup>
-              <InputOTPSlot index={0} className="h-13 w-13 text-lg rounded-lg border-border/60" />
-              <InputOTPSlot index={1} className="h-13 w-13 text-lg border-border/60" />
-              <InputOTPSlot index={2} className="h-13 w-13 text-lg rounded-lg border-border/60" />
-            </InputOTPGroup>
-            <InputOTPSeparator />
-            <InputOTPGroup>
-              <InputOTPSlot index={3} className="h-13 w-13 text-lg rounded-lg border-border/60" />
-              <InputOTPSlot index={4} className="h-13 w-13 text-lg border-border/60" />
-              <InputOTPSlot index={5} className="h-13 w-13 text-lg rounded-lg border-border/60" />
+              <InputOTPSlot index={0} className="h-12 w-12 text-lg" />
+              <InputOTPSlot index={1} className="h-12 w-12 text-lg" />
+              <InputOTPSlot index={2} className="h-12 w-12 text-lg" />
+              <InputOTPSlot index={3} className="h-12 w-12 text-lg" />
+              <InputOTPSlot index={4} className="h-12 w-12 text-lg" />
+              <InputOTPSlot index={5} className="h-12 w-12 text-lg" />
             </InputOTPGroup>
           </InputOTP>
-        </motion.div>
+        </div>
         
-        {/* Error message */}
-        <AnimatePresence>
-          {error && (
-            <motion.div
-              initial={{ opacity: 0, y: -8, height: 0 }}
-              animate={{ opacity: 1, y: 0, height: 'auto' }}
-              exit={{ opacity: 0, y: -8, height: 0 }}
-              className="flex items-center justify-center gap-2 text-destructive mb-4"
-            >
-              <AlertCircle className="h-4 w-4" />
-              <span className="text-sm font-medium">{texts.error}</span>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {error && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex items-center justify-center gap-2 text-destructive mb-4"
+          >
+            <AlertCircle className="h-4 w-4" />
+            <span className="text-sm">{texts.error}</span>
+          </motion.div>
+        )}
         
         <Button
           type="submit"
           disabled={pin.length !== 6 || loading}
-          className="w-full h-12 text-base font-medium"
+          className="w-full"
         >
-          {loading ? (
-            <span className="flex items-center gap-2">
-              <Loader2 className="h-4 w-4 animate-spin" />
-              <span>{texts.submit}</span>
-            </span>
-          ) : texts.submit}
+          {loading ? '...' : texts.submit}
         </Button>
       </form>
     </motion.div>
