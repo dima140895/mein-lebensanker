@@ -139,7 +139,7 @@ const DashboardSections = () => {
             </div>
           </div>
           
-          <h3 className="mt-3 md:mt-5 font-serif text-base md:text-xl font-semibold text-foreground">
+          <h3 className="mt-3 md:mt-5 font-serif text-base md:text-xl font-semibold text-foreground break-words hyphens-auto" lang={language}>
             {t(`section.${section.key}`)}
           </h3>
           <p className="mt-1 md:mt-2 text-xs md:text-sm leading-relaxed text-muted-foreground line-clamp-2 flex-1">
