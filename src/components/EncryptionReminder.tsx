@@ -84,9 +84,9 @@ export const EncryptionReminder = forwardRef<HTMLDivElement>((_, ref) => {
 
     const completedAt = parseInt(setupCompletedTime, 10);
     const timeSinceSetup = Date.now() - completedAt;
-    const remainingDelay = Math.max(0, 30000 - timeSinceSetup);
+    const remainingDelay = Math.max(0, 8000 - timeSinceSetup);
 
-    // Show reminder 30 seconds after profile setup completion
+    // Show reminder 8 seconds after profile setup completion
     const timer = setTimeout(() => {
       setShowReminder(true);
       // Clear the setup time flag after showing
