@@ -1042,7 +1042,15 @@ const PrintableRelativesSummary = forwardRef<HTMLDivElement, PrintableRelativesS
       }
     };
 
-    const hasContent = (sectionData: Record<string, unknown>): boolean => {
+    const hasContent = (sectionData: Record<string, unknown>, sectionKey?: string, profileId?: string): boolean => {
+      // For documents section, also check if there are uploaded documents for this profile
+      if (sectionKey === 'documents') {
+        const profileDocs = profileId
+          ? sharedDocuments.filter(doc => doc.profileId === profileId)
+          : sharedDocuments;
+        if (profileDocs.length > 0) return true;
+      }
+
       return Object.values(sectionData).some(value => {
         if (Array.isArray(value)) {
           return value.some(item => 
@@ -1055,12 +1063,27 @@ const PrintableRelativesSummary = forwardRef<HTMLDivElement, PrintableRelativesS
 
     const sectionOrder = ['personal', 'assets', 'digital', 'wishes', 'documents', 'contacts'];
 
-    const dataByProfile = profiles.map(profile => ({
-      profile,
-      data: data.filter(d => d.person_profile_id === profile.profile_id)
-        .filter(item => hasContent(item.data))
-        .sort((a, b) => sectionOrder.indexOf(a.section_key) - sectionOrder.indexOf(b.section_key)),
-    })).filter(group => group.data.length > 0);
+    const dataByProfile = profiles.map(profile => {
+      const profileData = data.filter(d => d.person_profile_id === profile.profile_id)
+        .filter(item => hasContent(item.data, item.section_key, profile.profile_id))
+        .sort((a, b) => sectionOrder.indexOf(a.section_key) - sectionOrder.indexOf(b.section_key));
+      
+      // If documents section is not in data but there are uploaded docs for this profile, add a placeholder
+      const hasDocumentsSection = profileData.some(item => item.section_key === 'documents');
+      const profileDocs = sharedDocuments.filter(doc => doc.profileId === profile.profile_id);
+      if (!hasDocumentsSection && profileDocs.length > 0) {
+        profileData.push({
+          section_key: 'documents',
+          data: {},
+          is_for_partner: false,
+          person_profile_id: profile.profile_id,
+          profile_name: profile.profile_name,
+        });
+        profileData.sort((a, b) => sectionOrder.indexOf(a.section_key) - sectionOrder.indexOf(b.section_key));
+      }
+
+      return { profile, data: profileData };
+    }).filter(group => group.data.length > 0);
 
     const currentDate = new Date().toLocaleDateString(language === 'de' ? 'de-DE' : 'en-US', {
       year: 'numeric',
