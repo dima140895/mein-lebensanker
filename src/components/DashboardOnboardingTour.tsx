@@ -23,8 +23,8 @@ const tourSteps: TourStep[] = [
     icon: Users,
     titleDe: 'Deine Profile',
     titleEn: 'Your Profiles',
-    messageDe: 'Hier kannst Du zwischen Deinen Profilen wechseln – wie in einem Tresor mit verschiedenen Fächern. Jedes Profil hat eigene Daten und Dokumente.',
-    messageEn: 'Here you can switch between your profiles – like a safe with different compartments. Each profile has its own data and documents.',
+    messageDe: 'Du kannst jederzeit zwischen Deinen Profilen wechseln – wie in einem Tresor mit verschiedenen Fächern. Jedes Profil hat eigene Daten und Dokumente.',
+    messageEn: 'You can switch between your profiles at any time – like a safe with different compartments. Each profile has its own data and documents.',
   },
   {
     id: 'sections',
@@ -55,8 +55,8 @@ const tourSteps: TourStep[] = [
     icon: Shield,
     titleDe: 'Verschlüsselung & Einstellungen',
     titleEn: 'Encryption & Settings',
-    messageDe: 'In den Konto-Einstellungen findest Du alle Optionen rund um Dein Profil. Hier kannst Du auch die Ende-zu-Ende-Verschlüsselung aktivieren – für maximale Sicherheit.',
-    messageEn: 'In your account settings you\'ll find all options for your profile. Here you can also enable end-to-end encryption – for maximum security.',
+    messageDe: 'In den Konto-Einstellungen findest Du alle Optionen rund um Dein Profil. Du kannst dort auch die Ende-zu-Ende-Verschlüsselung aktivieren – für maximale Sicherheit.',
+    messageEn: 'In your account settings you\'ll find all options for your profile. You can also enable end-to-end encryption there – for maximum security.',
   },
 ];
 
