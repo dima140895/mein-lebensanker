@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { LogIn, UserPlus, Menu, Home, User, Info, ClipboardList, Wallet, Globe, ScrollText, FolderOpen, Phone, ChevronDown, Link2, CreditCard, Package, Key, LogOut, Shield, KeyRound, Lock, Unlock, Settings } from 'lucide-react';
+import { LogIn, UserPlus, Menu, Home, User, Info, ClipboardList, Wallet, Globe, ScrollText, FolderOpen, Phone, ChevronDown, Link2, CreditCard, Package, Key, LogOut, Shield, KeyRound, Lock, Unlock, Settings, Trash2 } from 'lucide-react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import LanguageToggle from './LanguageToggle';
 import Logo from './Logo';
@@ -40,6 +40,7 @@ import { EncryptionPasswordDialog } from './EncryptionPasswordDialog';
 import { ViewRecoveryKeyDialog } from './ViewRecoveryKeyDialog';
 import { RecoveryKeyRecoveryDialog } from './RecoveryKeyRecoveryDialog';
 import { ChangeEncryptionPasswordWithCurrentDialog } from './ChangeEncryptionPasswordWithCurrentDialog';
+import { DeleteAllDataDialog } from './DeleteAllDataDialog';
 
 interface MenuItem {
   label: string;
@@ -65,6 +66,7 @@ const Header = () => {
   const [recoveryKeyDialogOpen, setRecoveryKeyDialogOpen] = useState(false);
   const [recoveryKeyRecoveryOpen, setRecoveryKeyRecoveryOpen] = useState(false);
   const [changeEncryptionPasswordOpen, setChangeEncryptionPasswordOpen] = useState(false);
+  const [deleteAllDataOpen, setDeleteAllDataOpen] = useState(false);
 
   // Prevent closing dialog when in verify mode
   const handleAuthOpenChange = (open: boolean) => {
@@ -462,6 +464,21 @@ const Header = () => {
                             )}
                           </>
                         )}
+                        {/* Delete All Data - mobile */}
+                        {encryptionEnabled && (
+                          <li>
+                            <button
+                              onClick={() => {
+                                setMobileMenuOpen(false);
+                                setDeleteAllDataOpen(true);
+                              }}
+                              className="w-full flex items-center gap-3 rounded-lg px-4 py-3 text-left text-destructive transition-colors hover:bg-muted"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                              {language === 'de' ? 'Alle Daten löschen' : 'Delete all data'}
+                            </button>
+                          </li>
+                        )}
                       </ul>
                     </div>
                   </div>
@@ -704,6 +721,20 @@ const Header = () => {
                     </>
                   )}
                   
+                  {/* Delete All Data - only when encryption is enabled */}
+                  {encryptionEnabled && (
+                    <>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem 
+                        onClick={() => setDeleteAllDataOpen(true)}
+                        className="text-destructive focus:text-destructive"
+                      >
+                        <Trash2 className="mr-2 h-4 w-4" />
+                        {language === 'de' ? 'Alle Daten löschen' : 'Delete all data'}
+                      </DropdownMenuItem>
+                    </>
+                  )}
+                  
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleLogout} className="text-destructive focus:text-destructive">
                     <LogOut className="mr-2 h-4 w-4" />
@@ -811,6 +842,12 @@ const Header = () => {
         open={changeEncryptionPasswordOpen} 
         onOpenChange={setChangeEncryptionPasswordOpen}
         onForgotPassword={() => setRecoveryKeyRecoveryOpen(true)}
+      />
+
+      {/* Delete All Data Dialog */}
+      <DeleteAllDataDialog 
+        open={deleteAllDataOpen} 
+        onOpenChange={setDeleteAllDataOpen}
       />
     </header>
     </>
