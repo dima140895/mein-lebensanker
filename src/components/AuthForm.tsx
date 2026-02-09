@@ -1,6 +1,12 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Mail, Lock, Eye, EyeOff, ArrowLeft, Loader2, Check, X } from 'lucide-react';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { supabase } from '@/integrations/supabase/browserClient';
@@ -451,20 +457,24 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange }: Auth
                 {language === 'de' ? 'Anmelde-Passwort' : 'Login Password'}
               </Label>
               {mode === 'login' && (
-                <button
-                  type="button"
-                  onClick={() => handleModeChange('forgot')}
-                  className="text-xs text-primary hover:underline"
-                >
-                  {texts.forgotPassword}
-                </button>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button
+                        type="button"
+                        onClick={() => handleModeChange('forgot')}
+                        className="text-xs text-primary hover:underline"
+                      >
+                        {texts.forgotPassword}
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom">
+                      <p>{language === 'de' ? 'Du erhältst eine E-Mail zum Zurücksetzen Deines Anmelde-Passworts.' : 'You will receive an email to reset your login password.'}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               )}
             </div>
-            <p className="text-xs text-muted-foreground -mt-1">
-              {language === 'de' 
-                ? 'Dein Passwort für die Anmeldung bei Mein Lebensanker.' 
-                : 'Your password to sign in to Mein Lebensanker.'}
-            </p>
             <div className="relative">
               <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
