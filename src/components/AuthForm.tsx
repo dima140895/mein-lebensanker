@@ -42,6 +42,7 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange }: Auth
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [socialLoading, setSocialLoading] = useState<'google' | 'apple' | null>(null);
+  const [passwordError, setPasswordError] = useState(false);
 
   const t = {
     de: {
@@ -159,6 +160,19 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange }: Auth
         toast.success(texts.welcomeBack);
         onSuccess?.();
       } else if (mode === 'register') {
+        // Client-side password policy check
+        const allMet = password.length >= 6
+          && /[A-Z]/.test(password)
+          && /[a-z]/.test(password)
+          && /[0-9]/.test(password)
+          && /[^A-Za-z0-9]/.test(password);
+
+        if (!allMet) {
+          setPasswordError(true);
+          setLoading(false);
+          return;
+        }
+
         // Validate passwords match
         if (password !== confirmPassword) {
           toast.error(texts.passwordMismatch);
@@ -166,6 +180,7 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange }: Auth
           return;
         }
         
+        setPasswordError(false);
         const { error, userExists } = await signUp(email, password);
         if (error) throw error;
         
@@ -480,7 +495,7 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange }: Auth
                 id="password"
                 type={showPassword ? 'text' : 'password'}
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => { setPassword(e.target.value); setPasswordError(false); }}
                 className="pl-10 pr-10"
                 placeholder="••••••••"
                 required
@@ -495,10 +510,18 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange }: Auth
               </button>
             </div>
             {/* Password requirements - only in register mode */}
-            {mode === 'register' && password.length > 0 && (
-              <div className="mt-2.5 rounded-lg border border-border bg-muted/30 p-3 space-y-1.5">
-                <p className="text-xs font-medium text-muted-foreground mb-1">
-                  {language === 'de' ? 'Passwort-Anforderungen:' : 'Password requirements:'}
+            {mode === 'register' && (password.length > 0 || passwordError) && (
+              <div className={`mt-2.5 rounded-lg border p-3 space-y-1.5 transition-colors ${
+                passwordError 
+                  ? 'border-destructive/50 bg-destructive/5' 
+                  : 'border-border bg-muted/30'
+              }`}>
+                <p className={`text-xs font-medium mb-1 ${
+                  passwordError ? 'text-destructive' : 'text-muted-foreground'
+                }`}>
+                  {passwordError
+                    ? (language === 'de' ? 'Bitte erfülle alle Passwort-Anforderungen:' : 'Please meet all password requirements:')
+                    : (language === 'de' ? 'Passwort-Anforderungen:' : 'Password requirements:')}
                 </p>
                 {[
                   {
@@ -526,9 +549,9 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange }: Auth
                     {req.met ? (
                       <Check className="h-3.5 w-3.5 text-green-600 dark:text-green-400 shrink-0" />
                     ) : (
-                      <X className="h-3.5 w-3.5 text-muted-foreground/50 shrink-0" />
+                      <X className={`h-3.5 w-3.5 shrink-0 ${passwordError ? 'text-destructive' : 'text-muted-foreground/50'}`} />
                     )}
-                    <span className={req.met ? 'text-green-600 dark:text-green-400' : 'text-muted-foreground'}>
+                    <span className={req.met ? 'text-green-600 dark:text-green-400' : passwordError ? 'text-destructive' : 'text-muted-foreground'}>
                       {req.label}
                     </span>
                   </div>
