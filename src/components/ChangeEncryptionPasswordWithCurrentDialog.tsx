@@ -25,11 +25,13 @@ import { invalidateShareTokenEncryption, countAffectedShareTokens } from '@/lib/
 interface ChangeEncryptionPasswordWithCurrentDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onForgotPassword?: () => void;
 }
 
 export const ChangeEncryptionPasswordWithCurrentDialog: React.FC<ChangeEncryptionPasswordWithCurrentDialogProps> = ({
   open,
   onOpenChange,
+  onForgotPassword,
 }) => {
   const { language } = useLanguage();
   const { user } = useAuth();
@@ -61,6 +63,7 @@ export const ChangeEncryptionPasswordWithCurrentDialog: React.FC<ChangeEncryptio
       error: 'Fehler beim Ändern des Passworts.',
       recoveryKeyNote: 'Hinweis: Nach der Änderung erhältst Du einen neuen Ersatzschlüssel.',
       shareLinksWarning: 'Achtung: Du hast {count} aktive Angehörigen-Link(s). Diese müssen nach der Passwortänderung neu erstellt werden, damit Deine Angehörigen weiterhin Zugang haben.',
+      forgotPassword: 'Passwort vergessen? Mit Ersatzschlüssel entsperren',
     },
     en: {
       title: 'Change Encryption Password',
@@ -77,6 +80,7 @@ export const ChangeEncryptionPasswordWithCurrentDialog: React.FC<ChangeEncryptio
       error: 'Error changing password.',
       recoveryKeyNote: 'Note: You will receive a new recovery key after the change.',
       shareLinksWarning: 'Warning: You have {count} active relative link(s). These will need to be recreated after the password change so your relatives can continue to access.',
+      forgotPassword: 'Forgot password? Unlock with recovery key',
     },
   };
 
@@ -259,6 +263,19 @@ export const ChangeEncryptionPasswordWithCurrentDialog: React.FC<ChangeEncryptio
                 {showCurrentPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
               </button>
             </div>
+            {onForgotPassword && (
+              <button
+                type="button"
+                onClick={() => {
+                  resetForm();
+                  onOpenChange(false);
+                  onForgotPassword();
+                }}
+                className="text-xs text-primary hover:underline mt-1"
+              >
+                {t.forgotPassword}
+              </button>
+            )}
           </div>
 
           {/* New Password */}
