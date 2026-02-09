@@ -160,16 +160,20 @@ export const ChangeEncryptionPasswordWithCurrentDialog: React.FC<ChangeEncryptio
       const recoveryKey = generateRecoveryKey();
       const encryptedPassword = await encryptPasswordWithRecoveryKey(newPassword, recoveryKey);
 
-      // Update the password verifier in vorsorge_data
+      // Delete old verifier, then insert new one (upsert fails with NULL person_profile_id)
+      await supabase
+        .from('vorsorge_data')
+        .delete()
+        .eq('user_id', user.id)
+        .eq('section_key', '_encryption_verifier');
+
       const { error: verifierError } = await supabase
         .from('vorsorge_data')
-        .upsert({
+        .insert({
           user_id: user.id,
           section_key: '_encryption_verifier',
           data: newVerifier,
           person_profile_id: null,
-        }, {
-          onConflict: 'user_id,section_key,person_profile_id'
         });
 
       if (verifierError) throw verifierError;
