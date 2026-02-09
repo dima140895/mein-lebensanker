@@ -86,15 +86,32 @@ export const EncryptionProvider: React.FC<{ children: ReactNode }> = ({ children
           
           // Load password verifier from vorsorge_data if encryption is enabled
           if (data.is_encrypted && data.encryption_salt) {
-            const { data: verifierData } = await supabase
+            const { data: verifierRows } = await supabase
               .from('vorsorge_data')
-              .select('data')
+              .select('data, id')
               .eq('user_id', user.id)
               .eq('section_key', '_encryption_verifier')
-              .maybeSingle();
+              .order('created_at', { ascending: false })
+              .limit(1);
             
-            if (verifierData?.data) {
-              setPasswordVerifier(verifierData.data as string);
+            if (verifierRows && verifierRows.length > 0) {
+              setPasswordVerifier(verifierRows[0].data as string);
+              
+              // Clean up any duplicate verifiers in background
+              const { data: allVerifiers } = await supabase
+                .from('vorsorge_data')
+                .select('id')
+                .eq('user_id', user.id)
+                .eq('section_key', '_encryption_verifier');
+              
+              if (allVerifiers && allVerifiers.length > 1) {
+                const keepId = verifierRows[0].id;
+                const deleteIds = allVerifiers.filter(v => v.id !== keepId).map(v => v.id);
+                await supabase
+                  .from('vorsorge_data')
+                  .delete()
+                  .in('id', deleteIds);
+              }
             }
           }
         }
