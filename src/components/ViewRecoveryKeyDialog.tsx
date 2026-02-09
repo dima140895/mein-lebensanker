@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { verifyPassword } from '@/lib/encryption';
 import { useEncryption } from '@/contexts/EncryptionContext';
 import {
   Dialog,
@@ -33,7 +34,7 @@ export const ViewRecoveryKeyDialog: React.FC<ViewRecoveryKeyDialogProps> = ({
 }) => {
   const { language } = useLanguage();
   const { user } = useAuth();
-  const { isUnlocked, unlock } = useEncryption();
+  const { isUnlocked, encryptionSalt } = useEncryption();
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -117,15 +118,33 @@ export const ViewRecoveryKeyDialog: React.FC<ViewRecoveryKeyDialogProps> = ({
   const t = translations[language];
 
   const handleGenerateNewKey = async () => {
-    if (!user) return;
+    if (!user || !encryptionSalt) return;
     
     setError(null);
     setIsLoading(true);
 
     try {
-      // Verify the encryption password first (prevents accidentally saving a wrong password).
-      const ok = await unlock(password);
-      if (!ok) {
+      // Fetch current verifier fresh from DB to avoid stale state after password change
+      const { data: verifierData } = await supabase
+        .from('vorsorge_data')
+        .select('data')
+        .eq('user_id', user.id)
+        .eq('section_key', '_encryption_verifier')
+        .maybeSingle();
+
+      if (!verifierData?.data) {
+        setError(t.wrongPassword);
+        setIsLoading(false);
+        return;
+      }
+
+      const isValid = await verifyPassword(
+        verifierData.data as string,
+        password,
+        encryptionSalt
+      );
+
+      if (!isValid) {
         setError(t.wrongPassword);
         return;
       }
