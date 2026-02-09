@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { User, Wallet, Globe, Heart, FileText, ArrowLeft, Phone, Info, Compass, Link2, Download, CheckCircle, HelpCircle } from 'lucide-react';
-import confetti from 'canvas-confetti';
+
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useEncryption } from '@/contexts/EncryptionContext';
@@ -65,7 +65,7 @@ const DashboardContent = () => {
   const [tourKey, setTourKey] = useState(0);
   const isMobile = useIsMobile();
   const { sectionStatus, progressPercent, filledCount, totalCount, isComplete, allProfilesProgress, hasMultipleProfiles, refetch, loading: statusLoading } = useSectionStatus();
-  const hasShownConfetti = useRef(false);
+  
   const previousProfileId = useRef<string | null>(null);
 
   const handleStartTour = () => {
@@ -85,37 +85,6 @@ const DashboardContent = () => {
     }
   }, [activeProfile?.id, refetch]);
 
-  // Trigger confetti when all sections are complete
-  useEffect(() => {
-    if (isComplete && !hasShownConfetti.current && !activeSection) {
-      hasShownConfetti.current = true;
-      
-      // Fire confetti from both sides
-      const fireConfetti = () => {
-        confetti({
-          particleCount: 100,
-          spread: 70,
-          origin: { x: 0.1, y: 0.6 },
-          colors: ['#7c9a82', '#d4a574', '#f5f0e8', '#4a7c59'],
-        });
-        confetti({
-          particleCount: 100,
-          spread: 70,
-          origin: { x: 0.9, y: 0.6 },
-          colors: ['#7c9a82', '#d4a574', '#f5f0e8', '#4a7c59'],
-        });
-      };
-      
-      fireConfetti();
-      // Second burst after a short delay
-      setTimeout(fireConfetti, 200);
-    }
-    
-    // Reset when not complete anymore
-    if (!isComplete) {
-      hasShownConfetti.current = false;
-    }
-  }, [isComplete, activeSection]);
 
   // Show unlock dialog automatically when encryption is enabled but locked
   useEffect(() => {
