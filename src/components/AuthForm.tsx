@@ -494,6 +494,43 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange }: Auth
                 {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
               </button>
             </div>
+            {/* Password requirements - only in register mode */}
+            {mode === 'register' && password.length > 0 && (
+              <div className="mt-2.5 rounded-lg border border-border bg-muted/30 p-3 space-y-1.5">
+                <p className="text-xs font-medium text-muted-foreground mb-1">
+                  {language === 'de' ? 'Passwort-Anforderungen:' : 'Password requirements:'}
+                </p>
+                {[
+                  {
+                    met: password.length >= 6,
+                    label: language === 'de' ? 'Mindestens 6 Zeichen' : 'At least 6 characters',
+                  },
+                  {
+                    met: /[A-Z]/.test(password),
+                    label: language === 'de' ? 'Ein Großbuchstabe' : 'One uppercase letter',
+                  },
+                  {
+                    met: /[a-z]/.test(password),
+                    label: language === 'de' ? 'Ein Kleinbuchstabe' : 'One lowercase letter',
+                  },
+                  {
+                    met: /[0-9]/.test(password),
+                    label: language === 'de' ? 'Eine Zahl' : 'One number',
+                  },
+                ].map((req, i) => (
+                  <div key={i} className="flex items-center gap-2 text-xs">
+                    {req.met ? (
+                      <Check className="h-3.5 w-3.5 text-green-600 dark:text-green-400 shrink-0" />
+                    ) : (
+                      <X className="h-3.5 w-3.5 text-muted-foreground/50 shrink-0" />
+                    )}
+                    <span className={req.met ? 'text-green-600 dark:text-green-400' : 'text-muted-foreground'}>
+                      {req.label}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {mode === 'register' && (
