@@ -72,6 +72,7 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange }: Auth
       continueWithGoogle: 'Weiter mit Google',
       continueWithApple: 'Weiter mit Apple',
       socialError: 'Anmeldung fehlgeschlagen',
+      accountExists: 'Es existiert bereits ein Konto mit dieser E-Mail-Adresse. Bitte melde Dich an.',
     },
     en: {
       login: 'Sign In',
@@ -107,6 +108,7 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange }: Auth
       continueWithGoogle: 'Continue with Google',
       continueWithApple: 'Continue with Apple',
       socialError: 'Sign in failed',
+      accountExists: 'An account with this email already exists. Please sign in.',
     },
   };
 
@@ -158,8 +160,16 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange }: Auth
           return;
         }
         
-        const { error } = await signUp(email, password);
+        const { error, userExists } = await signUp(email, password);
         if (error) throw error;
+        
+        // If email already exists, switch to login mode
+        if (userExists) {
+          toast.info(texts.accountExists);
+          handleModeChange('login');
+          setLoading(false);
+          return;
+        }
         
         // Send custom verification email via Resend
         await sendVerificationEmail(email);
