@@ -214,6 +214,28 @@ export const EncryptionProvider: React.FC<{ children: ReactNode }> = ({ children
       // Create password verifier
       const verifier = await createPasswordVerifier(password, salt);
       
+      // CRITICAL: Store the password verifier FIRST, before marking profile as encrypted.
+      // This prevents a state where is_encrypted=true but no verifier exists (permanent lockout).
+      await supabase
+        .from('vorsorge_data')
+        .delete()
+        .eq('user_id', user.id)
+        .eq('section_key', '_encryption_verifier');
+        
+      const { error: verifierError } = await supabase
+        .from('vorsorge_data')
+        .insert({
+          user_id: user.id,
+          section_key: '_encryption_verifier',
+          data: verifier,
+          person_profile_id: null,
+        });
+
+      if (verifierError) {
+        logger.error('Failed to store encryption verifier:', verifierError);
+        throw verifierError;
+      }
+
       // Fetch all existing unencrypted data for migration
       const { data: existingData, error: fetchError } = await supabase
         .from('vorsorge_data')
@@ -255,7 +277,7 @@ export const EncryptionProvider: React.FC<{ children: ReactNode }> = ({ children
         setMigrationProgress(null);
       }
       
-      // Update profile with encryption settings and recovery info
+      // NOW mark profile as encrypted (verifier is already safely stored)
       const { error: profileError } = await supabase
         .from('profiles')
         .update({
@@ -265,25 +287,15 @@ export const EncryptionProvider: React.FC<{ children: ReactNode }> = ({ children
         })
         .eq('user_id', user.id);
 
-      if (profileError) throw profileError;
-
-      // Store the password verifier - first try to delete any existing one, then insert
-      await supabase
-        .from('vorsorge_data')
-        .delete()
-        .eq('user_id', user.id)
-        .eq('section_key', '_encryption_verifier');
-        
-      const { error: verifierError } = await supabase
-        .from('vorsorge_data')
-        .insert({
-          user_id: user.id,
-          section_key: '_encryption_verifier',
-          data: verifier,
-          person_profile_id: null,
-        });
-
-      if (verifierError) throw verifierError;
+      if (profileError) {
+        // Rollback: remove verifier since profile update failed
+        await supabase
+          .from('vorsorge_data')
+          .delete()
+          .eq('user_id', user.id)
+          .eq('section_key', '_encryption_verifier');
+        throw profileError;
+      }
 
       // Update local state
       setEncryptionSalt(salt);
