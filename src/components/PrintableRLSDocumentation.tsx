@@ -25,67 +25,73 @@ export const PrintableRLSDocumentation = forwardRef<HTMLDivElement>((_, ref) => 
       tableName: 'profiles',
       description: 'Benutzerprofile mit Kontoinformationen, Verschlüsselungseinstellungen und Zahlungsstatus',
       policies: [
-        { operation: 'SELECT', name: 'Users can view their own profile', rule: 'auth.uid() = user_id' },
-        { operation: 'INSERT', name: 'Users can insert their own profile', rule: 'auth.uid() = user_id' },
-        { operation: 'UPDATE', name: 'Users can update their own profile', rule: 'auth.uid() = user_id' },
-        { operation: 'DELETE', name: 'Users can delete their own profile', rule: 'auth.uid() = user_id' },
+        { operation: 'SELECT', name: 'Deny anonymous access to profiles', rule: 'false (RESTRICTIVE)', notes: 'BLOCKIERT für anon' },
+        { operation: 'SELECT', name: 'Users can view their own profile', rule: 'auth.uid() = user_id (RESTRICTIVE)' },
+        { operation: 'INSERT', name: 'Users can insert their own profile', rule: 'auth.uid() = user_id OR (user_id IS NOT NULL AND current_user ∉ {anon, authenticated})', notes: 'Erlaubt System-Trigger (handle_new_user)' },
+        { operation: 'UPDATE', name: 'Users can update their own profile', rule: 'auth.uid() = user_id (RESTRICTIVE)' },
+        { operation: 'DELETE', name: 'Users can delete their own profile', rule: 'auth.uid() = user_id (RESTRICTIVE)' },
       ],
+      securityNotes: ['Alle Policies sind RESTRICTIVE (nicht PERMISSIVE)', 'INSERT erlaubt System-Trigger handle_new_user() via SECURITY DEFINER', 'Anonymer Zugriff wird explizit durch Deny-Policy blockiert'],
     },
     {
       tableName: 'person_profiles',
       description: 'Personen-Profile für Multi-Profil-Funktionalität (z.B. Familienangehörige)',
       policies: [
-        { operation: 'SELECT', name: 'Users can view their own person profiles', rule: 'auth.uid() = user_id' },
-        { operation: 'INSERT', name: 'Users can create their own person profiles', rule: 'auth.uid() = user_id AND user_has_access(auth.uid())', notes: 'Erfordert Zahlungsstatus' },
-        { operation: 'UPDATE', name: 'Users can update their own person profiles', rule: 'auth.uid() = user_id AND user_has_access(auth.uid())', notes: 'Erfordert Zahlungsstatus' },
-        { operation: 'DELETE', name: 'Users can delete their own person profiles', rule: 'auth.uid() = user_id' },
+        { operation: 'SELECT', name: 'Deny anonymous access to person_profiles', rule: 'false (RESTRICTIVE)', notes: 'BLOCKIERT für anon' },
+        { operation: 'SELECT', name: 'Users can view their own person profiles', rule: 'auth.uid() = user_id (RESTRICTIVE)' },
+        { operation: 'INSERT', name: 'Users can create their own person profiles', rule: 'auth.uid() = user_id AND user_has_access(auth.uid()) (RESTRICTIVE)', notes: 'Erfordert Zahlungsstatus' },
+        { operation: 'UPDATE', name: 'Users can update their own person profiles', rule: 'auth.uid() = user_id AND user_has_access(auth.uid()) (RESTRICTIVE)', notes: 'Erfordert Zahlungsstatus' },
+        { operation: 'DELETE', name: 'Users can delete their own person profiles', rule: 'auth.uid() = user_id (RESTRICTIVE)' },
       ],
-      securityNotes: ['INSERT/UPDATE erfordern gültigen Zahlungsstatus via user_has_access()', 'Profil-Limit wird via Trigger validate_person_profile_limit() erzwungen'],
+      securityNotes: ['Alle Policies sind RESTRICTIVE', 'INSERT/UPDATE erfordern gültigen Zahlungsstatus via user_has_access()', 'Profil-Limit wird via Trigger validate_person_profile_limit() erzwungen', 'Anonymer Zugriff explizit blockiert'],
     },
     {
       tableName: 'vorsorge_data',
       description: 'Verschlüsselte Vorsorgedaten aller Kategorien (Persönliches, Vermögen, Digital, Wünsche, etc.)',
       policies: [
-        { operation: 'SELECT', name: 'Users can view their own data', rule: 'auth.uid() = user_id' },
-        { operation: 'INSERT', name: 'Users can insert their own data', rule: 'auth.uid() = user_id AND user_has_access(auth.uid())', notes: 'Erfordert Zahlungsstatus' },
-        { operation: 'UPDATE', name: 'Users can update their own data', rule: 'auth.uid() = user_id AND user_has_access(auth.uid())', notes: 'Erfordert Zahlungsstatus' },
-        { operation: 'DELETE', name: 'Users can delete their own data', rule: 'auth.uid() = user_id' },
+        { operation: 'SELECT', name: 'Deny anonymous access to vorsorge_data', rule: 'false (RESTRICTIVE)', notes: 'BLOCKIERT für anon' },
+        { operation: 'SELECT', name: 'Users can view their own data', rule: 'auth.uid() = user_id (RESTRICTIVE)' },
+        { operation: 'INSERT', name: 'Users can insert their own data', rule: 'auth.uid() = user_id AND (section_key = _encryption_verifier OR (user_has_access() AND person_profile_id validiert))', notes: 'Verschlüsselungs-Verifier ohne Zahlung erlaubt' },
+        { operation: 'UPDATE', name: 'Users can update their own data', rule: 'auth.uid() = user_id AND (section_key = _encryption_verifier OR (user_has_access() AND person_profile_id validiert))' },
+        { operation: 'DELETE', name: 'Users can delete their own data', rule: 'auth.uid() = user_id (RESTRICTIVE)' },
       ],
-      securityNotes: ['Daten sind client-seitig mit AES-256-GCM verschlüsselt', 'Server speichert nur Ciphertext (Zero-Knowledge-Architektur)'],
+      securityNotes: ['Alle Policies sind RESTRICTIVE', 'Daten sind client-seitig mit AES-256-GCM verschlüsselt (Zero-Knowledge)', '_encryption_verifier darf ohne Zahlungsstatus geschrieben werden', 'person_profile_id wird via EXISTS-Subquery + auth.uid() validiert', 'Anonymer Zugriff explizit blockiert'],
     },
     {
       tableName: 'share_tokens',
       description: 'Freigabe-Links für Angehörige mit PIN-Schutz und Ablaufdatum',
       policies: [
-        { operation: 'SELECT', name: 'Users can view their own share tokens', rule: 'auth.uid() = user_id' },
-        { operation: 'INSERT', name: 'Users can create their own share tokens', rule: 'auth.uid() = user_id' },
-        { operation: 'UPDATE', name: 'Users can update their own share tokens', rule: 'auth.uid() = user_id' },
-        { operation: 'DELETE', name: 'Users can delete their own share tokens', rule: 'auth.uid() = user_id' },
+        { operation: 'SELECT', name: 'Deny anonymous access to share_tokens', rule: 'false (RESTRICTIVE)', notes: 'BLOCKIERT für anon' },
+        { operation: 'SELECT', name: 'Users can view their own share tokens', rule: 'auth.uid() = user_id (RESTRICTIVE)' },
+        { operation: 'INSERT', name: 'Users can create their own share tokens', rule: 'auth.uid() = user_id (RESTRICTIVE)' },
+        { operation: 'UPDATE', name: 'Users can update their own share tokens', rule: 'auth.uid() = user_id (RESTRICTIVE)' },
+        { operation: 'DELETE', name: 'Users can delete their own share tokens', rule: 'auth.uid() = user_id (RESTRICTIVE)' },
       ],
-      securityNotes: ['PIN wird mit bcrypt (Arbeitsfaktor 12) + Salt gehasht (hash_pin_bcrypt)', 'Brute-Force-Schutz: 3 Fehlversuche → Token deaktiviert', 'Token sind 64-Zeichen High-Entropy Strings'],
+      securityNotes: ['Alle Policies sind RESTRICTIVE', 'PIN wird mit bcrypt (Arbeitsfaktor 12) + Salt gehasht (hash_pin_bcrypt)', 'Brute-Force-Schutz: 3 Fehlversuche → Token deaktiviert', 'Token sind 64-Zeichen High-Entropy Strings (256 Bit)', 'Timing-Attack-Schutz: 50-200ms Jitter', 'Anonymer Zugriff explizit blockiert'],
     },
     {
       tableName: 'share_token_access_log',
       description: 'Audit-Log für alle Token-Zugriffsversuche (manipulationssicher)',
       policies: [
-        { operation: 'SELECT', name: 'Admins can view share token access logs', rule: 'has_role(auth.uid(), \'admin\')' },
-        { operation: 'SELECT', name: 'Users can view access logs for their own tokens', rule: 'user_owns_token_hash(auth.uid(), token_hash)' },
-        { operation: 'INSERT', name: 'Deny user inserts to access log', rule: 'WITH CHECK (false)', notes: 'BLOCKIERT' },
-        { operation: 'UPDATE', name: 'Deny all updates to access log', rule: 'USING (false)', notes: 'BLOCKIERT' },
-        { operation: 'DELETE', name: 'Deny all deletes to access log', rule: 'USING (false)', notes: 'BLOCKIERT' },
+        { operation: 'SELECT', name: 'Admins can view share token access logs', rule: 'has_role(auth.uid(), \'admin\') (RESTRICTIVE)' },
+        { operation: 'SELECT', name: 'Users can view access logs for their own tokens', rule: 'user_owns_token_hash(auth.uid(), token_hash) (RESTRICTIVE)' },
+        { operation: 'INSERT', name: 'System can insert access logs', rule: 'current_user ∉ {anon, authenticated} (RESTRICTIVE)', notes: 'Nur SECURITY DEFINER Funktionen' },
+        { operation: 'UPDATE', name: 'Deny all updates to access log', rule: 'false (RESTRICTIVE)', notes: 'BLOCKIERT' },
+        { operation: 'DELETE', name: 'Deny all deletes to access log', rule: 'false (RESTRICTIVE)', notes: 'BLOCKIERT' },
       ],
-      securityNotes: ['Logs werden ausschließlich via SECURITY DEFINER Funktionen erstellt', 'Token werden nie im Klartext geloggt, nur SHA-256 Hashes', 'Rate Limiting: 30 Anfragen pro Minute pro Token-Hash'],
+      securityNotes: ['Alle Policies sind RESTRICTIVE', 'INSERT nur via SECURITY DEFINER Funktionen (nicht anon/authenticated)', 'Token werden nie im Klartext geloggt, nur SHA-256 Hashes', 'Rate Limiting: 30 Anfragen pro Minute pro Token-Hash', 'Logs werden nach 30 Tagen via cleanup_token_access_logs() bereinigt'],
     },
     {
       tableName: 'user_roles',
       description: 'Benutzerrollen für Admin-Zugriff (Privilege Escalation Prevention)',
       policies: [
-        { operation: 'SELECT', name: 'Users can view their own roles', rule: 'auth.uid() = user_id' },
-        { operation: 'INSERT', name: 'Keine Policy definiert', rule: 'BLOCKIERT (keine Policy = kein Zugriff)', notes: 'BLOCKIERT' },
-        { operation: 'UPDATE', name: 'Keine Policy definiert', rule: 'BLOCKIERT (keine Policy = kein Zugriff)', notes: 'BLOCKIERT' },
-        { operation: 'DELETE', name: 'Keine Policy definiert', rule: 'BLOCKIERT (keine Policy = kein Zugriff)', notes: 'BLOCKIERT' },
+        { operation: 'SELECT', name: 'Deny anonymous access to user_roles', rule: 'false (RESTRICTIVE)', notes: 'BLOCKIERT für anon' },
+        { operation: 'SELECT', name: 'Users can view their own roles', rule: 'auth.uid() = user_id (RESTRICTIVE)' },
+        { operation: 'INSERT', name: 'Deny user inserts to roles', rule: 'false (RESTRICTIVE)', notes: 'BLOCKIERT' },
+        { operation: 'UPDATE', name: 'Deny user updates to roles', rule: 'false (RESTRICTIVE)', notes: 'BLOCKIERT' },
+        { operation: 'DELETE', name: 'Deny user deletes from roles', rule: 'false (RESTRICTIVE)', notes: 'BLOCKIERT' },
       ],
-      securityNotes: ['Rollen können nur von Datenbankadministratoren via SQL geändert werden', 'Schützt vor Privilege Escalation Angriffen', 'Nutzt app_role ENUM: admin | user'],
+      securityNotes: ['Alle Policies sind RESTRICTIVE', 'Rollen können nur von Datenbankadministratoren via SQL geändert werden', 'Schützt vor Privilege Escalation Angriffen', 'Nutzt app_role ENUM: admin | user', 'Anonymer Zugriff explizit blockiert'],
     },
   ];
 
@@ -93,27 +99,52 @@ export const PrintableRLSDocumentation = forwardRef<HTMLDivElement>((_, ref) => 
     {
       name: 'user_has_access(uuid)',
       description: 'Prüft ob Nutzer Zugriff hat (Zahlungsstatus ODER Admin-Rolle)',
-      implementation: 'SECURITY DEFINER, prüft profiles.has_paid OR has_role(user_id, \'admin\')',
+      implementation: 'STABLE SECURITY DEFINER, prüft profiles.has_paid OR has_role(user_id, \'admin\')',
     },
     {
       name: 'has_role(uuid, app_role)',
       description: 'Prüft ob Nutzer eine bestimmte Rolle hat',
-      implementation: 'SECURITY DEFINER, verhindert RLS-Rekursion durch direkten Tabellenzugriff',
+      implementation: 'STABLE SECURITY DEFINER, verhindert RLS-Rekursion durch direkten Tabellenzugriff',
     },
     {
       name: 'user_owns_token_hash(uuid, text)',
       description: 'Verifiziert Token-Eigentum für Audit-Log-Zugriff',
-      implementation: 'SECURITY DEFINER, vergleicht SHA-256 Hash des Tokens',
+      implementation: 'STABLE SECURITY DEFINER, vergleicht SHA-256 Hash des Tokens',
     },
     {
       name: 'validate_share_token_with_pin(text, text)',
-      description: 'Validiert Token + PIN mit Rate Limiting und Lockout',
-      implementation: 'SECURITY DEFINER, 30 req/min Limit, 3-Attempt Lockout',
+      description: 'Validiert Token + PIN mit Rate Limiting, Lockout und Timing-Schutz',
+      implementation: 'SECURITY DEFINER, 30 req/min Limit, 3-Attempt Lockout, 50-200ms Jitter',
+    },
+    {
+      name: 'validate_share_token(text)',
+      description: 'Basis-Token-Validierung mit Rate Limiting',
+      implementation: 'SECURITY DEFINER, 30 req/min Limit, Audit-Logging',
     },
     {
       name: 'hash_pin_bcrypt(text, text)',
       description: 'Sicheres PIN-Hashing mit bcrypt und Salt',
-      implementation: 'VOLATILE, bcrypt Arbeitsfaktor 12 für hohe Offline-Resistenz',
+      implementation: 'SQL, bcrypt Arbeitsfaktor 12 für hohe Offline-Resistenz',
+    },
+    {
+      name: 'handle_new_user()',
+      description: 'Erstellt automatisch ein Profil bei Registrierung',
+      implementation: 'SECURITY DEFINER Trigger auf auth.users, INSERT in profiles',
+    },
+    {
+      name: 'validate_person_profile_limit()',
+      description: 'Erzwingt das Profil-Limit pro Nutzer',
+      implementation: 'SECURITY DEFINER Trigger, prüft max_profiles aus profiles',
+    },
+    {
+      name: 'cleanup_token_access_logs()',
+      description: 'Bereinigt Audit-Logs älter als 30 Tage',
+      implementation: 'SECURITY DEFINER, DELETE WHERE accessed_at < now() - 30 days',
+    },
+    {
+      name: 'get_*_by_token() (6 Funktionen)',
+      description: 'Sicherer Datenzugriff für Angehörige via Token + PIN',
+      implementation: 'SECURITY DEFINER, validiert Token/PIN vor Datenrückgabe',
     },
   ];
 
@@ -256,9 +287,9 @@ export const PrintableRLSDocumentation = forwardRef<HTMLDivElement>((_, ref) => 
         </div>
 
         <div className="bg-primary/10 rounded-lg p-3 border border-primary/20 text-xs">
-          <p><strong>Architektur:</strong> Alle Tabellen nutzen PostgreSQL Row-Level Security (RLS) mit RESTRICTIVE Policies.</p>
-          <p><strong>Prinzip:</strong> Standardmäßig kein Zugriff. Jede Aktion erfordert eine explizite Policy.</p>
-          <p><strong>Authentifizierung:</strong> Alle Policies basieren auf <code>auth.uid()</code> für Benutzerisolation.</p>
+          <p><strong>Architektur:</strong> Alle Tabellen nutzen PostgreSQL Row-Level Security (RLS) mit FORCE ROW LEVEL SECURITY und ausschließlich RESTRICTIVE Policies.</p>
+          <p><strong>Prinzip:</strong> Standardmäßig kein Zugriff. Jede Aktion erfordert eine explizite Policy. Anonyme Nutzer werden auf allen Tabellen explizit blockiert.</p>
+          <p><strong>Authentifizierung:</strong> Alle Policies basieren auf <code>auth.uid()</code> für Benutzerisolation. System-Operationen laufen über SECURITY DEFINER Funktionen.</p>
         </div>
       </div>
 
