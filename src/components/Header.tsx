@@ -810,6 +810,7 @@ const Header = () => {
       <ChangeEncryptionPasswordWithCurrentDialog 
         open={changeEncryptionPasswordOpen} 
         onOpenChange={setChangeEncryptionPasswordOpen}
+        onForgotPassword={() => setRecoveryKeyRecoveryOpen(true)}
       />
     </header>
     </>
