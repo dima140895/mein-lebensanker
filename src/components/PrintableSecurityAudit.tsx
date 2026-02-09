@@ -26,83 +26,141 @@ export const PrintableSecurityAudit = forwardRef<HTMLDivElement, PrintableSecuri
       { label: 'Implementierung', value: 'Web Crypto API (Browser-native)' },
       { label: 'Architektur', value: 'Zero-Knowledge (Client-seitige Verschlüsselung)' },
       { label: 'Schlüsselspeicherung', value: 'sessionStorage (Tab-gebunden, automatische Löschung)' },
-      { label: 'Passwort-Übertragung', value: 'Keine (Passwort verlässt nie das Gerät)' },
+      { label: 'Passwort-Übertragung', value: 'Keine – Passwort verlässt nie das Gerät' },
+      { label: 'Auto-Lock', value: '30 Minuten Inaktivität → automatische Sperre' },
+      { label: 'Recovery-Mechanismus', value: 'Ersatzschlüssel (AES-verschlüsseltes Passwort)' },
     ];
 
     const databaseSecurity = [
-      { label: 'Row-Level Security (RLS)', value: 'Aktiviert auf allen Tabellen' },
-      { label: 'Policy-Typ', value: 'PERMISSIVE mit authenticated-Rolle' },
+      { label: 'Row-Level Security (RLS)', value: 'Aktiviert auf allen 6 Tabellen' },
+      { label: 'Policy-Typ', value: 'RESTRICTIVE (alle Policies müssen erfüllt sein)' },
       { label: 'Zugriffskontrolle', value: 'auth.uid() = user_id (Nutzer sieht nur eigene Daten)' },
-      { label: 'Anonymer Zugriff', value: 'Standardmäßig verweigert (keine Policy = kein Zugriff)' },
-      { label: 'Admin-Rollen', value: 'Separate user_roles Tabelle (keine Privilege Escalation)' },
-      { label: 'Audit-Logs', value: 'INSERT/UPDATE/DELETE blockiert, nur via SECURITY DEFINER' },
+      { label: 'Anonymer Zugriff', value: 'Blockiert – auth.uid() = NULL ergibt immer false' },
+      { label: 'Admin-Rollen', value: 'Separate user_roles Tabelle mit deny-all INSERT/UPDATE/DELETE' },
+      { label: 'Audit-Logs', value: 'share_token_access_log: Client-INSERT/UPDATE/DELETE blockiert' },
+      { label: 'Schreibzugriff-Prüfung', value: 'INSERT/UPDATE erfordern user_has_access() + Profil-Ownership' },
+      { label: 'Profil-Limit', value: 'DB-Trigger validate_person_profile_limit() verhindert Überschreitung' },
     ];
 
     const edgeFunctionSecurity = [
-      { label: 'JWT-Validierung', value: 'Manuell via supabase.auth.getUser()/getClaims()' },
-      { label: 'Input-Validierung', value: 'Zod-Schemas für alle Eingaben' },
-      { label: 'CORS', value: 'Beschränkt auf bekannte Domains' },
-      { label: 'Fehlerbehandlung', value: 'Generische Meldungen (kein Information Leakage)' },
-      { label: 'Rate Limiting', value: '30 Anfragen/Minute pro Token-Hash' },
+      { label: 'Anzahl', value: '7 Edge Functions (create-payment, verify-payment, customer-portal, send-verification-email, send-recovery-email, get-shared-documents, vorsorge-chat)' },
+      { label: 'JWT-Validierung', value: 'Manuell via auth.getUser() / auth.getClaims()' },
+      { label: 'Input-Validierung', value: 'Zod-Schemas (Payment-Functions) + manuelle Typprüfung (E-Mail/Chat)' },
+      { label: 'CORS', value: 'Whitelisting auf 3 bekannte Domains (ALLOWED_ORIGINS)' },
+      { label: 'URL-Validierung', value: 'redirectTo-Prüfung gegen ALLOWED_ORIGINS (Anti-Phishing)' },
+      { label: 'Fehlerbehandlung', value: 'Generische Fehlermeldungen – kein Information Leakage' },
+      { label: 'E-Mail-Enumeration', value: 'Bei ungültigem Account wird success: true zurückgegeben' },
     ];
 
     const shareLinkSecurity = [
-      { label: 'Token-Format', value: '64-Zeichen High-Entropy String' },
-      { label: 'PIN-Schutz', value: 'Obligatorisch (6-stellig)' },
-      { label: 'PIN-Hashing', value: 'bcrypt (Arbeitsfaktor 12) mit Salt (hash_pin_bcrypt)' },
-      { label: 'Brute-Force-Schutz', value: '3-Attempt Lockout (is_active = false)' },
-      { label: 'Verschlüsselungs-Weitergabe', value: 'PIN verschlüsselt Owner-Passwort (encrypted_recovery_key)' },
-      { label: 'Logging', value: 'Token-Hashes (nicht Tokens) in share_token_access_log' },
+      { label: 'Token-Entropie', value: '256-Bit (gen_random_bytes(32), hex-kodiert, 64 Zeichen)' },
+      { label: 'PIN-Schutz', value: 'Obligatorisch, 6-stellig' },
+      { label: 'PIN-Hashing', value: 'Bcrypt (Arbeitsfaktor 12) mit per-Token Salt' },
+      { label: 'Brute-Force-Schutz', value: '3-Attempt Lockout → Token permanent deaktiviert' },
+      { label: 'Rate Limiting', value: '30 Anfragen/Minute pro Token-Hash' },
+      { label: 'Timing-Schutz', value: 'Zufälliges Jitter (50–200 ms) bei PIN-Validierung' },
+      { label: 'Legacy-Migration', value: 'SHA-512 Hashes werden bei Erfolg automatisch auf Bcrypt aktualisiert' },
+      { label: 'Audit-Logging', value: 'Token-Hashes (nicht Klartext) in share_token_access_log' },
+      { label: 'Passwort-Kopplung', value: 'Passwortänderung invalidiert alle bestehenden Links' },
+    ];
+
+    const authSecurity = [
+      { label: 'E-Mail-Verifizierung', value: 'Obligatorisch – Login erst nach Bestätigung' },
+      { label: 'Email-Enumeration-Schutz', value: 'signUp() erkennt existierende Accounts ohne Fehler' },
+      { label: 'Passwort-Reset', value: 'Eigener Flow via Resend API mit token_hash-Verifizierung' },
+      { label: 'Session-Management', value: 'localStorage mit autoRefreshToken' },
+      { label: 'Profil-Cleanup', value: 'Gelöschte Accounts → automatischer Sign-Out im Client' },
+      { label: 'Admin-Check', value: 'Server-seitig via has_role() SECURITY DEFINER (nicht client-seitig)' },
+    ];
+
+    const documentStorage = [
+      { label: 'Bucket', value: 'user-documents (privat, nicht öffentlich)' },
+      { label: 'Pfad-Isolation', value: '${user_id}/${profile_id}/${documentType}/...' },
+      { label: 'Dateigrößen-Limit', value: 'Max. 10 MB pro Datei' },
+      { label: 'Kategorie-Limit', value: 'Max. 3 Dokumente pro Kategorie' },
+      { label: 'Gesamt-Limit', value: 'Max. 50 MB pro Nutzer' },
+      { label: 'MIME-Validierung', value: 'Erweiterung muss mit MIME-Typ übereinstimmen' },
+      { label: 'Pfad-Bereinigung', value: 'Path-Traversal-Schutz im useDocumentUpload Hook' },
     ];
 
     const inputValidation = [
-      { label: 'Client-Validierung', value: 'Zod-Schemas mit Längenlimits und Typprüfung' },
-      { label: 'Server-Validierung', value: 'Edge Functions mit Zod, RLS als zusätzliche Schicht' },
-      { label: 'Path Traversal', value: 'Dateinamen-Validierung im useDocumentUpload Hook' },
-      { label: 'MIME-Type-Prüfung', value: 'Erweiterung muss mit MIME-Typ übereinstimmen' },
-      { label: 'URL-Validierung', value: 'Präfix-Prüfung gegen Open-Redirect' },
-      { label: 'E-Mail-Sanitierung', value: 'Rate Limiting (1 E-Mail pro 5 Min.)' },
+      { label: 'Payment-Functions', value: 'Zod-Schemas mit strikter Typprüfung und Längenlimits' },
+      { label: 'E-Mail-Functions', value: 'Manuelle Typ- + Regex-Prüfung (Bundle-Optimierung)' },
+      { label: 'Chat-Function', value: 'Array-Validierung, Rollen-Whitelist, 10.000-Zeichen-Limit' },
+      { label: 'HTML-Escaping', value: 'escapeHtml() für nutzergenerierte Inhalte in E-Mails' },
+      { label: 'dangerouslySetInnerHTML', value: 'Nur für statisches internes Markup und CSS' },
+      { label: 'URL-Parameter', value: 'encodeURIComponent() für alle dynamischen URL-Werte' },
     ];
 
     const securityFindings: SecurityFinding[] = [
       {
+        name: 'Profiles Table – anonymer Zugriff',
+        level: 'error',
+        status: 'mitigated',
+        description: 'Scanner meldet möglichen öffentlichen Lesezugriff auf Profil-Daten',
+        mitigation: 'RESTRICTIVE RLS mit auth.uid() = user_id. NULL = user_id ergibt immer false → kein anonymer Zugriff möglich.',
+      },
+      {
+        name: 'Person Profiles – PII-Exposure',
+        level: 'error',
+        status: 'mitigated',
+        description: 'Scanner meldet mögliche Offenlegung von Namen und Geburtsdaten',
+        mitigation: 'RESTRICTIVE RLS + user_has_access() bei Schreiboperationen + client-seitige AES-256-GCM Verschlüsselung.',
+      },
+      {
+        name: 'Vorsorge Data – JSONB-Inhalte',
+        level: 'error',
+        status: 'mitigated',
+        description: 'Scanner meldet sensible Daten in unstrukturiertem JSONB-Format',
+        mitigation: 'RESTRICTIVE RLS + person_profile_id-Ownership-Prüfung + E2E-Verschlüsselung aller JSONB-Inhalte.',
+      },
+      {
+        name: 'Share Tokens – Token-Enumeration',
+        level: 'error',
+        status: 'mitigated',
+        description: 'Scanner meldet mögliche Enumeration aktiver Freigabe-Token',
+        mitigation: 'RESTRICTIVE RLS. Token-Zugriff nur via SECURITY DEFINER mit Rate Limiting, Bcrypt-PIN, 3-Attempt-Lockout.',
+      },
+      {
+        name: 'User Roles – Privilege Discovery',
+        level: 'error',
+        status: 'mitigated',
+        description: 'Scanner meldet mögliche Offenlegung von Admin-Rollen',
+        mitigation: 'RESTRICTIVE RLS + deny-all Policies für INSERT/UPDATE/DELETE. Rollen-Check nur via has_role() SECURITY DEFINER.',
+      },
+      {
+        name: 'Access Log – Pattern-Analyse',
+        level: 'error',
+        status: 'mitigated',
+        description: 'Scanner meldet möglichen Lesezugriff auf Sicherheits-Audit-Logs',
+        mitigation: 'SELECT nur via user_owns_token_hash() oder Admin. INSERT/UPDATE/DELETE: explizit false (deny-all).',
+      },
+      {
         name: 'SECURITY DEFINER Functions',
         level: 'warn',
         status: 'mitigated',
-        description: 'Datenbankfunktionen mit erhöhten Privilegien umgehen RLS',
-        mitigation: 'SET search_path = public, parametrisierte Queries, Rate Limiting, Lockout-Mechanismus',
+        description: 'Datenbankfunktionen mit erhöhten Privilegien umgehen RLS für Token-Validierung',
+        mitigation: 'Architekturbedingt erforderlich. Mitigiert: SET search_path, parametrisierte Queries, Rate Limiting, Jitter, Lockout.',
       },
       {
-        name: 'Edge Functions JWT',
+        name: 'Edge Functions verify_jwt = false',
         level: 'warn',
         status: 'mitigated',
-        description: 'verify_jwt=false in config.toml',
-        mitigation: 'Manuelle JWT-Validierung per Lovable Cloud Guidelines, konsistente Authentifizierung',
-      },
-      {
-        name: 'Profiles Table RLS',
-        level: 'error',
-        status: 'mitigated',
-        description: 'Scanner meldet fehlenden Schutz für anonymen Zugriff',
-        mitigation: 'False Positive: RLS aktiv, auth.uid() = user_id, keine Policy für anon = Zugriff verweigert',
-      },
-      {
-        name: 'Share Token Access Log',
-        level: 'warn',
-        status: 'mitigated',
-        description: 'Scanner meldet mögliche Log-Manipulation',
-        mitigation: 'False Positive: Inserts nur via SECURITY DEFINER, keine direkte Schreibberechtigung',
+        description: 'JWT-Validierung ist in config.toml deaktiviert',
+        mitigation: 'Bewusste Entscheidung: Manuelle JWT-Validierung per auth.getUser()/getClaims() für Kompatibilität.',
       },
     ];
 
     const gdprCompliance = [
-      { requirement: 'Art. 5 DSGVO - Grundsätze', status: '✓', details: 'Datenminimierung, Zweckbindung, Speicherbegrenzung' },
-      { requirement: 'Art. 6 DSGVO - Rechtmäßigkeit', status: '✓', details: 'Einwilligung und Vertragserfüllung' },
-      { requirement: 'Art. 17 DSGVO - Recht auf Löschung', status: '✓', details: 'Account-Löschung über Einstellungen' },
-      { requirement: 'Art. 20 DSGVO - Datenportabilität', status: '✓', details: 'PDF-Export aller Daten' },
-      { requirement: 'Art. 25 DSGVO - Privacy by Design', status: '✓', details: 'Zero-Knowledge E2E-Verschlüsselung' },
-      { requirement: 'Art. 32 DSGVO - Sicherheit', status: '✓', details: 'AES-256-GCM, RLS, TLS 1.3' },
-      { requirement: 'Art. 33/34 DSGVO - Meldepflichten', status: '✓', details: 'Prozess dokumentiert' },
+      { requirement: 'Art. 5 – Grundsätze', status: '✓', details: 'Datenminimierung, Zweckbindung, Speicherbegrenzung' },
+      { requirement: 'Art. 6 – Rechtmäßigkeit', status: '✓', details: 'Einwilligung (Cookie-Banner) und Vertragserfüllung' },
+      { requirement: 'Art. 9 – Besondere Kategorien', status: '✓', details: 'Gesundheitsdaten E2E-verschlüsselt (Zero-Knowledge)' },
+      { requirement: 'Art. 13/14 – Informationspflichten', status: '✓', details: 'Datenschutzerklärung mit technischen Details' },
+      { requirement: 'Art. 17 – Recht auf Löschung', status: '✓', details: 'Account-Löschung + Verschlüsselungs-Reset (LÖSCHEN-Bestätigung)' },
+      { requirement: 'Art. 20 – Datenportabilität', status: '✓', details: 'PDF-Export aller Vorsorge-Daten' },
+      { requirement: 'Art. 25 – Privacy by Design', status: '✓', details: 'Zero-Knowledge E2E-Verschlüsselung (AES-256-GCM)' },
+      { requirement: 'Art. 32 – Sicherheit der Verarbeitung', status: '✓', details: 'AES-256-GCM, PBKDF2 100k, RLS, TLS, Bcrypt' },
+      { requirement: 'Art. 33/34 – Meldepflichten', status: '✓', details: 'Prozess dokumentiert, Audit-Logging aktiv' },
     ];
 
     const printStyles = `
@@ -143,14 +201,14 @@ export const PrintableSecurityAudit = forwardRef<HTMLDivElement, PrintableSecuri
       }
       .info-grid {
         display: grid;
-        gap: 8px;
+        gap: 6px;
       }
       .info-row {
         display: flex;
         font-size: 11px;
       }
       .info-label {
-        width: 180px;
+        width: 200px;
         flex-shrink: 0;
         font-weight: 500;
         color: #4b5563;
@@ -181,12 +239,16 @@ export const PrintableSecurityAudit = forwardRef<HTMLDivElement, PrintableSecuri
         background-color: #fef3c7;
         color: #92400e;
       }
+      .level-info {
+        background-color: #dbeafe;
+        color: #1e40af;
+      }
       .finding-card {
         background: #f9fafb;
         border: 1px solid #e5e7eb;
         border-radius: 6px;
-        padding: 12px;
-        margin-bottom: 10px;
+        padding: 10px 12px;
+        margin-bottom: 8px;
       }
       .compliance-table {
         width: 100%;
@@ -196,7 +258,7 @@ export const PrintableSecurityAudit = forwardRef<HTMLDivElement, PrintableSecuri
       .compliance-table th,
       .compliance-table td {
         border: 1px solid #e5e7eb;
-        padding: 8px;
+        padding: 6px 8px;
         text-align: left;
       }
       .compliance-table th {
@@ -214,9 +276,9 @@ export const PrintableSecurityAudit = forwardRef<HTMLDivElement, PrintableSecuri
           <div className="flex justify-between items-start mb-4">
             <div>
               <h1 className="print-header text-2xl font-bold text-primary mb-1">
-                Security Audit Report
+                Sicherheits-Dokumentation
               </h1>
-              <p className="text-sm text-muted-foreground">{projectName}</p>
+              <p className="text-sm text-muted-foreground">{projectName} – Übersicht aller Sicherheitsmaßnahmen</p>
             </div>
             <div className="text-right text-sm">
               <p className="font-medium">Report-ID: {reportId}</p>
@@ -234,7 +296,7 @@ export const PrintableSecurityAudit = forwardRef<HTMLDivElement, PrintableSecuri
               </div>
               <div>
                 <span className="font-medium">Erstellt von:</span>{' '}
-                {generatedBy || 'Automatisierter Scan'}
+                {generatedBy || 'Automatisierter Sicherheits-Scan'}
               </div>
               <div>
                 <span className="font-medium">Scan-Datum:</span>{' '}
@@ -252,8 +314,9 @@ export const PrintableSecurityAudit = forwardRef<HTMLDivElement, PrintableSecuri
         <div className="mb-6 no-break">
           <h2 className="section-title">Executive Summary</h2>
           <p className="text-sm text-muted-foreground mb-3">
-            Dieser Bericht dokumentiert den Sicherheitsstatus der Plattform "{projectName}". 
-            Die Analyse umfasst Datenbankschutz, Verschlüsselung, Edge Functions und Zugriffskontrollen.
+            Dieser Bericht dokumentiert sämtliche Sicherheitsmaßnahmen der Plattform „{projectName}".
+            Die Analyse umfasst Verschlüsselung, Datenbank-Sicherheit, Authentifizierung, Edge Functions,
+            Freigabe-Links, Dokumentenspeicherung, Input-Validierung und DSGVO-Compliance.
           </p>
           <div className="grid grid-cols-4 gap-3 text-center text-sm">
             <div className="bg-green-50 rounded-lg p-3 border border-green-200">
@@ -261,21 +324,21 @@ export const PrintableSecurityAudit = forwardRef<HTMLDivElement, PrintableSecuri
               <div className="text-green-600 text-xs">Offene Risiken</div>
             </div>
             <div className="bg-blue-50 rounded-lg p-3 border border-blue-200">
-              <div className="text-2xl font-bold text-blue-700">4</div>
-              <div className="text-blue-600 text-xs">Mitigiert</div>
+              <div className="text-2xl font-bold text-blue-700">{securityFindings.length}</div>
+              <div className="text-blue-600 text-xs">Findings mitigiert</div>
             </div>
             <div className="bg-purple-50 rounded-lg p-3 border border-purple-200">
               <div className="text-2xl font-bold text-purple-700">6</div>
-              <div className="text-purple-600 text-xs">Tabellen geschützt</div>
+              <div className="text-purple-600 text-xs">Tabellen mit RLS</div>
             </div>
             <div className="bg-amber-50 rounded-lg p-3 border border-amber-200">
-              <div className="text-2xl font-bold text-amber-700">6</div>
+              <div className="text-2xl font-bold text-amber-700">7</div>
               <div className="text-amber-600 text-xs">Edge Functions</div>
             </div>
           </div>
         </div>
 
-        {/* Encryption Details */}
+        {/* 1. Encryption */}
         <div className="mb-6 no-break">
           <h2 className="section-title">1. Zero-Knowledge Verschlüsselung</h2>
           <div className="info-grid">
@@ -288,12 +351,13 @@ export const PrintableSecurityAudit = forwardRef<HTMLDivElement, PrintableSecuri
           </div>
           <p className="text-xs text-muted-foreground mt-3 italic">
             Technische Umsetzung entspricht dem aktuellen Stand der Technik gemäß Art. 32 DSGVO.
+            Der Plattformbetreiber hat zu keinem Zeitpunkt Zugriff auf unverschlüsselte Nutzerdaten.
           </p>
         </div>
 
-        {/* Database Security */}
+        {/* 2. Database Security */}
         <div className="mb-6 no-break">
-          <h2 className="section-title">2. Datenbank-Sicherheit</h2>
+          <h2 className="section-title">2. Datenbank-Sicherheit (RLS)</h2>
           <div className="info-grid">
             {databaseSecurity.map((item, idx) => (
               <div key={idx} className="info-row">
@@ -304,9 +368,22 @@ export const PrintableSecurityAudit = forwardRef<HTMLDivElement, PrintableSecuri
           </div>
         </div>
 
-        {/* Edge Function Security */}
+        {/* 3. Auth Security */}
         <div className="mb-6 no-break">
-          <h2 className="section-title">3. Edge Function Absicherung</h2>
+          <h2 className="section-title">3. Authentifizierung</h2>
+          <div className="info-grid">
+            {authSecurity.map((item, idx) => (
+              <div key={idx} className="info-row">
+                <span className="info-label">{item.label}:</span>
+                <span className="info-value">{item.value}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* 4. Edge Functions */}
+        <div className="mb-6 no-break">
+          <h2 className="section-title">4. Edge Function Absicherung</h2>
           <div className="info-grid">
             {edgeFunctionSecurity.map((item, idx) => (
               <div key={idx} className="info-row">
@@ -320,9 +397,9 @@ export const PrintableSecurityAudit = forwardRef<HTMLDivElement, PrintableSecuri
         {/* Page Break */}
         <div className="page-break" />
 
-        {/* Share Link Security */}
+        {/* 5. Share Links */}
         <div className="mb-6 no-break">
-          <h2 className="section-title">4. Freigabe-Link Sicherheit</h2>
+          <h2 className="section-title">5. Freigabe-Link Sicherheit (Defense-in-Depth)</h2>
           <div className="info-grid">
             {shareLinkSecurity.map((item, idx) => (
               <div key={idx} className="info-row">
@@ -333,9 +410,22 @@ export const PrintableSecurityAudit = forwardRef<HTMLDivElement, PrintableSecuri
           </div>
         </div>
 
-        {/* Input Validation */}
+        {/* 6. Document Storage */}
         <div className="mb-6 no-break">
-          <h2 className="section-title">5. Input-Validierung & Härtung</h2>
+          <h2 className="section-title">6. Dokumentenspeicherung</h2>
+          <div className="info-grid">
+            {documentStorage.map((item, idx) => (
+              <div key={idx} className="info-row">
+                <span className="info-label">{item.label}:</span>
+                <span className="info-value">{item.value}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* 7. Input Validation */}
+        <div className="mb-6 no-break">
+          <h2 className="section-title">7. Input-Validierung &amp; Härtung</h2>
           <div className="info-grid">
             {inputValidation.map((item, idx) => (
               <div key={idx} className="info-row">
@@ -346,12 +436,15 @@ export const PrintableSecurityAudit = forwardRef<HTMLDivElement, PrintableSecuri
           </div>
         </div>
 
-        {/* Security Findings */}
+        {/* 8. Security Findings */}
         <div className="mb-6">
-          <h2 className="section-title">6. Security Findings</h2>
+          <h2 className="section-title">8. Security Findings</h2>
+          <p className="text-xs text-muted-foreground mb-3">
+            Alle automatisierten Scan-Findings wurden analysiert und mitigiert. Es bestehen keine offenen Risiken.
+          </p>
           {securityFindings.map((finding, idx) => (
             <div key={idx} className="finding-card no-break">
-              <div className="flex justify-between items-start mb-2">
+              <div className="flex justify-between items-start mb-1">
                 <div className="flex items-center gap-2">
                   <span className={`status-badge level-${finding.level}`}>
                     {finding.level.toUpperCase()}
@@ -372,9 +465,12 @@ export const PrintableSecurityAudit = forwardRef<HTMLDivElement, PrintableSecuri
           ))}
         </div>
 
-        {/* GDPR Compliance */}
+        {/* Page Break */}
+        <div className="page-break" />
+
+        {/* 9. GDPR Compliance */}
         <div className="mb-6 no-break">
-          <h2 className="section-title">7. DSGVO-Compliance</h2>
+          <h2 className="section-title">9. DSGVO-Compliance</h2>
           <table className="compliance-table">
             <thead>
               <tr>
@@ -395,12 +491,48 @@ export const PrintableSecurityAudit = forwardRef<HTMLDivElement, PrintableSecuri
           </table>
         </div>
 
+        {/* 10. Architecture Overview */}
+        <div className="mb-6 no-break">
+          <h2 className="section-title">10. Architektur-Übersicht</h2>
+          <div className="info-grid" style={{ fontSize: '11px' }}>
+            <div className="info-row">
+              <span className="info-label">Frontend:</span>
+              <span className="info-value">React + TypeScript + Vite (SPA)</span>
+            </div>
+            <div className="info-row">
+              <span className="info-label">Backend:</span>
+              <span className="info-value">Lovable Cloud (Deno Edge Functions)</span>
+            </div>
+            <div className="info-row">
+              <span className="info-label">Datenbank:</span>
+              <span className="info-value">PostgreSQL mit Row-Level Security</span>
+            </div>
+            <div className="info-row">
+              <span className="info-label">Hosting-Region:</span>
+              <span className="info-value">AWS Frankfurt (eu-central-1)</span>
+            </div>
+            <div className="info-row">
+              <span className="info-label">Transport-Verschlüsselung:</span>
+              <span className="info-value">TLS 1.3 (HTTPS)</span>
+            </div>
+            <div className="info-row">
+              <span className="info-label">Zahlungsabwicklung:</span>
+              <span className="info-value">Stripe (PCI DSS-konform, keine Kartendaten auf eigenem Server)</span>
+            </div>
+            <div className="info-row">
+              <span className="info-label">E-Mail-Versand:</span>
+              <span className="info-value">Resend API (nur Auth-E-Mails, verifizierte Domain)</span>
+            </div>
+          </div>
+        </div>
+
         {/* Footer / Disclaimer */}
         <div className="mt-8 pt-4 border-t border-border text-xs text-muted-foreground">
           <p className="mb-2">
             <strong>Haftungsausschluss:</strong> Dieser Bericht stellt eine Momentaufnahme des 
             Sicherheitsstatus zum Zeitpunkt der Erstellung dar. Sicherheit ist ein kontinuierlicher 
-            Prozess. Regelmäßige Überprüfungen werden empfohlen.
+            Prozess. Regelmäßige Überprüfungen werden empfohlen. Die Formulierungen entsprechen dem 
+            aktuellen Stand der Technik – absolute Sicherheitsgarantien sind technisch nicht möglich.
           </p>
           <p>
             <strong>Gültigkeit:</strong> 90 Tage ab Erstellungsdatum. Nach Ablauf sollte eine 
