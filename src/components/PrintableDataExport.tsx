@@ -280,45 +280,54 @@ const PrintableDataExport = forwardRef<HTMLDivElement, PrintableDataExportProps>
       </div>
     );
 
-    const renderPersonal = (sectionData: Record<string, unknown>) => (
-      <div style={{ padding: '16px 20px', background: 'white', border: '1px solid #e5e5e5', borderTop: 'none', borderRadius: '0 0 8px 8px' }}>
-        {renderValue(texts.name, sectionData.fullName)}
-        {renderValue(texts.birthDate, formatDate(sectionData.birthDate, language))}
-        {renderValue(texts.address, sectionData.address)}
-        {renderValue(texts.phone, sectionData.phone)}
-        {sectionData.housingType && (
-          <div style={{ marginTop: '16px' }}>
-            <div style={{ fontSize: '14px', fontWeight: 600, color: '#374151', marginBottom: '8px' }}>{texts.housingSituation}</div>
-            <div style={{ fontSize: '13px', color: '#4b5563', padding: '4px 0' }}>
-              {sectionData.housingType === 'rent' ? texts.housingRent : texts.housingOwn}
+    const renderPersonal = (sectionData: Record<string, unknown>) => {
+      const hasAnyData = sectionData.fullName || sectionData.birthDate || sectionData.address || 
+        sectionData.phone || sectionData.housingType || sectionData.trustedPerson1 || 
+        sectionData.trustedPerson2 || sectionData.emergencyContact || sectionData.notes;
+
+      return (
+        <div style={{ padding: '16px 20px', background: 'white', border: '1px solid #e5e5e5', borderTop: 'none', borderRadius: '0 0 8px 8px' }}>
+          {renderValue(texts.name, sectionData.fullName)}
+          {renderValue(texts.birthDate, formatDate(sectionData.birthDate, language))}
+          {renderValue(texts.address, sectionData.address)}
+          {renderValue(texts.phone, sectionData.phone)}
+          {sectionData.housingType && (
+            <div style={{ marginTop: '16px' }}>
+              <div style={{ fontSize: '14px', fontWeight: 600, color: '#374151', marginBottom: '8px' }}>{texts.housingSituation}</div>
+              <div style={{ fontSize: '13px', color: '#4b5563', padding: '4px 0' }}>
+                {sectionData.housingType === 'rent' ? texts.housingRent : texts.housingOwn}
+              </div>
+              {sectionData.housingType === 'rent' && (
+                <Card>
+                  {sectionData.rentAmount && renderValue(texts.rentAmount, formatWithCurrency(sectionData.rentAmount, sectionData.rentCurrency))}
+                  {sectionData.landlordName && renderValue(texts.landlordName, sectionData.landlordName)}
+                  {sectionData.landlordPhone && renderValue(texts.landlordPhone, sectionData.landlordPhone)}
+                  {sectionData.landlordEmail && renderValue(texts.landlordEmail, sectionData.landlordEmail)}
+                  {sectionData.landlordAddress && renderValue(texts.landlordAddress, sectionData.landlordAddress)}
+                </Card>
+              )}
             </div>
-            {sectionData.housingType === 'rent' && (
-              <Card>
-                {sectionData.rentAmount && renderValue(texts.rentAmount, formatWithCurrency(sectionData.rentAmount, sectionData.rentCurrency))}
-                {sectionData.landlordName && renderValue(texts.landlordName, sectionData.landlordName)}
-                {sectionData.landlordPhone && renderValue(texts.landlordPhone, sectionData.landlordPhone)}
-                {sectionData.landlordEmail && renderValue(texts.landlordEmail, sectionData.landlordEmail)}
-                {sectionData.landlordAddress && renderValue(texts.landlordAddress, sectionData.landlordAddress)}
-              </Card>
-            )}
-          </div>
-        )}
-        {(sectionData.trustedPerson1 || sectionData.trustedPerson2) && (
-          <div style={{ marginTop: '16px' }}>
-            <div style={{ fontSize: '14px', fontWeight: 600, color: '#374151', marginBottom: '8px' }}>{texts.trustedPersons}</div>
-            {sectionData.trustedPerson1 && <div style={{ fontSize: '13px', color: '#4b5563', padding: '4px 0' }}>• {String(sectionData.trustedPerson1)}{sectionData.trustedPerson1Phone && ` (${sectionData.trustedPerson1Phone})`}</div>}
-            {sectionData.trustedPerson2 && <div style={{ fontSize: '13px', color: '#4b5563', padding: '4px 0' }}>• {String(sectionData.trustedPerson2)}{sectionData.trustedPerson2Phone && ` (${sectionData.trustedPerson2Phone})`}</div>}
-          </div>
-        )}
-        {sectionData.emergencyContact && (
-          <div style={{ marginTop: '16px' }}>
-            <div style={{ fontSize: '14px', fontWeight: 600, color: '#374151', marginBottom: '8px' }}>{texts.emergencyContact}</div>
-            <div style={{ fontSize: '13px', color: '#4b5563' }}>{String(sectionData.emergencyContact)}{sectionData.emergencyPhone && ` (${sectionData.emergencyPhone})`}</div>
-          </div>
-        )}
-        {sectionData.notes && renderValue(texts.notes, sectionData.notes)}
-      </div>
-    );
+          )}
+          {(sectionData.trustedPerson1 || sectionData.trustedPerson2) && (
+            <div style={{ marginTop: '16px' }}>
+              <div style={{ fontSize: '14px', fontWeight: 600, color: '#374151', marginBottom: '8px' }}>{texts.trustedPersons}</div>
+              {sectionData.trustedPerson1 && <div style={{ fontSize: '13px', color: '#4b5563', padding: '4px 0' }}>• {String(sectionData.trustedPerson1)}{sectionData.trustedPerson1Phone && ` (${sectionData.trustedPerson1Phone})`}</div>}
+              {sectionData.trustedPerson2 && <div style={{ fontSize: '13px', color: '#4b5563', padding: '4px 0' }}>• {String(sectionData.trustedPerson2)}{sectionData.trustedPerson2Phone && ` (${sectionData.trustedPerson2Phone})`}</div>}
+            </div>
+          )}
+          {sectionData.emergencyContact && (
+            <div style={{ marginTop: '16px' }}>
+              <div style={{ fontSize: '14px', fontWeight: 600, color: '#374151', marginBottom: '8px' }}>{texts.emergencyContact}</div>
+              <div style={{ fontSize: '13px', color: '#4b5563' }}>{String(sectionData.emergencyContact)}{sectionData.emergencyPhone && ` (${sectionData.emergencyPhone})`}</div>
+            </div>
+          )}
+          {sectionData.notes && renderValue(texts.notes, sectionData.notes)}
+          {!hasAnyData && (
+            <div style={{ color: '#9ca3af', fontStyle: 'italic', fontSize: '13px' }}>{texts.noInfo}</div>
+          )}
+        </div>
+      );
+    };
 
     const renderAssets = (sectionData: Record<string, unknown>) => {
       const bankAccounts = (sectionData.bankAccounts as Array<Record<string, unknown>>)?.filter(a => a.institute) || [];

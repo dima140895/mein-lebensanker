@@ -3,6 +3,7 @@ import { Download, FileText, Loader2, Printer } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useProfiles } from '@/contexts/ProfileContext';
+import { useEncryption } from '@/contexts/EncryptionContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/browserClient';
@@ -28,6 +29,7 @@ const DataExport = () => {
   const { user } = useAuth();
   const { language } = useLanguage();
   const { personProfiles, activeProfile } = useProfiles();
+  const { isEncryptionEnabled, isUnlocked, decrypt } = useEncryption();
   const [loading, setLoading] = useState(false);
   const [exportData, setExportData] = useState<VorsorgeData[]>([]);
   const [profilesToExport, setProfilesToExport] = useState<typeof personProfiles>([]);
@@ -100,6 +102,22 @@ const DataExport = () => {
         return;
       }
 
+      // Decrypt data if encryption is enabled
+      let processedData = vorsorgeData as VorsorgeData[];
+      if (isEncryptionEnabled && isUnlocked) {
+        processedData = await Promise.all(
+          vorsorgeData.map(async (item) => {
+            try {
+              const decryptedData = await decrypt<Record<string, unknown>>(item.data);
+              return { ...item, data: decryptedData } as VorsorgeData;
+            } catch (err) {
+              logger.error('Failed to decrypt section for export:', item.section_key, err);
+              return item as VorsorgeData;
+            }
+          })
+        );
+      }
+
       // Fetch uploaded documents from storage
       const documentTypes = ['testament', 'power-of-attorney', 'living-will', 'insurance', 'property', 'other'];
       const allDocuments: UploadedDocument[] = [];
@@ -138,7 +156,7 @@ const DataExport = () => {
       }
 
       // Set data and profiles for printing
-      setExportData(vorsorgeData as VorsorgeData[]);
+      setExportData(processedData);
       setProfilesToExport(selectedProfiles);
       setUploadedDocuments(allDocuments);
 
