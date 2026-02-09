@@ -506,9 +506,9 @@ const PrintableDataExport = forwardRef<HTMLDivElement, PrintableDataExportProps>
           {renderValue(texts.testament, sectionData.testamentLocation)}
           {renderValue(texts.powerOfAttorney, sectionData.powerOfAttorneyLocation)}
           {renderValue(texts.livingWill, sectionData.livingWillLocation)}
-          {renderValue(texts.insuranceDocs, sectionData.insuranceLocation)}
-          {renderValue(texts.propertyDocs, sectionData.propertyLocation)}
-          {renderValue(texts.otherDocs, sectionData.otherLocation)}
+          {renderValue(texts.insuranceDocs, sectionData.insuranceDocsLocation)}
+          {renderValue(texts.propertyDocs, sectionData.propertyDocsLocation)}
+          {renderValue(texts.otherDocs, sectionData.otherDocsLocation)}
           
           {Object.keys(groupedDocs).length > 0 && (
             <div style={{ marginTop: '20px' }}>
@@ -527,7 +527,7 @@ const PrintableDataExport = forwardRef<HTMLDivElement, PrintableDataExportProps>
           )}
           
           {!sectionData.testamentLocation && !sectionData.powerOfAttorneyLocation && !sectionData.livingWillLocation && 
-           !sectionData.insuranceLocation && !sectionData.propertyLocation && !sectionData.otherLocation && 
+           !sectionData.insuranceDocsLocation && !sectionData.propertyDocsLocation && !sectionData.otherDocsLocation && 
            Object.keys(groupedDocs).length === 0 && (
             <div style={{ color: '#9ca3af', fontStyle: 'italic', fontSize: '13px' }}>{texts.noInfo}</div>
           )}
