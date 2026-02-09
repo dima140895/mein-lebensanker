@@ -606,11 +606,11 @@ const Header = () => {
                     <TooltipContent side="bottom">
                       <p>{tx.settingsTooltip}</p>
                     </TooltipContent>
-                <DropdownMenuContent align="end" className="w-56 bg-popover">
+                <DropdownMenuContent align="end" className="w-64 bg-popover p-1.5">
                   {/* My Package Section - only for paid users */}
                   {profile?.has_paid && (
                     <>
-                      <div className="px-3 py-2.5 bg-muted/50 rounded-md mx-1.5 my-1.5">
+                      <div className="px-3 py-2.5 bg-muted/50 rounded-md mb-1.5">
                         <div className="flex items-center justify-between">
                           <div>
                             <p className="text-[10px] uppercase tracking-wide text-muted-foreground">{tx.currentTier}</p>
@@ -635,57 +635,65 @@ const Header = () => {
                     </>
                   )}
                   
-                  {/* Account Section */}
+                  {/* Account Section Header */}
+                  <p className="px-2 py-1.5 text-[10px] uppercase tracking-wider text-muted-foreground font-medium">
+                    {tx.account}
+                  </p>
                   <DropdownMenuItem onClick={() => setChangePasswordOpen(true)}>
                     <Key className="mr-2 h-4 w-4 text-accent" />
                     {tx.changePassword}
                   </DropdownMenuItem>
                   
-                  {/* Encryption Section */}
+                  <DropdownMenuSeparator />
+                  
+                  {/* Encryption Section Header */}
+                  <p className="px-2 py-1.5 text-[10px] uppercase tracking-wider text-muted-foreground font-medium">
+                    {tx.encryption}
+                  </p>
                   {!encryptionEnabled ? (
                     <DropdownMenuItem onClick={() => setEncryptionSetupOpen(true)}>
                       <Shield className="mr-2 h-4 w-4 text-muted-foreground" />
-                      {tx.encryption}
+                      {language === 'de' ? 'Verschlüsselung einrichten' : 'Set up encryption'}
                     </DropdownMenuItem>
                   ) : (
                     <>
                       {isUnlocked ? (
                         <>
-                          <DropdownMenuItem 
-                            onClick={() => lock()}
-                            className="cursor-pointer"
-                          >
-                            <Lock className="mr-2 h-4 w-4 text-primary" />
-                            {tx.lockData}
-                          </DropdownMenuItem>
-                          <DropdownMenuItem 
-                            onClick={() => setChangeEncryptionPasswordOpen(true)}
-                            className="cursor-pointer"
-                          >
+                          <div className="flex items-center gap-2 px-2 py-1.5 mb-0.5">
+                            <span className="inline-flex items-center gap-1.5 text-xs font-medium text-primary bg-primary/10 px-2 py-0.5 rounded-full">
+                              <Shield className="h-3 w-3" />
+                              {tx.encryptionEnabled}
+                            </span>
+                          </div>
+                          <DropdownMenuItem onClick={() => setChangeEncryptionPasswordOpen(true)}>
                             <KeyRound className="mr-2 h-4 w-4 text-primary" />
                             {tx.changeEncryptionPassword}
                           </DropdownMenuItem>
-                          <DropdownMenuItem 
-                            onClick={() => setRecoveryKeyDialogOpen(true)}
-                            className="cursor-pointer"
-                          >
+                          <DropdownMenuItem onClick={() => setRecoveryKeyDialogOpen(true)}>
                             <KeyRound className="mr-2 h-4 w-4 text-primary" />
                             {tx.recoveryKey}
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => lock()}>
+                            <Lock className="mr-2 h-4 w-4 text-muted-foreground" />
+                            {tx.lockData}
                           </DropdownMenuItem>
                         </>
                       ) : (
                         <>
-                          <DropdownMenuItem 
-                            onClick={() => setEncryptionUnlockOpen(true)}
-                            className="cursor-pointer"
-                          >
+                          <div className="flex items-center gap-2 px-2 py-1.5 mb-0.5">
+                            <span className="inline-flex items-center gap-1.5 text-xs font-medium text-destructive bg-destructive/10 px-2 py-0.5 rounded-full">
+                              <Lock className="h-3 w-3" />
+                              {tx.encryptionLocked}
+                            </span>
+                          </div>
+                          <DropdownMenuItem onClick={() => setEncryptionUnlockOpen(true)}>
                             <Unlock className="mr-2 h-4 w-4 text-primary" />
                             {tx.unlockData}
                           </DropdownMenuItem>
                           {encryptedPasswordRecovery && (
                             <DropdownMenuItem 
                               onClick={() => setRecoveryKeyRecoveryOpen(true)}
-                              className="cursor-pointer text-muted-foreground"
+                              className="text-muted-foreground"
                             >
                               <Key className="mr-2 h-4 w-4" />
                               {tx.forgotPassword}
