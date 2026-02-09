@@ -113,17 +113,29 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }, []);
 
   const signUp = async (email: string, password: string) => {
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
+    // Route signup through server-side validation edge function
+    const { data: responseData, error: fnError } = await supabase.functions.invoke('validate-signup', {
+      body: {
+        email,
+        password,
         emailRedirectTo: window.location.origin,
       },
     });
-    // Supabase returns a user with empty identities when email already exists
-    // (security feature to prevent email enumeration, but we want to guide the user)
-    const userExists = !error && data?.user && (!data.user.identities || data.user.identities.length === 0);
-    return { error: error as Error | null, userExists: !!userExists };
+
+    if (fnError) {
+      return { error: new Error(fnError.message || 'Signup failed'), userExists: false };
+    }
+
+    if (responseData?.error) {
+      const errorMsg = responseData.details
+        ? `${responseData.error}\n${responseData.details.join('\n')}`
+        : responseData.error;
+      return { error: new Error(errorMsg), userExists: false };
+    }
+
+    const user = responseData?.data?.user;
+    const userExists = user && (!user.identities || user.identities.length === 0);
+    return { error: null, userExists: !!userExists };
   };
 
   const signIn = async (email: string, password: string) => {
