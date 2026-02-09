@@ -453,8 +453,7 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange }: Auth
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <Label htmlFor="password" className="text-sm font-medium flex items-center gap-1.5">
-                <Mail className="h-3.5 w-3.5 text-muted-foreground" />
-                {language === 'de' ? 'Anmelde-Passwort' : 'Login Password'}
+                {language === 'de' ? 'Passwort' : 'Password'}
               </Label>
               {mode === 'login' && (
                 <TooltipProvider>
