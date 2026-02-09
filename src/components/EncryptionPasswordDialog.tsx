@@ -49,11 +49,12 @@ export const EncryptionPasswordDialog: React.FC<EncryptionPasswordDialogProps> =
   const translations = {
     de: {
       unlockTitle: 'Daten entsperren',
-      unlockDescription: 'Gib Dein Passwort ein, um fortzufahren.',
+      unlockDescription: 'Gib Dein Verschlüsselungs-Passwort ein, um fortzufahren.',
       setupTitle: 'Verschlüsselung aktivieren',
-      setupDescription: 'Schütze Deine Daten mit einem persönlichen Passwort.',
-      password: 'Passwort',
-      confirmPassword: 'Passwort bestätigen',
+      setupDescription: 'Schütze Deine Daten mit einem persönlichen Verschlüsselungs-Passwort.',
+      password: 'Verschlüsselungs-Passwort',
+      confirmPassword: 'Verschlüsselungs-Passwort bestätigen',
+      passwordHint: 'Dies ist nicht Dein Anmelde-Passwort, sondern ein separates Passwort für Deine verschlüsselten Daten.',
       unlock: 'Entsperren',
       enable: 'Weiter',
       wrongPassword: 'Falsches Passwort. Bitte erneut versuchen.',
@@ -78,11 +79,12 @@ export const EncryptionPasswordDialog: React.FC<EncryptionPasswordDialogProps> =
     },
     en: {
       unlockTitle: 'Unlock Data',
-      unlockDescription: 'Enter your password to continue.',
+      unlockDescription: 'Enter your encryption password to continue.',
       setupTitle: 'Enable Encryption',
-      setupDescription: 'Protect your data with a personal password.',
-      password: 'Password',
-      confirmPassword: 'Confirm Password',
+      setupDescription: 'Protect your data with a personal encryption password.',
+      password: 'Encryption Password',
+      confirmPassword: 'Confirm Encryption Password',
+      passwordHint: 'This is not your login password, but a separate password for your encrypted data.',
       unlock: 'Unlock',
       enable: 'Continue',
       wrongPassword: 'Wrong password. Please try again.',
@@ -262,7 +264,10 @@ export const EncryptionPasswordDialog: React.FC<EncryptionPasswordDialogProps> =
           {!showVisualGuide && (
             <>
               <div className="space-y-2">
-                <Label htmlFor="encryption-password" className="text-base">{t.password}</Label>
+                <Label htmlFor="encryption-password" className="text-base flex items-center gap-1.5">
+                  <Shield className="h-4 w-4 text-primary" />
+                  {t.password}
+                </Label>
                 <div className="relative">
                   <Input
                     id="encryption-password"
@@ -282,11 +287,18 @@ export const EncryptionPasswordDialog: React.FC<EncryptionPasswordDialogProps> =
                     {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                   </button>
                 </div>
+                <p className="text-xs text-muted-foreground flex items-start gap-1.5">
+                  <AlertTriangle className="h-3.5 w-3.5 mt-0.5 flex-shrink-0 text-amber-500" />
+                  {t.passwordHint}
+                </p>
               </div>
 
               {mode === 'setup' && (
                 <div className="space-y-2">
-                  <Label htmlFor="confirm-encryption-password" className="text-base">{t.confirmPassword}</Label>
+                  <Label htmlFor="confirm-encryption-password" className="text-base flex items-center gap-1.5">
+                    <Shield className="h-4 w-4 text-primary" />
+                    {t.confirmPassword}
+                  </Label>
                   <Input
                     id="confirm-encryption-password"
                     type={showPassword ? 'text' : 'password'}
