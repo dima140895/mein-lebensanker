@@ -76,7 +76,7 @@ const ProfileSetupWizard = ({ maxProfiles, packageType, onAllProfilesExist }: Pr
       finish: 'Abschließen',
       skip: 'Später ausfüllen',
       saving: 'Wird gespeichert...',
-      successTitle: 'Profile erfolgreich erstellt!',
+      successTitle: maxProfiles === 1 ? 'Profil erfolgreich eingerichtet!' : 'Profile erfolgreich eingerichtet!',
       successDesc: 'Du kannst jetzt mit dem Ausfüllen beginnen.',
       toDashboard: 'Zum Dashboard',
       single: 'Einzelperson',
@@ -99,7 +99,7 @@ const ProfileSetupWizard = ({ maxProfiles, packageType, onAllProfilesExist }: Pr
       finish: 'Complete',
       skip: 'Fill out later',
       saving: 'Saving...',
-      successTitle: 'Profiles created successfully!',
+      successTitle: maxProfiles === 1 ? 'Profile set up successfully!' : 'Profiles set up successfully!',
       successDesc: 'You can now start filling out your information.',
       toDashboard: 'Go to Dashboard',
       single: 'Individual',
@@ -354,7 +354,9 @@ const ProfileSetupWizard = ({ maxProfiles, packageType, onAllProfilesExist }: Pr
       sessionStorage.removeItem(WIZARD_DRAFT_KEY);
 
       setCompleted(true);
-      toast.success(language === 'de' ? 'Profile erfolgreich gespeichert!' : 'Profiles saved successfully!');
+      toast.success(language === 'de' 
+        ? (maxProfiles === 1 ? 'Profil erfolgreich gespeichert!' : 'Profile erfolgreich gespeichert!') 
+        : (maxProfiles === 1 ? 'Profile saved successfully!' : 'Profiles saved successfully!'));
     } catch (error: any) {
       logger.error('Error saving profiles:', error);
       toast.error(language === 'de' 
