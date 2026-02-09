@@ -442,12 +442,12 @@ const RelativesSummary = ({ data, profiles, sharedSections, sharedProfileSection
     contacts: 'bg-amber-light text-amber',
   };
 
-  const renderInfoItem = (label: string, value: unknown) => {
+   const renderInfoItem = (label: string, value: unknown) => {
     if (!value || (typeof value === 'string' && !value.trim())) return null;
     return (
       <div className="py-2 border-b border-border/50 last:border-0">
-        <span className="text-sm text-muted-foreground">{label}</span>
-        <p className="text-foreground mt-0.5">{String(value)}</p>
+        <div className="text-sm text-muted-foreground">{label}</div>
+        <p className="text-foreground mt-0.5 break-words">{String(value)}</p>
       </div>
     );
   };
