@@ -110,7 +110,23 @@ Deno.serve(async (req) => {
       });
     }
 
-    const validation = tokenData[0] as {
+    const rawValidation = tokenData[0];
+
+    // Runtime type validation of RPC response
+    if (
+      !rawValidation ||
+      typeof rawValidation !== "object" ||
+      typeof (rawValidation as Record<string, unknown>).user_id !== "string" ||
+      typeof (rawValidation as Record<string, unknown>).is_valid !== "boolean" ||
+      typeof (rawValidation as Record<string, unknown>).pin_valid !== "boolean"
+    ) {
+      return new Response(JSON.stringify({ error: "Invalid server response" }), {
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const validation = rawValidation as {
       user_id: string;
       is_valid: boolean;
       pin_valid: boolean;
@@ -152,18 +168,23 @@ Deno.serve(async (req) => {
     }
 
     const mapping =
-      (sharedProfileSections ?? {}) as Record<string, unknown>;
+      (sharedProfileSections != null && typeof sharedProfileSections === "object")
+        ? sharedProfileSections as Record<string, unknown>
+        : {} as Record<string, unknown>;
 
     // Build a map of profileId -> profileName (only those with 'documents' permission)
     const profilesWithDocuments = new Map<string, string>();
     for (const profile of sharedProfiles || []) {
-      const sections = mapping[(profile as any).profile_id] as unknown;
+      if (!profile || typeof profile !== "object") continue;
+      const p = profile as Record<string, unknown>;
+      const profileId = typeof p.profile_id === "string" ? p.profile_id : null;
+      const profileName = typeof p.profile_name === "string" ? p.profile_name : "";
+      if (!profileId) continue;
+
+      const sections = mapping[profileId] as unknown;
       const sectionList = Array.isArray(sections) ? sections : [];
       if (sectionList.includes("documents")) {
-        profilesWithDocuments.set(
-          (profile as any).profile_id,
-          (profile as any).profile_name
-        );
+        profilesWithDocuments.set(profileId, profileName);
       }
     }
 
