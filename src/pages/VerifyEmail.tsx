@@ -21,24 +21,24 @@ const VerifyEmail = () => {
     de: {
       verifying: 'E-Mail wird verifiziert...',
       success: 'E-Mail erfolgreich bestätigt!',
-      successDesc: 'Dein Konto ist jetzt aktiviert. Du kannst Dich jetzt anmelden.',
-      redirecting: 'Weiterleitung zur Anmeldung in',
+      successDesc: 'Dein Konto ist jetzt aktiviert. Du wirst gleich weitergeleitet.',
+      redirecting: 'Weiterleitung in',
       seconds: 'Sekunden',
       error: 'Verifizierung fehlgeschlagen',
       errorDesc: 'Der Bestätigungslink ist ungültig oder abgelaufen.',
-      loginNow: 'Jetzt anmelden',
+      continueNow: 'Jetzt starten',
       backToHome: 'Zurück zur Startseite',
       tryAgain: 'Erneut versuchen',
     },
     en: {
       verifying: 'Verifying email...',
       success: 'Email verified successfully!',
-      successDesc: 'Your account is now activated. You can now sign in.',
-      redirecting: 'Redirecting to login in',
+      successDesc: 'Your account is now activated. Redirecting shortly.',
+      redirecting: 'Redirecting in',
       seconds: 'seconds',
       error: 'Verification failed',
       errorDesc: 'The confirmation link is invalid or has expired.',
-      loginNow: 'Sign in now',
+      continueNow: 'Continue now',
       backToHome: 'Back to home',
       tryAgain: 'Try again',
     },
@@ -125,7 +125,7 @@ const VerifyEmail = () => {
     if (status !== 'success') return;
 
     if (countdown <= 0) {
-      navigate('/?verified=true');
+      navigate('/dashboard');
       return;
     }
 
@@ -136,8 +136,8 @@ const VerifyEmail = () => {
     return () => clearTimeout(timer);
   }, [status, countdown, navigate]);
 
-  const handleLoginClick = () => {
-    navigate('/?verified=true');
+  const handleContinueClick = () => {
+    navigate('/dashboard');
   };
 
   return (
@@ -182,8 +182,8 @@ const VerifyEmail = () => {
                 <Loader2 className="h-4 w-4 animate-spin" />
                 <span>{texts.redirecting} {countdown} {texts.seconds}...</span>
               </div>
-              <Button onClick={handleLoginClick} className="w-full">
-                {texts.loginNow}
+              <Button onClick={handleContinueClick} className="w-full">
+                {texts.continueNow}
               </Button>
             </>
           )}
@@ -200,7 +200,7 @@ const VerifyEmail = () => {
                 {errorMessage || texts.errorDesc}
               </p>
               <div className="space-y-3">
-                <Button onClick={handleLoginClick} variant="outline" className="w-full">
+                <Button onClick={handleContinueClick} variant="outline" className="w-full">
                   {texts.tryAgain}
                 </Button>
                 <Link
