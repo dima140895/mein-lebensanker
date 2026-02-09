@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useAuth } from '@/contexts/AuthContext';
 import { useLocation } from 'react-router-dom';
-import { X, ChevronRight, ChevronLeft, Users, LayoutGrid, FileText, Link2, Shield } from 'lucide-react';
+import { X, ChevronRight, ChevronLeft, Users, User, LayoutGrid, FileText, Link2, Shield } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -17,15 +18,7 @@ interface TourStep {
   messageEn: string;
 }
 
-const tourSteps: TourStep[] = [
-  {
-    id: 'profile-switch',
-    icon: Users,
-    titleDe: 'Deine Profile',
-    titleEn: 'Your Profiles',
-    messageDe: 'Du kannst jederzeit zwischen Deinen Profilen wechseln – wie in einem Tresor mit verschiedenen Fächern. Jedes Profil hat eigene Daten und Dokumente.',
-    messageEn: 'You can switch between your profiles at any time – like a safe with different compartments. Each profile has its own data and documents.',
-  },
+const commonSteps: TourStep[] = [
   {
     id: 'sections',
     icon: LayoutGrid,
@@ -60,11 +53,36 @@ const tourSteps: TourStep[] = [
   },
 ];
 
+const singleProfileFirstStep: TourStep = {
+  id: 'profile-intro',
+  icon: User,
+  titleDe: 'Dein Profil',
+  titleEn: 'Your Profile',
+  messageDe: 'Hier verwaltest Du alle wichtigen Informationen an einem Ort – sicher und übersichtlich.',
+  messageEn: 'Here you manage all your important information in one place – securely and clearly.',
+};
+
+const multiProfileFirstStep: TourStep = {
+  id: 'profile-switch',
+  icon: Users,
+  titleDe: 'Deine Profile',
+  titleEn: 'Your Profiles',
+  messageDe: 'Du kannst jederzeit zwischen Deinen Profilen wechseln – wie in einem Tresor mit verschiedenen Fächern. Jedes Profil hat eigene Daten und Dokumente.',
+  messageEn: 'You can switch between your profiles at any time – like a safe with different compartments. Each profile has its own data and documents.',
+};
+
 export const DashboardOnboardingTour: React.FC = () => {
   const { language } = useLanguage();
+  const { profile } = useAuth();
+  const maxProfiles = profile?.max_profiles || 1;
   const location = useLocation();
   const [showTour, setShowTour] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
+
+  const tourSteps = useMemo(() => {
+    const firstStep = maxProfiles > 1 ? multiProfileFirstStep : singleProfileFirstStep;
+    return [firstStep, ...commonSteps];
+  }, [maxProfiles]);
 
   const t = {
     de: {
