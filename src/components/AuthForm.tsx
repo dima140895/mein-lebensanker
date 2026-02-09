@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Mail, Lock, Eye, EyeOff, ArrowLeft, Loader2, Check, X } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
@@ -252,6 +252,54 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange }: Auth
     }
   };
 
+  // Poll for email verification while in verify mode
+  const pollingRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const [verified, setVerified] = useState(false);
+
+  useEffect(() => {
+    if (mode !== 'verify' || !email) {
+      if (pollingRef.current) {
+        clearInterval(pollingRef.current);
+        pollingRef.current = null;
+      }
+      return;
+    }
+
+    // Poll every 3 seconds to check if the user verified their email (in another tab)
+    pollingRef.current = setInterval(async () => {
+      try {
+        // Try signing in silently — if email is confirmed, this will succeed
+        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        if (!error) {
+          // Verification complete! Sign out the silent session so user can log in properly
+          await supabase.auth.signOut();
+          setVerified(true);
+          if (pollingRef.current) clearInterval(pollingRef.current);
+          pollingRef.current = null;
+
+          toast.success(
+            language === 'de' ? 'E-Mail bestätigt!' : 'Email verified!',
+            { description: language === 'de' ? 'Du kannst Dich jetzt anmelden.' : 'You can now sign in.' }
+          );
+
+          // Auto-switch to login after a short delay
+          setTimeout(() => {
+            handleModeChange('login');
+          }, 1500);
+        }
+      } catch {
+        // Ignore polling errors
+      }
+    }, 3000);
+
+    return () => {
+      if (pollingRef.current) {
+        clearInterval(pollingRef.current);
+        pollingRef.current = null;
+      }
+    };
+  }, [mode, email, password, language]);
+
   // Email verification view
   if (mode === 'verify') {
     return (
@@ -262,38 +310,51 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange }: Auth
       >
         <div className="rounded-xl border border-border bg-card p-8 shadow-elevated text-center">
           <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
-            <Mail className="h-8 w-8 text-primary" />
+            {verified ? (
+              <Check className="h-8 w-8 text-green-600 dark:text-green-400" />
+            ) : (
+              <Mail className="h-8 w-8 text-primary" />
+            )}
           </div>
           
           <h2 className="font-serif text-2xl font-bold text-foreground mb-2">
-            {texts.verifyTitle}
+            {verified
+              ? (language === 'de' ? 'E-Mail bestätigt!' : 'Email verified!')
+              : texts.verifyTitle}
           </h2>
           
-          <p className="text-muted-foreground mb-1">
-            {texts.verifyDesc}
-          </p>
-          <p className="font-medium text-foreground mb-1">
-            {email}
-          </p>
-          <p className="text-muted-foreground mb-6">
-            {texts.verifyDesc2}
-          </p>
-          
-          <p className="text-sm text-muted-foreground mb-4">
-            {texts.checkSpam}
-          </p>
-          
-          <div className="space-y-3">
-            <Button
-              variant="outline"
-              onClick={handleResendEmail}
-              disabled={loading}
-              className="w-full"
-            >
-              {loading ? '...' : texts.resendEmail}
-            </Button>
-            
-          </div>
+          {verified ? (
+            <p className="text-muted-foreground mb-4">
+              {language === 'de' ? 'Du wirst gleich zur Anmeldung weitergeleitet...' : 'Redirecting to login...'}
+            </p>
+          ) : (
+            <>
+              <p className="text-muted-foreground mb-1">
+                {texts.verifyDesc}
+              </p>
+              <p className="font-medium text-foreground mb-1">
+                {email}
+              </p>
+              <p className="text-muted-foreground mb-6">
+                {texts.verifyDesc2}
+              </p>
+              
+              <p className="text-sm text-muted-foreground mb-4">
+                {texts.checkSpam}
+              </p>
+              
+              <div className="space-y-3">
+                <Button
+                  variant="outline"
+                  onClick={handleResendEmail}
+                  disabled={loading}
+                  className="w-full"
+                >
+                  {loading ? '...' : texts.resendEmail}
+                </Button>
+              </div>
+            </>
+          )}
         </div>
       </motion.div>
     );
