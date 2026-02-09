@@ -517,6 +517,10 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange }: Auth
                     met: /[0-9]/.test(password),
                     label: language === 'de' ? 'Eine Zahl' : 'One number',
                   },
+                  {
+                    met: /[^A-Za-z0-9]/.test(password),
+                    label: language === 'de' ? 'Ein Sonderzeichen (z.\u00A0B. !@#$%)' : 'One special character (e.g. !@#$%)',
+                  },
                 ].map((req, i) => (
                   <div key={i} className="flex items-center gap-2 text-xs">
                     {req.met ? (
