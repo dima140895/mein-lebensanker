@@ -93,7 +93,6 @@ Deno.serve(async (req: Request): Promise<Response> => {
           type: "magiclink",
           email: normalizedEmail,
           options: {
-            // We redirect to our app's verification page after verification.
             redirectTo,
           },
         }),
@@ -103,8 +102,10 @@ Deno.serve(async (req: Request): Promise<Response> => {
         const errorText = await generateLinkRes.text();
         console.error("generate_link error:", errorText);
       } else {
-        const linkData = (await generateLinkRes.json()) as GenerateLinkResponse;
-        const hashed = linkData?.properties?.hashed_token;
+        const linkData = await generateLinkRes.json();
+        console.log("generate_link response keys:", Object.keys(linkData));
+        // hashed_token can be at top level OR under properties depending on Supabase version
+        const hashed = linkData?.hashed_token || linkData?.properties?.hashed_token;
 
         if (hashed) {
           const joiner = redirectTo.includes("?") ? "&" : "?";
