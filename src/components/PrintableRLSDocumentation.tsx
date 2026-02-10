@@ -297,7 +297,11 @@ export const PrintableRLSDocumentation = forwardRef<HTMLDivElement>((_, ref) => 
       <h2 className="section-title">1. Tabellen mit RLS-Policies</h2>
       {tables.slice(0, 3).map((table, idx) => (
         <div key={idx} className="table-card no-break">
-          <div className="table-name">{table.tableName}</div>
+          <div className="flex items-center gap-2">
+            <div className="table-name">{table.tableName}</div>
+            <span style={{ fontSize: '7px', background: '#d1fae5', color: '#065f46', padding: '1px 5px', borderRadius: '3px', fontWeight: 600 }}>RLS ENABLED</span>
+            <span style={{ fontSize: '7px', background: '#dbeafe', color: '#1e40af', padding: '1px 5px', borderRadius: '3px', fontWeight: 600 }}>FORCE RLS</span>
+          </div>
           <div className="table-desc">{table.description}</div>
           <table className="policy-table">
             <thead>
@@ -345,7 +349,11 @@ export const PrintableRLSDocumentation = forwardRef<HTMLDivElement>((_, ref) => 
       {/* Tables - Remaining */}
       {tables.slice(3).map((table, idx) => (
         <div key={idx} className="table-card no-break">
-          <div className="table-name">{table.tableName}</div>
+          <div className="flex items-center gap-2">
+            <div className="table-name">{table.tableName}</div>
+            <span style={{ fontSize: '7px', background: '#d1fae5', color: '#065f46', padding: '1px 5px', borderRadius: '3px', fontWeight: 600 }}>RLS ENABLED</span>
+            <span style={{ fontSize: '7px', background: '#dbeafe', color: '#1e40af', padding: '1px 5px', borderRadius: '3px', fontWeight: 600 }}>FORCE RLS</span>
+          </div>
           <div className="table-desc">{table.description}</div>
           <table className="policy-table">
             <thead>
