@@ -608,8 +608,16 @@ const PrintableRelativesSummary = forwardRef<HTMLDivElement, PrintableRelativesS
     const cardStyle: React.CSSProperties = { background: '#fafafa', border: '1px solid #e5e5e5', borderRadius: '6px', padding: '12px 16px', marginBottom: '8px' };
     const uploadedDocsStyle: React.CSSProperties = { margin: '10px 0 18px 0', padding: '14px 16px', background: '#f9fafb', borderRadius: '6px', border: '1px dashed #e5e5e5' };
 
-    const renderInfoItem = (label: string, value: unknown) => {
+    const renderInfoItem = (label: string, value: unknown, stacked = false) => {
       if (!value || (typeof value === 'string' && !value.trim())) return null;
+      if (stacked) {
+        return (
+          <div style={{ padding: '8px 0', borderBottom: '1px solid #e8e8e8' }}>
+            <div style={{ color: '#6b7280', fontSize: '13px', marginBottom: '2px' }}>{label}</div>
+            <div style={{ color: '#1f2937', fontSize: '13px', fontWeight: 500 }}>{String(value)}</div>
+          </div>
+        );
+      }
       return (
         <div style={infoItemStyle}>
           <span style={labelStyle}>{label}</span>
@@ -926,7 +934,7 @@ const PrintableRelativesSummary = forwardRef<HTMLDivElement, PrintableRelativesS
 
           return (
             <>
-              {renderInfoItem(texts.testament, sectionData.testamentLocation)}
+              {renderInfoItem(texts.testament, sectionData.testamentLocation, true)}
               {groupedUploadedDocs['testament']?.length > 0 && (
                 <div style={uploadedDocsStyle}>
                   {groupedUploadedDocs['testament'].map((doc, i) => (
@@ -934,7 +942,7 @@ const PrintableRelativesSummary = forwardRef<HTMLDivElement, PrintableRelativesS
                   ))}
                 </div>
               )}
-              {renderInfoItem(texts.powerOfAttorney, sectionData.powerOfAttorneyLocation)}
+              {renderInfoItem(texts.powerOfAttorney, sectionData.powerOfAttorneyLocation, true)}
               {groupedUploadedDocs['power-of-attorney']?.length > 0 && (
                 <div style={uploadedDocsStyle}>
                   {groupedUploadedDocs['power-of-attorney'].map((doc, i) => (
@@ -942,7 +950,7 @@ const PrintableRelativesSummary = forwardRef<HTMLDivElement, PrintableRelativesS
                   ))}
                 </div>
               )}
-              {renderInfoItem(texts.livingWill, sectionData.livingWillLocation)}
+              {renderInfoItem(texts.livingWill, sectionData.livingWillLocation, true)}
               {groupedUploadedDocs['living-will']?.length > 0 && (
                 <div style={uploadedDocsStyle}>
                   {groupedUploadedDocs['living-will'].map((doc, i) => (
@@ -950,7 +958,7 @@ const PrintableRelativesSummary = forwardRef<HTMLDivElement, PrintableRelativesS
                   ))}
                 </div>
               )}
-              {renderInfoItem(texts.insuranceDocs, sectionData.insuranceDocsLocation)}
+              {renderInfoItem(texts.insuranceDocs, sectionData.insuranceDocsLocation, true)}
               {groupedUploadedDocs['insurance']?.length > 0 && (
                 <div style={uploadedDocsStyle}>
                   {groupedUploadedDocs['insurance'].map((doc, i) => (
@@ -958,7 +966,7 @@ const PrintableRelativesSummary = forwardRef<HTMLDivElement, PrintableRelativesS
                   ))}
                 </div>
               )}
-              {renderInfoItem(texts.propertyDocs, sectionData.propertyDocsLocation)}
+              {renderInfoItem(texts.propertyDocs, sectionData.propertyDocsLocation, true)}
               {groupedUploadedDocs['property']?.length > 0 && (
                 <div style={uploadedDocsStyle}>
                   {groupedUploadedDocs['property'].map((doc, i) => (
@@ -966,7 +974,7 @@ const PrintableRelativesSummary = forwardRef<HTMLDivElement, PrintableRelativesS
                   ))}
                 </div>
               )}
-              {renderInfoItem(texts.otherDocs, sectionData.otherDocsLocation)}
+              {renderInfoItem(texts.otherDocs, sectionData.otherDocsLocation, true)}
               {groupedUploadedDocs['other']?.length > 0 && (
                 <div style={uploadedDocsStyle}>
                   {groupedUploadedDocs['other'].map((doc, i) => (
