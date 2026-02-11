@@ -18,6 +18,22 @@ const getCorsHeaders = (origin: string | null) => {
   };
 };
 
+// Simple in-memory rate limiter
+const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
+const RATE_LIMIT_WINDOW_MS = 60_000; // 1 minute
+const RATE_LIMIT_MAX = 10; // max 10 requests per user per minute
+
+function isRateLimited(key: string): boolean {
+  const now = Date.now();
+  const entry = rateLimitMap.get(key);
+  if (!entry || now > entry.resetAt) {
+    rateLimitMap.set(key, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
+    return false;
+  }
+  entry.count++;
+  return entry.count > RATE_LIMIT_MAX;
+}
+
 const systemPrompt = `Du bist der "Vorsorge-Assistent", ein einfühlsamer und kompetenter Helfer für Fragen rund um Vorsorge und Nachlassplanung.
 
 Deine Aufgaben:
@@ -59,6 +75,16 @@ serve(async (req) => {
     if (claimsError || !claimsData?.claims) {
       return new Response(JSON.stringify({ error: "Nicht autorisiert" }), {
         status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const userId = claimsData.claims.sub as string;
+
+    // Rate limit per user
+    if (isRateLimited(userId)) {
+      return new Response(JSON.stringify({ error: "Zu viele Anfragen. Bitte warte einen Moment." }), {
+        status: 429,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }

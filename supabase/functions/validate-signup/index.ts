@@ -53,6 +53,21 @@ function validateEmail(email: string): boolean {
   if (email.length > 255) return false;
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
+// Simple in-memory rate limiter (per IP/email, 5 requests per 10 minutes)
+const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
+const RATE_LIMIT_WINDOW_MS = 600_000;
+const RATE_LIMIT_MAX = 5;
+
+function isRateLimited(key: string): boolean {
+  const now = Date.now();
+  const entry = rateLimitMap.get(key);
+  if (!entry || now > entry.resetAt) {
+    rateLimitMap.set(key, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
+    return false;
+  }
+  entry.count++;
+  return entry.count > RATE_LIMIT_MAX;
+}
 
 Deno.serve(async (req) => {
   const corsHeaders = getCorsHeaders(req.headers.get("origin"));
@@ -63,6 +78,15 @@ Deno.serve(async (req) => {
 
   try {
     const { email, password, emailRedirectTo } = await req.json();
+
+    // Rate limit per email
+    const normalizedEmail = String(email || "").toLowerCase().trim();
+    if (isRateLimited(normalizedEmail)) {
+      return new Response(
+        JSON.stringify({ error: "Zu viele Anfragen. Bitte versuche es später erneut." }),
+        { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
 
     // Validate email
     if (!validateEmail(email)) {
