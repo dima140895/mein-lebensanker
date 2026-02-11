@@ -20,6 +20,22 @@ const getCorsHeaders = (origin: string | null) => {
   };
 };
 
+// Simple in-memory rate limiter (per email, 3 requests per 10 minutes)
+const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
+const RATE_LIMIT_WINDOW_MS = 600_000; // 10 minutes
+const RATE_LIMIT_MAX = 3;
+
+function isRateLimited(key: string): boolean {
+  const now = Date.now();
+  const entry = rateLimitMap.get(key);
+  if (!entry || now > entry.resetAt) {
+    rateLimitMap.set(key, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
+    return false;
+  }
+  entry.count++;
+  return entry.count > RATE_LIMIT_MAX;
+}
+
 type GenerateLinkResponse = {
   action_link?: string;
   properties?: {
@@ -53,6 +69,14 @@ Deno.serve(async (req: Request): Promise<Response> => {
 
     const normalizedEmail = String(email).toLowerCase().trim();
     const redirectTo = String(confirmationUrl);
+
+    // Rate limit per email address
+    if (isRateLimited(normalizedEmail)) {
+      return new Response(JSON.stringify({ error: "Too many requests. Please try again later." }), {
+        status: 429,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
 
     // Validate redirectTo against allowed origins to prevent phishing
     const isAllowedRedirect = ALLOWED_ORIGINS.some((o) =>
