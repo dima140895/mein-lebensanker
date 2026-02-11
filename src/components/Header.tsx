@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { LogIn, UserPlus, Menu, Home, User, Info, ClipboardList, Wallet, Globe, ScrollText, FolderOpen, Phone, ChevronDown, Link2, CreditCard, Package, Key, LogOut, Shield, KeyRound, Lock, Unlock, Settings, Trash2 } from 'lucide-react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import LanguageToggle from './LanguageToggle';
@@ -41,6 +41,9 @@ import { ViewRecoveryKeyDialog } from './ViewRecoveryKeyDialog';
 import { RecoveryKeyRecoveryDialog } from './RecoveryKeyRecoveryDialog';
 import { ChangeEncryptionPasswordWithCurrentDialog } from './ChangeEncryptionPasswordWithCurrentDialog';
 import { DeleteAllDataDialog } from './DeleteAllDataDialog';
+import { supabase } from '@/integrations/supabase/browserClient';
+import { logger } from '@/lib/logger';
+import { type PackageType } from '@/lib/pricing';
 
 interface MenuItem {
   label: string;
@@ -67,6 +70,7 @@ const Header = () => {
   const [recoveryKeyRecoveryOpen, setRecoveryKeyRecoveryOpen] = useState(false);
   const [changeEncryptionPasswordOpen, setChangeEncryptionPasswordOpen] = useState(false);
   const [deleteAllDataOpen, setDeleteAllDataOpen] = useState(false);
+  const pendingPurchaseRef = useRef<{ packageType: PackageType; familyProfileCount?: number } | null>(null);
 
   // Prevent closing dialog when in verify mode
   const handleAuthOpenChange = (open: boolean) => {
@@ -193,9 +197,32 @@ const Header = () => {
 
   const tx = texts[language];
 
-  const handleAuthSuccess = () => {
+  const handleAuthSuccess = async () => {
     setAuthOpen(false);
     setMobileMenuOpen(false);
+
+    // If user came from pricing, trigger Stripe checkout immediately
+    const pending = pendingPurchaseRef.current;
+    if (pending) {
+      pendingPurchaseRef.current = null;
+      try {
+        const { data, error } = await supabase.functions.invoke('create-payment', {
+          body: {
+            paymentType: pending.packageType,
+            familyProfileCount: pending.packageType === 'family' ? pending.familyProfileCount : undefined,
+          },
+        });
+        if (error) throw error;
+        if (data?.url) {
+          window.location.href = data.url;
+          return;
+        }
+      } catch (error: any) {
+        logger.error('Payment error after auth:', error);
+        toast.error(language === 'de' ? 'Fehler beim Weiterleiten zur Zahlung' : 'Error redirecting to payment');
+      }
+    }
+
     navigate('/dashboard');
   };
 
@@ -794,8 +821,9 @@ const Header = () => {
       <PricingDialog 
         open={pricingOpen} 
         onOpenChange={setPricingOpen}
-        onSelectPackage={() => {
+        onSelectPackage={(packageType, familyProfileCount) => {
           setPricingOpen(false);
+          pendingPurchaseRef.current = { packageType, familyProfileCount };
           setAuthMode('register');
           setAuthOpen(true);
         }}
