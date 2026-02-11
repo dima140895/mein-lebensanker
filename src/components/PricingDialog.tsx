@@ -24,7 +24,7 @@ import {
 interface PricingDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSelectPackage: () => void;
+  onSelectPackage: (packageType: PackageType, familyProfileCount?: number) => void;
 }
 
 const PricingDialog = ({ open, onOpenChange, onSelectPackage }: PricingDialogProps) => {
@@ -140,7 +140,7 @@ const PricingDialog = ({ open, onOpenChange, onSelectPackage }: PricingDialogPro
 
   const handlePurchase = async (packageType: PackageType) => {
     if (!user) {
-      onSelectPackage();
+      onSelectPackage(packageType, packageType === 'family' ? familyProfileCount : undefined);
       return;
     }
 
@@ -190,7 +190,7 @@ const PricingDialog = ({ open, onOpenChange, onSelectPackage }: PricingDialogPro
                   // Don't trigger if clicking on profile selector buttons
                   if ((e.target as HTMLElement).closest('button[data-profile-selector]')) return;
                   if (!user) {
-                    onSelectPackage();
+                    onSelectPackage(key, key === 'family' ? familyProfileCount : undefined);
                   } else if (!hasPaid) {
                     handlePurchase(key);
                   }
@@ -369,7 +369,7 @@ const PricingDialog = ({ open, onOpenChange, onSelectPackage }: PricingDialogPro
       {/* CTA for non-logged-in users */}
       {!user && (
         <div className="mt-4 flex justify-center">
-          <Button size={isMobile ? 'default' : 'lg'} onClick={onSelectPackage} className="w-full sm:w-auto px-8">
+          <Button size={isMobile ? 'default' : 'lg'} onClick={() => onSelectPackage('single')} className="w-full sm:w-auto px-8">
             <CreditCard className="mr-2 h-4 w-4" />
             {texts.getStarted}
           </Button>
