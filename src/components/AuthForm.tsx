@@ -289,23 +289,22 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange }: Auth
     // Poll every 3 seconds to check if the user verified their email (in another tab)
     pollingRef.current = setInterval(async () => {
       try {
-        // Try signing in silently — if email is confirmed, this will succeed
+        // Try signing in — if email is confirmed, this will succeed and create a real session
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (!error) {
-          // Verification complete! Sign out the silent session so user can log in properly
-          await supabase.auth.signOut();
+          // Verification complete! Session is now active — proceed directly
           setVerified(true);
           if (pollingRef.current) clearInterval(pollingRef.current);
           pollingRef.current = null;
 
           toast.success(
             language === 'de' ? 'E-Mail bestätigt!' : 'Email verified!',
-            { description: language === 'de' ? 'Du kannst Dich jetzt anmelden.' : 'You can now sign in.' }
+            { description: language === 'de' ? 'Du wirst jetzt weitergeleitet...' : 'Redirecting now...' }
           );
 
-          // Auto-switch to login after a short delay
+          // Auto-proceed after a short delay
           setTimeout(() => {
-            handleModeChange('login');
+            onSuccess?.();
           }, 1500);
         }
       } catch {
@@ -346,7 +345,7 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange }: Auth
           
           {verified ? (
             <p className="text-muted-foreground mb-4">
-              {language === 'de' ? 'Du wirst gleich zur Anmeldung weitergeleitet...' : 'Redirecting to login...'}
+              {language === 'de' ? 'Du wirst gleich weitergeleitet...' : 'Redirecting now...'}
             </p>
           ) : (
             <>
