@@ -22,8 +22,8 @@ const getCorsHeaders = (origin: string | null) => {
 
 // Stripe Price IDs
 const PRICES = {
-  single: "price_1SxDbfICzkfBNYhyLR73x2G6",
-  couple: "price_1SxDc0ICzkfBNYhyLscc8Vmu",
+  single: "price_1T0iZ9EwPqOvJ6cU78f3uayM",
+  couple: "price_1T0iZcEwPqOvJ6cUh4TsrHY4",
 };
 
 const PACKAGE_PRICES = {
