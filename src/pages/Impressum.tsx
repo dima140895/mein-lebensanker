@@ -16,9 +16,9 @@ const Impressum = () => {
       sections: [
         {
           title: 'Angaben gemäß § 5 TMG',
-          content: `Mein Lebensanker (Einzelunternehmen)
+          content: `Mein-Lebensanker.de
 
-Hufnerstraße 11
+Hufnerstrasse 11
 22083 Hamburg
 Deutschland`,
         },
@@ -39,7 +39,7 @@ Finanzamt Hamburg`,
         {
           title: 'Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV',
           content: `Dirk Markus
-Hufnerstraße 11, 22083 Hamburg`,
+Hufnerstrasse 11, 22083 Hamburg`,
         },
         {
           title: 'Streitschlichtung',
@@ -76,9 +76,9 @@ Downloads und Kopien dieser Seite sind nur für den privaten, nicht kommerzielle
       sections: [
         {
           title: 'Information according to § 5 TMG',
-          content: `Mein Lebensanker (Sole Proprietorship)
+          content: `Mein-Lebensanker.de
 
-Hufnerstraße 11
+Hufnerstrasse 11
 22083 Hamburg
 Germany`,
         },
@@ -99,7 +99,7 @@ Tax Office Hamburg`,
         {
           title: 'Responsible for content according to § 55 Abs. 2 RStV',
           content: `Dirk Markus
-Hufnerstraße 11, 22083 Hamburg`,
+Hufnerstrasse 11, 22083 Hamburg`,
         },
         {
           title: 'Dispute Resolution',
