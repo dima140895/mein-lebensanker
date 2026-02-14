@@ -3,8 +3,8 @@ import { createClient } from "npm:@supabase/supabase-js@2";
 // Allowed origins for CORS
 const ALLOWED_ORIGINS = [
   "https://mein-lebensanker.lovable.app",
+  "https://mein-lebensanker.de",
   "https://id-preview--3aceebdb-8fff-4d04-bf5f-d8b882169f3d.lovable.app",
-  // Lovable preview origin can also be served from lovableproject.com
   "https://3aceebdb-8fff-4d04-bf5f-d8b882169f3d.lovableproject.com",
 ];
 
