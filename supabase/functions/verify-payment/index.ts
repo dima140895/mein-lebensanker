@@ -6,6 +6,7 @@ import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 // Allowed origins for CORS
 const ALLOWED_ORIGINS = [
   "https://mein-lebensanker.lovable.app",
+  "https://mein-lebensanker.de",
   "https://id-preview--3aceebdb-8fff-4d04-bf5f-d8b882169f3d.lovable.app",
   "https://3aceebdb-8fff-4d04-bf5f-d8b882169f3d.lovableproject.com",
 ];
