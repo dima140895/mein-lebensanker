@@ -16,37 +16,30 @@ const Impressum = () => {
       sections: [
         {
           title: 'Angaben gemäß § 5 TMG',
-          content: `Mein Lebensanker
-[Rechtsform, z.B. GmbH, UG, Einzelunternehmen]
+          content: `Mein Lebensanker (Einzelunternehmen)
 
-[Straße und Hausnummer]
-[PLZ und Ort]
+Hufnerstraße 11
+22083 Hamburg
 Deutschland`,
         },
         {
           title: 'Kontakt',
-          content: `Telefon: [Ihre Telefonnummer]
+          content: `Telefon: 0176 30317961
 E-Mail: info@mein-lebensanker.de`,
         },
         {
-          title: 'Vertreten durch',
-          content: `[Name des/der Geschäftsführer(s)]`,
+          title: 'Inhaber',
+          content: `Dirk Markus`,
         },
         {
-          title: 'Registereintrag',
-          content: `Eintragung im Handelsregister.
-Registergericht: [Amtsgericht]
-Registernummer: [HRB XXXXX]`,
-        },
-        {
-          title: 'Umsatzsteuer-ID',
-          content: `Umsatzsteuer-Identifikationsnummer gemäß § 27 a Umsatzsteuergesetz:
-[DE XXXXXXXXX]`,
+          title: 'Steuernummer',
+          content: `Steuernummer: 43/153/06464
+Finanzamt Hamburg`,
         },
         {
           title: 'Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV',
-          content: `[Name]
-[Adresse]`,
+          content: `Dirk Markus
+Hufnerstraße 11, 22083 Hamburg`,
         },
         {
           title: 'Streitschlichtung',
@@ -75,7 +68,7 @@ Die verlinkten Seiten wurden zum Zeitpunkt der Verlinkung auf mögliche Rechtsve
 Downloads und Kopien dieser Seite sind nur für den privaten, nicht kommerziellen Gebrauch gestattet.`,
         },
       ],
-      note: 'Hinweis: Dies ist ein Platzhalter. Bitte ersetzen Sie alle Angaben in eckigen Klammern durch Ihre tatsächlichen Unternehmensdaten.',
+      note: '',
     },
     en: {
       back: 'Back',
@@ -83,37 +76,30 @@ Downloads und Kopien dieser Seite sind nur für den privaten, nicht kommerzielle
       sections: [
         {
           title: 'Information according to § 5 TMG',
-          content: `Mein Lebensanker
-[Legal form, e.g. GmbH, UG, Sole proprietorship]
+          content: `Mein Lebensanker (Sole Proprietorship)
 
-[Street and Number]
-[Postal Code and City]
+Hufnerstraße 11
+22083 Hamburg
 Germany`,
         },
         {
           title: 'Contact',
-          content: `Phone: [Your Phone Number]
+          content: `Phone: +49 176 30317961
 Email: info@mein-lebensanker.de`,
         },
         {
-          title: 'Represented by',
-          content: `[Name of Managing Director(s)]`,
+          title: 'Owner',
+          content: `Dirk Markus`,
         },
         {
-          title: 'Register Entry',
-          content: `Entry in the Commercial Register.
-Register Court: [Local Court]
-Register Number: [HRB XXXXX]`,
-        },
-        {
-          title: 'VAT ID',
-          content: `VAT identification number according to § 27 a of the Value Added Tax Act:
-[DE XXXXXXXXX]`,
+          title: 'Tax Number',
+          content: `Tax Number: 43/153/06464
+Tax Office Hamburg`,
         },
         {
           title: 'Responsible for content according to § 55 Abs. 2 RStV',
-          content: `[Name]
-[Address]`,
+          content: `Dirk Markus
+Hufnerstraße 11, 22083 Hamburg`,
         },
         {
           title: 'Dispute Resolution',
@@ -142,7 +128,7 @@ The linked pages were checked for possible legal violations at the time of linki
 Downloads and copies of this page are only permitted for private, non-commercial use.`,
         },
       ],
-      note: 'Note: This is a placeholder. Please replace all information in brackets with your actual company data.',
+      note: '',
     },
   };
 
@@ -174,9 +160,7 @@ Downloads and copies of this page are only permitted for private, non-commercial
               ))}
             </div>
 
-            <div className="mt-8 rounded-lg bg-amber-light/50 p-4">
-              <p className="text-sm text-amber">{texts.note}</p>
-            </div>
+
           </div>
         </div>
       </main>

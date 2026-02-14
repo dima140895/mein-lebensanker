@@ -19,13 +19,14 @@ const Datenschutz = () => {
           title: '1. Verantwortlicher',
           content: `Verantwortlich für die Datenverarbeitung auf dieser Website ist:
 
-Mein Lebensanker
-[Straße und Hausnummer]
-[PLZ und Ort]
+Mein Lebensanker (Einzelunternehmen)
+Dirk Markus
+Hufnerstraße 11
+22083 Hamburg
 Deutschland
 
 E-Mail: info@mein-lebensanker.de
-Telefon: [Ihre Telefonnummer]`,
+Telefon: 0176 30317961`,
         },
         {
           title: '2. Rechtsgrundlagen der Verarbeitung',
@@ -167,11 +168,11 @@ Zusätzliche Sicherheitsmaßnahmen:
 E-Mail: datenschutz@mein-lebensanker.de
 
 Verantwortlicher für den Datenschutz:
-[Name des Datenschutzbeauftragten, falls vorhanden]
-[Adresse]`,
+Dirk Markus
+Hufnerstraße 11, 22083 Hamburg`,
         },
       ],
-      note: 'Hinweis: Dies ist ein Platzhalter. Bitte ersetzen Sie die Angaben in eckigen Klammern durch Ihre tatsächlichen Unternehmensdaten und lassen Sie die Datenschutzerklärung rechtlich prüfen.',
+      note: '',
     },
     en: {
       back: 'Back',
@@ -182,13 +183,14 @@ Verantwortlicher für den Datenschutz:
           title: '1. Data Controller',
           content: `The data controller for this website is:
 
-Mein Lebensanker
-[Street and Number]
-[Postal Code and City]
+Mein Lebensanker (Sole Proprietorship)
+Dirk Markus
+Hufnerstraße 11
+22083 Hamburg
 Germany
 
 Email: info@mein-lebensanker.de
-Phone: [Your Phone Number]`,
+Phone: +49 176 30317961`,
         },
         {
           title: '2. Legal Basis for Processing',
@@ -330,11 +332,11 @@ Additional security measures:
 Email: datenschutz@mein-lebensanker.de
 
 Data Protection Officer:
-[Name of Data Protection Officer, if applicable]
-[Address]`,
+Dirk Markus
+Hufnerstraße 11, 22083 Hamburg`,
         },
       ],
-      note: 'Note: This is a placeholder. Please replace all information in brackets with your actual company data and have the privacy policy legally reviewed.',
+      note: '',
     },
   };
 
@@ -367,9 +369,7 @@ Data Protection Officer:
               ))}
             </div>
 
-            <div className="mt-8 rounded-lg bg-amber-light/50 p-4">
-              <p className="text-sm text-amber">{texts.note}</p>
-            </div>
+
           </div>
         </div>
       </main>
