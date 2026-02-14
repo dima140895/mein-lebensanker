@@ -235,7 +235,7 @@ Solche Hinweise sind rechtlich nicht bindend, können Angehörigen aber helfen.`
         },
       ],
       moreQuestions: 'Weitere Fragen?',
-      supportMessage: 'Zu dieser Frage kann ich leider keine Auskunft geben. Für weitere Unterstützung kontaktiere uns bitte unter **service@mein-lebensanker.de**.',
+      supportMessage: 'Zu dieser Frage kann ich leider keine Auskunft geben. Für weitere Unterstützung kontaktiere uns bitte unter **info@mein-lebensanker.de**.',
     },
     en: {
       title: 'Estate Planning Assistant',
@@ -445,7 +445,7 @@ Such notes are not legally binding but can help family members.`,
         },
       ],
       moreQuestions: 'More questions?',
-      supportMessage: 'I\'m sorry, I cannot provide information on this question. For further assistance, please contact us at **service@mein-lebensanker.de**.',
+      supportMessage: 'I\'m sorry, I cannot provide information on this question. For further assistance, please contact us at **info@mein-lebensanker.de**.',
     },
   };
 
