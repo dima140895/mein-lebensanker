@@ -19,9 +19,9 @@ const Datenschutz = () => {
           title: '1. Verantwortlicher',
           content: `Verantwortlich für die Datenverarbeitung auf dieser Website ist:
 
-Mein Lebensanker (Einzelunternehmen)
+Mein-Lebensanker.de
 Dirk Markus
-Hufnerstraße 11
+Hufnerstrasse 11
 22083 Hamburg
 Deutschland
 
@@ -169,7 +169,7 @@ E-Mail: datenschutz@mein-lebensanker.de
 
 Verantwortlicher für den Datenschutz:
 Dirk Markus
-Hufnerstraße 11, 22083 Hamburg`,
+Hufnerstrasse 11, 22083 Hamburg`,
         },
       ],
       note: '',
@@ -183,9 +183,9 @@ Hufnerstraße 11, 22083 Hamburg`,
           title: '1. Data Controller',
           content: `The data controller for this website is:
 
-Mein Lebensanker (Sole Proprietorship)
+Mein-Lebensanker.de
 Dirk Markus
-Hufnerstraße 11
+Hufnerstrasse 11
 22083 Hamburg
 Germany
 
@@ -333,7 +333,7 @@ Email: datenschutz@mein-lebensanker.de
 
 Data Protection Officer:
 Dirk Markus
-Hufnerstraße 11, 22083 Hamburg`,
+Hufnerstrasse 11, 22083 Hamburg`,
         },
       ],
       note: '',
