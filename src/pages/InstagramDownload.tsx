@@ -17,6 +17,9 @@ import carousel03 from '@/assets/instagram/carousel-03-step3.jpg';
 import story01 from '@/assets/instagram/story-01-cta.jpg';
 import story02 from '@/assets/instagram/story-02-poll.jpg';
 import story03 from '@/assets/instagram/story-03-countdown.jpg';
+import promo06 from '@/assets/instagram/promo-06-vorsorge.jpg';
+import promo07 from '@/assets/instagram/promo-07-overview.jpg';
+import story04 from '@/assets/instagram/story-04-start.jpg';
 
 const assets = [
   { name: 'promo-01-main.jpg', src: promo01, category: 'Feed-Post', description: 'Hauptpost mit Anker' },
@@ -30,6 +33,9 @@ const assets = [
   { name: 'story-01-cta.jpg', src: story01, category: 'Story', description: 'Call-to-Action' },
   { name: 'story-02-poll.jpg', src: story02, category: 'Story', description: 'Umfrage' },
   { name: 'story-03-countdown.jpg', src: story03, category: 'Story', description: 'Countdown' },
+  { name: 'promo-06-vorsorge.jpg', src: promo06, category: 'Feed-Post', description: 'Vorsorge leicht gemacht' },
+  { name: 'promo-07-overview.jpg', src: promo07, category: 'Feed-Post', description: 'Alles an einem Ort' },
+  { name: 'story-04-start.jpg', src: story04, category: 'Story', description: 'Jetzt starten CTA' },
 ];
 
 const InstagramDownload = () => {
@@ -86,16 +92,12 @@ const InstagramDownload = () => {
             <Download className="w-5 h-5" />
             Alle herunterladen ({assets.length} Dateien)
           </Button>
-          <a 
-            href="https://github.com" 
-            target="_blank" 
-            rel="noopener noreferrer"
-          >
+          <Link to="/marketing-flyer">
             <Button variant="outline" size="lg" className="gap-2">
               <FileText className="w-5 h-5" />
-              Content-Kalender (Markdown)
+              Druckfähiger Flyer (A4)
             </Button>
-          </a>
+          </Link>
         </div>
 
         {/* Feed Posts */}
