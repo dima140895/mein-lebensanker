@@ -23,6 +23,7 @@ import PromoVideo from "./pages/PromoVideo";
 import NotFound from "./pages/NotFound";
 import InstallApp from "./pages/InstallApp";
 import InstagramDownload from "./pages/InstagramDownload";
+import MarketingFlyer from "./pages/MarketingFlyer";
 import SecurityAuditReport from "./pages/SecurityAuditReport";
 import RLSDocumentation from "./pages/RLSDocumentation";
 import DevDocumentation from "./pages/DevDocumentation";
@@ -57,6 +58,7 @@ const App = () => (
                     <Route path="/promo" element={<PromoVideo />} />
                     <Route path="/installieren" element={<InstallApp />} />
                     <Route path="/instagram-download" element={<InstagramDownload />} />
+                    <Route path="/marketing-flyer" element={<MarketingFlyer />} />
                     <Route path="/fuer-angehoerige/:token" element={<RelativesView />} />
                     <Route path="/security-audit-report" element={<SecurityAuditReport />} />
                     <Route path="/rls-documentation" element={<RLSDocumentation />} />
