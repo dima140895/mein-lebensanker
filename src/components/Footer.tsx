@@ -34,11 +34,11 @@ const Footer = () => {
   };
 
   return (
-    <footer className="border-t border-border bg-card/50 py-4 md:py-6">
-      <div className="container mx-auto px-6 sm:px-4">
-        <div className="flex flex-col items-center gap-4 md:gap-6">
+    <footer className="border-t border-border bg-card/50 py-3 md:py-6">
+      <div className="container mx-auto px-5 sm:px-4 md:px-6">
+        <div className="flex flex-col items-center gap-2.5 md:gap-6">
           {/* Primary Links */}
-          <nav className="flex flex-wrap items-center justify-center gap-3 md:gap-6">
+          <nav className="flex flex-wrap items-center justify-center gap-2 md:gap-6">
             <Link
               to="/datenschutz"
               className="flex items-center gap-1 md:gap-1.5 text-xs md:text-sm text-muted-foreground transition-colors hover:text-foreground"
@@ -63,7 +63,7 @@ const Footer = () => {
           </nav>
           
           {/* Security Links */}
-          <nav className="flex flex-wrap items-center justify-center gap-3 md:gap-6 border-t border-border pt-3 md:pt-4 w-full">
+          <nav className="flex flex-wrap items-center justify-center gap-2 md:gap-6 border-t border-border pt-2 md:pt-4 w-full">
             <Link
               to="/datensicherheit"
               className="flex items-center gap-1 md:gap-1.5 text-xs md:text-sm text-primary/80 transition-colors hover:text-primary"

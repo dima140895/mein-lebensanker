@@ -51,33 +51,33 @@ const WhatIsThisTool = () => {
   const texts = t[language];
 
   return (
-    <section className="relative pt-24 md:pt-32 pb-12 md:pb-16">
-      <div className="container mx-auto px-6 sm:px-4">
+    <section className="relative pt-16 md:pt-32 pb-8 md:pb-16">
+      <div className="container mx-auto px-5 sm:px-4 md:px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="space-y-8 max-w-4xl mx-auto"
+          className="space-y-5 md:space-y-8 max-w-4xl mx-auto"
         >
           {/* Header */}
           <div className="text-center">
-            <span className="inline-block px-4 py-1.5 rounded-full bg-amber-light text-amber text-sm font-medium mb-4">
+            <span className="inline-block px-3 py-1 md:px-4 md:py-1.5 rounded-full bg-amber-light text-amber text-xs md:text-sm font-medium mb-3 md:mb-4">
               {texts.badge}
             </span>
-            <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-4">{texts.title}</h2>
-            <p className="text-foreground leading-relaxed max-w-2xl mx-auto">{texts.intro}</p>
+            <h2 className="font-serif text-xl md:text-3xl font-bold text-foreground mb-2 md:mb-4">{texts.title}</h2>
+            <p className="text-sm md:text-base text-foreground leading-relaxed max-w-2xl mx-auto">{texts.intro}</p>
           </div>
 
           {/* Two columns */}
-          <div className="grid gap-6 md:grid-cols-2">
+          <div className="grid gap-3 md:gap-6 md:grid-cols-2">
             {/* What it IS */}
             <motion.div 
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.1 }}
-              className="rounded-xl border border-sage/30 bg-background p-6"
+              className="rounded-xl border border-sage/30 bg-background p-4 md:p-6"
             >
               <h3 className="font-serif text-lg font-semibold text-sage-dark mb-4">{texts.isTitle}</h3>
               <ul className="space-y-3">
@@ -101,7 +101,7 @@ const WhatIsThisTool = () => {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="rounded-xl border border-amber/30 bg-background p-6"
+              className="rounded-xl border border-amber/30 bg-background p-4 md:p-6"
             >
               <h3 className="font-serif text-lg font-semibold text-amber mb-4">{texts.isNotTitle}</h3>
               <ul className="space-y-3">
@@ -126,9 +126,9 @@ const WhatIsThisTool = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.3 }}
-            className="rounded-xl bg-amber-light/30 border border-amber/20 p-6 text-center"
+            className="rounded-xl bg-amber-light/30 border border-amber/20 p-4 md:p-6 text-center"
           >
-            <p className="text-muted-foreground italic leading-relaxed">{texts.closing}</p>
+            <p className="text-xs md:text-base text-muted-foreground italic leading-relaxed">{texts.closing}</p>
           </motion.div>
         </motion.div>
       </div>

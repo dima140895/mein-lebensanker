@@ -8,8 +8,8 @@ interface LogoProps {
 
 const Logo = ({ showText = true, size = 'md', className = '' }: LogoProps) => {
   const sizes = {
-    sm: { icon: 'h-4 w-4', container: 'h-7 w-7', text: 'text-base' },
-    md: { icon: 'h-5 w-5', container: 'h-9 w-9', text: 'text-xl' },
+    sm: { icon: 'h-4 w-4', container: 'h-7 w-7', text: 'text-sm md:text-base' },
+    md: { icon: 'h-4 w-4 md:h-5 md:w-5', container: 'h-8 w-8 md:h-9 md:w-9', text: 'text-base md:text-xl' },
     lg: { icon: 'h-6 w-6', container: 'h-11 w-11', text: 'text-2xl' },
   };
 
