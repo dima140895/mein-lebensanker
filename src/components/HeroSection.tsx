@@ -7,20 +7,21 @@ const HeroSection = () => {
   const navigate = useNavigate();
 
   return (
-    <section className="relative min-h-[50vh] sm:min-h-[70vh] md:min-h-[85vh] flex items-center">
-      <div className="container relative mx-auto px-5 py-0 pt-12 sm:px-4 sm:pt-10 sm:py-10 md:py-20 md:px-6">
+    <section className="relative min-h-0 sm:min-h-[70vh] md:min-h-[85vh] flex items-center">
+      <div className="container relative mx-auto px-5 py-0 pt-6 sm:px-4 sm:pt-10 sm:py-10 md:py-20 md:px-6">
         <div className="grid lg:grid-cols-2 gap-4 sm:gap-8 md:gap-12 items-center">
           <div
             key={`hero-content-${language}`}
             className="max-w-xl animate-fade-in-up"
           >
-            {/* Badge - tree metaphor text */}
+            {/* Mobile: Clear, descriptive badge | Desktop: Poetic tree metaphor */}
             <div className="mb-2 sm:mb-4 md:mb-6 inline-flex items-center gap-1.5 rounded-full border border-sage/20 bg-white/80 backdrop-blur-sm px-2.5 py-1 sm:px-3 sm:py-1.5 md:px-4 md:py-2 text-[11px] sm:text-xs md:text-sm font-medium text-sage-dark shadow-sm">
               <span className="relative flex h-1.5 md:h-2 w-1.5 md:w-2 flex-shrink-0">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sage opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-1.5 md:h-2 w-1.5 md:w-2 bg-sage"></span>
               </span>
-              <span>{t('hero.treeMetaphor')}</span>
+              <span className="sm:hidden">{t('hero.mobileBadge')}</span>
+              <span className="hidden sm:inline">{t('hero.treeMetaphor')}</span>
             </div>
 
             <h1 className="font-serif text-[1.625rem] leading-[1.2] sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold md:leading-tight text-foreground">
@@ -34,6 +35,15 @@ const HeroSection = () => {
             <p className="mt-2 sm:mt-3 md:mt-5 text-[13px] leading-relaxed sm:text-base md:text-lg text-muted-foreground">
               {t('hero.description')}
             </p>
+
+            {/* Mobile-only: Quick value props */}
+            <div className="mt-3 flex flex-wrap gap-2 sm:hidden">
+              {[t('hero.chip1'), t('hero.chip2'), t('hero.chip3')].map((chip, i) => (
+                <span key={i} className="inline-flex items-center rounded-full bg-sage-light/80 px-2.5 py-0.5 text-[11px] font-medium text-sage-dark">
+                  {chip}
+                </span>
+              ))}
+            </div>
 
             <div className="mt-4 sm:mt-6 md:mt-8 flex flex-col sm:flex-row items-stretch sm:items-start gap-2.5 sm:gap-3 md:gap-4 px-0 sm:px-0">
               <button

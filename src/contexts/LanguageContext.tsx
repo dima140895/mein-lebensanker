@@ -22,6 +22,10 @@ const translations = {
     'hero.cta': 'Ordnung schaffen',
     'hero.learnMore': 'So funktioniert\'s',
     'hero.treeMetaphor': 'Verwurzelt in Fürsorge – gewachsen für Generationen',
+    'hero.mobileBadge': 'Digitale Vorsorge-Planung',
+    'hero.chip1': '✓ Dokumente & Finanzen',
+    'hero.chip2': '✓ Für Angehörige',
+    'hero.chip3': '✓ Sicher & privat',
     
     // Value Propositions
     'value.structure': 'Struktur',
@@ -97,6 +101,10 @@ const translations = {
     'hero.cta': 'Get Started',
     'hero.learnMore': 'Learn More',
     'hero.treeMetaphor': 'Rooted in care – grown for generations',
+    'hero.mobileBadge': 'Digital Estate Planning',
+    'hero.chip1': '✓ Documents & Finances',
+    'hero.chip2': '✓ For loved ones',
+    'hero.chip3': '✓ Secure & private',
     
     // Value Propositions
     'value.structure': 'Structure',
