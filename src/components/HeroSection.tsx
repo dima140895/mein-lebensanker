@@ -32,10 +32,9 @@ const HeroSection = () => {
               {t('hero.subtitle')}
             </p>
 
-            <p className="mt-2 sm:mt-3 md:mt-5 text-[13px] leading-relaxed sm:text-base md:text-lg text-muted-foreground">
+            <p className="mt-2 hidden sm:block sm:mt-3 md:mt-5 text-base md:text-lg leading-relaxed text-muted-foreground">
               {t('hero.description')}
             </p>
-
             {/* Mobile-only: Quick value props */}
             <div className="mt-3 flex flex-wrap gap-2 sm:hidden">
               {[t('hero.chip1'), t('hero.chip2'), t('hero.chip3')].map((chip, i) => (
