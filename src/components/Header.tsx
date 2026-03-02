@@ -316,9 +316,9 @@ const Header = () => {
         </div>
       )}
       <header className={`sticky top-0 z-50 bg-background/95 backdrop-blur-md animate-fade-in ${emailVerified ? 'mt-10' : ''}`} style={{ boxShadow: '0 4px 16px -4px hsl(40 30% 90% / 0.6)' }}>
-      <div className="container mx-auto flex items-center justify-between px-4 py-3 md:py-4">
+      <div className="container mx-auto flex items-center justify-between px-3 py-2 md:px-4 md:py-4">
         {/* Left side: Burger Menu + Logo */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 md:gap-3">
           {/* Mobile Burger Menu */}
           <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
             <SheetTrigger asChild>
