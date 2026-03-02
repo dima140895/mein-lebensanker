@@ -23,9 +23,9 @@ const translations = {
     'hero.learnMore': 'So funktioniert\'s',
     'hero.treeMetaphor': 'Verwurzelt in Fürsorge – gewachsen für Generationen',
     'hero.mobileBadge': 'Digitale Vorsorge-Planung',
-    'hero.chip1': '✓ Dokumente & Finanzen',
-    'hero.chip2': '✓ Für Angehörige',
-    'hero.chip3': '✓ Sicher & privat',
+    'hero.chip1': '✓ Ordnung für dein Leben',
+    'hero.chip2': '✓ Sicherheit für Deine Liebsten',
+    'hero.chip3': '✓ Privat, geschützt & jederzeit griffbereit',
     
     // Value Propositions
     'value.structure': 'Struktur',
