@@ -51,7 +51,7 @@ const HeroSection = () => {
               >
                 <span className="absolute inset-0 rounded-full bg-gradient-to-r from-primary to-sage-dark opacity-0 transition-opacity group-hover:opacity-100" />
                 <span className="relative">{t('hero.cta')}</span>
-                <ArrowRight className="relative h-4 w-4 sm:h-4 sm:w-4 md:h-5 md:w-5 transition-transform group-hover:translate-x-1" />
+                <ArrowRight className="relative h-4 w-4 md:h-5 md:w-5 transition-transform group-hover:translate-x-1" />
               </button>
               
               <button
