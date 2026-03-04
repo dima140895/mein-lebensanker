@@ -44,14 +44,14 @@ const HeroSection = () => {
               ))}
             </div>
 
-            <div className="mt-4 sm:mt-6 md:mt-8 flex flex-col sm:flex-row items-stretch sm:items-start gap-2.5 sm:gap-3 md:gap-4 px-0 sm:px-0">
+            <div className="mt-4 sm:mt-6 md:mt-8 flex flex-col sm:flex-row items-stretch sm:items-start gap-2.5 sm:gap-3 md:gap-4">
               <button
                 onClick={() => navigate('/dashboard?register=true')}
                 className="group relative inline-flex items-center justify-center gap-2 rounded-full bg-primary px-5 py-2.5 sm:px-6 sm:py-3 md:px-7 md:py-3.5 text-[15px] sm:text-sm md:text-base font-medium text-primary-foreground shadow-lg transition-all hover:shadow-xl active:scale-[0.98]"
               >
                 <span className="absolute inset-0 rounded-full bg-gradient-to-r from-primary to-sage-dark opacity-0 transition-opacity group-hover:opacity-100" />
                 <span className="relative">{t('hero.cta')}</span>
-                <ArrowRight className="relative h-4 w-4 sm:h-4 sm:w-4 md:h-5 md:w-5 transition-transform group-hover:translate-x-1" />
+                <ArrowRight className="relative h-4 w-4 md:h-5 md:w-5 transition-transform group-hover:translate-x-1" />
               </button>
               
               <button
