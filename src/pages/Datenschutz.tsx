@@ -115,13 +115,15 @@ Mit allen Auftragsverarbeitern wurden entsprechende Verträge zur Auftragsverarb
           title: '9. Einsatz von KI-Diensten',
           content: `Für die Bereitstellung von KI-gestützten Funktionen unserer Anwendung nutzen wir externe KI-Dienste:
 
-Anthropic PBC (Claude API)
-Anbieter: Anthropic PBC, 548 Market St, PMB 90375, San Francisco, CA 94104, USA
+Google LLC (Gemini API)
+Anbieter: Google LLC, 1600 Amphitheatre Parkway, Mountain View, CA 94043, USA
 Verarbeitete Daten: Nutzereingaben die zur Verarbeitung an die API übermittelt werden
-Zweck: Generierung von KI-gestützten Antworten und Empfehlungen
+Zweck: Generierung von KI-gestützten Antworten und Empfehlungen im Vorsorge-Assistenten
 Rechtsgrundlage: Art. 6 Abs. 1 lit. b DSGVO (Vertragserfüllung)
 Datenübertragung: USA, auf Basis von EU-Standardvertragsklauseln gemäß Art. 46 Abs. 2 lit. c DSGVO
-Datenschutz: https://www.anthropic.com/privacy
+Datenschutz: https://policies.google.com/privacy
+
+Die Verarbeitung erfolgt über einen zwischengeschalteten API-Gateway (Lovable / GPT Engineer Inc.), der die Anfragen an Google Gemini weiterleitet.
 
 Wichtiger Hinweis: Bitte geben Sie keine besonders sensiblen personenbezogenen Daten (z.B. Passwörter, Zahlungsdaten) in KI-gestützte Eingabefelder ein. Eingaben werden zur Verarbeitung an externe Server übertragen.`,
         },
@@ -293,13 +295,15 @@ Data Processing Agreements (DPA) have been concluded with all data processors.`,
           title: '9. Use of AI Services',
           content: `We use external AI services to provide AI-powered features in our application:
 
-Anthropic PBC (Claude API)
-Provider: Anthropic PBC, 548 Market St, PMB 90375, San Francisco, CA 94104, USA
+Google LLC (Gemini API)
+Provider: Google LLC, 1600 Amphitheatre Parkway, Mountain View, CA 94043, USA
 Processed data: User inputs transmitted to the API for processing
-Purpose: Generation of AI-powered responses and recommendations
+Purpose: Generation of AI-powered responses and recommendations in the Vorsorge Assistant
 Legal basis: Art. 6(1)(b) GDPR (contract performance)
 Data transfer: USA, based on EU Standard Contractual Clauses pursuant to Art. 46(2)(c) GDPR
-Privacy policy: https://www.anthropic.com/privacy
+Privacy policy: https://policies.google.com/privacy
+
+Processing is routed through an intermediary API gateway (Lovable / GPT Engineer Inc.) that forwards requests to Google Gemini.
 
 Important notice: Please do not enter particularly sensitive personal data (e.g., passwords, payment data) in AI-powered input fields. Inputs are transmitted to external servers for processing.`,
         },
