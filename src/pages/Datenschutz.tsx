@@ -330,7 +330,7 @@ Data transfers are based on:
 Your sensitive advance planning data is additionally protected by our end-to-end encryption.`,
         },
         {
-          title: '11. Your Rights',
+          title: '12. Your Rights',
           content: `You have the following rights regarding your personal data:
 
 • Right to information (Art. 15 GDPR)
