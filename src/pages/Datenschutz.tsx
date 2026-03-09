@@ -138,7 +138,7 @@ Wichtiger Hinweis: Bitte geben Sie keine besonders sensiblen personenbezogenen D
 Nach Ablauf der Fristen werden Ihre Daten automatisch gelöscht oder anonymisiert.`,
         },
         {
-          title: '10. Datenübertragung in Drittländer',
+          title: '11. Datenübertragung in Drittländer',
           content: `Einige unserer Dienstleister haben ihren Sitz außerhalb der EU/des EWR:
 
 • USA: Supabase Inc., Amazon Web Services (Infrastruktur wird in EU betrieben)
