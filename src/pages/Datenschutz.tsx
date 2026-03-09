@@ -344,7 +344,7 @@ Your sensitive advance planning data is additionally protected by our end-to-end
 You also have the right to lodge a complaint with a data protection supervisory authority about our processing of your personal data.`,
         },
         {
-          title: '12. Data Security',
+          title: '13. Data Security',
           content: `We use the widespread SSL procedure (Secure Socket Layer) in connection with the highest level of encryption supported by your browser when visiting the website.
 
 Additional security measures:
