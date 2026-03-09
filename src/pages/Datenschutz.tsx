@@ -115,13 +115,15 @@ Mit allen Auftragsverarbeitern wurden entsprechende Verträge zur Auftragsverarb
           title: '9. Einsatz von KI-Diensten',
           content: `Für die Bereitstellung von KI-gestützten Funktionen unserer Anwendung nutzen wir externe KI-Dienste:
 
-Anthropic PBC (Claude API)
-Anbieter: Anthropic PBC, 548 Market St, PMB 90375, San Francisco, CA 94104, USA
+Google LLC (Gemini API)
+Anbieter: Google LLC, 1600 Amphitheatre Parkway, Mountain View, CA 94043, USA
 Verarbeitete Daten: Nutzereingaben die zur Verarbeitung an die API übermittelt werden
-Zweck: Generierung von KI-gestützten Antworten und Empfehlungen
+Zweck: Generierung von KI-gestützten Antworten und Empfehlungen im Vorsorge-Assistenten
 Rechtsgrundlage: Art. 6 Abs. 1 lit. b DSGVO (Vertragserfüllung)
 Datenübertragung: USA, auf Basis von EU-Standardvertragsklauseln gemäß Art. 46 Abs. 2 lit. c DSGVO
-Datenschutz: https://www.anthropic.com/privacy
+Datenschutz: https://policies.google.com/privacy
+
+Die Verarbeitung erfolgt über einen zwischengeschalteten API-Gateway (Lovable / GPT Engineer Inc.), der die Anfragen an Google Gemini weiterleitet.
 
 Wichtiger Hinweis: Bitte geben Sie keine besonders sensiblen personenbezogenen Daten (z.B. Passwörter, Zahlungsdaten) in KI-gestützte Eingabefelder ein. Eingaben werden zur Verarbeitung an externe Server übertragen.`,
         },
