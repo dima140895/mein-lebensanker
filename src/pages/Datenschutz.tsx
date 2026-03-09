@@ -290,7 +290,21 @@ Stripe is PCI-DSS Level 1 certified (highest security level for payment service 
 Data Processing Agreements (DPA) have been concluded with all data processors.`,
         },
         {
-          title: '9. Data Retention Periods',
+          title: '9. Use of AI Services',
+          content: `We use external AI services to provide AI-powered features in our application:
+
+Anthropic PBC (Claude API)
+Provider: Anthropic PBC, 548 Market St, PMB 90375, San Francisco, CA 94104, USA
+Processed data: User inputs transmitted to the API for processing
+Purpose: Generation of AI-powered responses and recommendations
+Legal basis: Art. 6(1)(b) GDPR (contract performance)
+Data transfer: USA, based on EU Standard Contractual Clauses pursuant to Art. 46(2)(c) GDPR
+Privacy policy: https://www.anthropic.com/privacy
+
+Important notice: Please do not enter particularly sensitive personal data (e.g., passwords, payment data) in AI-powered input fields. Inputs are transmitted to external servers for processing.`,
+        },
+        {
+          title: '10. Data Retention Periods',
           content: `We store your data only as long as necessary for the respective purposes:
 
 • Account data: Until deletion of your account
