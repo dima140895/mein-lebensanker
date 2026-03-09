@@ -112,7 +112,21 @@ Stripe ist PCI-DSS Level 1 zertifiziert (höchste Sicherheitsstufe für Zahlungs
 Mit allen Auftragsverarbeitern wurden entsprechende Verträge zur Auftragsverarbeitung (AVV/DPA) geschlossen.`,
         },
         {
-          title: '9. Aufbewahrungsfristen',
+          title: '9. Einsatz von KI-Diensten',
+          content: `Für die Bereitstellung von KI-gestützten Funktionen unserer Anwendung nutzen wir externe KI-Dienste:
+
+Anthropic PBC (Claude API)
+Anbieter: Anthropic PBC, 548 Market St, PMB 90375, San Francisco, CA 94104, USA
+Verarbeitete Daten: Nutzereingaben die zur Verarbeitung an die API übermittelt werden
+Zweck: Generierung von KI-gestützten Antworten und Empfehlungen
+Rechtsgrundlage: Art. 6 Abs. 1 lit. b DSGVO (Vertragserfüllung)
+Datenübertragung: USA, auf Basis von EU-Standardvertragsklauseln gemäß Art. 46 Abs. 2 lit. c DSGVO
+Datenschutz: https://www.anthropic.com/privacy
+
+Wichtiger Hinweis: Bitte geben Sie keine besonders sensiblen personenbezogenen Daten (z.B. Passwörter, Zahlungsdaten) in KI-gestützte Eingabefelder ein. Eingaben werden zur Verarbeitung an externe Server übertragen.`,
+        },
+        {
+          title: '10. Aufbewahrungsfristen',
           content: `Wir speichern Ihre Daten nur so lange, wie es für die jeweiligen Zwecke erforderlich ist:
 
 • Kontodaten: Bis zur Löschung Ihres Kontos
@@ -124,7 +138,7 @@ Mit allen Auftragsverarbeitern wurden entsprechende Verträge zur Auftragsverarb
 Nach Ablauf der Fristen werden Ihre Daten automatisch gelöscht oder anonymisiert.`,
         },
         {
-          title: '10. Datenübertragung in Drittländer',
+          title: '11. Datenübertragung in Drittländer',
           content: `Einige unserer Dienstleister haben ihren Sitz außerhalb der EU/des EWR:
 
 • USA: Supabase Inc., Amazon Web Services (Infrastruktur wird in EU betrieben)
@@ -138,7 +152,7 @@ Die Datenübertragung erfolgt auf Basis von:
 Ihre sensiblen Vorsorgedaten werden zusätzlich durch unsere Ende-zu-Ende-Verschlüsselung geschützt.`,
         },
         {
-          title: '11. Ihre Rechte',
+          title: '12. Ihre Rechte',
           content: `Sie haben gegenüber uns folgende Rechte hinsichtlich der Sie betreffenden personenbezogenen Daten:
 
 • Recht auf Auskunft (Art. 15 DSGVO)
@@ -152,7 +166,7 @@ Ihre sensiblen Vorsorgedaten werden zusätzlich durch unsere Ende-zu-Ende-Versch
 Sie haben zudem das Recht, sich bei einer Datenschutz-Aufsichtsbehörde über die Verarbeitung Ihrer personenbezogenen Daten durch uns zu beschweren.`,
         },
         {
-          title: '12. Datensicherheit',
+          title: '13. Datensicherheit',
           content: `Wir verwenden innerhalb des Website-Besuchs das verbreitete SSL-Verfahren (Secure Socket Layer) in Verbindung mit der jeweils höchsten Verschlüsselungsstufe, die von Ihrem Browser unterstützt wird.
 
 Zusätzliche Sicherheitsmaßnahmen:
@@ -162,7 +176,7 @@ Zusätzliche Sicherheitsmaßnahmen:
 • Row-Level Security (RLS) für Datenbankzugriffe`,
         },
         {
-          title: '13. Kontakt',
+          title: '14. Kontakt',
           content: `Für Fragen zum Datenschutz können Sie sich jederzeit an uns wenden:
 
 E-Mail: datenschutz@mein-lebensanker.de
@@ -276,7 +290,21 @@ Stripe is PCI-DSS Level 1 certified (highest security level for payment service 
 Data Processing Agreements (DPA) have been concluded with all data processors.`,
         },
         {
-          title: '9. Data Retention Periods',
+          title: '9. Use of AI Services',
+          content: `We use external AI services to provide AI-powered features in our application:
+
+Anthropic PBC (Claude API)
+Provider: Anthropic PBC, 548 Market St, PMB 90375, San Francisco, CA 94104, USA
+Processed data: User inputs transmitted to the API for processing
+Purpose: Generation of AI-powered responses and recommendations
+Legal basis: Art. 6(1)(b) GDPR (contract performance)
+Data transfer: USA, based on EU Standard Contractual Clauses pursuant to Art. 46(2)(c) GDPR
+Privacy policy: https://www.anthropic.com/privacy
+
+Important notice: Please do not enter particularly sensitive personal data (e.g., passwords, payment data) in AI-powered input fields. Inputs are transmitted to external servers for processing.`,
+        },
+        {
+          title: '10. Data Retention Periods',
           content: `We store your data only as long as necessary for the respective purposes:
 
 • Account data: Until deletion of your account
@@ -288,7 +316,7 @@ Data Processing Agreements (DPA) have been concluded with all data processors.`,
 After expiration of the retention periods, your data will be automatically deleted or anonymized.`,
         },
         {
-          title: '10. Data Transfers to Third Countries',
+          title: '11. Data Transfers to Third Countries',
           content: `Some of our service providers are located outside the EU/EEA:
 
 • USA: Supabase Inc., Amazon Web Services (infrastructure operated in EU)
@@ -302,7 +330,7 @@ Data transfers are based on:
 Your sensitive advance planning data is additionally protected by our end-to-end encryption.`,
         },
         {
-          title: '11. Your Rights',
+          title: '12. Your Rights',
           content: `You have the following rights regarding your personal data:
 
 • Right to information (Art. 15 GDPR)
@@ -316,7 +344,7 @@ Your sensitive advance planning data is additionally protected by our end-to-end
 You also have the right to lodge a complaint with a data protection supervisory authority about our processing of your personal data.`,
         },
         {
-          title: '12. Data Security',
+          title: '13. Data Security',
           content: `We use the widespread SSL procedure (Secure Socket Layer) in connection with the highest level of encryption supported by your browser when visiting the website.
 
 Additional security measures:
@@ -326,7 +354,7 @@ Additional security measures:
 • Row-Level Security (RLS) for database access`,
         },
         {
-          title: '13. Contact',
+          title: '14. Contact',
           content: `For questions about data protection, you can contact us at any time:
 
 Email: datenschutz@mein-lebensanker.de
