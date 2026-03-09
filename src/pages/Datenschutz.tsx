@@ -112,6 +112,20 @@ Stripe ist PCI-DSS Level 1 zertifiziert (höchste Sicherheitsstufe für Zahlungs
 Mit allen Auftragsverarbeitern wurden entsprechende Verträge zur Auftragsverarbeitung (AVV/DPA) geschlossen.`,
         },
         {
+          title: '9. Einsatz von KI-Diensten',
+          content: `Für die Bereitstellung von KI-gestützten Funktionen unserer Anwendung nutzen wir externe KI-Dienste:
+
+Anthropic PBC (Claude API)
+Anbieter: Anthropic PBC, 548 Market St, PMB 90375, San Francisco, CA 94104, USA
+Verarbeitete Daten: Nutzereingaben die zur Verarbeitung an die API übermittelt werden
+Zweck: Generierung von KI-gestützten Antworten und Empfehlungen
+Rechtsgrundlage: Art. 6 Abs. 1 lit. b DSGVO (Vertragserfüllung)
+Datenübertragung: USA, auf Basis von EU-Standardvertragsklauseln gemäß Art. 46 Abs. 2 lit. c DSGVO
+Datenschutz: https://www.anthropic.com/privacy
+
+Wichtiger Hinweis: Bitte geben Sie keine besonders sensiblen personenbezogenen Daten (z.B. Passwörter, Zahlungsdaten) in KI-gestützte Eingabefelder ein. Eingaben werden zur Verarbeitung an externe Server übertragen.`,
+        },
+        {
           title: '9. Aufbewahrungsfristen',
           content: `Wir speichern Ihre Daten nur so lange, wie es für die jeweiligen Zwecke erforderlich ist:
 
