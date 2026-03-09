@@ -316,7 +316,7 @@ Important notice: Please do not enter particularly sensitive personal data (e.g.
 After expiration of the retention periods, your data will be automatically deleted or anonymized.`,
         },
         {
-          title: '10. Data Transfers to Third Countries',
+          title: '11. Data Transfers to Third Countries',
           content: `Some of our service providers are located outside the EU/EEA:
 
 • USA: Supabase Inc., Amazon Web Services (infrastructure operated in EU)
