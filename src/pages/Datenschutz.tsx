@@ -295,13 +295,15 @@ Data Processing Agreements (DPA) have been concluded with all data processors.`,
           title: '9. Use of AI Services',
           content: `We use external AI services to provide AI-powered features in our application:
 
-Anthropic PBC (Claude API)
-Provider: Anthropic PBC, 548 Market St, PMB 90375, San Francisco, CA 94104, USA
+Google LLC (Gemini API)
+Provider: Google LLC, 1600 Amphitheatre Parkway, Mountain View, CA 94043, USA
 Processed data: User inputs transmitted to the API for processing
-Purpose: Generation of AI-powered responses and recommendations
+Purpose: Generation of AI-powered responses and recommendations in the Vorsorge Assistant
 Legal basis: Art. 6(1)(b) GDPR (contract performance)
 Data transfer: USA, based on EU Standard Contractual Clauses pursuant to Art. 46(2)(c) GDPR
-Privacy policy: https://www.anthropic.com/privacy
+Privacy policy: https://policies.google.com/privacy
+
+Processing is routed through an intermediary API gateway (Lovable / GPT Engineer Inc.) that forwards requests to Google Gemini.
 
 Important notice: Please do not enter particularly sensitive personal data (e.g., passwords, payment data) in AI-powered input fields. Inputs are transmitted to external servers for processing.`,
         },
