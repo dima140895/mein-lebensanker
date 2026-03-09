@@ -152,7 +152,7 @@ Die Datenübertragung erfolgt auf Basis von:
 Ihre sensiblen Vorsorgedaten werden zusätzlich durch unsere Ende-zu-Ende-Verschlüsselung geschützt.`,
         },
         {
-          title: '11. Ihre Rechte',
+          title: '12. Ihre Rechte',
           content: `Sie haben gegenüber uns folgende Rechte hinsichtlich der Sie betreffenden personenbezogenen Daten:
 
 • Recht auf Auskunft (Art. 15 DSGVO)
