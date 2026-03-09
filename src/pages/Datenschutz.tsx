@@ -126,7 +126,7 @@ Datenschutz: https://www.anthropic.com/privacy
 Wichtiger Hinweis: Bitte geben Sie keine besonders sensiblen personenbezogenen Daten (z.B. Passwörter, Zahlungsdaten) in KI-gestützte Eingabefelder ein. Eingaben werden zur Verarbeitung an externe Server übertragen.`,
         },
         {
-          title: '9. Aufbewahrungsfristen',
+          title: '10. Aufbewahrungsfristen',
           content: `Wir speichern Ihre Daten nur so lange, wie es für die jeweiligen Zwecke erforderlich ist:
 
 • Kontodaten: Bis zur Löschung Ihres Kontos
