@@ -315,7 +315,7 @@ const Header = () => {
           <button onClick={() => setEmailVerified(false)} className="ml-4 opacity-80 hover:opacity-100">✕</button>
         </div>
       )}
-      <header className={`sticky top-0 z-50 bg-background/95 backdrop-blur-md animate-fade-in ${emailVerified ? 'mt-10' : ''}`} style={{ boxShadow: '0 4px 16px -4px hsl(40 30% 90% / 0.6)' }}>
+      <header className={`sticky top-0 z-50 bg-background/80 backdrop-blur-xl border-b border-border/50 animate-fade-in ${emailVerified ? 'mt-10' : ''}`} style={{ boxShadow: '0 1px 12px -4px hsl(42 30% 85% / 0.5)' }}>
       <div className="container mx-auto flex items-center justify-between px-3 py-2 md:px-4 md:py-4">
         {/* Left side: Burger Menu + Logo */}
         <div className="flex items-center gap-2 md:gap-3">

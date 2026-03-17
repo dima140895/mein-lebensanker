@@ -126,7 +126,7 @@ const WhatIsThisTool = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.3 }}
-            className="rounded-xl bg-amber-light/30 border border-amber/20 p-4 md:p-6 text-center"
+            className="rounded-2xl bg-amber-light/25 border border-amber/15 backdrop-blur-sm p-4 md:p-6 text-center shadow-card"
           >
             <p className="text-xs md:text-base text-muted-foreground italic leading-relaxed">{texts.closing}</p>
           </motion.div>
