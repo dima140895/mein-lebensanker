@@ -77,7 +77,7 @@ const WhatIsThisTool = () => {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.1 }}
-              className="rounded-xl border border-sage/30 bg-background p-4 md:p-6"
+              className="rounded-2xl border border-sage/20 bg-white/60 backdrop-blur-sm p-4 md:p-6 shadow-card transition-shadow duration-300 hover:shadow-soft"
             >
               <h3 className="font-serif text-lg font-semibold text-sage-dark mb-4">{texts.isTitle}</h3>
               <ul className="space-y-3">
