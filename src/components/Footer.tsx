@@ -34,7 +34,7 @@ const Footer = () => {
   };
 
   return (
-    <footer className="border-t border-border bg-card/50 py-3 md:py-6">
+    <footer className="border-t border-border/50 bg-white/40 backdrop-blur-md py-3 md:py-6">
       <div className="container mx-auto px-5 sm:px-4 md:px-6">
         <div className="flex flex-col items-center gap-2.5 md:gap-6">
           {/* Primary Links */}

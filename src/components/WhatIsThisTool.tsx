@@ -77,7 +77,7 @@ const WhatIsThisTool = () => {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.1 }}
-              className="rounded-xl border border-sage/30 bg-background p-4 md:p-6"
+              className="rounded-2xl border border-sage/20 bg-white/60 backdrop-blur-sm p-4 md:p-6 shadow-card transition-shadow duration-300 hover:shadow-soft"
             >
               <h3 className="font-serif text-lg font-semibold text-sage-dark mb-4">{texts.isTitle}</h3>
               <ul className="space-y-3">
@@ -101,7 +101,7 @@ const WhatIsThisTool = () => {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="rounded-xl border border-amber/30 bg-background p-4 md:p-6"
+              className="rounded-2xl border border-amber/20 bg-white/60 backdrop-blur-sm p-4 md:p-6 shadow-card transition-shadow duration-300 hover:shadow-soft"
             >
               <h3 className="font-serif text-lg font-semibold text-amber mb-4">{texts.isNotTitle}</h3>
               <ul className="space-y-3">
@@ -126,7 +126,7 @@ const WhatIsThisTool = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.3 }}
-            className="rounded-xl bg-amber-light/30 border border-amber/20 p-4 md:p-6 text-center"
+            className="rounded-2xl bg-amber-light/25 border border-amber/15 backdrop-blur-sm p-4 md:p-6 text-center shadow-card"
           >
             <p className="text-xs md:text-base text-muted-foreground italic leading-relaxed">{texts.closing}</p>
           </motion.div>
