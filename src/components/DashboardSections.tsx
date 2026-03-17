@@ -158,14 +158,14 @@ const DashboardSections = () => {
   };
 
   return (
-    <section id="sections" className="relative pt-4 pb-8 md:pt-12 md:pb-28 overflow-hidden bg-muted/40">
+    <section id="sections" className="relative pt-4 pb-8 md:pt-16 md:pb-32 overflow-hidden bg-muted/30">
       <div className="container mx-auto px-5 sm:px-4 md:px-6">
         {/* Main Sections Header */}
         <div
           key={`main-header-${language}`}
           className="mb-5 md:mb-16 text-center animate-fade-in-up"
         >
-          <span className="inline-block rounded-full bg-sage-light px-3 py-1 md:px-4 md:py-1.5 text-xs md:text-sm font-medium text-sage-dark mb-2 md:mb-4">
+          <span className="inline-block rounded-full bg-sage-light/80 backdrop-blur-sm px-3 py-1 md:px-4 md:py-1.5 text-xs md:text-sm font-medium text-sage-dark mb-2 md:mb-4">
             {tx.badge}
           </span>
           <h2 className="font-serif text-xl md:text-3xl lg:text-4xl xl:text-5xl font-bold text-foreground">
