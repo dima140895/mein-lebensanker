@@ -1,10 +1,12 @@
+import { lazy, Suspense } from "react";
 import Header from "@/components/Header";
 import HeroSection from "@/components/HeroSection";
-import WhatIsThisTool from "@/components/WhatIsThisTool";
-import DashboardSections from "@/components/DashboardSections";
-import Disclaimer from "@/components/Disclaimer";
-import Footer from "@/components/Footer";
 import treeOfLifeImage from '@/assets/tree-of-life.png';
+
+const WhatIsThisTool = lazy(() => import("@/components/WhatIsThisTool"));
+const DashboardSections = lazy(() => import("@/components/DashboardSections"));
+const Disclaimer = lazy(() => import("@/components/Disclaimer"));
+const Footer = lazy(() => import("@/components/Footer"));
 
 const Index = () => {
   return (
