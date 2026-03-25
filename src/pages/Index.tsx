@@ -39,13 +39,19 @@ const Index = () => {
         {/* Layer 3 (z-20): All content on top */}
         <div className="relative z-20">
           <HeroSection />
-          <WhatIsThisTool />
+          <Suspense fallback={null}>
+            <WhatIsThisTool />
+          </Suspense>
         </div>
 
-        <DashboardSections />
+        <Suspense fallback={null}>
+          <DashboardSections />
+        </Suspense>
       </main>
-      <Disclaimer />
-      <Footer />
+      <Suspense fallback={null}>
+        <Disclaimer />
+        <Footer />
+      </Suspense>
     </div>
   );
 };
