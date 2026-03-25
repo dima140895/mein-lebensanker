@@ -16,7 +16,10 @@
     <link rel="icon" href="/favicon.png" type="image/png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     
-    <!-- Local fonts – no external render-blocking request -->
+    <!-- Preload LCP image and local fonts -->
+    <link rel="preload" href="/images/tree-of-life.webp" as="image" type="image/webp" />
+    <link rel="preload" href="/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/playfair-latin.woff2" as="font" type="font/woff2" crossorigin />
     
     <title>Mein Lebensanker – Digitaler Vorsorge- und Nachlass-Assistent</title>
     <meta name="description" content="Ordnung für den Fall der Fälle – damit Angehörige nicht im Chaos stehen. Strukturiere Deine persönlichen, finanziellen und organisatorischen Informationen." />
