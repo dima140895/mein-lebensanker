@@ -4,7 +4,7 @@ import WhatIsThisTool from "@/components/WhatIsThisTool";
 import DashboardSections from "@/components/DashboardSections";
 import Disclaimer from "@/components/Disclaimer";
 import Footer from "@/components/Footer";
-import treeOfLifeImage from '@/assets/tree-of-life.png';
+const treeOfLifeImage = '/images/tree-of-life.webp';
 
 const Index = () => {
   return (
