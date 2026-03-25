@@ -75,4 +75,15 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vendor-pdf': ['jspdf', 'html2canvas'],
+          'vendor-charts': ['recharts'],
+          'vendor-ui': ['framer-motion'],
+        },
+      },
+    },
+  },
 }));
