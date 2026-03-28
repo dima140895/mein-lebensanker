@@ -341,7 +341,7 @@ const SliderField = ({
       step={1}
       className="py-2"
     />
-    <p className="text-xs text-muted-foreground text-center">{description}</p>
+    <p className="text-xs text-charcoal-light text-center font-body">{description}</p>
   </div>
 );
 
