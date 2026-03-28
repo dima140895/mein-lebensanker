@@ -544,7 +544,7 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange }: Auth
 
           {mode === 'register' && (
             <div className="space-y-2">
-              <Label htmlFor="confirmPassword" className="text-sm font-medium">
+               <Label htmlFor="confirmPassword" className="text-sm font-medium font-body text-forest">
                 {texts.confirmPassword}
               </Label>
               <div className="relative">
