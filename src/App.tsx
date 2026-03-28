@@ -56,7 +56,18 @@ const Partner = lazy(() => import("./pages/Partner"));
 const Security = lazy(() => import("./pages/Security"));
 const VorsorgeAssistant = lazy(() => import("./components/VorsorgeAssistant"));
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 5,
+      gcTime: 1000 * 60 * 30,
+      retry: 2,
+      retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 10000),
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: true,
+    },
+  },
+});
 
 const App = () => (
   <QueryClientProvider client={queryClient}>

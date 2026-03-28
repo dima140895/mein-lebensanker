@@ -3,6 +3,8 @@ import { Plus, Pill, X, Loader2, ToggleRight } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { supabase } from '@/integrations/supabase/client';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { queryKeys } from '@/lib/queryKeys';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -23,9 +25,7 @@ interface Medikament {
 const PflegeMedikamente = () => {
   const { user } = useAuth();
   const { language } = useLanguage();
-  const [meds, setMeds] = useState<Medikament[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
+  const queryClient = useQueryClient();
   const [showForm, setShowForm] = useState(false);
   const [showInactive, setShowInactive] = useState(false);
 
@@ -90,62 +90,88 @@ const PflegeMedikamente = () => {
 
   const texts = t[language];
 
-  const fetchMeds = async () => {
-    if (!user) return;
-    setLoading(true);
-    const { data, error } = await supabase
-      .from('medikamente')
-      .select('*')
-      .eq('user_id', user.id)
-      .order('aktiv', { ascending: false })
-      .order('name', { ascending: true });
+  const { data: meds = [], isLoading: loading } = useQuery({
+    queryKey: queryKeys.medikamente(user?.id ?? ''),
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('medikamente')
+        .select('*')
+        .eq('user_id', user!.id)
+        .order('aktiv', { ascending: false })
+        .order('name', { ascending: true });
+      if (error) throw error;
+      return (data as Medikament[]) || [];
+    },
+    enabled: !!user,
+  });
 
-    if (!error && data) {
-      setMeds(data as Medikament[]);
-    }
-    setLoading(false);
-  };
+  const createMutation = useMutation({
+    mutationFn: async (newMed: {
+      user_id: string;
+      name: string;
+      dosierung: string | null;
+      einnahmezeiten: string | null;
+      arzt: string | null;
+    }) => {
+      const { data, error } = await supabase.from('medikamente').insert(newMed).select().single();
+      if (error) throw error;
+      return data;
+    },
+    onMutate: async (newMed) => {
+      await queryClient.cancelQueries({ queryKey: queryKeys.medikamente(user!.id) });
+      const prev = queryClient.getQueryData(queryKeys.medikamente(user!.id));
+      queryClient.setQueryData(queryKeys.medikamente(user!.id), (old: Medikament[] | undefined) =>
+        [{ ...newMed, id: 'temp-' + Date.now(), aktiv: true } as unknown as Medikament, ...(old || [])]
+      );
+      return { prev };
+    },
+    onError: (_e, _v, ctx) => {
+      queryClient.setQueryData(queryKeys.medikamente(user!.id), ctx?.prev);
+      toast.error(texts.error);
+    },
+    onSuccess: () => {
+      toast.success(texts.saved);
+      setShowForm(false);
+      setName(''); setDosierung(''); setEinnahmezeiten(''); setArzt('');
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.medikamente(user!.id) });
+    },
+  });
 
-  useEffect(() => {
-    fetchMeds();
-  }, [user]);
+  const toggleMutation = useMutation({
+    mutationFn: async ({ id, aktiv }: { id: string; aktiv: boolean }) => {
+      const { error } = await supabase.from('medikamente').update({ aktiv: !aktiv }).eq('id', id);
+      if (error) throw error;
+    },
+    onMutate: async ({ id, aktiv }) => {
+      await queryClient.cancelQueries({ queryKey: queryKeys.medikamente(user!.id) });
+      const prev = queryClient.getQueryData(queryKeys.medikamente(user!.id));
+      queryClient.setQueryData(queryKeys.medikamente(user!.id), (old: Medikament[] | undefined) =>
+        (old || []).map((m) => m.id === id ? { ...m, aktiv: !aktiv } : m)
+      );
+      return { prev };
+    },
+    onError: (_e, _v, ctx) => {
+      queryClient.setQueryData(queryKeys.medikamente(user!.id), ctx?.prev);
+    },
+    onSuccess: () => {
+      toast.success(texts.updated);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.medikamente(user!.id) });
+    },
+  });
 
-  const handleSave = async () => {
+  const handleSave = () => {
     if (!user || !name.trim()) return;
-    setSaving(true);
-
-    const { error } = await supabase.from('medikamente').insert({
+    createMutation.mutate({
       user_id: user.id,
       name: name.trim(),
       dosierung: dosierung.trim() || null,
       einnahmezeiten: einnahmezeiten.trim() || null,
       arzt: arzt.trim() || null,
     });
-
-    if (error) {
-      toast.error(texts.error);
-    } else {
-      toast.success(texts.saved);
-      setShowForm(false);
-      setName('');
-      setDosierung('');
-      setEinnahmezeiten('');
-      setArzt('');
-      fetchMeds();
-    }
-    setSaving(false);
-  };
-
-  const toggleActive = async (id: string, currentActive: boolean) => {
-    const { error } = await supabase
-      .from('medikamente')
-      .update({ aktiv: !currentActive })
-      .eq('id', id);
-
-    if (!error) {
-      toast.success(texts.updated);
-      fetchMeds();
-    }
   };
 
   const activeMeds = meds.filter((m) => m.aktiv);
@@ -200,8 +226,8 @@ const PflegeMedikamente = () => {
               <Input value={arzt} onChange={(e) => setArzt(e.target.value)} placeholder={texts.arztPlaceholder} />
             </div>
             <div className="flex flex-col sm:flex-row gap-2 pt-2">
-              <Button onClick={handleSave} disabled={saving || !name.trim()} className="w-full sm:w-auto min-h-[44px]">
-                {saving ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" />{texts.saving}</> : texts.save}
+              <Button onClick={handleSave} disabled={createMutation.isPending || !name.trim()} className="w-full sm:w-auto min-h-[44px]">
+                {createMutation.isPending ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" />{texts.saving}</> : texts.save}
               </Button>
               <Button variant="outline" onClick={() => { setShowForm(false); setName(''); setDosierung(''); setEinnahmezeiten(''); setArzt(''); }} className="w-full sm:w-auto min-h-[44px]">
                 {texts.cancel}
@@ -239,7 +265,7 @@ const PflegeMedikamente = () => {
                 {med.dosierung && <p className="text-muted-foreground"><span className="font-medium text-foreground">{texts.dosierung}:</span> {med.dosierung}</p>}
                 {med.einnahmezeiten && <p className="text-muted-foreground"><span className="font-medium text-foreground">{texts.einnahmezeiten}:</span> {med.einnahmezeiten}</p>}
                 {med.arzt && <p className="text-muted-foreground"><span className="font-medium text-foreground">{texts.arzt}:</span> {med.arzt}</p>}
-                <Button variant="ghost" size="sm" className="text-xs text-muted-foreground mt-2" onClick={() => toggleActive(med.id, med.aktiv)}>
+                <Button variant="ghost" size="sm" className="text-xs text-muted-foreground mt-2" onClick={() => toggleMutation.mutate({ id: med.id, aktiv: med.aktiv })}>
                   <X className="h-3 w-3 mr-1" />{texts.setInactive}
                 </Button>
               </CardContent>
@@ -265,7 +291,7 @@ const PflegeMedikamente = () => {
                   </div>
                 </CardHeader>
                 <CardContent className="pb-4 px-4">
-                  <Button variant="ghost" size="sm" className="text-xs text-primary" onClick={() => toggleActive(med.id, med.aktiv)}>
+                  <Button variant="ghost" size="sm" className="text-xs text-primary" onClick={() => toggleMutation.mutate({ id: med.id, aktiv: med.aktiv })}>
                     {texts.setActive}
                   </Button>
                 </CardContent>

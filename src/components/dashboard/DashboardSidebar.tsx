@@ -1,6 +1,9 @@
 import { Home, ClipboardList, HeartHandshake, Stethoscope, Users, Settings, Lock, Anchor } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useAuth } from '@/contexts/AuthContext';
+import { useQueryClient } from '@tanstack/react-query';
 import { cn } from '@/lib/utils';
+import { prefetchPflegeEintraege, prefetchMedikamente, prefetchSymptomCheckins } from '@/lib/prefetchQueries';
 
 export type DashboardModule = 'home' | 'vorsorge' | 'pflege' | 'krankheit' | 'familie' | 'settings';
 
@@ -36,6 +39,18 @@ interface DashboardSidebarProps {
 
 const DashboardSidebar = ({ activeModule, onModuleChange, userPlan, onLockedClick }: DashboardSidebarProps) => {
   const { language } = useLanguage();
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
+
+  const handlePrefetch = (moduleKey: DashboardModule) => {
+    if (!user) return;
+    if (moduleKey === 'pflege') {
+      prefetchPflegeEintraege(queryClient, user.id);
+      prefetchMedikamente(queryClient, user.id);
+    } else if (moduleKey === 'krankheit') {
+      prefetchSymptomCheckins(queryClient, user.id);
+    }
+  };
 
   return (
     <aside className="hidden md:flex flex-col w-56 lg:w-60 bg-forest text-white min-h-0">
@@ -58,6 +73,7 @@ const DashboardSidebar = ({ activeModule, onModuleChange, userPlan, onLockedClic
             <button
               key={item.key}
               onClick={() => locked ? onLockedClick(item.key) : onModuleChange(item.key)}
+              onMouseEnter={() => !locked && handlePrefetch(item.key)}
               className={cn(
                 'w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all text-left font-body',
                 isActive && !locked
