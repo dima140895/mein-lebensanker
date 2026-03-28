@@ -376,8 +376,8 @@ Hufnerstrasse 11, 22083 Hamburg`,
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      <Header />
-      <main className="flex-1">
+      <StaticNav />
+      <main className="flex-1 pt-16">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8 sm:py-16">
           <Button variant="ghost" onClick={() => navigate(-1)} className="mb-6 font-body min-h-[44px]">
             <ArrowLeft className="mr-2 h-4 w-4" />
