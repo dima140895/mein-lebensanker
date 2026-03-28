@@ -186,7 +186,7 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
             ) : (
               <p className="text-sm text-muted-foreground">{tx.pflegeEmpty}</p>
             )}
-            <Button variant="ghost" size="sm" className="w-full text-accent hover:text-accent hover:bg-accent/5 gap-1.5">
+            <Button variant="ghost" size="sm" className="w-full text-accent hover:text-accent hover:bg-accent/5 gap-1.5 min-h-[44px]">
               {tx.pflegeAdd} <ArrowRight className="h-3.5 w-3.5" />
             </Button>
           </CardContent>
