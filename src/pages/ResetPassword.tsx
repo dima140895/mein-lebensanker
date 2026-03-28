@@ -134,7 +134,7 @@ const ResetPassword = () => {
     return (
       <div className="flex min-h-screen flex-col bg-background">
         <StaticNav />
-        <main className="flex-1 flex items-center justify-center">
+        <main className="flex-1 pt-16 flex items-center justify-center">
           <div className="animate-pulse text-muted-foreground">{language === 'de' ? 'Laden...' : 'Loading...'}</div>
         </main>
       </div>
@@ -145,7 +145,7 @@ const ResetPassword = () => {
     return (
       <div className="flex min-h-screen flex-col bg-background">
         <StaticNav />
-        <main className="flex-1 flex items-center justify-center p-4">
+        <main className="flex-1 pt-16 flex items-center justify-center p-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -170,7 +170,7 @@ const ResetPassword = () => {
     return (
       <div className="flex min-h-screen flex-col bg-background">
         <StaticNav />
-        <main className="flex-1 flex items-center justify-center p-4">
+        <main className="flex-1 pt-16 flex items-center justify-center p-4">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -195,7 +195,7 @@ const ResetPassword = () => {
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <StaticNav />
-      <main className="flex-1 flex items-center justify-center p-4">
+      <main className="flex-1 pt-16 flex items-center justify-center p-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
