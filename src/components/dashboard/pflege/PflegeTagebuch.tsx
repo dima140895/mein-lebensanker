@@ -323,16 +323,20 @@ const PflegeTagebuch = () => {
                 <CardHeader
                   className="cursor-pointer py-3 px-4"
                   onClick={() => setExpandedEntry(isExpanded ? null : entry.id)}
+                  role="button"
+                  aria-expanded={isExpanded}
+                  tabIndex={0}
+                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setExpandedEntry(isExpanded ? null : entry.id); } }}
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <span className="text-xl">{MOODS[entry.stimmung - 1]}</span>
+                      <span className="text-xl" aria-hidden="true">{MOODS[entry.stimmung - 1]}</span>
                       <div>
                         <CardTitle className="text-sm font-medium">{entry.person_name}</CardTitle>
                         <p className="text-xs text-muted-foreground">{formatDate(entry.eintrags_datum)}</p>
                       </div>
                     </div>
-                    {isExpanded ? <ChevronUp className="h-4 w-4 text-muted-foreground" /> : <ChevronDown className="h-4 w-4 text-muted-foreground" />}
+                    {isExpanded ? <ChevronUp className="h-4 w-4 text-muted-foreground" aria-hidden="true" /> : <ChevronDown className="h-4 w-4 text-muted-foreground" aria-hidden="true" />}
                   </div>
                 </CardHeader>
 
