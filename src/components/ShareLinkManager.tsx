@@ -844,6 +844,54 @@ const ShareLinkManager = () => {
           })}
         </div>
       )}
+
+      {/* Emergency Card Button — only when active tokens exist */}
+      {tokens.some(t => t.is_active && t.failed_attempts < 3) && (
+        <>
+          <Button
+            variant="outline"
+            className="w-full min-h-[44px]"
+            onClick={loadNotfallData}
+          >
+            <CreditCard className="h-4 w-4 mr-2" />
+            {language === 'de' ? 'Notfall-Karte drucken' : 'Print emergency card'}
+          </Button>
+
+          <Dialog open={notfallOpen} onOpenChange={setNotfallOpen}>
+            <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle className="font-serif">
+                  {language === 'de' ? 'Notfall-Karte' : 'Emergency Card'}
+                </DialogTitle>
+                <DialogDescription>
+                  {language === 'de'
+                    ? 'Drucke diese Karte aus und trage sie im Portemonnaie.'
+                    : 'Print this card and carry it in your wallet.'}
+                </DialogDescription>
+              </DialogHeader>
+              <div className="py-4 print:p-0" id="notfall-karte-print">
+                <NotfallKarte
+                  shareToken={tokens.find(t => t.is_active && t.failed_attempts < 3)?.token || ''}
+                  userData={{
+                    name: user ? (profile?.full_name || '') : '',
+                    emergencyContact: notfallContact,
+                    medications: notfallMeds.length > 0 ? notfallMeds : undefined,
+                  }}
+                />
+              </div>
+              <div className="flex justify-end gap-2 print:hidden">
+                <Button variant="outline" onClick={() => setNotfallOpen(false)}>
+                  {language === 'de' ? 'Schließen' : 'Close'}
+                </Button>
+                <Button onClick={() => window.print()}>
+                  <Printer className="h-4 w-4 mr-2" />
+                  {language === 'de' ? 'Drucken' : 'Print'}
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
+        </>
+      )}
     </motion.div>
   );
 };
