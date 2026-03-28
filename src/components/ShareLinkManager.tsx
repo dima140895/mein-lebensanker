@@ -13,6 +13,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import { logger } from '@/lib/logger';
+import { trackEvent } from '@/lib/analytics';
 import {
   Dialog,
   DialogContent,
