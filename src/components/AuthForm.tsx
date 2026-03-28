@@ -375,7 +375,7 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange }: Auth
           <button
             type="button"
             onClick={() => handleModeChange('login')}
-            className="flex items-center text-sm text-muted-foreground hover:text-foreground mb-4"
+             className="flex items-center text-sm text-charcoal-light hover:text-primary mb-4 font-body min-h-[44px]"
           >
             <ArrowLeft className="h-4 w-4 mr-1" />
             {texts.backToLogin}
