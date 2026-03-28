@@ -1,3 +1,10 @@
+User-agent: *
+Allow: /
+Disallow: /dashboard
+Disallow: /payment-success
+Disallow: /fuer-angehoerige/
+Disallow: /familie-einladung/
+
 User-agent: Googlebot
 Allow: /
 
@@ -10,5 +17,4 @@ Allow: /
 User-agent: facebookexternalhit
 Allow: /
 
-User-agent: *
-Allow: /
+Sitemap: https://mein-lebensanker.de/sitemap.xml

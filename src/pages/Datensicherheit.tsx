@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { ArrowLeft, Shield, Key, Lock, Eye, Database, Server, Mail, Clock, CreditCard, ShieldCheck } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -8,6 +9,10 @@ import LandingFooter from '@/components/landing/LandingFooter';
 const Datensicherheit = () => {
   const navigate = useNavigate();
   const { language } = useLanguage();
+
+  useEffect(() => {
+    document.title = 'Datensicherheit | Mein Lebensanker';
+  }, []);
 
   const t = {
     de: {

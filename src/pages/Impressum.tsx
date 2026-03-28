@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -8,6 +9,10 @@ import LandingFooter from '@/components/landing/LandingFooter';
 const Impressum = () => {
   const navigate = useNavigate();
   const { language } = useLanguage();
+
+  useEffect(() => {
+    document.title = 'Impressum | Mein Lebensanker';
+  }, []);
 
   const t = {
     de: {

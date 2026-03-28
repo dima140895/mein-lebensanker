@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { 
@@ -31,6 +31,10 @@ const LearnMore = () => {
   const navigate = useNavigate();
   const { language } = useLanguage();
   const [securityDocOpen, setSecurityDocOpen] = useState(false);
+
+  useEffect(() => {
+    document.title = 'Mehr erfahren | Mein Lebensanker';
+  }, []);
 
   const containerVariants = {
     hidden: { opacity: 0 },
