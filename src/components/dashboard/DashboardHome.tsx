@@ -260,7 +260,7 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
                 <div className="h-10 w-10 rounded-lg bg-muted flex items-center justify-center">
                   <Stethoscope className="h-5 w-5 text-muted-foreground/50" />
                 </div>
-                <CardTitle className="text-base font-semibold text-muted-foreground/60">{tx.krankheit}</CardTitle>
+                <CardTitle className="text-base font-semibold font-body text-charcoal-light/60">{tx.krankheit}</CardTitle>
               </div>
               <Lock className="h-4 w-4 text-muted-foreground/40" />
             </div>
