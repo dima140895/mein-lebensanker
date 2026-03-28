@@ -332,7 +332,7 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange }: Auth
             </p>
           ) : (
             <>
-              <p className="text-muted-foreground mb-1">
+              <p className="text-charcoal-light mb-1">
                 {texts.verifyDesc}
               </p>
               <p className="font-medium text-foreground mb-1">
