@@ -70,7 +70,7 @@ const Header = () => {
   const [recoveryKeyRecoveryOpen, setRecoveryKeyRecoveryOpen] = useState(false);
   const [changeEncryptionPasswordOpen, setChangeEncryptionPasswordOpen] = useState(false);
   const [deleteAllDataOpen, setDeleteAllDataOpen] = useState(false);
-  const pendingPurchaseRef = useRef<{ packageType: PackageType; familyProfileCount?: number } | null>(null);
+  const pendingPurchaseRef = useRef<{ packageType: PackageType } | null>(null);
 
   // Prevent closing dialog when in verify mode
   const handleAuthOpenChange = (open: boolean) => {
@@ -115,9 +115,9 @@ const Header = () => {
   ];
 
   const pricingItems = [
-    { key: 'single', label: { de: 'Einzelperson', en: 'Individual' }, price: '49 €', profiles: 1 },
-    { key: 'couple', label: { de: 'Ehepaar-Paket', en: 'Couple Package' }, price: '69 €', profiles: 2 },
-    { key: 'family', label: { de: 'Familien-Paket', en: 'Family Package' }, price: '99 €', profiles: 4 },
+    { key: 'anker', label: { de: 'Anker', en: 'Anker' }, price: '49 €', profiles: 1 },
+    { key: 'plus', label: { de: 'Anker Plus', en: 'Anker Plus' }, price: '9 €/Mo.', profiles: 1 },
+    { key: 'familie', label: { de: 'Anker Familie', en: 'Anker Familie' }, price: '14 €/Mo.', profiles: 10 },
   ];
 
   const texts = {
@@ -141,9 +141,9 @@ const Header = () => {
       myPackage: 'Mein Paket',
       upgrade: 'Upgrade verfügbar',
       currentTier: 'Aktuelles Paket',
-      single: 'Einzelperson',
-      couple: 'Ehepaar-Paket',
-      family: 'Familien-Paket',
+      anker: 'Anker',
+      plus: 'Anker Plus',
+      familie: 'Anker Familie',
       managePackage: 'Paket verwalten',
       changePassword: 'Anmelde-Passwort ändern',
       account: 'Konto',
@@ -177,9 +177,9 @@ const Header = () => {
       myPackage: 'My Package',
       upgrade: 'Upgrade available',
       currentTier: 'Current package',
-      single: 'Individual',
-      couple: 'Couple Package',
-      family: 'Family Package',
+      anker: 'Anker',
+      plus: 'Anker Plus',
+      familie: 'Anker Familie',
       managePackage: 'Manage package',
       changePassword: 'Change Login Password',
       account: 'Account',
@@ -208,8 +208,7 @@ const Header = () => {
       try {
         const { data, error } = await supabase.functions.invoke('create-payment', {
           body: {
-            paymentType: pending.packageType,
-            familyProfileCount: pending.packageType === 'family' ? pending.familyProfileCount : undefined,
+            plan: pending.packageType,
           },
         });
         if (error) throw error;
@@ -343,9 +342,9 @@ const Header = () => {
                       <div className="flex items-center gap-2 bg-primary/10 px-2.5 py-1.5 rounded-md border border-primary/20">
                         <Package className="h-4 w-4 text-primary shrink-0" />
                         <span className="font-medium text-foreground text-sm">
-                          {profile.purchased_tier === 'single' && tx.single}
-                          {profile.purchased_tier === 'couple' && tx.couple}
-                          {profile.purchased_tier === 'family' && tx.family}
+                          {profile.purchased_tier === 'anker' && tx.anker}
+                          {profile.purchased_tier === 'plus' && tx.plus}
+                          {profile.purchased_tier === 'familie' && tx.familie}
                         </span>
                       </div>
                       <Button 
@@ -659,9 +658,9 @@ const Header = () => {
                           <div>
                             <p className="text-[10px] uppercase tracking-wide text-muted-foreground">{tx.currentTier}</p>
                             <p className="font-semibold text-sm text-foreground">
-                              {profile.purchased_tier === 'single' && tx.single}
-                              {profile.purchased_tier === 'couple' && tx.couple}
-                              {profile.purchased_tier === 'family' && tx.family}
+                              {profile.purchased_tier === 'anker' && tx.anker}
+                              {profile.purchased_tier === 'plus' && tx.plus}
+                              {profile.purchased_tier === 'familie' && tx.familie}
                             </p>
                           </div>
                           <div className="text-right">
@@ -821,9 +820,9 @@ const Header = () => {
       <PricingDialog 
         open={pricingOpen} 
         onOpenChange={setPricingOpen}
-        onSelectPackage={(packageType, familyProfileCount) => {
+        onSelectPackage={(planType) => {
           setPricingOpen(false);
-          pendingPurchaseRef.current = { packageType, familyProfileCount };
+          pendingPurchaseRef.current = { packageType: planType };
           setAuthMode('register');
           setAuthOpen(true);
         }}

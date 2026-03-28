@@ -3,7 +3,6 @@ import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 
-// Allowed origins for CORS
 const ALLOWED_ORIGINS = [
   "https://mein-lebensanker.lovable.app",
   "https://mein-lebensanker.de",
@@ -12,8 +11,8 @@ const ALLOWED_ORIGINS = [
 ];
 
 const getCorsHeaders = (origin: string | null) => {
-  const allowedOrigin = origin && ALLOWED_ORIGINS.some(o => origin.startsWith(o.replace(/\/$/, ''))) 
-    ? origin 
+  const allowedOrigin = origin && ALLOWED_ORIGINS.some(o => origin.startsWith(o.replace(/\/$/, '')))
+    ? origin
     : ALLOWED_ORIGINS[0];
   return {
     "Access-Control-Allow-Origin": allowedOrigin,
@@ -21,50 +20,26 @@ const getCorsHeaders = (origin: string | null) => {
   };
 };
 
-// Stripe Price IDs
+// Price IDs
 const PRICES = {
-  single: "price_1T0iZ9EwPqOvJ6cU78f3uayM",
-  couple: "price_1T0iZcEwPqOvJ6cUh4TsrHY4",
+  anker: "price_1TFxsEEwPqOvJ6cUDbqzpbmI",
+  plus: "price_1TFxtDICzkfBNYhy7DjVuBt7",
+  familie: "price_1TFxtdICzkfBNYhyZbGYHWYU",
 };
 
-const PACKAGE_PRICES = {
-  single: 4900,
-  couple: 6900,
+const PLAN_CONFIG = {
+  anker: { mode: "payment" as const, trialDays: 0, maxProfiles: 1 },
+  plus: { mode: "subscription" as const, trialDays: 14, maxProfiles: 1 },
+  familie: { mode: "subscription" as const, trialDays: 14, maxProfiles: 10 },
 };
 
-// Family pricing configuration
-const FAMILY_PRICING = {
-  basePrice: 9900, // 99 EUR in cents
-  pricePerAdditionalProfile: 1000, // 10 EUR in cents
-  minProfiles: 4,
-  maxProfiles: 10,
-};
-
-const VALID_PAYMENT_TYPES = ["single", "couple", "family"] as const;
-
-// Input validation schemas
 const PaymentRequestSchema = z.object({
-  paymentType: z.enum(["single", "couple", "family"]),
-  isUpgrade: z.boolean().optional().default(false),
-  currentTier: z.enum(["single", "couple", "family"]).optional(),
-  includeUpdateService: z.literal(false).optional().default(false),
-  familyProfileCount: z.number().int().min(4).max(10).optional(),
-  isAddingProfiles: z.boolean().optional().default(false),
-  additionalProfileCount: z.number().int().min(1).max(6).optional(),
-  currentMaxProfiles: z.number().int().min(1).max(10).optional(),
+  plan: z.enum(["anker", "plus", "familie"]),
 });
-
-const calculateFamilyPrice = (profileCount: number): number => {
-  const clampedCount = Math.max(FAMILY_PRICING.minProfiles, Math.min(FAMILY_PRICING.maxProfiles, profileCount));
-  const additionalProfiles = clampedCount - FAMILY_PRICING.minProfiles;
-  return FAMILY_PRICING.basePrice + (additionalProfiles * FAMILY_PRICING.pricePerAdditionalProfile);
-};
-
-type PackageType = "single" | "couple" | "family";
 
 serve(async (req) => {
   const corsHeaders = getCorsHeaders(req.headers.get("origin"));
-  
+
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
@@ -94,7 +69,6 @@ serve(async (req) => {
       });
     }
 
-    // Parse and validate request body with Zod
     const rawBody = await req.json();
     const parseResult = PaymentRequestSchema.safeParse(rawBody);
 
@@ -105,39 +79,9 @@ serve(async (req) => {
       });
     }
 
-    const {
-      paymentType,
-      isUpgrade,
-      currentTier,
-      includeUpdateService,
-      familyProfileCount,
-      isAddingProfiles,
-      additionalProfileCount,
-      currentMaxProfiles,
-    } = parseResult.data;
-
-    // Validate additional profile purchase for existing family users
-    if (isAddingProfiles) {
-      if (paymentType !== "family") {
-        return new Response(JSON.stringify({ error: "Invalid request parameters" }), {
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-          status: 400,
-        });
-      }
-      if (!additionalProfileCount) {
-        return new Response(JSON.stringify({ error: "Invalid request parameters" }), {
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-          status: 400,
-        });
-      }
-      const newTotal = (currentMaxProfiles || 4) + (additionalProfileCount || 0);
-      if (newTotal > FAMILY_PRICING.maxProfiles) {
-        return new Response(JSON.stringify({ error: "Invalid request parameters" }), {
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-          status: 400,
-        });
-      }
-    }
+    const { plan } = parseResult.data;
+    const config = PLAN_CONFIG[plan];
+    const priceId = PRICES[plan];
 
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
       apiVersion: "2025-08-27.basil",
@@ -145,120 +89,38 @@ serve(async (req) => {
 
     // Check if customer exists
     const customers = await stripe.customers.list({ email: user.email, limit: 1 });
-    let customerId;
+    let customerId: string | undefined;
     if (customers.data.length > 0) {
       customerId = customers.data[0].id;
     }
 
-    const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = [];
-    
-    // Calculate the price for the selected package
-    const getPackagePrice = (type: string, profileCount?: number): number => {
-      if (type === "family") {
-        return calculateFamilyPrice(profileCount || FAMILY_PRICING.minProfiles);
-      }
-      return PACKAGE_PRICES[type as "single" | "couple"];
-    };
-    
-    // Get max profiles for metadata
-    const getMaxProfiles = (type: string, profileCount?: number): number => {
-      if (type === "family") {
-        return Math.max(FAMILY_PRICING.minProfiles, Math.min(FAMILY_PRICING.maxProfiles, profileCount || FAMILY_PRICING.minProfiles));
-      }
-      return type === "couple" ? 2 : 1;
-    };
-
-    const selectedMaxProfiles = isAddingProfiles 
-      ? (currentMaxProfiles || 4) + (additionalProfileCount || 0)
-      : getMaxProfiles(paymentType, familyProfileCount);
-    const packagePrice = getPackagePrice(paymentType, familyProfileCount);
-
-    if (isAddingProfiles) {
-      // Adding profiles to existing family package
-      const addProfilesAmount = (additionalProfileCount || 0) * FAMILY_PRICING.pricePerAdditionalProfile;
-
-      const addProfilesPrice = await stripe.prices.create({
-        unit_amount: addProfilesAmount,
-        currency: "eur",
-        product_data: {
-          name: `${additionalProfileCount} zusätzliche Familien-Profile`,
-        },
-      });
-
-      lineItems.push({
-        price: addProfilesPrice.id,
-        quantity: 1,
-      });
-    } else if (isUpgrade && currentTier && VALID_PAYMENT_TYPES.includes(currentTier)) {
-      // Calculate upgrade price
-      const currentPrice = getPackagePrice(currentTier);
-      const upgradeAmount = packagePrice - currentPrice;
-
-      if (upgradeAmount <= 0) {
-        return new Response(JSON.stringify({ error: "Invalid upgrade request" }), {
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-          status: 400,
-        });
-      }
-
-      // Create a price for the upgrade amount
-      const upgradePrice = await stripe.prices.create({
-        unit_amount: upgradeAmount,
-        currency: "eur",
-        product_data: {
-          name: `Upgrade von ${currentTier} zu ${paymentType}${paymentType === "family" ? ` (${selectedMaxProfiles} Profile)` : ""}`,
-        },
-      });
-
-      lineItems.push({
-        price: upgradePrice.id,
-        quantity: 1,
-      });
-    } else {
-      // Regular purchase - create dynamic price for family, use fixed for others
-      if (paymentType === "family") {
-        const dynamicPrice = await stripe.prices.create({
-          unit_amount: packagePrice,
-          currency: "eur",
-          product_data: {
-            name: `Familien-Paket (${selectedMaxProfiles} Profile)`,
-          },
-        });
-        lineItems.push({
-          price: dynamicPrice.id,
-          quantity: 1,
-        });
-      } else {
-        lineItems.push({
-          price: PRICES[paymentType as "single" | "couple"],
-          quantity: 1,
-        });
-      }
-    }
+    const origin = req.headers.get("origin") || ALLOWED_ORIGINS[0];
 
     const sessionParams: Stripe.Checkout.SessionCreateParams = {
       customer: customerId,
       customer_email: customerId ? undefined : user.email,
-      line_items: lineItems,
-      mode: "payment",
-      success_url: `${req.headers.get("origin")}/payment-success?session_id={CHECKOUT_SESSION_ID}&type=${paymentType}${isUpgrade ? "&upgrade=true" : ""}${isAddingProfiles ? "&add_profiles=true" : ""}&profiles=${selectedMaxProfiles}`,
-      cancel_url: `${req.headers.get("origin")}/dashboard`,
+      line_items: [{ price: priceId, quantity: 1 }],
+      mode: config.mode,
+      success_url: `${origin}/payment-success?session_id={CHECKOUT_SESSION_ID}&plan=${plan}`,
+      cancel_url: `${origin}/dashboard`,
       locale: "de",
-      branding_settings: {
-        display_name: "Mein Lebensanker",
-        background_color: "#FAF8F3",
-        button_color: "#437059",
-        font_family: "inter",
-        border_style: "rounded",
-      },
       metadata: {
         user_id: user.id,
-        payment_type: paymentType,
-        is_upgrade: isUpgrade ? "true" : "false",
-        is_adding_profiles: isAddingProfiles ? "true" : "false",
-        max_profiles: String(selectedMaxProfiles),
+        plan,
+        max_profiles: String(config.maxProfiles),
       },
     };
+
+    // Add trial for subscription plans
+    if (config.mode === "subscription" && config.trialDays > 0) {
+      sessionParams.subscription_data = {
+        trial_period_days: config.trialDays,
+        metadata: {
+          user_id: user.id,
+          plan,
+        },
+      };
+    }
 
     const session = await stripe.checkout.sessions.create(sessionParams);
 
@@ -267,7 +129,6 @@ serve(async (req) => {
       status: 200,
     });
   } catch (error: unknown) {
-    // Return generic error message to prevent information leakage
     return new Response(JSON.stringify({ error: "Payment processing failed" }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 500,

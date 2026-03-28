@@ -14,10 +14,8 @@ const PaymentSuccessContent = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const sessionId = searchParams.get('session_id');
-  const paymentType = searchParams.get('type') || 'single';
+  const plan = searchParams.get('plan') || 'anker';
   const profilesParam = searchParams.get('profiles');
-  const isUpgrade = searchParams.get('upgrade') === 'true';
-  const isAddingProfiles = searchParams.get('add_profiles') === 'true';
   
   const [verificationStatus, setVerificationStatus] = useState<'loading' | 'success' | 'error' | 'redirecting'>('loading');
   const [errorMessage, setErrorMessage] = useState<string>('');
@@ -61,8 +59,7 @@ const PaymentSuccessContent = () => {
         const { data, error } = await supabase.functions.invoke('verify-payment', {
           body: {
             sessionId,
-            userId: user.id,
-            paymentType
+            plan,
           }
         });
 
@@ -78,10 +75,8 @@ const PaymentSuccessContent = () => {
           let profiles = 1;
           if (profilesParam) {
             profiles = parseInt(profilesParam, 10);
-          } else if (paymentType === 'couple') {
-            profiles = 2;
-          } else if (paymentType === 'family') {
-            profiles = 4;
+          } else if (plan === 'familie') {
+            profiles = 10;
           }
           setMaxProfiles(profiles);
           
@@ -108,7 +103,7 @@ const PaymentSuccessContent = () => {
     };
 
     verifyPayment();
-  }, [user, authLoading, sessionId, paymentType, language, refreshProfile, hasVerified, profilesParam, isUpgrade, isAddingProfiles]);
+  }, [user, authLoading, sessionId, plan, language, refreshProfile, hasVerified, profilesParam]);
 
   const t = {
     de: {
@@ -239,7 +234,7 @@ const PaymentSuccessContent = () => {
       <div className="flex min-h-screen items-center justify-center bg-background p-4">
         <ProfileSetupWizard 
           maxProfiles={maxProfiles} 
-          packageType={paymentType} 
+          packageType={plan} 
           onAllProfilesExist={handleAllProfilesExist}
         />
       </div>
@@ -254,11 +249,11 @@ const PaymentSuccessContent = () => {
           <CheckCircle className="h-10 w-10 text-sage-dark" />
         </div>
         <h1 className="font-serif text-3xl font-bold text-foreground mb-2">
-          {isAddingProfiles ? texts.addProfilesSuccess : isUpgrade ? texts.upgradeSuccess : texts.title}
+          {texts.title}
         </h1>
         <p className="text-xl text-sage-dark mb-4">{texts.subtitle}</p>
         <p className="text-muted-foreground mb-8">
-          {isAddingProfiles ? texts.addProfilesDesc : isUpgrade ? texts.upgradeDesc : texts.description}
+          {texts.description}
         </p>
         <Button onClick={() => navigate('/dashboard')} size="lg">
           {texts.cta}

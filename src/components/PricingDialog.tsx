@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import { Check, User, Users, Home, CreditCard, Loader2, Minus, Plus } from 'lucide-react';
+import { Check, Anchor, Star, Users, CreditCard, Loader2 } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/browserClient';
 import { toast } from 'sonner';
 import { logger } from '@/lib/logger';
-import { PRICING, calculateFamilyPrice, type PackageType } from '@/lib/pricing';
+import { type PlanType } from '@/lib/pricing';
 import { useIsMobile } from '@/hooks/use-mobile';
 import {
   Dialog,
@@ -24,123 +24,103 @@ import {
 interface PricingDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSelectPackage: (packageType: PackageType, familyProfileCount?: number) => void;
+  onSelectPackage: (planType: PlanType) => void;
 }
 
 const PricingDialog = ({ open, onOpenChange, onSelectPackage }: PricingDialogProps) => {
   const { language } = useLanguage();
   const { user, profile } = useAuth();
   const [loading, setLoading] = useState<string | null>(null);
-  const [familyProfileCount, setFamilyProfileCount] = useState(4);
   const isMobile = useIsMobile();
 
   const hasPaid = profile?.has_paid;
 
   const t = {
     de: {
-      title: 'Unsere Pakete',
-      subtitle: 'Einmalige Zahlung – lebenslanger Zugang',
-      single: 'Einzelperson',
-      singlePrice: '49€',
-      singleDesc: '1 Personenprofil',
-      couple: 'Ehepaar-Paket',
-      couplePrice: '69€',
-      coupleDesc: '2 getrennte Personenprofile',
-      family: 'Familien-Paket',
-      familyPrice: 'ab 99€',
-      familyDesc: '4–10 Personenprofile',
+      title: 'Unsere Pläne',
+      subtitle: 'Wähle den passenden Plan für Dich',
+      anker: 'Anker',
+      ankerPrice: '49€',
+      ankerDesc: 'Einmalzahlung – lebenslanger Zugang',
+      ankerPeriod: 'einmalig',
+      plus: 'Anker Plus',
+      plusPrice: '9€',
+      plusDesc: 'Inkl. Pflege- & Krankheits-Begleiter',
+      plusPeriod: '/Monat',
+      familie: 'Anker Familie',
+      familiePrice: '14€',
+      familieDesc: 'Bis zu 10 Profile + Familienfreigabe',
+      familiePeriod: '/Monat',
+      recommended: 'Empfohlen',
+      ctaAnker: 'Jetzt vorsorgen',
+      ctaPlus: '14 Tage kostenlos testen',
+      ctaFamilie: 'Familie einrichten',
+      processing: 'Wird verarbeitet...',
+      getStarted: 'Jetzt in Ruhe vorsorgen',
+      alreadyPurchased: 'Du hast bereits einen Plan',
       features: [
         'Strukturierte Nachlassübersicht',
-        'Dokumenten-Upload (PDF, Bilder)',
+        'Dokumenten-Upload',
         'Erben- & Kontaktverwaltung',
-        'Status-Check („Was fehlt noch?")',
-        'Export- / Download-Funktion',
+        'Status-Check',
       ],
+      allInclude: 'Alle Pläne beinhalten:',
       inclVat: 'inkl. MwSt.',
-      getStarted: 'Jetzt in Ruhe vorsorgen',
-      buyNow: 'Jetzt kaufen',
-      processing: 'Wird verarbeitet...',
-      popular: 'Beliebt',
-      bestValue: 'Bestes Preis-Leistungs-Verhältnis',
-      allInclude: 'Alle Pakete beinhalten:',
-      profiles: 'Profile',
-      alreadyPurchased: 'Du hast bereits ein Paket',
     },
     en: {
-      title: 'Our Packages',
-      subtitle: 'One-time payment – lifetime access',
-      single: 'Individual',
-      singlePrice: '€49',
-      singleDesc: '1 person profile',
-      couple: 'Couple Package',
-      couplePrice: '€69',
-      coupleDesc: '2 separate person profiles',
-      family: 'Family Package',
-      familyPrice: 'from €99',
-      familyDesc: '4–10 person profiles',
+      title: 'Our Plans',
+      subtitle: 'Choose the right plan for you',
+      anker: 'Anker',
+      ankerPrice: '€49',
+      ankerDesc: 'One-time payment – lifetime access',
+      ankerPeriod: 'one-time',
+      plus: 'Anker Plus',
+      plusPrice: '€9',
+      plusDesc: 'Incl. Care & Health Companion',
+      plusPeriod: '/month',
+      familie: 'Anker Familie',
+      familiePrice: '€14',
+      familieDesc: 'Up to 10 profiles + family sharing',
+      familiePeriod: '/month',
+      recommended: 'Recommended',
+      ctaAnker: 'Start planning',
+      ctaPlus: '14-day free trial',
+      ctaFamilie: 'Set up family',
+      processing: 'Processing...',
+      getStarted: 'Plan ahead with peace of mind',
+      alreadyPurchased: 'You already have a plan',
       features: [
         'Structured estate overview',
-        'Document upload (PDF, images)',
+        'Document upload',
         'Heirs & contact management',
-        'Status check ("What\'s missing?")',
-        'Export / download function',
+        'Status check',
       ],
+      allInclude: 'All plans include:',
       inclVat: 'incl. VAT',
-      getStarted: 'Plan ahead with peace of mind',
-      buyNow: 'Buy Now',
-      processing: 'Processing...',
-      popular: 'Popular',
-      bestValue: 'Best Value',
-      allInclude: 'All packages include:',
-      profiles: 'Profiles',
-      alreadyPurchased: 'You already have a package',
     },
   };
 
   const texts = t[language];
 
-  const getFamilyPriceDisplay = () => {
-    const price = calculateFamilyPrice(familyProfileCount);
-    return `${price}€`;
-  };
-
-  const packages = [
-    { 
-      key: 'single' as PackageType, 
-      icon: User, 
-      name: texts.single, 
-      price: texts.singlePrice, 
-      desc: texts.singleDesc,
-      iconBg: 'bg-sage-light',
-      iconColor: 'text-sage-dark',
+  const plans: { key: PlanType; icon: typeof Anchor; name: string; price: string; period: string; desc: string; cta: string; highlight?: boolean; badge?: string }[] = [
+    {
+      key: 'anker', icon: Anchor, name: texts.anker, price: texts.ankerPrice,
+      period: texts.ankerPeriod, desc: texts.ankerDesc, cta: texts.ctaAnker,
     },
-    { 
-      key: 'couple' as PackageType, 
-      icon: Users, 
-      name: texts.couple, 
-      price: texts.couplePrice, 
-      desc: texts.coupleDesc,
-      badge: texts.popular,
-      highlight: true,
-      iconBg: 'bg-amber-light',
-      iconColor: 'text-amber',
+    {
+      key: 'plus', icon: Star, name: texts.plus, price: texts.plusPrice,
+      period: texts.plusPeriod, desc: texts.plusDesc, cta: texts.ctaPlus,
+      highlight: true, badge: texts.recommended,
     },
-    { 
-      key: 'family' as PackageType, 
-      icon: Home, 
-      name: texts.family, 
-      price: getFamilyPriceDisplay(), 
-      desc: texts.familyDesc,
-      badge: texts.bestValue,
-      iconBg: 'bg-primary/10',
-      iconColor: 'text-primary',
-      showProfileSelector: true,
+    {
+      key: 'familie', icon: Users, name: texts.familie, price: texts.familiePrice,
+      period: texts.familiePeriod, desc: texts.familieDesc, cta: texts.ctaFamilie,
     },
   ];
 
-  const handlePurchase = async (packageType: PackageType) => {
+  const handlePurchase = async (planType: PlanType) => {
     if (!user) {
-      onSelectPackage(packageType, packageType === 'family' ? familyProfileCount : undefined);
+      onSelectPackage(planType);
       return;
     }
 
@@ -149,16 +129,11 @@ const PricingDialog = ({ open, onOpenChange, onSelectPackage }: PricingDialogPro
       return;
     }
 
-    setLoading(packageType);
-
+    setLoading(planType);
     try {
       const { data, error } = await supabase.functions.invoke('create-payment', {
-        body: {
-          paymentType: packageType,
-          familyProfileCount: packageType === 'family' ? familyProfileCount : undefined,
-        },
+        body: { plan: planType },
       });
-
       if (error) throw error;
       if (data?.url) {
         window.location.href = data.url;
@@ -174,26 +149,23 @@ const PricingDialog = ({ open, onOpenChange, onSelectPackage }: PricingDialogPro
   const PricingContent = () => (
     <>
       <div className={`grid gap-3 ${isMobile ? 'grid-cols-1' : 'md:grid-cols-3'}`}>
-        {packages.map(({ key, icon: Icon, name, price, desc, badge, highlight, iconBg, iconColor, showProfileSelector }) => {
+        {plans.map(({ key, icon: Icon, name, price, period, desc, cta, highlight, badge }) => {
           const isLoading = loading === key;
-          
+          const iconBg = key === 'anker' ? 'bg-sage-light' : key === 'plus' ? 'bg-amber-light' : 'bg-primary/10';
+          const iconColor = key === 'anker' ? 'text-sage-dark' : key === 'plus' ? 'text-amber' : 'text-primary';
+
           return (
             <div
               key={key}
               className={`relative rounded-xl border p-3 sm:p-4 flex ${isMobile ? 'flex-row items-center gap-3 cursor-pointer active:scale-[0.98] transition-transform' : 'flex-col'} ${
-                highlight 
-                  ? 'border-2 border-primary bg-primary/5 shadow-md' 
+                highlight
+                  ? 'border-2 border-primary bg-primary/5 shadow-md'
                   : 'border-border bg-card'
               }`}
-              {...(isMobile ? { 
-                onClick: (e: React.MouseEvent) => {
-                  // Don't trigger if clicking on profile selector buttons
-                  if ((e.target as HTMLElement).closest('button[data-profile-selector]')) return;
-                  if (!user) {
-                    onSelectPackage(key, key === 'family' ? familyProfileCount : undefined);
-                  } else if (!hasPaid) {
-                    handlePurchase(key);
-                  }
+              {...(isMobile ? {
+                onClick: () => {
+                  if (!user) onSelectPackage(key);
+                  else if (!hasPaid) handlePurchase(key);
                 },
                 role: 'button',
                 tabIndex: 0,
@@ -205,128 +177,45 @@ const PricingDialog = ({ open, onOpenChange, onSelectPackage }: PricingDialogPro
                 </div>
               )}
 
-              {/* Mobile Layout */}
               {isMobile ? (
                 <>
                   <div className={`h-10 w-10 rounded-lg flex items-center justify-center flex-shrink-0 ${iconBg}`}>
                     <Icon className={`h-5 w-5 ${iconColor}`} />
                   </div>
-                  
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between gap-2">
                       <div>
-                        <h3 className="font-serif text-base font-semibold text-foreground leading-tight">
-                          {name}
-                        </h3>
+                        <h3 className="font-serif text-base font-semibold text-foreground leading-tight">{name}</h3>
                         <p className="text-xs text-muted-foreground">{desc}</p>
                       </div>
                       <div className="text-right flex-shrink-0">
-                        <span className="font-mono text-xl font-bold text-primary">
-                          {price}
-                        </span>
-                        <span className="text-xs text-muted-foreground block">{texts.inclVat}</span>
+                        <span className="font-mono text-xl font-bold text-primary">{price}</span>
+                        <span className="text-xs text-muted-foreground block">{period}</span>
                       </div>
                     </div>
-                    
-                    {showProfileSelector && (
-                      <div className="flex items-center gap-2 mt-2 p-1.5 bg-muted/50 rounded-lg">
-                        <Button
-                          variant="outline"
-                          size="icon"
-                          className="h-6 w-6"
-                          data-profile-selector
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setFamilyProfileCount(Math.max(4, familyProfileCount - 1));
-                          }}
-                          disabled={familyProfileCount <= 4}
-                        >
-                          <Minus className="h-3 w-3" />
-                        </Button>
-                        <span className="font-medium text-xs min-w-[50px] text-center">
-                          {familyProfileCount} {texts.profiles}
-                        </span>
-                        <Button
-                          variant="outline"
-                          size="icon"
-                          className="h-6 w-6"
-                          data-profile-selector
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setFamilyProfileCount(Math.min(10, familyProfileCount + 1));
-                          }}
-                          disabled={familyProfileCount >= 10}
-                        >
-                          <Plus className="h-3 w-3" />
-                        </Button>
-                      </div>
-                    )}
                   </div>
                 </>
               ) : (
-                /* Desktop/Tablet Layout */
                 <>
                   <div className="flex items-start gap-3 mb-3 mt-1 h-[60px]">
                     <div className={`h-10 w-10 rounded-lg flex items-center justify-center flex-shrink-0 ${iconBg}`}>
                       <Icon className={`h-5 w-5 ${iconColor}`} />
                     </div>
                     <div className="flex flex-col justify-center">
-                      <h3 className="font-serif text-lg font-semibold text-foreground leading-tight">
-                        {name}
-                      </h3>
+                      <h3 className="font-serif text-lg font-semibold text-foreground leading-tight">{name}</h3>
                       <p className="text-xs text-muted-foreground leading-tight">{desc}</p>
                     </div>
                   </div>
 
-                  <div className="h-[44px] mb-3">
-                    {showProfileSelector ? (
-                      <div className="flex items-center justify-center gap-3 p-2 bg-muted/50 rounded-lg h-full">
-                        <Button
-                          variant="outline"
-                          size="icon"
-                          className="h-7 w-7"
-                          onClick={() => setFamilyProfileCount(Math.max(4, familyProfileCount - 1))}
-                          disabled={familyProfileCount <= 4}
-                        >
-                          <Minus className="h-3 w-3" />
-                        </Button>
-                        <span className="font-medium text-sm min-w-[70px] text-center">
-                          {familyProfileCount} {texts.profiles}
-                        </span>
-                        <Button
-                          variant="outline"
-                          size="icon"
-                          className="h-7 w-7"
-                          onClick={() => setFamilyProfileCount(Math.min(10, familyProfileCount + 1))}
-                          disabled={familyProfileCount >= 10}
-                        >
-                          <Plus className="h-3 w-3" />
-                        </Button>
-                      </div>
-                    ) : (
-                      <div className="h-full" /> 
-                    )}
-                  </div>
-
                   <div className="mb-3">
-                    <span className="font-mono text-3xl font-bold text-primary">
-                      {price}
-                    </span>
+                    <span className="font-mono text-3xl font-bold text-primary">{price}</span>
+                    <span className="text-xs text-muted-foreground ml-1">{period}</span>
                     <span className="text-xs text-muted-foreground ml-1">{texts.inclVat}</span>
                   </div>
 
-                  <ul className="space-y-1.5 text-xs flex-1">
-                    {texts.features.slice(0, 3).map((feature, i) => (
-                      <li key={i} className="flex items-start gap-1.5 text-foreground">
-                        <Check className="h-3.5 w-3.5 text-primary flex-shrink-0 mt-0.5" />
-                        <span>{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-
                   {user && !hasPaid && (
                     <Button
-                      className="mt-4 w-full"
+                      className="mt-auto w-full"
                       variant={highlight ? 'default' : 'outline'}
                       onClick={() => handlePurchase(key)}
                       disabled={isLoading || loading !== null}
@@ -339,7 +228,7 @@ const PricingDialog = ({ open, onOpenChange, onSelectPackage }: PricingDialogPro
                       ) : (
                         <>
                           <CreditCard className="h-4 w-4 mr-2" />
-                          {texts.buyNow}
+                          {cta}
                         </>
                       )}
                     </Button>
@@ -351,7 +240,6 @@ const PricingDialog = ({ open, onOpenChange, onSelectPackage }: PricingDialogPro
         })}
       </div>
 
-      {/* All features list - hidden on mobile */}
       {!isMobile && (
         <div className="mt-4 pt-4 border-t border-border">
           <p className="text-sm font-medium text-foreground mb-2">{texts.allInclude}</p>
@@ -366,10 +254,9 @@ const PricingDialog = ({ open, onOpenChange, onSelectPackage }: PricingDialogPro
         </div>
       )}
 
-      {/* CTA for non-logged-in users */}
       {!user && (
         <div className="mt-4 flex justify-center">
-          <Button size={isMobile ? 'default' : 'lg'} onClick={() => onSelectPackage('single')} className="w-full sm:w-auto px-8">
+          <Button size={isMobile ? 'default' : 'lg'} onClick={() => onSelectPackage('plus')} className="w-full sm:w-auto px-8">
             <CreditCard className="mr-2 h-4 w-4" />
             {texts.getStarted}
           </Button>
