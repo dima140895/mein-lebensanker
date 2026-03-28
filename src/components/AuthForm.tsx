@@ -29,7 +29,10 @@ interface AuthFormProps {
 const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange, embedded = false }: AuthFormProps) => {
   const { signUp, signIn } = useAuth();
   const { language } = useLanguage();
-  const [mode, setMode] = useState<'login' | 'register' | 'forgot' | 'verify'>(defaultMode);
+  const [mode, setMode] = useState<'login' | 'register' | 'forgot' | 'verify' | 'mfa'>(defaultMode);
+  const [mfaFactorId, setMfaFactorId] = useState<string | null>(null);
+  const [mfaChallengeId, setMfaChallengeId] = useState<string | null>(null);
+  const [mfaCode, setMfaCode] = useState('');
 
   const handleModeChange = (newMode: 'login' | 'register' | 'forgot' | 'verify') => {
     setMode(newMode);
