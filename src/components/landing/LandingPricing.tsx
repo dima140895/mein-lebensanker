@@ -1,60 +1,66 @@
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Check, X } from 'lucide-react';
+import { Check, Anchor, Star, Users, CreditCard } from 'lucide-react';
 import { trackEvent } from '@/lib/analytics';
 
 const plans = [
   {
+    key: 'anker',
     name: 'Anker',
     price: '49',
     period: 'einmalig',
-    description: 'Vorsorge für immer. Kein Abo.',
+    currency: '€',
+    description: 'Einmalzahlung – lebenslanger Zugang',
+    icon: Anchor,
+    iconBg: 'bg-sage-light/60',
+    iconColor: 'text-sage-dark',
     features: [
-      { text: 'Vorsorge-Dokumentation komplett', included: true },
-      { text: '1 Profil', included: true },
-      { text: 'Dokumenten-Upload & Safe', included: true },
-      { text: 'E2E-Verschlüsselung', included: true },
-      { text: 'KI-Assistent', included: true },
-      { text: 'Share-Links für Angehörige', included: true },
-      { text: 'Pflege-Begleiter', included: false },
-      { text: 'Krankheits-Begleiter', included: false },
-      { text: 'Familienfreigabe', included: false },
+      'Strukturierte Nachlassübersicht',
+      'Dokumenten-Upload (PDF, Bilder)',
+      'Erben- & Kontaktverwaltung',
+      'Status-Check',
+      'DSGVO-konforme Speicherung',
     ],
-    cta: 'Jetzt Vorsorge starten',
+    cta: 'Jetzt vorsorgen',
     highlighted: false,
-    priceId: 'price_1TFxsEEwPqOvJ6cUDbqzpbmI',
   },
   {
+    key: 'plus',
     name: 'Anker Plus',
     price: '9',
     period: '/Monat',
-    description: 'Pflege & Krankheit aktiv begleiten.',
+    currency: '€',
+    description: 'Inkl. Pflege- & Krankheits-Begleiter',
+    icon: Star,
+    iconBg: 'bg-amber-light/60',
+    iconColor: 'text-amber',
     features: [
-      { text: 'Alles aus Anker, plus:', included: true },
-      { text: 'Pflege-Begleiter', included: true },
-      { text: 'Krankheits-Begleiter', included: true },
-      { text: 'Tägliche Erinnerungen', included: true },
-      { text: '1 Profil', included: true },
+      'Alles aus Anker',
+      'Pflege-Begleiter',
+      'Krankheits-Begleiter',
+      'Prioritäts-Support',
     ],
-    cta: '14 Tage kostenlos testen →',
+    cta: '14 Tage kostenlos testen',
     highlighted: true,
-    priceId: 'price_1TFxtDICzkfBNYhy7DjVuBt7',
   },
   {
+    key: 'familie',
     name: 'Anker Familie',
     price: '14',
     period: '/Monat',
-    description: 'Gemeinsam pflegen, gemeinsam vorsorgen.',
+    currency: '€',
+    description: 'Bis zu 10 Profile + Familienfreigabe',
+    icon: Users,
+    iconBg: 'bg-primary/10',
+    iconColor: 'text-primary',
     features: [
-      { text: 'Alles aus Anker Plus, plus:', included: true },
-      { text: 'Bis zu 10 Profile', included: true },
-      { text: 'Familienfreigabe & Rollen', included: true },
-      { text: 'Geteilter Kalender', included: true },
-      { text: 'Wöchentliche Zusammenfassungen', included: true },
+      'Alles aus Anker Plus',
+      'Bis zu 10 Profile',
+      'Familienfreigabe',
+      'Gemeinsame Verwaltung',
     ],
-    cta: '14 Tage kostenlos testen →',
+    cta: 'Familie einrichten',
     highlighted: false,
-    priceId: 'price_1TFxtdICzkfBNYhyZbGYHWYU',
   },
 ];
 
@@ -74,51 +80,74 @@ const LandingPricing = () => {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6 lg:gap-8 max-w-4xl mx-auto">
-          {plans.map((plan, i) => (
-            <div key={i} className={`relative rounded-2xl p-6 sm:p-8 flex flex-col transition-all ${plan.highlighted ? 'ring-2 ring-primary shadow-elevated scale-[1.02] bg-card' : 'bg-card border border-border'}`}>
-              {plan.highlighted && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                  <span className="bg-primary text-primary-foreground text-[10px] font-bold font-body tracking-widest uppercase px-4 py-1.5 rounded-full">
-                    Empfohlen
-                  </span>
-                </div>
-              )}
+        <div className="grid md:grid-cols-3 gap-5 sm:gap-6 max-w-5xl mx-auto">
+          {plans.map((plan, i) => {
+            const Icon = plan.icon;
 
-              <div className="mb-6">
-                <h3 className="font-serif text-xl font-bold text-foreground mb-1">{plan.name}</h3>
-                <p className="text-sm text-muted-foreground font-body">{plan.description}</p>
-              </div>
-
-              <div className="mb-6">
-                <span className="text-4xl font-bold text-foreground font-body">€{plan.price}</span>
-                <span className="text-sm text-muted-foreground font-body ml-1">{plan.period}</span>
-              </div>
-
-              <ul className="space-y-3 mb-8 flex-1">
-                {plan.features.map((f, j) => (
-                  <li key={j} className={`flex items-start gap-2.5 text-sm font-body ${f.included ? 'text-foreground/70' : 'text-muted-foreground/40 line-through'}`}>
-                    {f.included ? (
-                      <Check className="h-4 w-4 mt-0.5 flex-shrink-0 text-primary" />
-                    ) : (
-                      <X className="h-4 w-4 mt-0.5 flex-shrink-0 text-muted-foreground/30" />
-                    )}
-                    {f.text}
-                  </li>
-                ))}
-              </ul>
-
-              <Button
-                onClick={() => {
-                  trackEvent('Upgrade_Klick', { plan: plan.name.toLowerCase().replace(' ', '_') });
-                  navigate('/dashboard?register=true');
-                }}
-                className={`w-full rounded-full h-11 font-body text-sm ${plan.highlighted ? 'bg-primary hover:bg-primary/90 text-primary-foreground' : 'bg-primary/5 hover:bg-primary/10 text-primary'}`}
+            return (
+              <div
+                key={i}
+                className={`relative rounded-2xl p-6 sm:p-7 flex flex-col transition-shadow duration-300 ${
+                  plan.highlighted
+                    ? 'border-2 border-primary bg-card shadow-xl hover:shadow-2xl'
+                    : 'border border-border/60 bg-card shadow-sm hover:shadow-lg'
+                }`}
               >
-                {plan.cta}
-              </Button>
-            </div>
-          ))}
+                {plan.highlighted && (
+                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground px-4 py-1 rounded-full text-xs font-semibold tracking-wide">
+                    Empfohlen
+                  </div>
+                )}
+
+                {/* Icon + Title */}
+                <div className="flex items-start gap-4 mb-5">
+                  <div className={`h-12 w-12 rounded-xl flex items-center justify-center flex-shrink-0 ${plan.iconBg}`}>
+                    <Icon className={`h-5 w-5 ${plan.iconColor}`} />
+                  </div>
+                  <div className="min-w-0">
+                    <h3 className="font-serif text-xl font-bold text-foreground leading-tight">{plan.name}</h3>
+                    <p className="text-sm text-muted-foreground font-body mt-0.5 leading-snug">{plan.description}</p>
+                  </div>
+                </div>
+
+                {/* Price */}
+                <div className="mb-6 flex items-baseline gap-1.5">
+                  <span className="font-serif text-5xl font-bold text-foreground tracking-tight">{plan.price}</span>
+                  <span className="font-serif text-2xl font-bold text-foreground">{plan.currency}</span>
+                  <span className="text-sm text-muted-foreground font-body ml-1">{plan.period}</span>
+                  <span className="text-xs text-muted-foreground font-body ml-1.5">inkl. MwSt.</span>
+                </div>
+
+                {/* Features */}
+                <ul className="space-y-2.5 mb-8 flex-1">
+                  {plan.features.map((feature, idx) => (
+                    <li key={idx} className="flex items-start gap-2.5 text-sm font-body text-foreground">
+                      <Check className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
+                      <span>{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                {/* CTA */}
+                <Button
+                  onClick={() => {
+                    trackEvent('Upgrade_Klick', { plan: plan.key });
+                    navigate('/dashboard?register=true');
+                  }}
+                  size="lg"
+                  className={`w-full rounded-xl font-body font-medium text-base min-h-[48px] ${
+                    plan.highlighted
+                      ? 'bg-primary hover:bg-primary/90 text-primary-foreground shadow-md'
+                      : ''
+                  }`}
+                  variant={plan.highlighted ? 'default' : 'outline'}
+                >
+                  <CreditCard className="mr-2 h-4 w-4" />
+                  {plan.cta}
+                </Button>
+              </div>
+            );
+          })}
         </div>
       </div>
     </section>
