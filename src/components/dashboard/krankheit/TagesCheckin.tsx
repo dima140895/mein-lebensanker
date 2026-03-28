@@ -326,7 +326,7 @@ const SliderField = ({
     <div className="flex items-center justify-between">
       <div className="flex items-center gap-2">
         <span className="text-xl">{icon}</span>
-        <Label className="text-sm font-medium text-foreground">{label}</Label>
+        <Label className="text-sm font-medium font-body text-forest">{label}</Label>
       </div>
       <div className="text-right">
         <span className="text-xl font-bold text-foreground">{value}</span>
