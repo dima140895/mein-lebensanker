@@ -104,7 +104,7 @@ const DashboardContent = () => {
   }
 
   // Check for new user onboarding
-  const isNewUser = (profile as any)?.is_new_user === true;
+  const isNewUser = profile?.is_new_user === true;
   if (isNewUser && !showOnboarding) {
     // Trigger onboarding on first render for new users
     setTimeout(() => setShowOnboarding(true), 300);
