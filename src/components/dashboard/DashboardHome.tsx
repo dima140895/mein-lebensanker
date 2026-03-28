@@ -352,7 +352,7 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
     <div className="space-y-6">
       {/* Greeting */}
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-         <h1 className="font-serif text-2xl sm:text-3xl font-semibold text-forest tracking-[-0.02em]">
+         <h1 className="font-sans text-2xl sm:text-3xl font-semibold text-forest tracking-[-0.02em]">
           {greeting}{userName ? `, ${userName}` : ''}.
          </h1>
         <p className="text-sm text-charcoal-light mt-1 font-body">{tx.subtitle}</p>
@@ -364,7 +364,7 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
           <Card className="bg-primary/5 border-primary/20 rounded-2xl shadow-card">
             <CardContent className="flex flex-col items-center text-center py-8 px-6">
               <Anchor className="h-12 w-12 text-muted-foreground mb-4" />
-              <h3 className="font-serif text-xl text-foreground mb-2">{language === 'de' ? 'Bereit? Lass uns beginnen.' : 'Ready? Let\'s begin.'}</h3>
+              <h3 className="font-sans text-xl text-foreground mb-2">{language === 'de' ? 'Bereit? Lass uns beginnen.' : 'Ready? Let\'s begin.'}</h3>
               <p className="text-sm text-muted-foreground max-w-xs font-body">
                 {language === 'de'
                   ? 'Deine Vorsorge-Dokumentation dauert etwa 20 Minuten und gibt dir und deiner Familie echte Sicherheit.'
@@ -403,7 +403,7 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
               <p className="text-xs uppercase tracking-wider text-muted-foreground font-body mb-1">
                 {language === 'de' ? 'Nächster Schritt:' : 'Next step:'}
               </p>
-              <h3 className="font-serif text-lg text-forest font-semibold">{nextTask.titel[language]}</h3>
+              <h3 className="font-sans text-lg text-forest font-semibold">{nextTask.titel[language]}</h3>
               <p className="text-sm text-muted-foreground font-body mt-0.5 mb-4">{nextTask.beschreibung[language]}</p>
               <Button
                 onClick={() => {

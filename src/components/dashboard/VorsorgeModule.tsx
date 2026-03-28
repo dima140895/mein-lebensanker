@@ -219,7 +219,7 @@ const VorsorgeModule = () => {
               )}
             </div>
           </div>
-          <h2 className="font-serif text-lg md:text-xl font-semibold text-foreground text-center md:absolute md:left-1/2 md:-translate-x-1/2">
+          <h2 className="font-sans text-lg md:text-xl font-semibold text-foreground text-center md:absolute md:left-1/2 md:-translate-x-1/2">
             {texts[activeSection as keyof typeof texts]}
           </h2>
           <div className="flex justify-center md:hidden">
@@ -235,7 +235,7 @@ const VorsorgeModule = () => {
   return (
     <>
       <div className="text-center mb-3 md:mb-4">
-        <h1 className="font-serif text-2xl md:text-3xl font-bold text-foreground">{texts.title}</h1>
+        <h1 className="font-sans text-2xl md:text-3xl font-bold text-foreground">{texts.title}</h1>
         <p className="mt-1 md:mt-2 text-sm md:text-base text-muted-foreground">{texts.subtitle}</p>
       </div>
 
@@ -310,7 +310,7 @@ const VorsorgeModule = () => {
                   <Icon className="h-4 w-4 md:h-5 md:w-5" />
                 </div>
                 <div className="flex flex-col gap-0.5 pr-5 md:pr-6 flex-1">
-                  <span className="font-serif text-sm md:text-base font-semibold text-foreground leading-tight">
+                  <span className="font-sans text-sm md:text-base font-semibold text-foreground leading-tight">
                     {texts[section.key as keyof typeof texts]}
                   </span>
                   <span className="text-[10px] md:text-xs text-muted-foreground line-clamp-2 leading-relaxed">
@@ -374,7 +374,7 @@ const VorsorgeModule = () => {
             <div className="mx-auto mb-4 h-14 w-14 rounded-full bg-primary/10 flex items-center justify-center">
               <ShieldCheck className="h-8 w-8 text-primary" />
             </div>
-            <h2 className="font-serif text-2xl text-forest font-bold mb-2">
+            <h2 className="font-sans text-2xl text-forest font-bold mb-2">
               {texts.celebrationTitle}
             </h2>
             <p className="font-body text-base text-muted-foreground mb-6">

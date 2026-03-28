@@ -1,28 +1,41 @@
 import { useNavigate } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { Anchor } from 'lucide-react';
+import { Clock } from 'lucide-react';
 
 const LandingCTA = () => {
   const navigate = useNavigate();
 
   return (
-    <section className="py-24 sm:py-32 bg-card">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center">
-        <Anchor className="h-10 w-10 text-primary/20 mx-auto mb-6" />
-        <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-4 leading-tight">
-          Der beste Moment war gestern.{' '}
-          <span className="text-accent">Der zweitbeste ist jetzt.</span>
-        </h2>
-        <p className="text-muted-foreground font-body text-lg mb-10 max-w-xl mx-auto">
-          Starte in 10 Minuten, ohne Druck, in deinem eigenen Tempo.
-        </p>
-        <Button
-          onClick={() => navigate('/dashboard?register=true')}
-          className="bg-primary hover:bg-primary/90 text-primary-foreground font-body text-base rounded-full px-10 h-12 shadow-lg hover:shadow-xl transition-all"
-        >
-          Jetzt kostenlos starten →
-        </Button>
+    <section className="bg-[#2C4A3E] py-28 px-6 text-center">
+      {/* Urgency label */}
+      <div className="inline-flex items-center gap-2 border border-white/20 rounded-full px-3 py-1.5 mb-8">
+        <Clock className="h-3 w-3 text-white/40" />
+        <span className="text-xs font-medium text-white/60 uppercase tracking-widest">
+          In 10 Minuten erledigt
+        </span>
       </div>
+
+      {/* Headline */}
+      <div className="max-w-2xl mx-auto">
+        <h2 className="text-4xl md:text-5xl font-extrabold tracking-[-0.03em] leading-[1.1]">
+          <span className="text-white block">Warte nicht bis</span>
+          <span className="text-[#86efac] block">jemand anderes entscheidet.</span>
+        </h2>
+      </div>
+
+      <p className="mt-5 text-white/50 text-lg font-light max-w-xl mx-auto">
+        Vollmachten, Pflege, Gesundheit — organisiert bevor es jemand anderes übernehmen muss.
+      </p>
+
+      <button
+        onClick={() => navigate('/dashboard?register=true')}
+        className="mt-10 inline-block bg-white text-[#2C4A3E] font-semibold px-8 py-4 rounded-full text-base hover:bg-white/90 transition-all"
+      >
+        Jetzt vorbereiten →
+      </button>
+
+      <p className="mt-4 text-white/30 text-xs">
+        Kein Abo-Zwang · Jederzeit kündbar · Daten in Deutschland
+      </p>
     </section>
   );
 };

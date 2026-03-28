@@ -188,7 +188,7 @@ const TagesCheckin = () => {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="text-xl font-serif font-bold text-foreground"
+          className="text-xl font-sans font-bold text-foreground"
         >
           {texts.successMessage}
         </motion.p>
@@ -249,7 +249,7 @@ const TagesCheckin = () => {
   return (
     <div className="space-y-8 max-w-lg mx-auto">
       <div className="text-center space-y-2">
-      <h2 className="font-serif text-2xl font-semibold text-forest">{texts.greeting}</h2>
+      <h2 className="font-sans text-2xl font-semibold text-forest">{texts.greeting}</h2>
         <p className="text-sm text-charcoal-light font-body">{texts.greetingSub}</p>
       </div>
 

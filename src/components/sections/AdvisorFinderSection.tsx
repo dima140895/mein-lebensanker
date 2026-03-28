@@ -163,7 +163,7 @@ const AdvisorFinderSection = () => {
                       <Icon className="h-5 w-5 text-sage-dark" />
                     </div>
                     <div>
-                      <CardTitle className="font-serif text-base">{category.title}</CardTitle>
+                      <CardTitle className="font-sans text-base">{category.title}</CardTitle>
                       <CardDescription className="text-xs mt-0.5">{category.description}</CardDescription>
                     </div>
                   </div>

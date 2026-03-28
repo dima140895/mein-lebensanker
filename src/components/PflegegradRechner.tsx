@@ -257,7 +257,7 @@ const PflegegradRechner = ({ onSave, showCTA = 'landing', onClose }: PflegegradR
           >
             {/* Current area header */}
             <div className="mb-6">
-              <h3 className="font-serif text-xl sm:text-2xl font-semibold text-foreground">
+              <h3 className="font-sans text-xl sm:text-2xl font-semibold text-foreground">
                 {isDE ? currentBereich.titel : currentBereich.titelEn}
               </h3>
               <p className="text-sm text-muted-foreground font-body mt-1">
@@ -344,7 +344,7 @@ const PflegegradRechner = ({ onSave, showCTA = 'landing', onClose }: PflegegradR
                 <p className="text-sm font-body text-muted-foreground mb-2">
                   {isDE ? 'Geschätzter Pflegegrad' : 'Estimated Care Level'}
                 </p>
-                <p className={`text-6xl sm:text-7xl font-serif font-bold ${gradColors[berechneErgebnis.grad]}`}>
+                <p className={`text-6xl sm:text-7xl font-sans font-bold ${gradColors[berechneErgebnis.grad]}`}>
                   {berechneErgebnis.grad === 0 ? '—' : berechneErgebnis.grad}
                 </p>
                 <p className="text-sm font-body text-muted-foreground mt-2">

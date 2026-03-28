@@ -41,16 +41,15 @@ const modules = [
 
 const LandingModules = () => {
   return (
-    <section id="module" className="py-24 sm:py-32 bg-background">
+    <section id="funktionen" className="py-24 sm:py-32 bg-[#FDFAF5]">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
         <div className="text-center mb-16">
-          <span className="text-xs font-semibold text-accent font-body tracking-widest uppercase">Module</span>
-          <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mt-3 mb-4">
-            Ein System. Alle Lebensphasen.
+          <span className="text-xs uppercase tracking-widest font-medium text-[#437059] mb-3 block">
+            Alles was du brauchst. Nichts was du nicht brauchst.
+          </span>
+          <h2 className="font-bold text-3xl md:text-4xl text-[#262E38] tracking-[-0.025em]">
+            Ein System für alle Lebensphasen.
           </h2>
-          <p className="text-muted-foreground font-body max-w-lg mx-auto text-lg">
-            Starte mit Vorsorge. Aktiviere weitere Module, wenn das Leben es erfordert.
-          </p>
         </div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -61,7 +60,7 @@ const LandingModules = () => {
               <div key={i} className={`relative bg-card rounded-2xl p-6 transition-all hover-lift shadow-card ${isComingSoon ? 'opacity-60' : ''}`}
                 style={{ borderTop: `4px solid ${mod.borderColor}` }}>
                 {/* Badge */}
-                <span className="absolute top-4 right-4 text-[10px] font-bold font-body tracking-wide uppercase px-2.5 py-1 rounded-full"
+                <span className="absolute top-4 right-4 text-[10px] font-bold tracking-wide uppercase px-2.5 py-1 rounded-full"
                   style={{ color: mod.badgeColor, backgroundColor: `${mod.badgeColor}10` }}>
                   {mod.badge}
                 </span>
@@ -70,12 +69,12 @@ const LandingModules = () => {
                   <Icon className="h-5 w-5" style={{ color: mod.borderColor }} />
                 </div>
 
-                <h3 className="font-serif text-xl font-bold text-foreground mb-2">{mod.title}</h3>
-                <p className="text-sm text-muted-foreground font-body leading-relaxed mb-4">{mod.description}</p>
+                <h3 className="font-sans text-xl font-bold text-foreground mb-2">{mod.title}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed mb-4">{mod.description}</p>
 
                 <ul className="space-y-1.5">
                   {mod.features.map((f, j) => (
-                    <li key={j} className="text-xs text-muted-foreground/70 font-body flex items-center gap-1.5">
+                    <li key={j} className="text-xs text-muted-foreground/70 flex items-center gap-1.5">
                       <span className="w-1 h-1 rounded-full" style={{ backgroundColor: mod.borderColor }} />
                       {f}
                     </li>

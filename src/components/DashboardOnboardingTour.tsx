@@ -188,7 +188,7 @@ export const DashboardOnboardingTour: React.FC = () => {
 
                 {/* Content */}
                 <div className="p-6">
-                  <h3 className="font-serif text-xl font-semibold text-foreground mb-3">
+                  <h3 className="font-sans text-xl font-semibold text-foreground mb-3">
                     {language === 'de' ? step.titleDe : step.titleEn}
                   </h3>
                   <p className="text-muted-foreground text-sm leading-relaxed">

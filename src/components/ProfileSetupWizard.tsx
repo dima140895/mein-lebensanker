@@ -394,7 +394,7 @@ const ProfileSetupWizard = ({ maxProfiles, packageType, onAllProfilesExist }: Pr
         <div className="mx-auto mb-6 h-20 w-20 rounded-full bg-sage-light flex items-center justify-center">
           <Check className="h-10 w-10 text-sage-dark" />
         </div>
-        <h2 className="font-serif text-2xl font-bold text-foreground mb-2">
+        <h2 className="font-sans text-2xl font-bold text-foreground mb-2">
           {texts.successTitle}
         </h2>
         <p className="text-muted-foreground mb-8">{texts.successDesc}</p>
@@ -424,7 +424,7 @@ const ProfileSetupWizard = ({ maxProfiles, packageType, onAllProfilesExist }: Pr
     <div className="w-full max-w-md mx-auto">
       {/* Header */}
       <div className="text-center mb-8">
-        <h1 className="font-serif text-2xl font-bold text-foreground mb-2">
+        <h1 className="font-sans text-2xl font-bold text-foreground mb-2">
           {texts.title}
         </h1>
         <p className="text-muted-foreground">

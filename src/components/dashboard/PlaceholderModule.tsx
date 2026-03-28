@@ -49,7 +49,7 @@ const PlaceholderModule = ({ module }: PlaceholderModuleProps) => {
           <div className={`h-16 w-16 rounded-2xl flex items-center justify-center ${config.color}`}>
             <Icon className="h-8 w-8" />
           </div>
-          <h2 className="font-serif text-2xl font-bold text-foreground">{texts.title}</h2>
+          <h2 className="font-sans text-2xl font-bold text-foreground">{texts.title}</h2>
           <p className="text-muted-foreground text-sm leading-relaxed">{texts.desc}</p>
           <div className="flex items-center gap-2 text-primary text-sm font-medium pt-2">
             <Sparkles className="h-4 w-4" />

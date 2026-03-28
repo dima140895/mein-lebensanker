@@ -185,7 +185,7 @@ const PricingDialog = ({ open, onOpenChange, onSelectPackage }: PricingDialogPro
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between gap-2">
                       <div>
-                        <h3 className="font-serif text-base font-semibold text-foreground leading-tight">{name}</h3>
+                        <h3 className="font-sans text-base font-semibold text-foreground leading-tight">{name}</h3>
                         <p className="text-xs text-muted-foreground">{desc}</p>
                       </div>
                       <div className="text-right flex-shrink-0">
@@ -202,7 +202,7 @@ const PricingDialog = ({ open, onOpenChange, onSelectPackage }: PricingDialogPro
                       <Icon className={`h-5 w-5 ${iconColor}`} />
                     </div>
                     <div className="flex flex-col justify-center">
-                      <h3 className="font-serif text-lg font-semibold text-foreground leading-tight">{name}</h3>
+                      <h3 className="font-sans text-lg font-semibold text-foreground leading-tight">{name}</h3>
                       <p className="text-xs text-muted-foreground leading-tight">{desc}</p>
                     </div>
                   </div>
@@ -270,7 +270,7 @@ const PricingDialog = ({ open, onOpenChange, onSelectPackage }: PricingDialogPro
       <Drawer open={open} onOpenChange={onOpenChange}>
         <DrawerContent className="px-4 pb-6 max-h-[85vh]">
           <DrawerHeader className="text-center pb-2">
-            <DrawerTitle className="font-serif text-xl">{texts.title}</DrawerTitle>
+            <DrawerTitle className="font-sans text-xl">{texts.title}</DrawerTitle>
             <p className="text-sm text-muted-foreground">{texts.subtitle}</p>
           </DrawerHeader>
           <div className="overflow-y-auto">
@@ -285,7 +285,7 @@ const PricingDialog = ({ open, onOpenChange, onSelectPackage }: PricingDialogPro
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-3xl max-h-[90vh] overflow-y-auto p-4 sm:p-6">
         <DialogHeader className="text-center pb-4">
-          <DialogTitle className="font-serif text-2xl">{texts.title}</DialogTitle>
+          <DialogTitle className="font-sans text-2xl">{texts.title}</DialogTitle>
           <p className="text-muted-foreground">{texts.subtitle}</p>
         </DialogHeader>
         <PricingContent />

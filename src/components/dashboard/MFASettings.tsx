@@ -198,7 +198,7 @@ const MFASettings = () => {
 
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap mb-1">
-              <h3 className="font-serif text-lg font-semibold text-foreground">
+              <h3 className="font-sans text-lg font-semibold text-foreground">
                 {mfaEnabled ? texts.titleActive : texts.title}
               </h3>
               <Badge
@@ -257,7 +257,7 @@ const MFASettings = () => {
       }}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle className="font-serif">{texts.title}</DialogTitle>
+            <DialogTitle className="font-sans">{texts.title}</DialogTitle>
             <DialogDescription>
               {enrollStep === 'qr' ? texts.scanQR : texts.enterCode}
             </DialogDescription>

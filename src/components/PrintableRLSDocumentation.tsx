@@ -149,7 +149,7 @@ export const PrintableRLSDocumentation = forwardRef<HTMLDivElement>((_, ref) => 
   ];
 
   const printStyles = `
-    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap');
     @media print {
       @page { 
         margin: 12mm; 
@@ -168,10 +168,10 @@ export const PrintableRLSDocumentation = forwardRef<HTMLDivElement>((_, ref) => 
       font-size: 10px;
     }
     .doc-header {
-      font-family: 'Playfair Display', serif;
+      font-family: 'Inter', serif;
     }
     .section-title {
-      font-family: 'Playfair Display', serif;
+      font-family: 'Inter', serif;
       color: #5f7a61;
       font-size: 14px;
       font-weight: 600;
@@ -187,7 +187,7 @@ export const PrintableRLSDocumentation = forwardRef<HTMLDivElement>((_, ref) => 
       margin-bottom: 12px;
     }
     .table-name {
-      font-family: 'Playfair Display', serif;
+      font-family: 'Inter', serif;
       font-size: 12px;
       font-weight: 600;
       color: #1f2937;

@@ -445,7 +445,7 @@ const ShareLinkManager = () => {
       {/* Header Section - Mobile Optimized */}
       <div className="space-y-4">
         <div>
-          <h2 className="font-serif text-2xl font-bold text-foreground">{texts.title}</h2>
+          <h2 className="font-sans text-2xl font-bold text-foreground">{texts.title}</h2>
           <p className="mt-2 text-muted-foreground text-sm sm:text-base">{texts.description}</p>
         </div>
 
@@ -639,7 +639,7 @@ const ShareLinkManager = () => {
 
       {/* How it works section */}
       <div className="rounded-xl border border-border bg-card p-6 space-y-6">
-        <h3 className="font-serif text-lg font-semibold text-foreground flex items-center gap-2">
+        <h3 className="font-sans text-lg font-semibold text-foreground flex items-center gap-2">
           <Info className="h-5 w-5 text-primary" />
           {texts.howItWorksTitle}
         </h3>
@@ -699,7 +699,7 @@ const ShareLinkManager = () => {
       ) : tokens.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-16 text-center">
           <Share2 className="h-12 w-12 text-muted-foreground mb-4" />
-          <h3 className="font-serif text-xl text-foreground mb-2">{language === 'de' ? 'Noch kein Freigabe-Link' : 'No share links yet'}</h3>
+          <h3 className="font-sans text-xl text-foreground mb-2">{language === 'de' ? 'Noch kein Freigabe-Link' : 'No share links yet'}</h3>
           <p className="text-sm text-muted-foreground max-w-xs font-body">{language === 'de' ? 'Erstelle einen sicheren Link damit Angehörige im Ernstfall auf deine Daten zugreifen können.' : 'Create a secure link so relatives can access your data in an emergency.'}</p>
           <Button onClick={() => setDialogOpen(true)} className="mt-6 rounded-lg min-h-[44px]">
             <Plus className="h-4 w-4 mr-2" />
@@ -862,7 +862,7 @@ const ShareLinkManager = () => {
           <Dialog open={notfallOpen} onOpenChange={setNotfallOpen}>
             <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
               <DialogHeader>
-                <DialogTitle className="font-serif">
+                <DialogTitle className="font-sans">
                   {language === 'de' ? 'Notfall-Karte' : 'Emergency Card'}
                 </DialogTitle>
                 <DialogDescription>

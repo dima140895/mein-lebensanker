@@ -171,7 +171,7 @@ const OnboardingFlow = ({ onComplete }: OnboardingFlowProps) => {
                 <div className="flex items-center justify-between mb-6">
                   <div className="flex items-center gap-2">
                     <Anchor className="h-5 w-5 text-foreground" />
-                    <span className="font-serif text-sm font-bold text-foreground">Mein Lebensanker</span>
+                    <span className="font-sans text-sm font-bold text-foreground">Mein Lebensanker</span>
                   </div>
                   <button onClick={handleSkip} className="text-foreground/30 hover:text-foreground/60 transition-colors" disabled={saving}>
                     <X className="h-5 w-5" />
@@ -180,7 +180,7 @@ const OnboardingFlow = ({ onComplete }: OnboardingFlowProps) => {
 
                 {/* Welcome text */}
                 <div className="mb-8">
-                  <h1 className="font-serif text-2xl sm:text-3xl font-bold text-foreground mb-2">
+                  <h1 className="font-sans text-2xl sm:text-3xl font-bold text-foreground mb-2">
                     Willkommen{firstName ? `, ${firstName}` : ''}.
                   </h1>
                   <p className="text-muted-foreground font-body text-sm">
@@ -262,7 +262,7 @@ const OnboardingFlow = ({ onComplete }: OnboardingFlowProps) => {
                       return <Icon className="h-8 w-8" style={{ color: focusColor }} />;
                     })()}
                   </div>
-                  <h2 className="font-serif text-xl sm:text-2xl font-bold text-foreground mb-3">{currentSlide.title}</h2>
+                  <h2 className="font-sans text-xl sm:text-2xl font-bold text-foreground mb-3">{currentSlide.title}</h2>
                   <p className="text-sm text-muted-foreground font-body leading-relaxed max-w-sm mx-auto">{currentSlide.body}</p>
                 </div>
 
@@ -317,7 +317,7 @@ const OnboardingFlow = ({ onComplete }: OnboardingFlowProps) => {
                   <div className="w-14 h-14 rounded-full bg-primary/10 mx-auto mb-4 flex items-center justify-center">
                     <ShieldCheck className="h-7 w-7 text-primary" />
                   </div>
-                  <h2 className="font-serif text-xl sm:text-2xl font-bold text-foreground mb-1">
+                  <h2 className="font-sans text-xl sm:text-2xl font-bold text-foreground mb-1">
                     {language === 'de' ? 'Möchtest du deine Daten verschlüsseln?' : 'Want to encrypt your data?'}
                   </h2>
                 </div>

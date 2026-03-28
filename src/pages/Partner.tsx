@@ -80,7 +80,7 @@ const Partner = () => {
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold mb-4"
+            className="font-sans text-3xl sm:text-4xl lg:text-5xl font-bold mb-4"
           >
             Mein Lebensanker für Ihre Beratungsstelle
           </motion.h1>
@@ -115,7 +115,7 @@ const Partner = () => {
                       <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
                         <Icon className="h-5 w-5 text-primary" />
                       </div>
-                      <h3 className="font-serif text-lg font-bold text-foreground mb-2">{z.title}</h3>
+                      <h3 className="font-sans text-lg font-bold text-foreground mb-2">{z.title}</h3>
                       <p className="text-sm text-muted-foreground font-body leading-relaxed">{z.text}</p>
                     </CardContent>
                   </Card>
@@ -129,7 +129,7 @@ const Partner = () => {
       {/* Was wir anbieten */}
       <section className="py-12 sm:py-16 bg-card">
         <div className="max-w-3xl mx-auto px-4 sm:px-6">
-          <h2 className="font-serif text-2xl sm:text-3xl font-bold text-foreground text-center mb-8">
+          <h2 className="font-sans text-2xl sm:text-3xl font-bold text-foreground text-center mb-8">
             Was wir anbieten
           </h2>
           <ul className="space-y-3">
@@ -155,7 +155,7 @@ const Partner = () => {
               <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
                 <CheckCircle2 className="h-8 w-8 text-primary" />
               </div>
-              <h3 className="font-serif text-xl font-bold text-foreground mb-2">
+              <h3 className="font-sans text-xl font-bold text-foreground mb-2">
                 Vielen Dank!
               </h3>
               <p className="text-muted-foreground font-body">
@@ -167,7 +167,7 @@ const Partner = () => {
               <CardContent className="p-6 sm:p-8">
                 <div className="flex items-center gap-3 mb-6">
                   <Building2 className="h-5 w-5 text-primary" />
-                  <h2 className="font-serif text-xl font-bold text-foreground">
+                  <h2 className="font-sans text-xl font-bold text-foreground">
                     Interesse? Schreiben Sie uns.
                   </h2>
                 </div>

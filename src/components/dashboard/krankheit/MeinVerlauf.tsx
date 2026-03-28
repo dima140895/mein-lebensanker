@@ -173,7 +173,7 @@ const MeinVerlauf = () => {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-center">
         <TrendingUp className="h-12 w-12 text-muted-foreground mb-4" />
-        <h3 className="font-serif text-xl text-foreground mb-2">{language === 'de' ? 'Noch zu wenig Daten' : 'Not enough data yet'}</h3>
+        <h3 className="font-sans text-xl text-foreground mb-2">{language === 'de' ? 'Noch zu wenig Daten' : 'Not enough data yet'}</h3>
         <p className="text-sm text-muted-foreground max-w-xs font-body mb-2">
           {language === 'de'
             ? `Ab 3 Check-ins siehst du hier deinen Verlauf.${entries.length > 0 ? ` Du hast bereits ${entries.length}.` : ''} Du bist auf dem richtigen Weg.`
@@ -287,7 +287,7 @@ const MeinVerlauf = () => {
       {showReport && (
         <Card className="border-2 border-primary/20 bg-card">
           <CardHeader className="pb-2 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
-            <CardTitle className="text-lg font-serif">{texts.report}</CardTitle>
+            <CardTitle className="text-lg font-sans">{texts.report}</CardTitle>
             <div className="flex gap-2">
               <Button size="sm" onClick={handlePrint}>
                 <Printer className="h-4 w-4 mr-1.5" />

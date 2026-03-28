@@ -1185,7 +1185,7 @@ const RelativesSummary = ({ data, profiles, sharedSections, sharedProfileSection
                   <div className={`h-8 w-8 rounded-lg flex items-center justify-center ${color}`}>
                     <Icon className="h-4 w-4" />
                   </div>
-                  <span className="font-serif font-semibold text-foreground">
+                  <span className="font-sans font-semibold text-foreground">
                     {item.section_key === 'personal' && texts.personal}
                     {item.section_key === 'assets' && texts.assets}
                     {item.section_key === 'digital' && texts.digital}
@@ -1239,7 +1239,7 @@ const RelativesSummary = ({ data, profiles, sharedSections, sharedProfileSection
                 <div className="h-10 w-10 rounded-full flex items-center justify-center bg-primary/10">
                   <User className="h-5 w-5 text-primary" />
                 </div>
-                <p className="font-serif text-lg font-semibold text-foreground">
+                <p className="font-sans text-lg font-semibold text-foreground">
                   {dataByProfile[0].profile.profile_name}
                 </p>
               </div>

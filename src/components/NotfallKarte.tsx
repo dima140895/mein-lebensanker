@@ -83,7 +83,7 @@ const NotfallKarte = ({ shareToken, userData }: NotfallKarteProps) => {
                 </span>
               </div>
               <p
-                className="text-white font-serif font-bold mt-1.5"
+                className="text-white font-sans font-bold mt-1.5"
                 style={{ fontSize: '16px', lineHeight: 1.2 }}
               >
                 {userData.name}
@@ -149,7 +149,7 @@ const NotfallKarte = ({ shareToken, userData }: NotfallKarteProps) => {
           >
             <div>
               <p
-                className="font-serif font-bold"
+                className="font-sans font-bold"
                 style={{ fontSize: '11px', color: '#2C4A3E' }}
               >
                 {t.backTitle}

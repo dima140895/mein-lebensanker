@@ -262,7 +262,7 @@ const PrintableDataExport = forwardRef<HTMLDivElement, PrintableDataExportProps>
         }}>
           <span dangerouslySetInnerHTML={{ __html: renderToStaticMarkup(<IconComponent size={18} color="white" />) }} />
         </div>
-        <span style={{ color: 'white', fontSize: '16px', fontWeight: 600, fontFamily: 'Playfair Display, Georgia, serif' }}>
+        <span style={{ color: 'white', fontSize: '16px', fontWeight: 600, fontFamily: 'Inter, sans-serif' }}>
           {title}
         </span>
       </div>
@@ -600,7 +600,7 @@ const PrintableDataExport = forwardRef<HTMLDivElement, PrintableDataExportProps>
         lineHeight: 1.5,
       }}>
         <style>{`
-          @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap');
+          @import url('https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap');
           @media print {
             @page { 
               margin: 15mm; 
@@ -658,7 +658,7 @@ const PrintableDataExport = forwardRef<HTMLDivElement, PrintableDataExportProps>
                     <span dangerouslySetInnerHTML={{ __html: renderToStaticMarkup(<Anchor size={28} color="white" />) }} />
                   </div>
                   <span style={{
-                    fontFamily: 'Playfair Display, Georgia, serif',
+                    fontFamily: 'Inter, sans-serif',
                     fontSize: '28px',
                     fontWeight: 600,
                     color: 'white',
@@ -675,7 +675,7 @@ const PrintableDataExport = forwardRef<HTMLDivElement, PrintableDataExportProps>
                   padding: '12px 24px',
                   borderRadius: '8px',
                 }}>
-                  <div style={{ color: 'white', fontSize: '20px', fontWeight: 600, fontFamily: 'Playfair Display, Georgia, serif' }}>
+                  <div style={{ color: 'white', fontSize: '20px', fontWeight: 600, fontFamily: 'Inter, sans-serif' }}>
                     {profile.name}
                   </div>
                   {profile.birth_date && (

@@ -164,7 +164,7 @@ export const PrintableSecurityAudit = forwardRef<HTMLDivElement, PrintableSecuri
     ];
 
     const printStyles = `
-      @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap');
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap');
       @media print {
         @page { 
           margin: 15mm; 
@@ -188,10 +188,10 @@ export const PrintableSecurityAudit = forwardRef<HTMLDivElement, PrintableSecuri
         padding: 20px;
       }
       .print-header {
-        font-family: 'Playfair Display', serif;
+        font-family: 'Inter', serif;
       }
       .section-title {
-        font-family: 'Playfair Display', serif;
+        font-family: 'Inter', serif;
         color: #5f7a61;
         font-size: 16px;
         font-weight: 600;

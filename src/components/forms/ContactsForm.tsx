@@ -284,7 +284,7 @@ const ContactsForm = () => {
 
       {/* Doctors Section */}
       <div className="space-y-4">
-        <h3 className="font-serif text-lg font-semibold text-foreground">{texts.doctors}</h3>
+        <h3 className="font-sans text-lg font-semibold text-foreground">{texts.doctors}</h3>
         {doctors.map((entry, i) => 
           renderContactCard(entry, i, 'doctors', texts.doctorType, texts.doctorOptions)
         )}
@@ -295,7 +295,7 @@ const ContactsForm = () => {
 
       {/* Professional Contacts Section */}
       <div className="space-y-4 border-t border-border pt-6">
-        <h3 className="font-serif text-lg font-semibold text-foreground">{texts.professionals}</h3>
+        <h3 className="font-sans text-lg font-semibold text-foreground">{texts.professionals}</h3>
         {professionals.map((entry, i) => 
           renderContactCard(entry, i, 'professionals', texts.professionalType, texts.professionalOptions)
         )}
@@ -306,7 +306,7 @@ const ContactsForm = () => {
 
       {/* Advisors Section */}
       <div className="space-y-4 border-t border-border pt-6">
-        <h3 className="font-serif text-lg font-semibold text-foreground">{texts.advisors}</h3>
+        <h3 className="font-sans text-lg font-semibold text-foreground">{texts.advisors}</h3>
         {advisors.map((entry, i) => 
           renderContactCard(entry, i, 'advisors', texts.advisorType, texts.advisorOptions)
         )}

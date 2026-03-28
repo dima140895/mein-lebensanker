@@ -175,7 +175,7 @@ Without password and without recovery key, your encrypted data is not recoverabl
               <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary">
                 <Shield className="h-6 w-6" />
               </div>
-              <h1 className="font-serif text-2xl md:text-3xl font-bold text-foreground">{texts.title}</h1>
+              <h1 className="font-sans text-2xl md:text-3xl font-bold text-foreground">{texts.title}</h1>
             </div>
             
             <p className="text-muted-foreground leading-relaxed">{texts.intro}</p>
@@ -187,7 +187,7 @@ Without password and without recovery key, your encrypted data is not recoverabl
                     <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
                       {getIcon(section.icon)}
                     </div>
-                    <h2 className="font-serif text-lg font-semibold text-foreground">
+                    <h2 className="font-sans text-lg font-semibold text-foreground">
                       {section.title}
                     </h2>
                   </div>
@@ -205,7 +205,7 @@ Without password and without recovery key, your encrypted data is not recoverabl
               <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary">
                 <Database className="h-6 w-6" />
               </div>
-              <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground">{texts.gdprTitle}</h2>
+              <h2 className="font-sans text-2xl md:text-3xl font-bold text-foreground">{texts.gdprTitle}</h2>
             </div>
             
             <p className="text-muted-foreground leading-relaxed">{texts.gdprIntro}</p>
@@ -216,7 +216,7 @@ Without password and without recovery key, your encrypted data is not recoverabl
                 <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
                   <Lock className="h-5 w-5" />
                 </div>
-                <h3 className="font-serif text-lg font-semibold text-foreground">
+                <h3 className="font-sans text-lg font-semibold text-foreground">
                   {texts.encryptedTitle}
                 </h3>
               </div>
@@ -236,7 +236,7 @@ Without password and without recovery key, your encrypted data is not recoverabl
                 <div className="flex h-10 w-10 items-center justify-center rounded-full bg-muted text-muted-foreground">
                   <Server className="h-5 w-5" />
                 </div>
-                <h3 className="font-serif text-lg font-semibold text-foreground">
+                <h3 className="font-sans text-lg font-semibold text-foreground">
                   {texts.metadataTitle}
                 </h3>
               </div>
@@ -261,7 +261,7 @@ Without password and without recovery key, your encrypted data is not recoverabl
 
             {/* Auftragsverarbeiter */}
             <div className="mt-10">
-              <h2 className="font-serif text-2xl font-bold text-foreground mb-3">
+              <h2 className="font-sans text-2xl font-bold text-foreground mb-3">
                 {language === 'de' ? 'Auftragsverarbeiter' : 'Data Processors'}
               </h2>
               <p className="text-sm text-muted-foreground mb-4">
@@ -301,7 +301,7 @@ Without password and without recovery key, your encrypted data is not recoverabl
 
             {/* Verschlüsselung */}
             <div className="mt-10">
-              <h2 className="font-serif text-2xl font-bold text-foreground mb-3">
+              <h2 className="font-sans text-2xl font-bold text-foreground mb-3">
                 {language === 'de' ? 'Verschlüsselung' : 'Encryption'}
               </h2>
               <div className="space-y-4 text-sm text-muted-foreground leading-relaxed">
@@ -328,7 +328,7 @@ Without password and without recovery key, your encrypted data is not recoverabl
 
             {/* Sicherheitsmeldungen */}
             <div className="mt-10 rounded-lg border border-primary/20 bg-primary/5 p-5">
-              <h2 className="font-serif text-xl font-bold text-foreground mb-2">
+              <h2 className="font-sans text-xl font-bold text-foreground mb-2">
                 {language === 'de' ? 'Sicherheitsmeldungen' : 'Security Reports'}
               </h2>
               <p className="text-sm text-muted-foreground leading-relaxed">

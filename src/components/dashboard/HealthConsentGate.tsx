@@ -50,7 +50,7 @@ const HealthConsentGate = ({ children }: HealthConsentGateProps) => {
         <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-amber-100">
           <ShieldAlert className="h-8 w-8 text-amber-600" />
         </div>
-        <h2 className="font-serif text-xl text-forest">
+        <h2 className="font-sans text-xl text-forest">
           {language === 'de' ? 'Einwilligung erforderlich' : 'Consent Required'}
         </h2>
         <p className="font-body text-sm text-muted-foreground">

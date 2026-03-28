@@ -38,7 +38,7 @@ const ValuePropositions = () => {
           <span className="inline-block rounded-full bg-amber-light px-3 py-1 md:px-4 md:py-1.5 text-xs md:text-sm font-medium text-amber mb-2 md:mb-4">
             {tx.badge}
           </span>
-          <h2 className="font-serif text-xl md:text-3xl lg:text-4xl font-bold text-foreground">
+          <h2 className="font-sans text-xl md:text-3xl lg:text-4xl font-bold text-foreground">
             {t('encourage.title')}
           </h2>
           <p className="mx-auto mt-1.5 md:mt-4 max-w-2xl text-xs md:text-base lg:text-lg text-muted-foreground px-2">
@@ -57,7 +57,7 @@ const ValuePropositions = () => {
                 <div className="mb-1.5 md:mb-4 inline-flex h-9 w-9 md:h-12 md:w-12 items-center justify-center rounded-lg bg-sage-light text-sage-dark">
                   <Icon className="h-4 w-4 md:h-6 md:w-6" />
                 </div>
-                <h3 className="mb-0.5 md:mb-2 font-serif text-sm md:text-xl font-semibold text-foreground leading-tight">
+                <h3 className="mb-0.5 md:mb-2 font-sans text-sm md:text-xl font-semibold text-foreground leading-tight">
                   {t(`value.${value.key}`)}
                 </h3>
                 <p className="text-[11px] md:text-sm text-muted-foreground leading-relaxed">

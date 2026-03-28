@@ -22,7 +22,7 @@ const LandingPflegegrad = () => {
               <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-primary/10 mb-6">
                 <ClipboardCheck className="h-7 w-7 text-primary" />
               </div>
-              <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-4">
+              <h2 className="font-sans text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-4">
                 Welchen Pflegegrad hat Ihr Angehöriger?
               </h2>
               <p className="text-muted-foreground font-body max-w-lg mx-auto text-lg mb-8">
@@ -44,7 +44,7 @@ const LandingPflegegrad = () => {
               animate={{ opacity: 1, y: 0 }}
             >
               <div className="flex items-center justify-between mb-6">
-                <h2 className="font-serif text-2xl font-bold text-foreground">
+                <h2 className="font-sans text-2xl font-bold text-foreground">
                   Pflegegrad-Selbsttest
                 </h2>
                 <Button

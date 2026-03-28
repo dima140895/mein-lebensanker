@@ -316,7 +316,7 @@ const AssetsForm = () => {
 
       {/* Bank Accounts */}
       <div className="space-y-4">
-        <h3 className="font-serif text-lg font-semibold text-foreground">{texts.bankAccounts}</h3>
+        <h3 className="font-sans text-lg font-semibold text-foreground">{texts.bankAccounts}</h3>
         {data.bankAccounts.map((account, i) => (
         <div key={i} className="flex gap-3 items-start">
             <div className="flex-1 grid gap-3 md:grid-cols-3">
@@ -363,7 +363,7 @@ const AssetsForm = () => {
 
       {/* Properties */}
       <div className="space-y-4 border-t border-border pt-6">
-        <h3 className="font-serif text-lg font-semibold text-foreground">{texts.properties}</h3>
+        <h3 className="font-sans text-lg font-semibold text-foreground">{texts.properties}</h3>
         {data.properties.map((property, i) => (
           <div key={i} className="flex gap-3 items-start">
             <div className="flex-1 space-y-3">
@@ -494,7 +494,7 @@ const AssetsForm = () => {
 
       {/* Vehicles */}
       <div className="space-y-4 border-t border-border pt-6">
-        <h3 className="font-serif text-lg font-semibold text-foreground">{texts.vehicles}</h3>
+        <h3 className="font-sans text-lg font-semibold text-foreground">{texts.vehicles}</h3>
         {(data.vehicles || []).map((vehicle, i) => (
           <div key={i} className="flex gap-3 items-start">
             <div className="flex-1 space-y-3">
@@ -581,7 +581,7 @@ const AssetsForm = () => {
 
       {/* Insurances */}
       <div className="space-y-4 border-t border-border pt-6">
-        <h3 className="font-serif text-lg font-semibold text-foreground">{texts.insurances}</h3>
+        <h3 className="font-sans text-lg font-semibold text-foreground">{texts.insurances}</h3>
         {data.insurances.map((ins, i) => (
           <div key={i} className="flex gap-3 items-start">
             <div className="flex-1 space-y-3">
@@ -678,7 +678,7 @@ const AssetsForm = () => {
 
       {/* Valuables */}
       <div className="space-y-4 border-t border-border pt-6">
-        <h3 className="font-serif text-lg font-semibold text-foreground">{texts.valuables}</h3>
+        <h3 className="font-sans text-lg font-semibold text-foreground">{texts.valuables}</h3>
         {data.valuables.map((item, i) => (
           <div key={i} className="flex gap-3 items-start">
             <div className="flex-1 grid gap-3 md:grid-cols-2">
@@ -709,7 +709,7 @@ const AssetsForm = () => {
       <div className="space-y-4 border-t border-border pt-6">
         <div className="flex items-center gap-2 mb-1">
           <Landmark className="h-5 w-5 text-primary" />
-          <h3 className="font-serif text-lg font-semibold text-foreground">{texts.liabilities}</h3>
+          <h3 className="font-sans text-lg font-semibold text-foreground">{texts.liabilities}</h3>
         </div>
         <p className="text-sm text-muted-foreground">{texts.liabilitiesDesc}</p>
         {(data.liabilities || []).map((liability, i) => (

@@ -32,7 +32,7 @@ const StaticNav = ({ minimal = false }: StaticNavProps) => {
         <Link to="/" className="flex items-center gap-2 group">
           <Anchor className="h-6 w-6 text-primary group-hover:rotate-12 transition-transform" />
           <div className="flex flex-col items-start">
-            <span className="font-serif text-lg font-bold text-foreground leading-tight">Mein Lebensanker</span>
+            <span className="font-sans text-lg font-bold text-foreground leading-tight">Mein Lebensanker</span>
             <span className="text-[9px] font-body text-muted-foreground tracking-widest uppercase hidden sm:block">Vorsorge · Pflege · Begleitung</span>
           </div>
         </Link>

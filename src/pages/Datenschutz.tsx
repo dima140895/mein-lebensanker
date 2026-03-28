@@ -440,13 +440,13 @@ Hufnerstrasse 11, 22083 Hamburg`,
           </Button>
 
           <div className="rounded-2xl bg-card p-6 md:p-8 shadow-card">
-            <h1 className="font-serif text-3xl sm:text-4xl font-semibold text-forest tracking-[-0.02em]">{texts.title}</h1>
+            <h1 className="font-sans text-3xl sm:text-4xl font-semibold text-forest tracking-[-0.02em]">{texts.title}</h1>
             <p className="mt-2 text-sm text-charcoal-light font-body">{texts.lastUpdated}</p>
 
             <div className="mt-8 space-y-8">
               {texts.sections.map((section, index) => (
                 <section key={index}>
-                  <h2 className="font-serif text-xl sm:text-2xl font-semibold text-forest">
+                  <h2 className="font-sans text-xl sm:text-2xl font-semibold text-forest">
                     {section.title}
                   </h2>
                   <div className="mt-3 whitespace-pre-line text-charcoal-light font-body leading-relaxed">

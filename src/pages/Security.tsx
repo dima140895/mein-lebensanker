@@ -44,7 +44,7 @@ const Security = () => {
         <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8 sm:py-16">
 
           {/* Title */}
-          <h1 className="font-serif text-3xl sm:text-4xl font-bold text-foreground mb-8">
+          <h1 className="font-sans text-3xl sm:text-4xl font-bold text-foreground mb-8">
             {language === 'de'
               ? 'Sicherheit & Verantwortungsvolle Offenlegung'
               : 'Security & Responsible Disclosure'}
@@ -54,7 +54,7 @@ const Security = () => {
           <section className="mb-10">
             <div className="flex items-center gap-2 mb-4">
               <Shield className="h-5 w-5 text-primary" />
-              <h2 className="font-serif text-2xl font-bold text-foreground">
+              <h2 className="font-sans text-2xl font-bold text-foreground">
                 {language === 'de' ? 'Sicherheitslücke gefunden?' : 'Found a vulnerability?'}
               </h2>
             </div>
@@ -117,7 +117,7 @@ const Security = () => {
 
           {/* Section 2 — Security Measures */}
           <section className="mb-10">
-            <h2 className="font-serif text-2xl font-bold text-foreground mb-4">
+            <h2 className="font-sans text-2xl font-bold text-foreground mb-4">
               {language === 'de' ? 'Unsere Sicherheitsmaßnahmen' : 'Our Security Measures'}
             </h2>
 
@@ -137,7 +137,7 @@ const Security = () => {
           <section className="mb-10">
             <div className="flex items-center gap-2 mb-4">
               <AlertTriangle className="h-5 w-5 text-amber-500" />
-              <h2 className="font-serif text-2xl font-bold text-foreground">
+              <h2 className="font-sans text-2xl font-bold text-foreground">
                 {language === 'de' ? 'Bekannte Einschränkungen' : 'Known Limitations'}
               </h2>
             </div>
