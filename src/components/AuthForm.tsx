@@ -156,7 +156,7 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange, embedd
 
     try {
       if (mode === 'login') {
-        const { error, data } = await signIn(email, password);
+        const { error } = await signIn(email, password);
         if (error) {
           if (error.message.includes('Email not confirmed')) {
             toast.error(texts.emailNotConfirmed);
