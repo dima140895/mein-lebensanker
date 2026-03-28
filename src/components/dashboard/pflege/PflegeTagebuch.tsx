@@ -140,6 +140,10 @@ const PflegeTagebuch = () => {
     if (error) {
       toast.error(texts.error);
     } else {
+      // Track first entry
+      if (entries.length === 0) {
+        trackEvent('Erster_Pflegeeintrag');
+      }
       toast.success(texts.saved);
       setShowForm(false);
       setMahlzeiten('');

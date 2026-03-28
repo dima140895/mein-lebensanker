@@ -141,6 +141,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     const user = responseData?.data?.user;
     const userExists = user && (!user.identities || user.identities.length === 0);
+    if (!userExists && user) {
+      trackEvent('Registrierung');
+    }
     return { error: null, userExists: !!userExists };
   };
 

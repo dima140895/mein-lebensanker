@@ -396,6 +396,7 @@ const ShareLinkManager = () => {
     
     if (data) {
       setTokens(prev => [data as ShareToken, ...prev]);
+      trackEvent('ShareLink_Erstellt');
       toast.success(texts.created);
       setNewLabel('');
       setPIN('');

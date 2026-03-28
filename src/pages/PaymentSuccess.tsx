@@ -72,6 +72,12 @@ const PaymentSuccessContent = () => {
           setVerificationStatus('success');
           await refreshProfile();
           
+          // Track purchase event
+          const eventMap: Record<string, 'Kauf_Anker' | 'Kauf_Plus' | 'Kauf_Familie'> = {
+            anker: 'Kauf_Anker', plus: 'Kauf_Plus', familie: 'Kauf_Familie',
+          };
+          trackEvent(eventMap[plan] || 'Kauf_Anker');
+          
           // Determine max profiles from URL param or payment type
           let profiles = 1;
           if (profilesParam) {
