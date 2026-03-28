@@ -34,17 +34,9 @@ const PromoVideo = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-muted/30">
-      {/* Header */}
-      <header className="container mx-auto px-4 py-6">
-        <a href="/" className="inline-flex items-center gap-2 text-primary hover:opacity-80 transition-opacity">
-          <Logo size="sm" />
-          <span className="font-semibold">Mein Lebensanker</span>
-        </a>
-      </header>
-
-      {/* Main Content */}
-      <main className="container mx-auto px-4 py-8 max-w-4xl">
+    <div className="flex min-h-screen flex-col bg-background">
+      <StaticNav />
+      <main className="flex-1 pt-16 container mx-auto px-4 py-8 max-w-4xl">
         {/* Title */}
         <div className="text-center mb-8">
           <h1 className="text-3xl md:text-4xl font-bold mb-3">
