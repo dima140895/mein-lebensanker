@@ -12,7 +12,11 @@ interface Profile {
   partner_name: string | null;
   max_profiles: number;
   purchased_tier: string | null;
-  onboarding_focus: string | null;
+  onboarding_focus: 'vorsorge' | 'pflege' | 'krankheit' | null;
+  is_new_user: boolean;
+  is_encrypted: boolean;
+  encryption_salt: string | null;
+  encrypted_password_recovery: string | null;
 }
 
 interface AuthContextType {
