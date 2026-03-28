@@ -267,8 +267,8 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
           </CardHeader>
           <CardContent>
             <p className="text-xs text-muted-foreground/60 mb-2">{tx.locked}</p>
-            <Button variant="outline" size="sm" className="text-xs h-7 gap-1 border-[hsl(var(--sage))]/30 text-[hsl(var(--sage-dark))]">
-              {tx.krankheitUnlock} <ArrowRight className="h-3 w-3" />
+             <Button variant="outline" size="sm" className="text-xs h-7 gap-1 border-sage/30 text-sage-dark font-body min-h-[44px]">
+               {tx.krankheitUnlock} <ArrowRight className="h-3 w-3" />
             </Button>
           </CardContent>
         </Card>
