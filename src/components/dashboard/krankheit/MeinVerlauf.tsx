@@ -264,7 +264,7 @@ const MeinVerlauf = () => {
       </Card>
 
       {/* Doctor Summary Button */}
-      <Button onClick={generateReport} variant="outline" className="w-full">
+      <Button onClick={generateReport} variant="outline" className="w-full min-h-[44px]">
         <Printer className="h-4 w-4 mr-2" />
         {texts.generateReport}
       </Button>
