@@ -299,10 +299,10 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
 
       {/* Next Steps */}
       {nextSteps.length > 0 && (
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}>
-          <Card>
+         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}>
+          <Card className="bg-white rounded-2xl shadow-card">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">{tx.nextSteps}</CardTitle>
+              <CardTitle className="text-sm font-semibold text-charcoal-light uppercase tracking-wider font-body">{tx.nextSteps}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-1">
               {nextSteps.map((step) => (
