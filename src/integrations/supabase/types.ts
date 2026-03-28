@@ -170,6 +170,51 @@ export type Database = {
         }
         Relationships: []
       }
+      subscriptions: {
+        Row: {
+          active_modules: string[] | null
+          created_at: string
+          current_period_end: string | null
+          id: string
+          max_profiles: number
+          plan: string
+          status: string
+          stripe_customer_id: string | null
+          stripe_subscription_id: string | null
+          trial_end: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          active_modules?: string[] | null
+          created_at?: string
+          current_period_end?: string | null
+          id?: string
+          max_profiles?: number
+          plan: string
+          status?: string
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          trial_end?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          active_modules?: string[] | null
+          created_at?: string
+          current_period_end?: string | null
+          id?: string
+          max_profiles?: number
+          plan?: string
+          status?: string
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          trial_end?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
