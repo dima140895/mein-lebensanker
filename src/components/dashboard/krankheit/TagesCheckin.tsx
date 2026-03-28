@@ -329,8 +329,8 @@ const SliderField = ({
         <Label className="text-sm font-medium font-body text-forest">{label}</Label>
       </div>
       <div className="text-right">
-        <span className="text-xl font-bold text-foreground">{value}</span>
-        <span className="text-sm text-muted-foreground">/10</span>
+         <span className="text-xl font-bold text-forest">{value}</span>
+        <span className="text-sm text-charcoal-light">/10</span>
       </div>
     </div>
     <Slider
