@@ -12,8 +12,8 @@ export const PRICING = {
   plus: {
     name: 'plus',
     price: 9,
-    priceId: 'price_1TFxtDICzkfBNYhy7DjVuBt7',
-    productId: 'prod_UEQka5CkpEf8XO',
+    priceId: 'price_1TG2DHEwPqOvJ6cUVAAj1okC',
+    productId: 'prod_UEVDJceWr9CH1H',
     mode: 'subscription' as const,
     trialDays: 14,
     maxProfiles: 1,
