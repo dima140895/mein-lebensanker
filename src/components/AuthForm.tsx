@@ -595,7 +595,7 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange }: Auth
           </Button>
         </form>
 
-        <div className="mt-6 text-center text-sm text-muted-foreground">
+        <div className="mt-6 text-center text-sm text-charcoal-light font-body">
           {mode === 'login' ? texts.noAccount : texts.hasAccount}{' '}
           <button
             type="button"
