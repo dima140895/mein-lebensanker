@@ -140,8 +140,8 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
               <ClipboardList className="h-5 w-5 text-primary" />
             </div>
             <div className="flex-1">
-              <CardTitle className="text-base font-semibold">{tx.vorsorge}</CardTitle>
-              <span className="text-xs text-muted-foreground">
+               <CardTitle className="text-base font-semibold font-body text-forest">{tx.vorsorge}</CardTitle>
+              <span className="text-xs text-charcoal-light font-body">
                 {statusLoading ? '...' : isComplete ? tx.complete : `${filledCount} ${tx.sectionOf} ${totalCount}`}
               </span>
             </div>
