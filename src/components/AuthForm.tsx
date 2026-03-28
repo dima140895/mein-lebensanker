@@ -22,9 +22,11 @@ interface AuthFormProps {
   onSuccess?: () => void;
   defaultMode?: 'login' | 'register';
   onVerifyModeChange?: (isVerifying: boolean) => void;
+  /** When true, skip the built-in StaticNav + Footer wrapper (e.g. when rendered inside Dashboard) */
+  embedded?: boolean;
 }
 
-const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange }: AuthFormProps) => {
+const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange, embedded = false }: AuthFormProps) => {
   const { signUp, signIn } = useAuth();
   const { language } = useLanguage();
   const [mode, setMode] = useState<'login' | 'register' | 'forgot' | 'verify'>(defaultMode);
