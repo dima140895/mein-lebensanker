@@ -2,8 +2,8 @@ import { ArrowLeft, AlertTriangle, Shield, Monitor, KeyRound, Bug, Camera, Check
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
+import StaticNav from '@/components/StaticNav';
+import LandingFooter from '@/components/landing/LandingFooter';
 
 const Sicherheitsgrenzen = () => {
   const navigate = useNavigate();
