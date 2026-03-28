@@ -25,8 +25,8 @@ type Plan = typeof VALID_PLANS[number];
 
 const PRICES: Record<Plan, string> = {
   anker: "price_1TFxsEEwPqOvJ6cUDbqzpbmI",
-  plus: "price_1TFxtDICzkfBNYhy7DjVuBt7",
-  familie: "price_1TFxtdICzkfBNYhyZbGYHWYU",
+  plus: "price_1TG2DHEwPqOvJ6cUVAAj1okC",
+  familie: "price_1TG2DfEwPqOvJ6cUQsH3IBxO",
 };
 
 const PLAN_CONFIG: Record<Plan, { mode: "payment" | "subscription"; trialDays: number; maxProfiles: number }> = {
