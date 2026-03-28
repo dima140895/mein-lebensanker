@@ -371,7 +371,7 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange }: Auth
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-md mx-auto"
       >
-        <div className="rounded-xl border border-border bg-card p-8 shadow-elevated">
+         <div className="rounded-2xl border border-border bg-white p-8 shadow-card">
           <button
             type="button"
             onClick={() => handleModeChange('login')}
