@@ -77,7 +77,19 @@ const StaticNav = ({ minimal = false }: StaticNavProps) => {
         )}
 
         {/* Mobile toggle */}
-        {!minimal && (
+        {minimal ? (
+          <div className="flex md:hidden items-center gap-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => navigate('/')}
+              className="font-body text-xs text-muted-foreground"
+            >
+              ← {language === 'de' ? 'Startseite' : 'Home'}
+            </Button>
+            <LanguageToggle />
+          </div>
+        ) : (
           <div className="flex md:hidden items-center gap-2">
             <LanguageToggle />
             <button onClick={() => setMobileOpen(!mobileOpen)} className="p-2 text-foreground">
