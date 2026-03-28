@@ -27,7 +27,17 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const { user_id } = await req.json();
+    // Safe JSON parse
+    let body: Record<string, unknown>;
+    try {
+      body = await req.json();
+    } catch {
+      return new Response(JSON.stringify({ error: "Ungültiges JSON" }), {
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const user_id = body.user_id as string;
 
     if (!user_id || typeof user_id !== "string" || user_id.length < 10) {
       return new Response(JSON.stringify({ error: "Invalid user_id" }), {
