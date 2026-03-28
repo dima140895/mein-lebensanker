@@ -133,7 +133,21 @@ Die Verarbeitung erfolgt über einen zwischengeschalteten API-Gateway (Lovable /
 Wichtiger Hinweis: Bitte geben Sie keine besonders sensiblen personenbezogenen Daten (z.B. Passwörter, Zahlungsdaten) in KI-gestützte Eingabefelder ein. Eingaben werden zur Verarbeitung an externe Server übertragen.`,
         },
         {
-          title: '10. Aufbewahrungsfristen',
+          title: '10. Verarbeitung besonderer Kategorien personenbezogener Daten',
+          content: `Mein Lebensanker verarbeitet auf Wunsch der Nutzer Gesundheitsdaten im Sinne von Art. 9 Abs. 1 DSGVO. Dazu gehören:
+
+• Symptomverläufe und tägliche Gesundheits-Check-ins
+• Medikamentenpläne und Einnahmezeiten
+• Pflegetagebücher und Stimmungsverläufe
+
+Rechtsgrundlage für diese Verarbeitung ist Ihre ausdrückliche Einwilligung gemäß Art. 9 Abs. 2 lit. a DSGVO, die Sie bei der Registrierung erteilt haben.
+
+Widerruf: Sie können Ihre Einwilligung jederzeit mit Wirkung für die Zukunft widerrufen. Den Widerruf können Sie in den Einstellungen unter „Datenschutz" vornehmen oder uns per E-Mail an datenschutz@mein-lebensanker.de kontaktieren. Nach dem Widerruf werden Ihre Gesundheitsdaten innerhalb von 30 Tagen gelöscht.
+
+Bitte beachten Sie: Der Widerruf berührt nicht die Rechtmäßigkeit der bis zum Widerruf erfolgten Verarbeitung.`,
+        },
+        {
+          title: '11. Aufbewahrungsfristen',
           content: `Wir speichern Ihre Daten nur so lange, wie es für die jeweiligen Zwecke erforderlich ist:
 
 • Kontodaten: Bis zur Löschung Ihres Kontos
@@ -145,7 +159,7 @@ Wichtiger Hinweis: Bitte geben Sie keine besonders sensiblen personenbezogenen D
 Nach Ablauf der Fristen werden Ihre Daten automatisch gelöscht oder anonymisiert.`,
         },
         {
-          title: '11. Datenübertragung in Drittländer',
+          title: '12. Datenübertragung in Drittländer',
           content: `Einige unserer Dienstleister haben ihren Sitz außerhalb der EU/des EWR:
 
 • USA: Supabase Inc., Amazon Web Services (Infrastruktur wird in EU betrieben)
@@ -159,7 +173,7 @@ Die Datenübertragung erfolgt auf Basis von:
 Ihre sensiblen Vorsorgedaten werden zusätzlich durch unsere Ende-zu-Ende-Verschlüsselung geschützt.`,
         },
         {
-          title: '12. Webanalyse',
+          title: '13. Webanalyse',
           content: `Wir nutzen Plausible Analytics, einen datenschutzfreundlichen Analysedienst ohne Cookies und ohne personenbezogene Daten. Es werden keine IP-Adressen gespeichert und kein Tracking über Websites hinweg durchgeführt.
 
 Plausible erhebt ausschließlich anonymisierte, aggregierte Nutzungsstatistiken (z.B. Seitenaufrufe, Verweildauer). Ein Cookie-Banner oder eine Einwilligung ist daher nicht erforderlich.
@@ -170,7 +184,7 @@ Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an der Verbe
 Weitere Informationen: https://plausible.io/data-policy`,
         },
         {
-          title: '13. Ihre Rechte',
+          title: '14. Ihre Rechte',
           content: `Sie haben gegenüber uns folgende Rechte hinsichtlich der Sie betreffenden personenbezogenen Daten:
 
 • Recht auf Auskunft (Art. 15 DSGVO)
@@ -184,7 +198,7 @@ Weitere Informationen: https://plausible.io/data-policy`,
 Sie haben zudem das Recht, sich bei einer Datenschutz-Aufsichtsbehörde über die Verarbeitung Ihrer personenbezogenen Daten durch uns zu beschweren.`,
         },
         {
-          title: '14. Datensicherheit',
+          title: '15. Datensicherheit',
           content: `Wir verwenden innerhalb des Website-Besuchs das verbreitete SSL-Verfahren (Secure Socket Layer) in Verbindung mit der jeweils höchsten Verschlüsselungsstufe, die von Ihrem Browser unterstützt wird.
 
 Zusätzliche Sicherheitsmaßnahmen:
@@ -194,7 +208,7 @@ Zusätzliche Sicherheitsmaßnahmen:
 • Row-Level Security (RLS) für Datenbankzugriffe`,
         },
         {
-          title: '15. Kontakt',
+          title: '16. Kontakt',
           content: `Für Fragen zum Datenschutz können Sie sich jederzeit an uns wenden:
 
 E-Mail: datenschutz@mein-lebensanker.de
@@ -324,7 +338,21 @@ Processing is routed through an intermediary API gateway (Lovable / GPT Engineer
 Important notice: Please do not enter particularly sensitive personal data (e.g., passwords, payment data) in AI-powered input fields. Inputs are transmitted to external servers for processing.`,
         },
         {
-          title: '10. Data Retention Periods',
+          title: '10. Processing of Special Categories of Personal Data',
+          content: `Mein Lebensanker processes health data within the meaning of Art. 9(1) GDPR at the request of users. This includes:
+
+• Symptom tracking and daily health check-ins
+• Medication plans and intake times
+• Care diaries and mood tracking
+
+The legal basis for this processing is your explicit consent pursuant to Art. 9(2)(a) GDPR, which you gave during registration.
+
+Withdrawal: You can withdraw your consent at any time with effect for the future. You can do this in the settings under "Privacy" or by contacting us at datenschutz@mein-lebensanker.de. After withdrawal, your health data will be deleted within 30 days.
+
+Please note: The withdrawal does not affect the lawfulness of the processing carried out until the withdrawal.`,
+        },
+        {
+          title: '11. Data Retention Periods',
           content: `We store your data only as long as necessary for the respective purposes:
 
 • Account data: Until deletion of your account
@@ -336,7 +364,7 @@ Important notice: Please do not enter particularly sensitive personal data (e.g.
 After expiration of the retention periods, your data will be automatically deleted or anonymized.`,
         },
         {
-          title: '11. Data Transfers to Third Countries',
+          title: '12. Data Transfers to Third Countries',
           content: `Some of our service providers are located outside the EU/EEA:
 
 • USA: Supabase Inc., Amazon Web Services (infrastructure operated in EU)
@@ -350,7 +378,7 @@ Data transfers are based on:
 Your sensitive advance planning data is additionally protected by our end-to-end encryption.`,
         },
         {
-          title: '12. Web Analytics',
+          title: '13. Web Analytics',
           content: `We use Plausible Analytics, a privacy-friendly analytics service that does not use cookies and does not collect personal data. No IP addresses are stored and no cross-site tracking is performed.
 
 Plausible only collects anonymized, aggregated usage statistics (e.g., page views, time on site). No cookie banner or consent is required.
@@ -361,7 +389,7 @@ Legal basis: Art. 6(1)(f) GDPR (legitimate interest in improving our service).
 More information: https://plausible.io/data-policy`,
         },
         {
-          title: '13. Your Rights',
+          title: '14. Your Rights',
           content: `You have the following rights regarding your personal data:
 
 • Right to information (Art. 15 GDPR)
@@ -375,7 +403,7 @@ More information: https://plausible.io/data-policy`,
 You also have the right to lodge a complaint with a data protection supervisory authority about our processing of your personal data.`,
         },
         {
-          title: '14. Data Security',
+          title: '15. Data Security',
           content: `We use the widespread SSL procedure (Secure Socket Layer) in connection with the highest level of encryption supported by your browser when visiting the website.
 
 Additional security measures:
@@ -385,7 +413,7 @@ Additional security measures:
 • Row-Level Security (RLS) for database access`,
         },
         {
-          title: '15. Contact',
+          title: '16. Contact',
           content: `For questions about data protection, you can contact us at any time:
 
 Email: datenschutz@mein-lebensanker.de

@@ -8,6 +8,7 @@ import ShareLinkManager from '@/components/ShareLinkManager';
 import ReminderSettings from '@/components/dashboard/ReminderSettings';
 import SubscriptionManagement from '@/components/dashboard/SubscriptionManagement';
 import MFASettings from '@/components/dashboard/MFASettings';
+import ConsentManagement from '@/components/dashboard/ConsentManagement';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -101,7 +102,7 @@ const SettingsModule = () => {
     <div className="space-y-6">
       <SubscriptionManagement />
       <Tabs defaultValue="plan" className="w-full">
-        <TabsList className="w-full grid grid-cols-5">
+        <TabsList className="w-full grid grid-cols-6">
           <TabsTrigger value="plan" className="gap-1.5 text-xs sm:text-sm">
             <Package className="h-3.5 w-3.5" />
             <span className="hidden sm:inline">{texts.plan}</span>
@@ -121,6 +122,10 @@ const SettingsModule = () => {
           <TabsTrigger value="share" className="gap-1.5 text-xs sm:text-sm">
             <Link2 className="h-3.5 w-3.5" />
             <span className="hidden sm:inline">{texts.share}</span>
+          </TabsTrigger>
+          <TabsTrigger value="privacy" className="gap-1.5 text-xs sm:text-sm">
+            <Shield className="h-3.5 w-3.5" />
+            <span className="hidden sm:inline">{language === 'de' ? 'Datenschutz' : 'Privacy'}</span>
           </TabsTrigger>
         </TabsList>
         <TabsContent value="plan" className="mt-6">
@@ -208,6 +213,9 @@ const SettingsModule = () => {
         </TabsContent>
         <TabsContent value="share" className="mt-6">
           <ShareLinkManager />
+        </TabsContent>
+        <TabsContent value="privacy" className="mt-6">
+          <ConsentManagement />
         </TabsContent>
       </Tabs>
 

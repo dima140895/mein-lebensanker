@@ -126,11 +126,27 @@ const DashboardContent = () => {
     if (activeModule === 'home') {
       return <DashboardHome onNavigate={handleModuleChange} userPlan={userPlan} onLockedClick={handleLockedClick} />;
     }
+
+    // Health consent gate for pflege and krankheit modules
+    if (activeModule === 'pflege' || activeModule === 'krankheit') {
+      const HealthConsentGate = lazy(() => import('@/components/dashboard/HealthConsentGate'));
+      const ModuleMap: Record<string, React.LazyExoticComponent<React.ComponentType>> = {
+        pflege: PflegeModule,
+        krankheit: KrankheitModule,
+      };
+      const Module = ModuleMap[activeModule];
+      return (
+        <Suspense fallback={<ModuleLoadingFallback />}>
+          <HealthConsentGate>
+            <Module />
+          </HealthConsentGate>
+        </Suspense>
+      );
+    }
+
     // All other modules are lazy-loaded
     const ModuleMap: Record<string, React.LazyExoticComponent<React.ComponentType>> = {
       vorsorge: VorsorgeModule,
-      pflege: PflegeModule,
-      krankheit: KrankheitModule,
       familie: FamilieModule,
       settings: SettingsModule,
     };

@@ -172,6 +172,8 @@ export type Database = {
           encryption_salt: string | null
           full_name: string | null
           has_paid: boolean | null
+          health_data_consent: boolean
+          health_data_consent_at: string | null
           id: string
           is_encrypted: boolean | null
           is_new_user: boolean | null
@@ -180,6 +182,7 @@ export type Database = {
           partner_name: string | null
           payment_type: string | null
           purchased_tier: string | null
+          terms_accepted_at: string | null
           updated_at: string
           user_id: string
         }
@@ -190,6 +193,8 @@ export type Database = {
           encryption_salt?: string | null
           full_name?: string | null
           has_paid?: boolean | null
+          health_data_consent?: boolean
+          health_data_consent_at?: string | null
           id?: string
           is_encrypted?: boolean | null
           is_new_user?: boolean | null
@@ -198,6 +203,7 @@ export type Database = {
           partner_name?: string | null
           payment_type?: string | null
           purchased_tier?: string | null
+          terms_accepted_at?: string | null
           updated_at?: string
           user_id: string
         }
@@ -208,6 +214,8 @@ export type Database = {
           encryption_salt?: string | null
           full_name?: string | null
           has_paid?: boolean | null
+          health_data_consent?: boolean
+          health_data_consent_at?: string | null
           id?: string
           is_encrypted?: boolean | null
           is_new_user?: boolean | null
@@ -216,6 +224,7 @@ export type Database = {
           partner_name?: string | null
           payment_type?: string | null
           purchased_tier?: string | null
+          terms_accepted_at?: string | null
           updated_at?: string
           user_id?: string
         }

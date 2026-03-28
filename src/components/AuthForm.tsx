@@ -13,6 +13,7 @@ import { supabase } from '@/integrations/supabase/browserClient';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
 import { toast } from 'sonner';
 import { logger } from '@/lib/logger';
 import StaticNav from '@/components/StaticNav';
@@ -46,6 +47,9 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange, embedd
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
+  const [termsAccepted, setTermsAccepted] = useState(false);
+  const [healthDataConsent, setHealthDataConsent] = useState(false);
+  const [consentErrors, setConsentErrors] = useState({ terms: false, health: false });
 
   const t = {
     de: {
@@ -203,6 +207,18 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange, embedd
         }
 
         setPasswordError(false);
+
+        // Validate consent checkboxes
+        const newConsentErrors = {
+          terms: !termsAccepted,
+          health: !healthDataConsent,
+        };
+        setConsentErrors(newConsentErrors);
+        if (newConsentErrors.terms || newConsentErrors.health) {
+          setLoading(false);
+          return;
+        }
+
         const { error, userExists } = await signUp(email, password);
         if (error) throw error;
 
@@ -212,6 +228,27 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange, embedd
           setLoading(false);
           return;
         }
+
+        // Store consent timestamps after successful signup
+        // The profile is created by handle_new_user trigger, so we update it
+        // We need a short delay for the trigger to complete
+        setTimeout(async () => {
+          try {
+            const { data: { user: currentUser } } = await supabase.auth.getUser();
+            if (currentUser) {
+              await (supabase as any)
+                .from('profiles')
+                .update({
+                  health_data_consent: true,
+                  health_data_consent_at: new Date().toISOString(),
+                  terms_accepted_at: new Date().toISOString(),
+                })
+                .eq('user_id', currentUser.id);
+            }
+          } catch (err) {
+            logger.error('Failed to store consent:', err);
+          }
+        }, 1000);
 
         await sendVerificationEmail(email);
         toast.success(texts.accountCreated);
@@ -762,6 +799,63 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange, embedd
                     )}
                   </div>
                 )}
+              </div>
+            )}
+
+            {/* Consent checkboxes - register only */}
+            {mode === 'register' && (
+              <div className="space-y-3 mt-4">
+                {/* Terms & Privacy */}
+                <div className="flex items-start gap-3">
+                  <Checkbox
+                    id="terms"
+                    checked={termsAccepted}
+                    onCheckedChange={(checked) => {
+                      setTermsAccepted(checked === true);
+                      setConsentErrors(prev => ({ ...prev, terms: false }));
+                    }}
+                    className="mt-0.5"
+                  />
+                  <div className="flex-1">
+                    <label htmlFor="terms" className="font-body text-sm text-foreground leading-snug cursor-pointer">
+                      {language === 'de'
+                        ? <>Ich habe die <a href="/datenschutz" target="_blank" rel="noopener noreferrer" className="text-primary underline">Datenschutzerklärung</a> und <a href="/impressum" target="_blank" rel="noopener noreferrer" className="text-primary underline">Nutzungsbedingungen</a> gelesen und akzeptiere sie.</>
+                        : <>I have read and accept the <a href="/datenschutz" target="_blank" rel="noopener noreferrer" className="text-primary underline">Privacy Policy</a> and <a href="/impressum" target="_blank" rel="noopener noreferrer" className="text-primary underline">Terms of Service</a>.</>
+                      }
+                    </label>
+                    {consentErrors.terms && (
+                      <p className="text-destructive text-xs mt-1 font-body">
+                        {language === 'de' ? 'Diese Zustimmung ist erforderlich.' : 'This consent is required.'}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Health data consent (Art. 9 GDPR) */}
+                <div className="flex items-start gap-3">
+                  <Checkbox
+                    id="healthConsent"
+                    checked={healthDataConsent}
+                    onCheckedChange={(checked) => {
+                      setHealthDataConsent(checked === true);
+                      setConsentErrors(prev => ({ ...prev, health: false }));
+                    }}
+                    className="mt-0.5"
+                  />
+                  <div className="flex-1">
+                    <label htmlFor="healthConsent" className="font-body text-sm text-foreground leading-snug cursor-pointer">
+                      {language === 'de'
+                        ? <>Ich willige ausdrücklich ein, dass Mein Lebensanker meine Gesundheitsdaten (Symptomverläufe, Medikamentenpläne, Pflegetagebücher) gemäß der <a href="/datenschutz" target="_blank" rel="noopener noreferrer" className="text-primary underline">Datenschutzerklärung</a> verarbeitet. Diese Einwilligung kann ich jederzeit in den Einstellungen widerrufen.</>
+                        : <>I expressly consent to Mein Lebensanker processing my health data (symptom tracking, medication plans, care diaries) in accordance with the <a href="/datenschutz" target="_blank" rel="noopener noreferrer" className="text-primary underline">Privacy Policy</a>. I can revoke this consent at any time in settings.</>
+                      }
+                    </label>
+                    {consentErrors.health && (
+                      <p className="text-destructive text-xs mt-1 font-body">
+                        {language === 'de' ? 'Diese Zustimmung ist erforderlich.' : 'This consent is required.'}
+                      </p>
+                    )}
+                  </div>
+                </div>
               </div>
             )}
 
