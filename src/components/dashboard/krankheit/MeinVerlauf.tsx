@@ -203,7 +203,7 @@ const MeinVerlauf = () => {
           <CardTitle className="text-sm font-semibold">{texts.chart}</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="h-64 sm:h-80">
+          <div className="h-[200px] sm:h-64 lg:h-80">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={chartData}>
                 <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
