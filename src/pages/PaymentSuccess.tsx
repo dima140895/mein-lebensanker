@@ -6,6 +6,7 @@ import { supabase } from '@/integrations/supabase/browserClient';
 import { CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { logger } from '@/lib/logger';
+import { trackEvent } from '@/lib/analytics';
 import ProfileSetupWizard from '@/components/ProfileSetupWizard';
 
 const PaymentSuccessContent = () => {
