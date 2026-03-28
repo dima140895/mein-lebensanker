@@ -26,13 +26,13 @@ const LandingPricing = () => {
       {/* Cards */}
       <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-5">
         {/* Anker */}
-        <div className="bg-[#FDFAF5] border border-[#E5E0D8] rounded-2xl p-6">
+        <div className="bg-[#FDFAF5] border border-[#E5E0D8] rounded-2xl p-6 flex flex-col">
           <h3 className="text-lg font-semibold text-[#262E38]">Anker</h3>
           <div className="mt-3">
             <span className="text-4xl font-bold text-[#262E38]">€49</span>
             <span className="text-sm text-[#5C6570] ml-1">einmalig</span>
           </div>
-          <div className="border-t border-[#E5E0D8] mt-5 pt-5 space-y-2">
+          <div className="border-t border-[#E5E0D8] mt-5 pt-5 space-y-2 flex-1">
             {['Vorsorge-Dokumentation', 'Dokumenten-Safe', 'Freigabe für Angehörige', 'KI-Assistent', 'Ende-zu-Ende-Verschlüsselung'].map((f, i) => (
               <div key={i} className="flex items-center gap-2 text-sm text-[#5C6570]">
                 <Check className="h-3.5 w-3.5 text-[#437059] flex-shrink-0" />
