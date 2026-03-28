@@ -214,6 +214,9 @@ const SettingsModule = () => {
         <TabsContent value="share" className="mt-6">
           <ShareLinkManager />
         </TabsContent>
+        <TabsContent value="privacy" className="mt-6">
+          <ConsentManagement />
+        </TabsContent>
       </Tabs>
 
       {conversions !== null && conversions > 0 && (
