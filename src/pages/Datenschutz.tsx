@@ -184,7 +184,7 @@ Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an der Verbe
 Weitere Informationen: https://plausible.io/data-policy`,
         },
         {
-          title: '13. Ihre Rechte',
+          title: '14. Ihre Rechte',
           content: `Sie haben gegenüber uns folgende Rechte hinsichtlich der Sie betreffenden personenbezogenen Daten:
 
 • Recht auf Auskunft (Art. 15 DSGVO)
