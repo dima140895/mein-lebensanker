@@ -133,15 +133,15 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
 
   const renderVorsorgeCard = (delay: number) => (
     <motion.div key="vorsorge" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay }}>
-      <Card className="border-l-4 border-l-primary hover:shadow-card transition-shadow cursor-pointer h-full" onClick={() => onNavigate('vorsorge')}>
+      <Card className="border-l-4 border-l-primary bg-white rounded-2xl shadow-card hover:-translate-y-0.5 hover:shadow-soft transition-all duration-200 cursor-pointer h-full" onClick={() => onNavigate('vorsorge')}>
         <CardHeader className="pb-2">
           <div className="flex items-center gap-3">
             <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
               <ClipboardList className="h-5 w-5 text-primary" />
             </div>
             <div className="flex-1">
-              <CardTitle className="text-base font-semibold">{tx.vorsorge}</CardTitle>
-              <span className="text-xs text-muted-foreground">
+               <CardTitle className="text-base font-semibold font-body text-forest">{tx.vorsorge}</CardTitle>
+              <span className="text-xs text-charcoal-light font-body">
                 {statusLoading ? '...' : isComplete ? tx.complete : `${filledCount} ${tx.sectionOf} ${totalCount}`}
               </span>
             </div>
@@ -163,13 +163,13 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
   const renderPflegeCard = (delay: number) => (
     <motion.div key="pflege" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay }}>
       {isPlusOrHigher ? (
-        <Card className="border-l-4 border-l-accent hover:shadow-card transition-shadow cursor-pointer h-full" onClick={() => onNavigate('pflege')}>
+        <Card className="border-l-4 border-l-accent bg-white rounded-2xl shadow-card hover:-translate-y-0.5 hover:shadow-soft transition-all duration-200 cursor-pointer h-full" onClick={() => onNavigate('pflege')}>
           <CardHeader className="pb-2">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-lg bg-accent/10 flex items-center justify-center">
                 <HeartHandshake className="h-5 w-5 text-accent" />
               </div>
-              <CardTitle className="text-base font-semibold">{tx.pflege}</CardTitle>
+              <CardTitle className="text-base font-semibold font-body text-forest">{tx.pflege}</CardTitle>
             </div>
           </CardHeader>
           <CardContent className="space-y-3">
@@ -192,14 +192,14 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
           </CardContent>
         </Card>
       ) : (
-        <Card className="border-l-4 border-l-accent/30 h-full opacity-80 cursor-pointer" onClick={() => onLockedClick('pflege')}>
+        <Card className="border-l-4 border-l-accent/30 bg-white rounded-2xl shadow-card h-full opacity-80 cursor-pointer" onClick={() => onLockedClick('pflege')}>
           <CardHeader className="pb-2">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="h-10 w-10 rounded-lg bg-muted flex items-center justify-center">
                   <HeartHandshake className="h-5 w-5 text-muted-foreground/50" />
                 </div>
-                <CardTitle className="text-base font-semibold text-muted-foreground/60">{tx.pflege}</CardTitle>
+                <CardTitle className="text-base font-semibold font-body text-charcoal-light/60">{tx.pflege}</CardTitle>
               </div>
               <Lock className="h-4 w-4 text-muted-foreground/40" />
             </div>
@@ -218,13 +218,13 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
   const renderKrankheitCard = (delay: number) => (
     <motion.div key="krankheit" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay }}>
       {isPlusOrHigher ? (
-        <Card className="border-l-4 border-l-[hsl(var(--sage))] hover:shadow-card transition-shadow cursor-pointer h-full" onClick={() => onNavigate('krankheit')}>
+        <Card className="border-l-4 border-l-sage bg-white rounded-2xl shadow-card hover:-translate-y-0.5 hover:shadow-soft transition-all duration-200 cursor-pointer h-full" onClick={() => onNavigate('krankheit')}>
           <CardHeader className="pb-2">
-            <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-lg bg-[hsl(var(--sage))]/10 flex items-center justify-center">
-                <Stethoscope className="h-5 w-5 text-[hsl(var(--sage-dark))]" />
+             <div className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-lg bg-sage-light flex items-center justify-center">
+                <Stethoscope className="h-5 w-5 text-sage-dark" />
               </div>
-              <CardTitle className="text-base font-semibold">{tx.krankheit}</CardTitle>
+              <CardTitle className="text-base font-semibold font-body text-forest">{tx.krankheit}</CardTitle>
             </div>
           </CardHeader>
           <CardContent className="space-y-3">
@@ -247,28 +247,28 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
                 <span className="text-sm text-muted-foreground">{tx.krankheitPending}</span>
               </div>
             )}
-            <Button variant="ghost" size="sm" className="w-full text-[hsl(var(--sage-dark))] hover:text-[hsl(var(--sage-dark))] hover:bg-[hsl(var(--sage))]/5 gap-1.5 min-h-[44px]">
+             <Button variant="ghost" size="sm" className="w-full text-sage-dark hover:text-sage-dark hover:bg-sage-light/50 gap-1.5 min-h-[44px] font-body">
               {todayCheckin ? tx.krankheit : tx.krankheitStart} <ArrowRight className="h-3.5 w-3.5" />
-            </Button>
+             </Button>
           </CardContent>
         </Card>
       ) : (
-        <Card className="border-l-4 border-l-[hsl(var(--sage))]/30 h-full opacity-80 cursor-pointer" onClick={() => onLockedClick('krankheit')}>
+        <Card className="border-l-4 border-l-sage/30 bg-white rounded-2xl shadow-card h-full opacity-80 cursor-pointer" onClick={() => onLockedClick('krankheit')}>
           <CardHeader className="pb-2">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="h-10 w-10 rounded-lg bg-muted flex items-center justify-center">
                   <Stethoscope className="h-5 w-5 text-muted-foreground/50" />
                 </div>
-                <CardTitle className="text-base font-semibold text-muted-foreground/60">{tx.krankheit}</CardTitle>
+                <CardTitle className="text-base font-semibold font-body text-charcoal-light/60">{tx.krankheit}</CardTitle>
               </div>
               <Lock className="h-4 w-4 text-muted-foreground/40" />
             </div>
           </CardHeader>
           <CardContent>
             <p className="text-xs text-muted-foreground/60 mb-2">{tx.locked}</p>
-            <Button variant="outline" size="sm" className="text-xs h-7 gap-1 border-[hsl(var(--sage))]/30 text-[hsl(var(--sage-dark))]">
-              {tx.krankheitUnlock} <ArrowRight className="h-3 w-3" />
+             <Button variant="outline" size="sm" className="text-xs h-7 gap-1 border-sage/30 text-sage-dark font-body min-h-[44px]">
+               {tx.krankheitUnlock} <ArrowRight className="h-3 w-3" />
             </Button>
           </CardContent>
         </Card>
@@ -286,10 +286,10 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
     <div className="space-y-6">
       {/* Greeting */}
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-        <h1 className="font-serif text-2xl sm:text-3xl font-bold text-foreground">
+         <h1 className="font-serif text-2xl sm:text-3xl font-semibold text-forest tracking-[-0.02em]">
           {greeting}{userName ? `, ${userName}` : ''}.
-        </h1>
-        <p className="text-sm text-muted-foreground mt-1">{tx.subtitle}</p>
+         </h1>
+        <p className="text-sm text-charcoal-light mt-1 font-body">{tx.subtitle}</p>
       </motion.div>
 
       {/* Status Cards */}
@@ -299,10 +299,10 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
 
       {/* Next Steps */}
       {nextSteps.length > 0 && (
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}>
-          <Card>
+         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}>
+          <Card className="bg-white rounded-2xl shadow-card">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">{tx.nextSteps}</CardTitle>
+              <CardTitle className="text-sm font-semibold text-charcoal-light uppercase tracking-wider font-body">{tx.nextSteps}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-1">
               {nextSteps.map((step) => (

@@ -1,4 +1,4 @@
-import { Home, ClipboardList, HeartHandshake, Stethoscope, Users, Settings, Lock } from 'lucide-react';
+import { Home, ClipboardList, HeartHandshake, Stethoscope, Users, Settings, Lock, Anchor } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { cn } from '@/lib/utils';
 
@@ -38,7 +38,15 @@ const DashboardSidebar = ({ activeModule, onModuleChange, userPlan, onLockedClic
   const { language } = useLanguage();
 
   return (
-    <aside className="hidden md:flex flex-col w-56 lg:w-60 border-r border-border bg-card/50 min-h-0">
+    <aside className="hidden md:flex flex-col w-56 lg:w-60 bg-forest text-white min-h-0">
+      {/* Logo */}
+      <div className="px-4 py-5 border-b border-white/10">
+        <div className="flex items-center gap-2">
+          <Anchor className="h-5 w-5 text-white/80" />
+          <span className="font-serif text-sm font-bold text-white leading-tight">Mein Lebensanker</span>
+        </div>
+      </div>
+
       <nav className="flex-1 py-4 px-3 space-y-1">
         {navItems.map((item) => {
           const Icon = item.icon;
@@ -51,15 +59,15 @@ const DashboardSidebar = ({ activeModule, onModuleChange, userPlan, onLockedClic
               key={item.key}
               onClick={() => locked ? onLockedClick(item.key) : onModuleChange(item.key)}
               className={cn(
-                'w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all text-left',
+                'w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all text-left font-body',
                 isActive && !locked
-                  ? 'bg-primary/10 text-primary'
+                  ? 'bg-white/15 text-white border-l-[3px] border-accent'
                   : locked
-                    ? 'text-muted-foreground/50 cursor-not-allowed hover:bg-muted/30'
-                    : 'text-muted-foreground hover:bg-muted/50 hover:text-foreground'
+                    ? 'text-white/30 cursor-not-allowed hover:bg-white/5'
+                    : 'text-white/70 hover:bg-white/10 hover:text-white'
               )}
             >
-              <Icon className={cn('h-4.5 w-4.5 flex-shrink-0', locked && 'opacity-40')} />
+              <Icon className={cn('h-5 w-5 flex-shrink-0', locked && 'opacity-40')} />
               <span className={cn('flex-1 truncate', locked && 'opacity-40')}>{label}</span>
               {locked && <Lock className="h-3.5 w-3.5 opacity-40" />}
             </button>

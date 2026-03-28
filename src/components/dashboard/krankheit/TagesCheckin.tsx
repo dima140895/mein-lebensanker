@@ -209,12 +209,12 @@ const TagesCheckin = () => {
             { icon: '😴', label: texts.schlaf, value: todayCheckin.schlaf, labelFn: texts.schlafLabel },
             { icon: '😊', label: texts.stimmung, value: todayCheckin.stimmung, labelFn: texts.stimmungLabel },
           ].map((item) => (
-            <Card key={item.label} className="border-border">
+             <Card key={item.label} className="border-border bg-white rounded-2xl shadow-card">
               <CardContent className="py-4 px-4 text-center">
                 <span className="text-2xl">{item.icon}</span>
-                <p className="text-xs text-muted-foreground mt-1">{item.label}</p>
-                <p className="text-2xl font-bold text-foreground mt-1">{item.value}<span className="text-sm font-normal text-muted-foreground">/10</span></p>
-                <p className="text-xs text-muted-foreground">{item.labelFn(item.value)}</p>
+                <p className="text-xs text-charcoal-light mt-1 font-body">{item.label}</p>
+                <p className="text-2xl font-bold text-forest mt-1">{item.value}<span className="text-sm font-normal text-charcoal-light">/10</span></p>
+                <p className="text-xs text-charcoal-light font-body">{item.labelFn(item.value)}</p>
               </CardContent>
             </Card>
           ))}
@@ -243,8 +243,8 @@ const TagesCheckin = () => {
   return (
     <div className="space-y-8 max-w-lg mx-auto">
       <div className="text-center space-y-2">
-        <h2 className="font-serif text-2xl font-bold text-foreground">{texts.greeting}</h2>
-        <p className="text-sm text-muted-foreground">{texts.greetingSub}</p>
+      <h2 className="font-serif text-2xl font-semibold text-forest">{texts.greeting}</h2>
+        <p className="text-sm text-charcoal-light font-body">{texts.greetingSub}</p>
       </div>
 
       <div className="space-y-8">
@@ -326,11 +326,11 @@ const SliderField = ({
     <div className="flex items-center justify-between">
       <div className="flex items-center gap-2">
         <span className="text-xl">{icon}</span>
-        <Label className="text-sm font-medium text-foreground">{label}</Label>
+        <Label className="text-sm font-medium font-body text-forest">{label}</Label>
       </div>
       <div className="text-right">
-        <span className="text-xl font-bold text-foreground">{value}</span>
-        <span className="text-sm text-muted-foreground">/10</span>
+         <span className="text-xl font-bold text-forest">{value}</span>
+        <span className="text-sm text-charcoal-light">/10</span>
       </div>
     </div>
     <Slider
@@ -341,7 +341,7 @@ const SliderField = ({
       step={1}
       className="py-2"
     />
-    <p className="text-xs text-muted-foreground text-center">{description}</p>
+    <p className="text-xs text-charcoal-light text-center font-body">{description}</p>
   </div>
 );
 

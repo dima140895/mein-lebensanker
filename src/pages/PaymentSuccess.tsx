@@ -166,9 +166,9 @@ const PaymentSuccessContent = () => {
           <div className="mx-auto mb-6 h-20 w-20 rounded-full bg-sage-light flex items-center justify-center">
             <CheckCircle className="h-10 w-10 text-sage-dark" />
           </div>
-          <h1 className="font-serif text-3xl font-bold text-foreground mb-2">{texts.title}</h1>
-          <p className="text-xl text-sage-dark mb-4">{texts.subtitle}</p>
-          <p className="text-muted-foreground">{language === 'de' ? 'Du wirst weitergeleitet...' : 'Redirecting...'}</p>
+           <h1 className="font-serif text-3xl font-semibold text-forest mb-2">{texts.title}</h1>
+          <p className="text-xl text-sage-dark mb-4 font-body">{texts.subtitle}</p>
+          <p className="text-charcoal-light font-body">{language === 'de' ? 'Du wirst weitergeleitet...' : 'Redirecting...'}</p>
         </div>
       </div>
     );
@@ -182,10 +182,10 @@ const PaymentSuccessContent = () => {
           <div className="mx-auto mb-6 h-20 w-20 rounded-full bg-destructive/10 flex items-center justify-center">
             <AlertCircle className="h-10 w-10 text-destructive" />
           </div>
-          <h1 className="font-serif text-3xl font-bold text-foreground mb-2">{texts.errorTitle}</h1>
-          <p className="text-muted-foreground mb-8">{errorMessage}</p>
+           <h1 className="font-serif text-3xl font-semibold text-forest mb-2">{texts.errorTitle}</h1>
+          <p className="text-charcoal-light mb-8 font-body">{errorMessage}</p>
           <div className="space-y-3">
-            <Button onClick={() => navigate('/dashboard')} size="lg" variant="outline">
+            <Button onClick={() => navigate('/dashboard')} size="lg" variant="outline" className="rounded-lg font-body min-h-[44px]">
               {texts.cta}
             </Button>
           </div>
@@ -207,12 +207,12 @@ const PaymentSuccessContent = () => {
           <div className="mx-auto mb-6 h-20 w-20 rounded-full bg-sage-light flex items-center justify-center">
             <CheckCircle className="h-10 w-10 text-sage-dark" />
           </div>
-          <h1 className="font-serif text-3xl font-bold text-foreground mb-2">
+           <h1 className="font-serif text-3xl font-semibold text-forest mb-2">
             {texts.confirmTitle}
           </h1>
-          <p className="text-xl text-sage-dark mb-4">{texts.confirmSubtitle}</p>
-          <p className="text-muted-foreground mb-8">{texts.confirmDescription}</p>
-          <Button onClick={handleContinueToSetup} size="lg">
+          <p className="text-xl text-sage-dark mb-4 font-body">{texts.confirmSubtitle}</p>
+          <p className="text-charcoal-light mb-8 font-body">{texts.confirmDescription}</p>
+          <Button onClick={handleContinueToSetup} size="lg" className="rounded-lg font-body font-medium min-h-[44px] w-full">
             {texts.confirmCta}
           </Button>
         </div>
@@ -248,14 +248,14 @@ const PaymentSuccessContent = () => {
         <div className="mx-auto mb-6 h-20 w-20 rounded-full bg-sage-light flex items-center justify-center">
           <CheckCircle className="h-10 w-10 text-sage-dark" />
         </div>
-        <h1 className="font-serif text-3xl font-bold text-foreground mb-2">
+         <h1 className="font-serif text-3xl font-semibold text-forest mb-2">
           {texts.title}
         </h1>
-        <p className="text-xl text-sage-dark mb-4">{texts.subtitle}</p>
-        <p className="text-muted-foreground mb-8">
+        <p className="text-xl text-sage-dark mb-4 font-body">{texts.subtitle}</p>
+        <p className="text-charcoal-light mb-8 font-body">
           {texts.description}
         </p>
-        <Button onClick={() => navigate('/dashboard')} size="lg">
+        <Button onClick={() => navigate('/dashboard')} size="lg" className="rounded-lg font-body font-medium min-h-[44px] w-full">
           {texts.cta}
         </Button>
       </div>

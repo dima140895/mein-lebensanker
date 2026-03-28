@@ -311,7 +311,7 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange }: Auth
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-md mx-auto"
       >
-        <div className="rounded-xl border border-border bg-card p-8 shadow-elevated text-center">
+        <div className="rounded-2xl border border-border bg-white p-8 shadow-card text-center">
           <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
             {verified ? (
               <Check className="h-8 w-8 text-green-600 dark:text-green-400" />
@@ -320,7 +320,7 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange }: Auth
             )}
           </div>
           
-          <h2 className="font-serif text-2xl font-bold text-foreground mb-2">
+          <h2 className="font-serif text-2xl font-semibold text-forest mb-2">
             {verified
               ? (language === 'de' ? 'E-Mail bestätigt!' : 'Email verified!')
               : texts.verifyTitle}
@@ -332,10 +332,10 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange }: Auth
             </p>
           ) : (
             <>
-              <p className="text-muted-foreground mb-1">
+              <p className="text-charcoal-light mb-1">
                 {texts.verifyDesc}
               </p>
-              <p className="font-medium text-foreground mb-1">
+               <p className="font-medium text-forest mb-1">
                 {email}
               </p>
               <p className="text-muted-foreground mb-6">
@@ -371,26 +371,26 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange }: Auth
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-md mx-auto"
       >
-        <div className="rounded-xl border border-border bg-card p-8 shadow-elevated">
+         <div className="rounded-2xl border border-border bg-white p-8 shadow-card">
           <button
             type="button"
             onClick={() => handleModeChange('login')}
-            className="flex items-center text-sm text-muted-foreground hover:text-foreground mb-4"
+             className="flex items-center text-sm text-charcoal-light hover:text-primary mb-4 font-body min-h-[44px]"
           >
             <ArrowLeft className="h-4 w-4 mr-1" />
             {texts.backToLogin}
           </button>
 
-          <h2 className="font-serif text-2xl font-bold text-center text-foreground mb-2">
+           <h2 className="font-serif text-2xl font-semibold text-center text-forest mb-2">
             {texts.forgotTitle}
           </h2>
-          <p className="text-center text-muted-foreground text-sm mb-6">
+          <p className="text-center text-charcoal-light text-sm mb-6 font-body">
             {texts.forgotDesc}
           </p>
 
           <form onSubmit={handleForgotPassword} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-sm font-medium">
+               <Label htmlFor="email" className="text-sm font-medium font-body text-forest">
                 {texts.email}
               </Label>
               <div className="relative">
@@ -407,7 +407,7 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange }: Auth
               </div>
             </div>
 
-            <Button type="submit" className="w-full" disabled={loading}>
+             <Button type="submit" className="w-full min-h-[44px] rounded-lg font-body font-medium" disabled={loading}>
               {loading ? '...' : texts.sendResetLink}
             </Button>
           </form>
@@ -423,14 +423,14 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange }: Auth
       animate={{ opacity: 1, y: 0 }}
       className="w-full max-w-md mx-auto"
     >
-      <div className="rounded-xl border border-border bg-card p-8 shadow-elevated">
-        <h2 className="font-serif text-2xl font-bold text-center text-foreground mb-6">
+       <div className="rounded-2xl border border-border bg-white p-8 shadow-card">
+        <h2 className="font-serif text-2xl font-semibold text-center text-forest mb-6">
           {mode === 'login' ? texts.login : texts.register}
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="email" className="text-sm font-medium">
+             <Label htmlFor="email" className="text-sm font-medium font-body text-forest">
               {texts.email}
             </Label>
             <div className="relative">
@@ -449,7 +449,7 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange }: Auth
 
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <Label htmlFor="password" className="text-sm font-medium flex items-center gap-1.5">
+               <Label htmlFor="password" className="text-sm font-medium font-body text-forest flex items-center gap-1.5">
                 {language === 'de' ? 'Passwort' : 'Password'}
               </Label>
               {mode === 'login' && (
@@ -544,7 +544,7 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange }: Auth
 
           {mode === 'register' && (
             <div className="space-y-2">
-              <Label htmlFor="confirmPassword" className="text-sm font-medium">
+               <Label htmlFor="confirmPassword" className="text-sm font-medium font-body text-forest">
                 {texts.confirmPassword}
               </Label>
               <div className="relative">
@@ -590,12 +590,12 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange }: Auth
             </div>
           )}
 
-          <Button type="submit" className="w-full" disabled={loading}>
+          <Button type="submit" className="w-full min-h-[44px] rounded-lg font-body font-medium" disabled={loading}>
             {loading ? '...' : mode === 'login' ? texts.login : texts.register}
           </Button>
         </form>
 
-        <div className="mt-6 text-center text-sm text-muted-foreground">
+        <div className="mt-6 text-center text-sm text-charcoal-light font-body">
           {mode === 'login' ? texts.noAccount : texts.hasAccount}{' '}
           <button
             type="button"
