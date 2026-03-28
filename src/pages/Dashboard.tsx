@@ -22,6 +22,7 @@ import VorsorgeModule from '@/components/dashboard/VorsorgeModule';
 import PflegeModule from '@/components/dashboard/pflege/PflegeModule';
 import KrankheitModule from '@/components/dashboard/krankheit/KrankheitModule';
 import FamilieModule from '@/components/dashboard/familie/FamilieModule';
+import OnboardingFlow from '@/components/dashboard/OnboardingFlow';
 
 const DashboardContent = () => {
   const { user, profile, loading } = useAuth();
