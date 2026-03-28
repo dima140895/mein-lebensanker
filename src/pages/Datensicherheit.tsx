@@ -2,8 +2,8 @@ import { ArrowLeft, Shield, Key, Lock, Eye, Database, Server, Mail, Clock, Credi
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
+import StaticNav from '@/components/StaticNav';
+import LandingFooter from '@/components/landing/LandingFooter';
 
 const Datensicherheit = () => {
   const navigate = useNavigate();
@@ -156,8 +156,8 @@ Without password and without recovery key, your encrypted data is not recoverabl
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      <Header />
-      <main className="flex-1">
+      <StaticNav />
+      <main className="flex-1 pt-16">
         <div className="container mx-auto max-w-3xl px-6 sm:px-4 py-8">
           <Button variant="ghost" onClick={() => navigate(-1)} className="mb-6">
             <ArrowLeft className="mr-2 h-4 w-4" />
@@ -256,7 +256,7 @@ Without password and without recovery key, your encrypted data is not recoverabl
           </div>
         </div>
       </main>
-      <Footer />
+      <LandingFooter />
     </div>
   );
 };

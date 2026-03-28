@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { Lock, Eye, EyeOff, CheckCircle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/browserClient';
 import { useLanguage } from '@/contexts/LanguageContext';
-import Header from '@/components/Header';
+import StaticNav from '@/components/StaticNav';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -133,8 +133,8 @@ const ResetPassword = () => {
   if (checking) {
     return (
       <div className="flex min-h-screen flex-col bg-background">
-        <Header />
-        <main className="flex-1 flex items-center justify-center">
+        <StaticNav />
+        <main className="flex-1 pt-16 flex items-center justify-center">
           <div className="animate-pulse text-muted-foreground">{language === 'de' ? 'Laden...' : 'Loading...'}</div>
         </main>
       </div>
@@ -144,8 +144,8 @@ const ResetPassword = () => {
   if (!isValidSession && !success) {
     return (
       <div className="flex min-h-screen flex-col bg-background">
-        <Header />
-        <main className="flex-1 flex items-center justify-center p-4">
+        <StaticNav />
+        <main className="flex-1 pt-16 flex items-center justify-center p-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -169,8 +169,8 @@ const ResetPassword = () => {
   if (success) {
     return (
       <div className="flex min-h-screen flex-col bg-background">
-        <Header />
-        <main className="flex-1 flex items-center justify-center p-4">
+        <StaticNav />
+        <main className="flex-1 pt-16 flex items-center justify-center p-4">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -194,8 +194,8 @@ const ResetPassword = () => {
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      <Header />
-      <main className="flex-1 flex items-center justify-center p-4">
+      <StaticNav />
+      <main className="flex-1 pt-16 flex items-center justify-center p-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

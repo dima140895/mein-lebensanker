@@ -3,8 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { supabase } from '@/integrations/supabase/client';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
+import StaticNav from '@/components/StaticNav';
+import LandingFooter from '@/components/landing/LandingFooter';
 import AuthForm from '@/components/AuthForm';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -72,8 +72,8 @@ const FamilyInvitation = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      <Header />
-      <main className="flex-1 flex items-center justify-center px-4 py-12">
+      <StaticNav />
+      <main className="flex-1 pt-16 flex items-center justify-center px-4 py-12">
         <div className="w-full max-w-md">
           <h1 className="font-serif text-2xl font-bold text-foreground text-center mb-6">
             {texts.title}
@@ -115,7 +115,7 @@ const FamilyInvitation = () => {
           )}
         </div>
       </main>
-      <Footer />
+      <LandingFooter />
     </div>
   );
 };

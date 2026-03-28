@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { Heart, Shield } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/browserClient';
 import { useLanguage } from '@/contexts/LanguageContext';
-import Header from '@/components/Header';
+import StaticNav from '@/components/StaticNav';
 import RelativesSummary from '@/components/relatives/RelativesSummary';
 import PINEntry from '@/components/relatives/PINEntry';
 import RecoveryKeyEntry from '@/components/relatives/RecoveryKeyEntry';
@@ -477,8 +477,8 @@ const RelativesViewContent = () => {
 const RelativesView = () => {
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      <Header />
-      <main className="flex-1">
+      <StaticNav />
+      <main className="flex-1 pt-16">
         <RelativesViewContent />
       </main>
     </div>

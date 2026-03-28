@@ -2,8 +2,8 @@ import { ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
+import StaticNav from '@/components/StaticNav';
+import LandingFooter from '@/components/landing/LandingFooter';
 
 const Impressum = () => {
   const navigate = useNavigate();
@@ -136,8 +136,8 @@ Downloads and copies of this page are only permitted for private, non-commercial
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      <Header />
-      <main className="flex-1">
+      <StaticNav />
+      <main className="flex-1 pt-16">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8 sm:py-16">
           <Button variant="ghost" onClick={() => navigate(-1)} className="mb-6 font-body min-h-[44px]">
             <ArrowLeft className="mr-2 h-4 w-4" />
@@ -164,7 +164,7 @@ Downloads and copies of this page are only permitted for private, non-commercial
           </div>
         </div>
       </main>
-      <Footer />
+      <LandingFooter />
     </div>
   );
 };

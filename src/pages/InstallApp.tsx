@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Download, Smartphone, Share, Plus, Check, Apple, Monitor } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
+import StaticNav from '@/components/StaticNav';
+import LandingFooter from '@/components/landing/LandingFooter';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
@@ -124,8 +124,8 @@ const InstallApp = () => {
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      <Header />
-      <main className="flex-1">
+      <StaticNav />
+      <main className="flex-1 pt-16">
         <div className="container mx-auto px-6 sm:px-4 py-12">
           <div className="max-w-2xl mx-auto space-y-8">
             {/* Header */}
@@ -324,7 +324,7 @@ const InstallApp = () => {
           </div>
         </div>
       </main>
-      <Footer />
+      <LandingFooter />
     </div>
   );
 };
