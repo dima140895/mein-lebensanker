@@ -336,7 +336,7 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange }: Auth
     return (
       <PageWrapper>
         <div className="w-full max-w-md mx-auto animate-fade-in-up">
-          <div className="bg-white rounded-2xl shadow-[0_8px_40px_rgba(44,74,62,0.12)] px-6 sm:px-8 py-8 sm:py-10 text-center">
+          <div className="bg-card rounded-2xl shadow-[0_8px_40px_rgba(44,74,62,0.12)] px-6 sm:px-8 py-8 sm:py-10 text-center">
             <LogoHeader />
 
             <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
