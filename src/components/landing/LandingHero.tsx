@@ -43,7 +43,7 @@ const LandingHero = () => {
           <div className="flex flex-col sm:flex-row gap-3 mb-12 animate-fade-in-up stagger-delay-3">
             <Button
               onClick={() => navigate('/dashboard?register=true')}
-              className="bg-[hsl(var(--forest))] hover:bg-[hsl(var(--forest))]/90 text-white font-body text-base rounded-full px-8 h-12 shadow-lg hover:shadow-xl transition-all"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground font-body text-base rounded-full px-8 h-12 shadow-lg hover:shadow-xl transition-all"
             >
               Jetzt kostenlos starten →
             </Button>
