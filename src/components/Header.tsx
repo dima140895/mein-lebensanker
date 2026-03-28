@@ -792,7 +792,6 @@ const Header = () => {
               </DialogContent>
             </Dialog>
           )}
-          <LanguageToggle />
         </nav>
 
         {/* Mobile Pricing Button (top right, visible only on mobile for non-authenticated users OR users who haven't paid) */}
