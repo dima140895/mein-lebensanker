@@ -50,7 +50,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       .from('profiles')
       // SECURITY: Avoid selecting sensitive encryption fields (e.g. encrypted_password_recovery)
       // in the general auth/profile loading path. Only fetch the fields needed for UI + access.
-      .select('id,user_id,email,full_name,has_paid,payment_type,partner_name,max_profiles,purchased_tier,onboarding_focus,is_new_user,is_encrypted,encryption_salt,encrypted_password_recovery')
+      .select('id,user_id,email,full_name,has_paid,payment_type,partner_name,max_profiles,purchased_tier,onboarding_focus,is_new_user,is_encrypted,encryption_salt,encrypted_password_recovery,health_data_consent,health_data_consent_at,terms_accepted_at')
       .eq('user_id', userId)
       .maybeSingle();
     

@@ -159,7 +159,7 @@ Bitte beachten Sie: Der Widerruf berührt nicht die Rechtmäßigkeit der bis zum
 Nach Ablauf der Fristen werden Ihre Daten automatisch gelöscht oder anonymisiert.`,
         },
         {
-          title: '11. Datenübertragung in Drittländer',
+          title: '12. Datenübertragung in Drittländer',
           content: `Einige unserer Dienstleister haben ihren Sitz außerhalb der EU/des EWR:
 
 • USA: Supabase Inc., Amazon Web Services (Infrastruktur wird in EU betrieben)
