@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, lazy, Suspense } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 
@@ -19,13 +19,23 @@ import DashboardSidebar, { type DashboardModule } from '@/components/dashboard/D
 import BottomNavigation from '@/components/dashboard/BottomNavigation';
 import UpgradeModal from '@/components/dashboard/UpgradeModal';
 import DashboardHome from '@/components/dashboard/DashboardHome';
-import SettingsModule from '@/components/dashboard/SettingsModule';
-import PlaceholderModule from '@/components/dashboard/PlaceholderModule';
-import VorsorgeModule from '@/components/dashboard/VorsorgeModule';
-import PflegeModule from '@/components/dashboard/pflege/PflegeModule';
-import KrankheitModule from '@/components/dashboard/krankheit/KrankheitModule';
-import FamilieModule from '@/components/dashboard/familie/FamilieModule';
 import OnboardingFlow from '@/components/dashboard/OnboardingFlow';
+import { Skeleton } from '@/components/ui/skeleton';
+
+// Lazy-loaded dashboard modules
+const VorsorgeModule = lazy(() => import('@/components/dashboard/VorsorgeModule'));
+const PflegeModule = lazy(() => import('@/components/dashboard/pflege/PflegeModule'));
+const KrankheitModule = lazy(() => import('@/components/dashboard/krankheit/KrankheitModule'));
+const FamilieModule = lazy(() => import('@/components/dashboard/familie/FamilieModule'));
+const SettingsModule = lazy(() => import('@/components/dashboard/SettingsModule'));
+
+const ModuleLoadingFallback = () => (
+  <div className="space-y-4 py-2">
+    <Skeleton className="h-8 w-48" />
+    <Skeleton className="h-40 w-full rounded-2xl" />
+    <Skeleton className="h-32 w-full rounded-2xl" />
+  </div>
+);
 
 const DashboardContent = () => {
   const { user, profile, loading } = useAuth();
