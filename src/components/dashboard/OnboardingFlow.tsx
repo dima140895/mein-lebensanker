@@ -220,8 +220,8 @@ const OnboardingFlow = ({ onComplete }: OnboardingFlowProps) => {
                     return <Icon className="h-8 w-8" style={{ color: focusColor }} />;
                   })()}
                 </div>
-                <h2 className="font-serif text-xl sm:text-2xl font-bold text-[#2C4A3E] mb-3">{currentSlide.title}</h2>
-                <p className="text-sm text-[#2C4A3E]/60 font-body leading-relaxed max-w-sm mx-auto">{currentSlide.body}</p>
+                <h2 className="font-serif text-xl sm:text-2xl font-bold text-foreground mb-3">{currentSlide.title}</h2>
+                <p className="text-sm text-muted-foreground font-body leading-relaxed max-w-sm mx-auto">{currentSlide.body}</p>
               </div>
 
               {/* Action */}
