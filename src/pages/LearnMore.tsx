@@ -20,7 +20,7 @@ import {
   PlayCircle
 } from 'lucide-react';
 import encryptionDiagram from '@/assets/encryption-diagram.png';
-import Header from '@/components/Header';
+import StaticNav from '@/components/StaticNav';
 import Disclaimer from '@/components/Disclaimer';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';

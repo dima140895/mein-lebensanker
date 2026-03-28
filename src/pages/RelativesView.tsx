@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { Heart, Shield } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/browserClient';
 import { useLanguage } from '@/contexts/LanguageContext';
-import Header from '@/components/Header';
+import StaticNav from '@/components/StaticNav';
 import RelativesSummary from '@/components/relatives/RelativesSummary';
 import PINEntry from '@/components/relatives/PINEntry';
 import RecoveryKeyEntry from '@/components/relatives/RecoveryKeyEntry';
