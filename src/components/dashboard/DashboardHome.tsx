@@ -61,14 +61,23 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
   const onboardingFocus = profile?.onboarding_focus;
 
   useEffect(() => {
-    if (!user || !isPlusOrHigher) { setDataLoading(false); return; }
+    if (!user) { setDataLoading(false); return; }
     const load = async () => {
-      const [pflegeRes, checkinRes] = await Promise.all([
-        supabase.from('pflege_eintraege').select('eintrags_datum,stimmung').eq('user_id', user.id).order('eintrags_datum', { ascending: false }).limit(1),
-        supabase.from('symptom_checkins').select('energie,stimmung,checkin_datum').eq('user_id', user.id).eq('checkin_datum', new Date().toISOString().split('T')[0]).limit(1),
-      ]);
-      setLastPflege(pflegeRes.data?.[0] || null);
-      setTodayCheckin(checkinRes.data?.[0] || null);
+      const promises: Promise<any>[] = [
+        supabase.from('share_tokens').select('id').eq('user_id', user.id).eq('is_active', true).limit(1),
+      ];
+      if (isPlusOrHigher) {
+        promises.push(
+          supabase.from('pflege_eintraege').select('eintrags_datum,stimmung').eq('user_id', user.id).order('eintrags_datum', { ascending: false }).limit(1),
+          supabase.from('symptom_checkins').select('energie,stimmung,checkin_datum').eq('user_id', user.id).eq('checkin_datum', new Date().toISOString().split('T')[0]).limit(1),
+        );
+      }
+      const results = await Promise.all(promises);
+      setHasShareToken((results[0].data?.length ?? 0) > 0);
+      if (isPlusOrHigher) {
+        setLastPflege(results[1]?.data?.[0] || null);
+        setTodayCheckin(results[2]?.data?.[0] || null);
+      }
       setDataLoading(false);
     };
     load();
