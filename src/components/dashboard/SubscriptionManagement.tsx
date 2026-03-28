@@ -121,7 +121,7 @@ const SubscriptionManagement = () => {
         </CardContent>
       </Card>
 
-      <PricingDialog open={showPricing} onOpenChange={setShowPricing} />
+      <PricingDialog open={showPricing} onOpenChange={setShowPricing} onSelectPackage={() => setShowPricing(false)} />
     </>
   );
 };
