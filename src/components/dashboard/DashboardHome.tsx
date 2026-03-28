@@ -293,7 +293,7 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
       </motion.div>
 
       {/* Status Cards */}
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {cardOrder.map((key, i) => cardRenderers[key](0.05 + i * 0.05))}
       </div>
 
