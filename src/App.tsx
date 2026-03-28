@@ -33,6 +33,7 @@ const SecurityAuditReport = lazy(() => import("./pages/SecurityAuditReport"));
 const RLSDocumentation = lazy(() => import("./pages/RLSDocumentation"));
 const DevDocumentation = lazy(() => import("./pages/DevDocumentation"));
 const FamilyInvitation = lazy(() => import("./pages/FamilyInvitation"));
+const Abmelden = lazy(() => import("./pages/Abmelden"));
 const VorsorgeAssistant = lazy(() => import("./components/VorsorgeAssistant"));
 
 const queryClient = new QueryClient();
@@ -69,6 +70,7 @@ const App = () => (
                       <Route path="/rls-documentation" element={<RLSDocumentation />} />
                       <Route path="/dev-dokumentation" element={<DevDocumentation />} />
                       <Route path="/familie-einladung/:token" element={<FamilyInvitation />} />
+                      <Route path="/abmelden" element={<Abmelden />} />
                       <Route path="*" element={<NotFound />} />
                     </Routes>
                   </Suspense>
