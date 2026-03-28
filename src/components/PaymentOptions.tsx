@@ -1,6 +1,7 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Check, CreditCard, Anchor, Star, Users, Loader2, Shield, MapPin } from 'lucide-react';
+import { Check, CreditCard, Anchor, Star, Users, Loader2, Shield, MapPin, ArrowLeft } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { supabase } from '@/integrations/supabase/browserClient';
@@ -12,6 +13,7 @@ import { type PlanType } from '@/lib/pricing';
 const PaymentOptions = () => {
   const { user, profile } = useAuth();
   const { language } = useLanguage();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState<string | null>(null);
 
   const currentPlan = profile?.purchased_tier as PlanType | null;
@@ -172,6 +174,18 @@ const PaymentOptions = () => {
 
   return (
     <div className="py-8 sm:py-12">
+      {/* Back button */}
+      <div className="max-w-5xl mx-auto px-4 mb-6">
+        <button
+          type="button"
+          onClick={() => navigate('/')}
+          className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary font-body transition-colors min-h-[44px]"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          {language === 'de' ? '← Zurück zur Startseite' : '← Back to home'}
+        </button>
+      </div>
+
       {/* Header */}
       <div className="text-center mb-10 sm:mb-14">
         <h2 className="font-serif text-3xl sm:text-4xl font-bold text-foreground tracking-tight">
