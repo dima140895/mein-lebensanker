@@ -133,7 +133,21 @@ Die Verarbeitung erfolgt über einen zwischengeschalteten API-Gateway (Lovable /
 Wichtiger Hinweis: Bitte geben Sie keine besonders sensiblen personenbezogenen Daten (z.B. Passwörter, Zahlungsdaten) in KI-gestützte Eingabefelder ein. Eingaben werden zur Verarbeitung an externe Server übertragen.`,
         },
         {
-          title: '10. Aufbewahrungsfristen',
+          title: '10. Verarbeitung besonderer Kategorien personenbezogener Daten',
+          content: `Mein Lebensanker verarbeitet auf Wunsch der Nutzer Gesundheitsdaten im Sinne von Art. 9 Abs. 1 DSGVO. Dazu gehören:
+
+• Symptomverläufe und tägliche Gesundheits-Check-ins
+• Medikamentenpläne und Einnahmezeiten
+• Pflegetagebücher und Stimmungsverläufe
+
+Rechtsgrundlage für diese Verarbeitung ist Ihre ausdrückliche Einwilligung gemäß Art. 9 Abs. 2 lit. a DSGVO, die Sie bei der Registrierung erteilt haben.
+
+Widerruf: Sie können Ihre Einwilligung jederzeit mit Wirkung für die Zukunft widerrufen. Den Widerruf können Sie in den Einstellungen unter „Datenschutz" vornehmen oder uns per E-Mail an datenschutz@mein-lebensanker.de kontaktieren. Nach dem Widerruf werden Ihre Gesundheitsdaten innerhalb von 30 Tagen gelöscht.
+
+Bitte beachten Sie: Der Widerruf berührt nicht die Rechtmäßigkeit der bis zum Widerruf erfolgten Verarbeitung.`,
+        },
+        {
+          title: '11. Aufbewahrungsfristen',
           content: `Wir speichern Ihre Daten nur so lange, wie es für die jeweiligen Zwecke erforderlich ist:
 
 • Kontodaten: Bis zur Löschung Ihres Kontos
