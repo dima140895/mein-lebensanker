@@ -513,13 +513,6 @@ const Header = () => {
 
               {/* Mobile Menu Footer - fixed at bottom */}
               <div className="border-t border-border p-4 space-y-3 shrink-0 bg-background">
-                {/* Language Toggle */}
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">
-                    {language === 'de' ? 'Sprache' : 'Language'}
-                  </span>
-                  <LanguageToggle />
-                </div>
                 
                 {/* Auth buttons */}
                 {user ? (
