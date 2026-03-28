@@ -449,7 +449,7 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange }: Auth
 
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <Label htmlFor="password" className="text-sm font-medium flex items-center gap-1.5">
+               <Label htmlFor="password" className="text-sm font-medium font-body text-forest flex items-center gap-1.5">
                 {language === 'de' ? 'Passwort' : 'Password'}
               </Label>
               {mode === 'login' && (
