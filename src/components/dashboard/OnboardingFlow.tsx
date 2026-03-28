@@ -207,7 +207,7 @@ const OnboardingFlow = ({ onComplete }: OnboardingFlowProps) => {
                     <div key={i} className="w-2 h-2 rounded-full transition-all" style={{ backgroundColor: i === slideIdx ? focusColor : `${focusColor}20` }} />
                   ))}
                 </div>
-                <button onClick={handleSkip} disabled={saving} className="text-[#2C4A3E]/30 hover:text-[#2C4A3E]/60 transition-colors">
+                <button onClick={handleSkip} disabled={saving} className="text-foreground/30 hover:text-foreground/60 transition-colors">
                   <X className="h-5 w-5" />
                 </button>
               </div>
