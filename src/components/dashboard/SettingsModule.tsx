@@ -123,6 +123,10 @@ const SettingsModule = () => {
             <Link2 className="h-3.5 w-3.5" />
             <span className="hidden sm:inline">{texts.share}</span>
           </TabsTrigger>
+          <TabsTrigger value="privacy" className="gap-1.5 text-xs sm:text-sm">
+            <Shield className="h-3.5 w-3.5" />
+            <span className="hidden sm:inline">{language === 'de' ? 'Datenschutz' : 'Privacy'}</span>
+          </TabsTrigger>
         </TabsList>
         <TabsContent value="plan" className="mt-6">
           <PackageManagement />
