@@ -78,14 +78,66 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
     load();
   }, [user, isPlusOrHigher]);
 
-  // Least-filled sections for "next steps"
-  const nextSteps = useMemo(() => {
-    if (statusLoading || isComplete) return [];
-    return Object.entries(sectionStatus)
-      .filter(([, filled]) => !filled)
-      .slice(0, 2)
-      .map(([key]) => ({ key, label: SECTION_LABELS[key]?.[language] || key }));
-  }, [sectionStatus, statusLoading, isComplete, language]);
+  // Guided onboarding tasks
+  const onboardingTasks = useMemo(() => {
+    const tasks = [
+      {
+        id: 'personal',
+        titel: { de: 'Persönliche Daten ausfüllen', en: 'Fill in personal data' },
+        beschreibung: { de: 'Name, Adresse, Geburtsdatum', en: 'Name, address, date of birth' },
+        done: (sectionCompletion?.personal ?? 0) === 100,
+        module: 'vorsorge' as DashboardModule,
+        section: 'personal',
+      },
+      {
+        id: 'contacts',
+        titel: { de: 'Notfallkontakt hinterlegen', en: 'Add emergency contact' },
+        beschreibung: { de: 'Wer soll im Ernstfall erreichbar sein?', en: 'Who should be reachable in an emergency?' },
+        done: (sectionCompletion?.contacts ?? 0) === 100,
+        module: 'vorsorge' as DashboardModule,
+        section: 'contacts',
+      },
+      {
+        id: 'wishes',
+        titel: { de: 'Letzte Wünsche dokumentieren', en: 'Document final wishes' },
+        beschreibung: { de: 'Beerdigung, Organe, persönliche Wünsche', en: 'Burial, organs, personal wishes' },
+        done: (sectionCompletion?.wishes ?? 0) === 100,
+        module: 'vorsorge' as DashboardModule,
+        section: 'wishes',
+      },
+      {
+        id: 'share',
+        titel: { de: 'Freigabe-Link erstellen', en: 'Create sharing link' },
+        beschreibung: { de: 'Damit Angehörige im Ernstfall Zugriff haben', en: 'So relatives have access in an emergency' },
+        done: hasShareToken,
+        module: 'einstellungen' as DashboardModule,
+        section: null,
+      },
+      {
+        id: 'encryption',
+        titel: { de: 'Verschlüsselung aktivieren', en: 'Enable encryption' },
+        beschreibung: { de: 'Schütze deine Daten mit einem eigenen Passwort', en: 'Protect your data with your own password' },
+        done: isEncryptionEnabled,
+        module: 'einstellungen' as DashboardModule,
+        section: null,
+      },
+    ];
+    return tasks;
+  }, [sectionCompletion, hasShareToken, isEncryptionEnabled]);
+
+  const doneCount = onboardingTasks.filter(t => t.done).length;
+  const allTasksDone = doneCount === onboardingTasks.length;
+  const nextTask = onboardingTasks.find(t => !t.done);
+
+  // Show onboarding section only if user < 30 days old and not all done
+  const isNewEnough = useMemo(() => {
+    if (!profile?.created_at) return false;
+    const created = new Date(profile.created_at);
+    const daysSince = (Date.now() - created.getTime()) / (1000 * 60 * 60 * 24);
+    return daysSince < 30;
+  }, [profile?.created_at]);
+
+  const showOnboardingTasks = isNewEnough && !allTasksDone && !statusLoading && !dataLoading;
 
   const userName = profile?.full_name?.split(' ')[0] || '';
   const greeting = getGreeting(language);
