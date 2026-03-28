@@ -12,6 +12,8 @@ import { Package, Download, Link2, Bell, Heart } from 'lucide-react';
 
 const SettingsModule = () => {
   const { language } = useLanguage();
+  const { user } = useAuth();
+  const [conversions, setConversions] = useState<number | null>(null);
 
   const t = {
     de: {
