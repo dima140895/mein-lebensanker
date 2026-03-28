@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Heart, Shield } from 'lucide-react';
+import { Heart, Shield, Anchor } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/browserClient';
 import { useLanguage } from '@/contexts/LanguageContext';
 import StaticNav from '@/components/StaticNav';
@@ -467,6 +467,41 @@ const RelativesViewContent = () => {
           <div className="flex items-start gap-4">
             <Shield className="h-6 w-6 text-muted-foreground flex-shrink-0 mt-0.5" />
             <p className="text-sm text-muted-foreground leading-relaxed">{texts.disclaimerBottom}</p>
+          </div>
+        </motion.div>
+
+        {/* Acquisition Card */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6 }}
+          className="rounded-2xl bg-sage-light/50 dark:bg-muted/50 border border-primary/10 p-6 mt-8"
+        >
+          <div className="flex items-start gap-3">
+            <Anchor className="h-6 w-6 text-primary flex-shrink-0 mt-0.5" />
+            <div>
+              <h3 className="font-serif text-lg text-forest dark:text-foreground">
+                {language === 'de'
+                  ? 'Möchten Sie Ihre eigene Vorsorge organisieren?'
+                  : 'Would you like to organize your own advance planning?'}
+              </h3>
+              <p className="font-body text-sm text-muted-foreground mt-2">
+                {language === 'de'
+                  ? 'Mein Lebensanker hilft Ihnen Vollmachten, Dokumente und Wünsche zu organisieren — damit auch Ihre Familie im Ernstfall vorbereitet ist.'
+                  : 'Mein Lebensanker helps you organize powers of attorney, documents and wishes — so your family is prepared in an emergency too.'}
+              </p>
+              <a
+                href="https://mein-lebensanker.de?ref=angehoerige"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block mt-4 bg-primary text-primary-foreground rounded-lg px-5 py-2.5 font-body font-medium text-sm hover:bg-primary/90 transition-colors"
+              >
+                {language === 'de' ? 'Kostenlos starten →' : 'Get started for free →'}
+              </a>
+              <p className="font-body text-xs text-muted-foreground mt-2">
+                {language === 'de' ? 'Einmalig 49\u00A0€ — kein Abo-Zwang.' : 'One-time €49 — no subscription required.'}
+              </p>
+            </div>
           </div>
         </motion.div>
       </div>
