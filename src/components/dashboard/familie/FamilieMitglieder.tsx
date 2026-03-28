@@ -203,15 +203,15 @@ const FamilieMitglieder = () => {
                 </SelectContent>
               </Select>
             </div>
-            <div className="flex gap-2 pt-2">
-              <Button onClick={handleInvite} disabled={sending || !email.trim()}>
+             <div className="flex flex-col sm:flex-row gap-2 pt-2">
+              <Button onClick={handleInvite} disabled={sending || !email.trim()} className="w-full sm:w-auto min-h-[44px]">
                 {sending ? (
                   <><Loader2 className="h-4 w-4 mr-2 animate-spin" />{texts.sending}</>
                 ) : (
                   <><Mail className="h-4 w-4 mr-2" />{texts.send}</>
                 )}
               </Button>
-              <Button variant="outline" onClick={() => { setShowForm(false); setEmail(''); }}>
+              <Button variant="outline" onClick={() => { setShowForm(false); setEmail(''); }} className="w-full sm:w-auto min-h-[44px]">
                 {texts.cancel}
               </Button>
             </div>
