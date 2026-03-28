@@ -35,6 +35,7 @@ const PLAN_MAX_PROFILES: Record<string, number> = {
 const VerifyPaymentSchema = z.object({
   sessionId: z.string().min(1).max(500),
   plan: z.enum(["anker", "plus", "familie"]).optional(),
+  referralCode: z.string().max(20).optional(),
 });
 
 serve(async (req) => {
