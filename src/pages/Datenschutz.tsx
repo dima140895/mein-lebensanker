@@ -179,7 +179,7 @@ Weitere Informationen: https://plausible.io/data-policy`,
 Sie haben zudem das Recht, sich bei einer Datenschutz-Aufsichtsbehörde über die Verarbeitung Ihrer personenbezogenen Daten durch uns zu beschweren.`,
         },
         {
-          title: '13. Datensicherheit',
+          title: '14. Datensicherheit',
           content: `Wir verwenden innerhalb des Website-Besuchs das verbreitete SSL-Verfahren (Secure Socket Layer) in Verbindung mit der jeweils höchsten Verschlüsselungsstufe, die von Ihrem Browser unterstützt wird.
 
 Zusätzliche Sicherheitsmaßnahmen:
@@ -189,7 +189,7 @@ Zusätzliche Sicherheitsmaßnahmen:
 • Row-Level Security (RLS) für Datenbankzugriffe`,
         },
         {
-          title: '14. Kontakt',
+          title: '15. Kontakt',
           content: `Für Fragen zum Datenschutz können Sie sich jederzeit an uns wenden:
 
 E-Mail: datenschutz@mein-lebensanker.de
