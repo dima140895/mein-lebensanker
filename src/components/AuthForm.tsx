@@ -279,7 +279,7 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange }: Auth
   }, [mode, email, password, language]);
 
   // Shared input classes
-  const inputClassName = "w-full pl-10 pr-10 py-3 rounded-lg border border-border/60 focus:border-primary focus:ring-2 focus:ring-primary/10 font-body text-base bg-white text-foreground placeholder:text-muted-foreground/50 transition-all duration-200";
+  const inputClassName = "w-full pl-10 pr-10 py-3 rounded-lg border border-border/60 focus:border-primary focus:ring-2 focus:ring-primary/10 font-body text-base bg-card text-foreground placeholder:text-muted-foreground/50 transition-all duration-200";
 
   // Wrapper with background
   const PageWrapper = ({ children }: { children: React.ReactNode }) => (
@@ -336,7 +336,7 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange }: Auth
     return (
       <PageWrapper>
         <div className="w-full max-w-md mx-auto animate-fade-in-up">
-          <div className="bg-white rounded-2xl shadow-[0_8px_40px_rgba(44,74,62,0.12)] px-6 sm:px-8 py-8 sm:py-10 text-center">
+          <div className="bg-card rounded-2xl shadow-[0_8px_40px_rgba(44,74,62,0.12)] px-6 sm:px-8 py-8 sm:py-10 text-center">
             <LogoHeader />
 
             <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
@@ -396,7 +396,7 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange }: Auth
     return (
       <PageWrapper>
         <div className="w-full max-w-md mx-auto animate-fade-in-up">
-          <div className="bg-white rounded-2xl shadow-[0_8px_40px_rgba(44,74,62,0.12)] px-6 sm:px-8 py-8 sm:py-10">
+           <div className="bg-card rounded-2xl shadow-[0_8px_40px_rgba(44,74,62,0.12)] px-6 sm:px-8 py-8 sm:py-10">
             <LogoHeader />
 
             <button
@@ -454,7 +454,7 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange }: Auth
   return (
     <PageWrapper>
       <div className="w-full max-w-md mx-auto animate-fade-in-up">
-        <div className="bg-white rounded-2xl shadow-[0_8px_40px_rgba(44,74,62,0.12)] px-6 sm:px-8 py-8 sm:py-10">
+        <div className="bg-card rounded-2xl shadow-[0_8px_40px_rgba(44,74,62,0.12)] px-6 sm:px-8 py-8 sm:py-10">
           <LogoHeader />
 
           {/* Tab navigation */}

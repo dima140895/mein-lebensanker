@@ -133,7 +133,7 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
 
   const renderVorsorgeCard = (delay: number) => (
     <motion.div key="vorsorge" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay }}>
-      <Card className="border-l-4 border-l-primary bg-white rounded-2xl shadow-card hover:-translate-y-0.5 hover:shadow-soft transition-all duration-200 cursor-pointer h-full" onClick={() => onNavigate('vorsorge')}>
+      <Card className="border-l-4 border-l-primary bg-card rounded-2xl shadow-card hover:-translate-y-0.5 hover:shadow-soft transition-all duration-200 cursor-pointer h-full" onClick={() => onNavigate('vorsorge')}>
         <CardHeader className="pb-2">
           <div className="flex items-center gap-3">
             <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
@@ -163,7 +163,7 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
   const renderPflegeCard = (delay: number) => (
     <motion.div key="pflege" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay }}>
       {isPlusOrHigher ? (
-        <Card className="border-l-4 border-l-accent bg-white rounded-2xl shadow-card hover:-translate-y-0.5 hover:shadow-soft transition-all duration-200 cursor-pointer h-full" onClick={() => onNavigate('pflege')}>
+        <Card className="border-l-4 border-l-accent bg-card rounded-2xl shadow-card hover:-translate-y-0.5 hover:shadow-soft transition-all duration-200 cursor-pointer h-full" onClick={() => onNavigate('pflege')}>
           <CardHeader className="pb-2">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-lg bg-accent/10 flex items-center justify-center">
@@ -192,7 +192,7 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
           </CardContent>
         </Card>
       ) : (
-        <Card className="border-l-4 border-l-accent/30 bg-white rounded-2xl shadow-card h-full opacity-80 cursor-pointer" onClick={() => onLockedClick('pflege')}>
+        <Card className="border-l-4 border-l-accent/30 bg-card rounded-2xl shadow-card h-full opacity-80 cursor-pointer" onClick={() => onLockedClick('pflege')}>
           <CardHeader className="pb-2">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -218,7 +218,7 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
   const renderKrankheitCard = (delay: number) => (
     <motion.div key="krankheit" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay }}>
       {isPlusOrHigher ? (
-        <Card className="border-l-4 border-l-sage bg-white rounded-2xl shadow-card hover:-translate-y-0.5 hover:shadow-soft transition-all duration-200 cursor-pointer h-full" onClick={() => onNavigate('krankheit')}>
+        <Card className="border-l-4 border-l-sage bg-card rounded-2xl shadow-card hover:-translate-y-0.5 hover:shadow-soft transition-all duration-200 cursor-pointer h-full" onClick={() => onNavigate('krankheit')}>
           <CardHeader className="pb-2">
              <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-lg bg-sage-light flex items-center justify-center">
@@ -253,7 +253,7 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
           </CardContent>
         </Card>
       ) : (
-        <Card className="border-l-4 border-l-sage/30 bg-white rounded-2xl shadow-card h-full opacity-80 cursor-pointer" onClick={() => onLockedClick('krankheit')}>
+        <Card className="border-l-4 border-l-sage/30 bg-card rounded-2xl shadow-card h-full opacity-80 cursor-pointer" onClick={() => onLockedClick('krankheit')}>
           <CardHeader className="pb-2">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -300,7 +300,7 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
       {/* Next Steps */}
       {nextSteps.length > 0 && (
          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}>
-          <Card className="bg-white rounded-2xl shadow-card">
+          <Card className="bg-card rounded-2xl shadow-card">
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-semibold text-charcoal-light uppercase tracking-wider font-body">{tx.nextSteps}</CardTitle>
             </CardHeader>

@@ -419,7 +419,7 @@ const Step3Animation: React.FC<{ t: Record<string, string> }> = ({ t }) => {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1.5 }}
-              className="absolute -bottom-1 -right-1 w-8 h-10 bg-white rounded shadow-sm border border-border flex items-center justify-center"
+              className="absolute -bottom-1 -right-1 w-8 h-10 bg-card rounded shadow-sm border border-border flex items-center justify-center"
             >
               <div className="space-y-0.5">
                 <div className="w-4 h-0.5 bg-muted-foreground/30 rounded" />

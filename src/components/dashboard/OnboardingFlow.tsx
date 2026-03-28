@@ -118,7 +118,7 @@ const OnboardingFlow = ({ onComplete }: OnboardingFlowProps) => {
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden"
+        className="bg-card rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden"
       >
         <AnimatePresence mode="wait">
           {step === 'welcome' && (
@@ -132,20 +132,20 @@ const OnboardingFlow = ({ onComplete }: OnboardingFlowProps) => {
               {/* Header */}
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-2">
-                  <Anchor className="h-5 w-5 text-[#2C4A3E]" />
-                  <span className="font-serif text-sm font-bold text-[#2C4A3E]">Mein Lebensanker</span>
+                  <Anchor className="h-5 w-5 text-foreground" />
+                  <span className="font-serif text-sm font-bold text-foreground">Mein Lebensanker</span>
                 </div>
-                <button onClick={handleSkip} className="text-[#2C4A3E]/30 hover:text-[#2C4A3E]/60 transition-colors" disabled={saving}>
+                <button onClick={handleSkip} className="text-foreground/30 hover:text-foreground/60 transition-colors" disabled={saving}>
                   <X className="h-5 w-5" />
                 </button>
               </div>
 
               {/* Welcome text */}
               <div className="mb-8">
-                <h1 className="font-serif text-2xl sm:text-3xl font-bold text-[#2C4A3E] mb-2">
+                <h1 className="font-serif text-2xl sm:text-3xl font-bold text-foreground mb-2">
                   Willkommen{firstName ? `, ${firstName}` : ''}.
                 </h1>
-                <p className="text-[#2C4A3E]/60 font-body text-sm">
+                <p className="text-muted-foreground font-body text-sm">
                   Womit möchtest du beginnen?
                 </p>
               </div>
@@ -158,7 +158,7 @@ const OnboardingFlow = ({ onComplete }: OnboardingFlowProps) => {
                     <button
                       key={opt.key}
                       onClick={() => handleFocusSelect(opt.key)}
-                      className="w-full text-left p-4 rounded-xl border-2 border-transparent hover:border-[#2C4A3E]/10 bg-[#FDFAF5] hover:bg-[#f5f0e8] transition-all group"
+                      className="w-full text-left p-4 rounded-xl border-2 border-transparent hover:border-primary/10 bg-muted hover:bg-muted/80 transition-all group"
                     >
                       <div className="flex items-start gap-3">
                         <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5" style={{ backgroundColor: `${opt.color}10` }}>
@@ -166,12 +166,12 @@ const OnboardingFlow = ({ onComplete }: OnboardingFlowProps) => {
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2">
-                            <span className="font-body font-semibold text-[#2C4A3E] text-sm">{opt.title}</span>
-                            <ArrowRight className="h-3.5 w-3.5 text-[#2C4A3E]/20 group-hover:text-[#2C4A3E]/50 group-hover:translate-x-0.5 transition-all" />
+                            <span className="font-body font-semibold text-foreground text-sm">{opt.title}</span>
+                            <ArrowRight className="h-3.5 w-3.5 text-foreground/20 group-hover:text-foreground/50 group-hover:translate-x-0.5 transition-all" />
                           </div>
-                          <p className="text-xs text-[#2C4A3E]/50 font-body mt-0.5">{opt.desc}</p>
+                          <p className="text-xs text-muted-foreground font-body mt-0.5">{opt.desc}</p>
                           {opt.upgradeHint && (
-                            <span className="inline-block text-[10px] font-semibold text-[#C4813A] bg-[#C4813A]/10 px-2 py-0.5 rounded-full mt-1.5 font-body">
+                            <span className="inline-block text-[10px] font-semibold text-accent bg-accent/10 px-2 py-0.5 rounded-full mt-1.5 font-body">
                               {opt.upgradeHint}
                             </span>
                           )}
@@ -182,7 +182,7 @@ const OnboardingFlow = ({ onComplete }: OnboardingFlowProps) => {
                 })}
               </div>
 
-              <button onClick={handleSkip} disabled={saving} className="w-full text-center text-xs text-[#2C4A3E]/30 hover:text-[#2C4A3E]/50 mt-6 font-body transition-colors">
+              <button onClick={handleSkip} disabled={saving} className="w-full text-center text-xs text-foreground/30 hover:text-foreground/50 mt-6 font-body transition-colors">
                 Überspringen
               </button>
             </motion.div>
@@ -198,7 +198,7 @@ const OnboardingFlow = ({ onComplete }: OnboardingFlowProps) => {
             >
               {/* Header */}
               <div className="flex items-center justify-between mb-8">
-                <button onClick={() => slideIdx === 0 ? setStep('welcome') : setSlideIdx(slideIdx - 1)} className="text-[#2C4A3E]/40 hover:text-[#2C4A3E] transition-colors">
+                <button onClick={() => slideIdx === 0 ? setStep('welcome') : setSlideIdx(slideIdx - 1)} className="text-foreground/40 hover:text-foreground transition-colors">
                   <ChevronLeft className="h-5 w-5" />
                 </button>
                 {/* Progress dots */}
@@ -207,7 +207,7 @@ const OnboardingFlow = ({ onComplete }: OnboardingFlowProps) => {
                     <div key={i} className="w-2 h-2 rounded-full transition-all" style={{ backgroundColor: i === slideIdx ? focusColor : `${focusColor}20` }} />
                   ))}
                 </div>
-                <button onClick={handleSkip} disabled={saving} className="text-[#2C4A3E]/30 hover:text-[#2C4A3E]/60 transition-colors">
+                <button onClick={handleSkip} disabled={saving} className="text-foreground/30 hover:text-foreground/60 transition-colors">
                   <X className="h-5 w-5" />
                 </button>
               </div>
@@ -220,8 +220,8 @@ const OnboardingFlow = ({ onComplete }: OnboardingFlowProps) => {
                     return <Icon className="h-8 w-8" style={{ color: focusColor }} />;
                   })()}
                 </div>
-                <h2 className="font-serif text-xl sm:text-2xl font-bold text-[#2C4A3E] mb-3">{currentSlide.title}</h2>
-                <p className="text-sm text-[#2C4A3E]/60 font-body leading-relaxed max-w-sm mx-auto">{currentSlide.body}</p>
+                <h2 className="font-serif text-xl sm:text-2xl font-bold text-foreground mb-3">{currentSlide.title}</h2>
+                <p className="text-sm text-muted-foreground font-body leading-relaxed max-w-sm mx-auto">{currentSlide.body}</p>
               </div>
 
               {/* Action */}
@@ -240,7 +240,7 @@ const OnboardingFlow = ({ onComplete }: OnboardingFlowProps) => {
                 {saving ? 'Speichern...' : currentSlide.action}
               </Button>
 
-              <button onClick={handleSkip} disabled={saving} className="w-full text-center text-xs text-[#2C4A3E]/30 hover:text-[#2C4A3E]/50 mt-4 font-body transition-colors">
+              <button onClick={handleSkip} disabled={saving} className="w-full text-center text-xs text-foreground/30 hover:text-foreground/50 mt-4 font-body transition-colors">
                 Überspringen
               </button>
             </motion.div>

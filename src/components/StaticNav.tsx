@@ -32,14 +32,14 @@ const StaticNav = ({ minimal = false }: StaticNavProps) => {
       ];
 
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-white/90 backdrop-blur-md shadow-sm' : 'bg-transparent'}`}>
+    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-background/90 backdrop-blur-md shadow-sm' : 'bg-transparent'}`}>
       <div className="max-w-6xl mx-auto px-4 sm:px-6 flex items-center justify-between h-16">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2 group">
-          <Anchor className="h-6 w-6 text-[hsl(var(--forest))] group-hover:rotate-12 transition-transform" />
+          <Anchor className="h-6 w-6 text-primary group-hover:rotate-12 transition-transform" />
           <div className="flex flex-col items-start">
-            <span className="font-serif text-lg font-bold text-[hsl(var(--forest))] leading-tight">Mein Lebensanker</span>
-            <span className="text-[9px] font-body text-[hsl(var(--forest))]/50 tracking-widest uppercase hidden sm:block">Vorsorge · Pflege · Begleitung</span>
+            <span className="font-serif text-lg font-bold text-foreground leading-tight">Mein Lebensanker</span>
+            <span className="text-[9px] font-body text-muted-foreground tracking-widest uppercase hidden sm:block">Vorsorge · Pflege · Begleitung</span>
           </div>
         </Link>
 
@@ -49,7 +49,7 @@ const StaticNav = ({ minimal = false }: StaticNavProps) => {
             <Link
               key={link.href}
               to={link.href}
-              className="flex items-center gap-1.5 text-sm font-medium text-[hsl(var(--forest))]/70 hover:text-[hsl(var(--forest))] transition-colors font-body"
+              className="flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors font-body"
             >
               <link.icon className="h-4 w-4" />
               {link.label}
@@ -58,7 +58,7 @@ const StaticNav = ({ minimal = false }: StaticNavProps) => {
           {!minimal && (
             <Button
               onClick={() => navigate('/dashboard?register=true')}
-              className="bg-[hsl(var(--forest))] hover:bg-[hsl(var(--forest))]/90 text-white font-body rounded-full px-6 h-10 flex items-center gap-2"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground font-body rounded-full px-6 h-10 flex items-center gap-2"
             >
               <UserPlus className="h-4 w-4" />
               {language === 'de' ? 'Registrieren' : 'Sign Up'}
@@ -70,7 +70,7 @@ const StaticNav = ({ minimal = false }: StaticNavProps) => {
         {/* Mobile toggle */}
         <div className="flex md:hidden items-center gap-2">
           <LanguageToggle />
-          <button onClick={() => setMobileOpen(!mobileOpen)} className="p-2 text-[hsl(var(--forest))]">
+          <button onClick={() => setMobileOpen(!mobileOpen)} className="p-2 text-foreground">
             {mobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </button>
         </div>
@@ -78,13 +78,13 @@ const StaticNav = ({ minimal = false }: StaticNavProps) => {
 
       {/* Mobile menu */}
       {mobileOpen && (
-        <div className="md:hidden bg-white/95 backdrop-blur-md border-t px-4 py-4 space-y-3">
+        <div className="md:hidden bg-background/95 backdrop-blur-md border-t px-4 py-4 space-y-3">
           {navLinks.map((link) => (
             <Link
               key={link.href}
               to={link.href}
               onClick={() => setMobileOpen(false)}
-              className="flex items-center gap-2 w-full py-2 text-sm font-medium text-[hsl(var(--forest))] font-body"
+              className="flex items-center gap-2 w-full py-2 text-sm font-medium text-foreground font-body"
             >
               <link.icon className="h-4 w-4" />
               {link.label}
@@ -93,7 +93,7 @@ const StaticNav = ({ minimal = false }: StaticNavProps) => {
           {!minimal && (
             <Button
               onClick={() => { setMobileOpen(false); navigate('/dashboard?register=true'); }}
-              className="w-full bg-[hsl(var(--forest))] hover:bg-[hsl(var(--forest))]/90 text-white font-body rounded-full"
+              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-body rounded-full"
             >
               <UserPlus className="h-4 w-4 mr-2" />
               {language === 'de' ? 'Registrieren' : 'Sign Up'}
