@@ -304,6 +304,8 @@ const VorsorgeModule = () => {
       </div>
 
       <DashboardOnboardingTour key={tourKey} />
+
+      {isComplete && <ReferralCard />}
     </>
   );
 };
