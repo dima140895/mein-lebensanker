@@ -1,6 +1,9 @@
 import { Home, ClipboardList, HeartHandshake, Stethoscope, Users, Settings, Lock, Anchor } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useAuth } from '@/contexts/AuthContext';
+import { useQueryClient } from '@tanstack/react-query';
 import { cn } from '@/lib/utils';
+import { prefetchPflegeEintraege, prefetchMedikamente, prefetchSymptomCheckins } from '@/lib/prefetchQueries';
 
 export type DashboardModule = 'home' | 'vorsorge' | 'pflege' | 'krankheit' | 'familie' | 'settings';
 
