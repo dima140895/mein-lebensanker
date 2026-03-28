@@ -83,14 +83,14 @@
     --shadow-card: 0 2px 16px -4px hsl(220 18% 18% / 0.06), 0 1px 4px -1px hsl(220 18% 18% / 0.03);
     --shadow-elevated: 0 12px 40px -8px hsl(220 18% 18% / 0.1), 0 4px 12px -2px hsl(220 18% 18% / 0.05);
 
-    --sidebar-background: 42 26% 98%;
-    --sidebar-foreground: 220 18% 24%;
-    --sidebar-primary: 152 28% 36%;
-    --sidebar-primary-foreground: 42 32% 97%;
-    --sidebar-accent: 42 22% 95%;
-    --sidebar-accent-foreground: 220 18% 24%;
-    --sidebar-border: 42 18% 91%;
-    --sidebar-ring: 152 28% 36%;
+    --sidebar-background: 160 28% 23%;
+    --sidebar-foreground: 42 32% 97%;
+    --sidebar-primary: 42 32% 97%;
+    --sidebar-primary-foreground: 160 28% 23%;
+    --sidebar-accent: 160 28% 30%;
+    --sidebar-accent-foreground: 42 32% 97%;
+    --sidebar-border: 160 20% 30%;
+    --sidebar-ring: 42 32% 97%;
   }
 
   .dark {
