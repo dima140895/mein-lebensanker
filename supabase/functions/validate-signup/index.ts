@@ -129,12 +129,6 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Create Supabase admin client to perform signup
-    const supabaseAdmin = createClient(
-      Deno.env.get("SUPABASE_URL")!,
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
-    );
-
     // Perform the actual signup via Supabase Auth Admin API
     const { data, error } = await supabaseAdmin.auth.admin.createUser({
       email,
