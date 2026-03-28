@@ -34,6 +34,7 @@ const DashboardContent = () => {
   const [showUnlockDialog, setShowUnlockDialog] = useState(false);
   const [upgradeModalOpen, setUpgradeModalOpen] = useState(false);
   const [lockedModule, setLockedModule] = useState<DashboardModule | null>(null);
+  const [showOnboarding, setShowOnboarding] = useState(false);
 
   const userPlan = profile?.purchased_tier as string | null;
 
