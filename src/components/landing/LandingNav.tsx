@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Menu, X, Anchor } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 
 const LandingNav = () => {
   const navigate = useNavigate();
@@ -20,60 +19,68 @@ const LandingNav = () => {
   };
 
   const navLinks = [
-    { label: 'Wie es funktioniert', id: 'journey' },
-    { label: 'Module', id: 'module' },
+    { label: 'Warum jetzt', id: 'warum' },
+    { label: 'Funktionen', id: 'funktionen' },
     { label: 'Preise', id: 'preise' },
-    { label: 'Für wen', id: 'fuer-wen' },
+    { label: 'FAQ', id: 'faq' },
   ];
 
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-background/90 backdrop-blur-md shadow-sm' : 'bg-transparent'}`}>
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 flex items-center justify-between h-16">
-        {/* Logo + Tagline */}
+    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-[#FDFAF5]/90 backdrop-blur-sm shadow-sm' : 'bg-transparent'} border-b border-[#E5E0D8]/60`}>
+      <div className="max-w-7xl mx-auto px-6 flex items-center justify-between py-4">
+        {/* Logo */}
         <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="flex items-center gap-2 group">
-          <Anchor className="h-6 w-6 text-primary group-hover:rotate-12 transition-transform" />
-          <div className="flex flex-col items-start">
-            <span className="font-sans text-lg font-bold text-foreground leading-tight">Mein Lebensanker</span>
-            <span className="text-[9px] font-body text-muted-foreground tracking-widest uppercase hidden sm:block">Vorsorge · Pflege · Begleitung</span>
-          </div>
+          <Anchor className="h-5 w-5 text-[#437059] group-hover:rotate-12 transition-transform" />
+          <span className="font-semibold text-sm text-[#262E38]">Mein Lebensanker</span>
         </button>
 
         {/* Desktop links */}
         <div className="hidden md:flex items-center gap-8">
           {navLinks.map((link) => (
-            <button key={link.id} onClick={() => scrollTo(link.id)} className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors font-body">
+            <button key={link.id} onClick={() => scrollTo(link.id)} className="text-sm text-[#5C6570] hover:text-[#262E38] transition-colors">
               {link.label}
             </button>
           ))}
         </div>
 
         {/* Desktop CTA */}
-        <div className="hidden md:block">
-          <Button
-            onClick={() => scrollTo('preise')}
-            className="bg-primary hover:bg-primary/90 text-primary-foreground font-body rounded-full px-6 h-10"
+        <div className="hidden md:flex items-center gap-4">
+          <button
+            onClick={() => navigate('/dashboard')}
+            className="text-sm text-[#5C6570] hover:text-[#262E38] transition-colors"
           >
-            Jetzt starten
-          </Button>
+            Anmelden
+          </button>
+          <button
+            onClick={() => navigate('/dashboard?register=true')}
+            className="bg-[#437059] text-white text-sm font-medium px-4 py-2 rounded-full hover:bg-[#2C5742] transition-all"
+          >
+            Starten
+          </button>
         </div>
 
         {/* Mobile toggle */}
-        <button onClick={() => setMobileOpen(!mobileOpen)} className="md:hidden p-2 text-foreground">
+        <button onClick={() => setMobileOpen(!mobileOpen)} className="md:hidden p-2 text-[#262E38]">
           {mobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
         </button>
       </div>
 
       {/* Mobile menu */}
       {mobileOpen && (
-        <div className="md:hidden bg-background/95 backdrop-blur-md border-t px-4 py-4 space-y-3">
+        <div className="md:hidden bg-[#FDFAF5]/95 backdrop-blur-sm border-t border-[#E5E0D8]/60 px-6 py-4 space-y-3">
           {navLinks.map((link) => (
-            <button key={link.id} onClick={() => scrollTo(link.id)} className="block w-full text-left py-2 text-sm font-medium text-foreground font-body">
+            <button key={link.id} onClick={() => scrollTo(link.id)} className="block w-full text-left py-2 text-sm font-medium text-[#262E38]">
               {link.label}
             </button>
           ))}
-          <Button onClick={() => { setMobileOpen(false); navigate('/dashboard?register=true'); }} className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-body rounded-full">
-            Jetzt starten
-          </Button>
+          <div className="flex gap-3 pt-2">
+            <button onClick={() => { setMobileOpen(false); navigate('/dashboard'); }} className="text-sm text-[#5C6570]">
+              Anmelden
+            </button>
+            <button onClick={() => { setMobileOpen(false); navigate('/dashboard?register=true'); }} className="bg-[#437059] text-white text-sm font-medium px-4 py-2 rounded-full">
+              Starten
+            </button>
+          </div>
         </div>
       )}
     </nav>
