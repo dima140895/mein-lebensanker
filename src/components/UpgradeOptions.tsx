@@ -1,81 +1,61 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Check, Crown, Users, Home, ArrowUp, Minus, Plus } from 'lucide-react';
+import { Check, Star, Users, ArrowUp } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/browserClient';
 import { toast } from 'sonner';
-import { PRICING, getUpgradePrice, canUpgrade, calculateFamilyPrice, type PackageType } from '@/lib/pricing';
+import { PRICING, type PlanType } from '@/lib/pricing';
 import { logger } from '@/lib/logger';
 
 const UpgradeOptions = () => {
   const { user, profile } = useAuth();
   const { language } = useLanguage();
   const [loading, setLoading] = useState<string | null>(null);
-  const [familyProfileCount, setFamilyProfileCount] = useState<number>(PRICING.family.minProfiles);
 
-  const currentTier = (profile?.purchased_tier as PackageType) || 'single';
+  const currentPlan = (profile?.purchased_tier as PlanType) || 'anker';
 
   const t = {
     de: {
-      title: 'Paket upgraden',
-      subtitle: 'Erweitere Dein Paket für mehr Profile',
-      currentPackage: 'Aktuelles Paket',
-      upgradeFor: 'Upgrade für',
+      title: 'Plan upgraden',
+      subtitle: 'Erweitere Deinen Plan für mehr Funktionen',
+      currentPlan: 'Aktueller Plan',
       upgrade: 'Jetzt upgraden',
-      single: 'Einzelperson',
-      couple: 'Paar',
-      family: 'Familie',
-      singleDesc: '1 Profil',
-      coupleDesc: '2 Profile',
-      familyDesc: 'Bis zu 4 Profile',
-      noUpgrade: 'Du hast bereits das größte Paket!',
+      noUpgrade: 'Du hast bereits den umfangreichsten Plan!',
       processing: 'Wird verarbeitet...',
+      plus: 'Anker Plus',
+      plusDesc: 'Inkl. Pflege- & Krankheits-Begleiter',
+      familie: 'Anker Familie',
+      familieDesc: 'Bis zu 10 Profile + Familienfreigabe',
     },
     en: {
-      title: 'Upgrade Package',
-      subtitle: 'Expand your package for more profiles',
-      currentPackage: 'Current Package',
-      upgradeFor: 'Upgrade for',
+      title: 'Upgrade Plan',
+      subtitle: 'Expand your plan for more features',
+      currentPlan: 'Current Plan',
       upgrade: 'Upgrade now',
-      single: 'Single',
-      couple: 'Couple',
-      family: 'Family',
-      singleDesc: '1 profile',
-      coupleDesc: '2 profiles',
-      familyDesc: 'Up to 4 profiles',
-      noUpgrade: 'You already have the largest package!',
+      noUpgrade: 'You already have the most comprehensive plan!',
       processing: 'Processing...',
+      plus: 'Anker Plus',
+      plusDesc: 'Incl. Care & Health Companion',
+      familie: 'Anker Familie',
+      familieDesc: 'Up to 10 profiles + family sharing',
     },
   };
 
   const texts = t[language];
 
-  const packages: { key: PackageType; icon: typeof Home; highlight?: boolean }[] = [
-    { key: 'single', icon: Home },
-    { key: 'couple', icon: Users },
-    { key: 'family', icon: Crown, highlight: true },
-  ];
-
-  const handleUpgrade = async (targetTier: PackageType) => {
+  const handleUpgrade = async (targetPlan: PlanType) => {
     if (!user) {
       toast.error(language === 'de' ? 'Bitte melde Dich an' : 'Please sign in');
       return;
     }
 
-    setLoading(targetTier);
-
+    setLoading(targetPlan);
     try {
       const { data, error } = await supabase.functions.invoke('create-payment', {
-        body: {
-          paymentType: targetTier,
-          isUpgrade: true,
-          currentTier: currentTier,
-          familyProfileCount: targetTier === 'family' ? familyProfileCount : undefined,
-        },
+        body: { plan: targetPlan },
       });
-
       if (error) throw error;
       if (data?.url) {
         window.location.href = data.url;
@@ -88,150 +68,84 @@ const UpgradeOptions = () => {
     }
   };
 
-  // Filter to only show packages user can upgrade to
-  const upgradeablePackages = packages.filter(pkg => canUpgrade(currentTier, pkg.key));
+  const planOrder: PlanType[] = ['anker', 'plus', 'familie'];
+  const currentIndex = planOrder.indexOf(currentPlan);
+  const upgradeablePlans = planOrder.filter((_, i) => i > currentIndex);
 
-  if (upgradeablePackages.length === 0) {
+  if (upgradeablePlans.length === 0) {
     return (
       <div className="text-center py-12">
-        <Crown className="h-16 w-16 text-primary mx-auto mb-4" />
+        <Users className="h-16 w-16 text-primary mx-auto mb-4" />
         <h2 className="font-serif text-2xl font-bold text-foreground mb-2">{texts.noUpgrade}</h2>
-        <p className="text-muted-foreground">
-          {language === 'de' 
-            ? `Du nutzt das ${texts[currentTier as keyof typeof texts]} Paket mit ${PRICING[currentTier].maxProfiles} Profilen.`
-            : `You're using the ${texts[currentTier as keyof typeof texts]} package with ${PRICING[currentTier].maxProfiles} profiles.`
-          }
-        </p>
       </div>
     );
   }
+
+  const planInfo: Record<string, { icon: typeof Star; name: string; desc: string; highlight?: boolean }> = {
+    plus: { icon: Star, name: texts.plus, desc: texts.plusDesc },
+    familie: { icon: Users, name: texts.familie, desc: texts.familieDesc, highlight: true },
+  };
 
   return (
     <div className="max-w-3xl mx-auto">
       <div className="text-center mb-8">
         <h2 className="font-serif text-2xl font-bold text-foreground">{texts.title}</h2>
         <p className="mt-2 text-muted-foreground">{texts.subtitle}</p>
-        <div className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-muted rounded-full">
-          <span className="text-sm text-muted-foreground">{texts.currentPackage}:</span>
-          <span className="font-semibold text-foreground">{texts[currentTier as keyof typeof texts]}</span>
-        </div>
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
-        {upgradeablePackages.map((pkg, i) => {
-          const Icon = pkg.icon;
-          const isFamily = pkg.key === 'family';
-          const upgradePrice = isFamily 
-            ? getUpgradePrice(currentTier, pkg.key, familyProfileCount)
-            : getUpgradePrice(currentTier, pkg.key);
-          const isLoading = loading === pkg.key;
+        {upgradeablePlans.map((planKey, i) => {
+          const info = planInfo[planKey];
+          if (!info) return null;
+          const Icon = info.icon;
+          const pricing = PRICING[planKey];
+          const isLoading = loading === planKey;
 
           return (
             <motion.div
-              key={pkg.key}
+              key={planKey}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.1 }}
               className={`relative rounded-2xl border-2 p-6 ${
-                pkg.highlight
-                  ? 'border-primary bg-primary/5 shadow-lg'
-                  : 'border-border bg-card'
+                info.highlight ? 'border-primary bg-primary/5 shadow-lg' : 'border-border bg-card'
               }`}
             >
-              {pkg.highlight && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground px-3 py-1 rounded-full text-xs font-semibold">
-                  {language === 'de' ? 'Empfohlen' : 'Recommended'}
-                </div>
-              )}
-
               <div className="flex items-center gap-3 mb-4">
                 <div className={`h-12 w-12 rounded-lg flex items-center justify-center ${
-                  pkg.highlight ? 'bg-primary text-primary-foreground' : 'bg-muted text-foreground'
+                  info.highlight ? 'bg-primary text-primary-foreground' : 'bg-muted text-foreground'
                 }`}>
                   <Icon className="h-6 w-6" />
                 </div>
                 <div>
-                  <h3 className="font-serif text-xl font-bold text-foreground">
-                    {texts[pkg.key as keyof typeof texts]}
-                  </h3>
-                  <p className="text-sm text-muted-foreground">
-                    {texts[`${pkg.key}Desc` as keyof typeof texts]}
-                  </p>
+                  <h3 className="font-serif text-xl font-bold text-foreground">{info.name}</h3>
+                  <p className="text-sm text-muted-foreground">{info.desc}</p>
                 </div>
               </div>
 
-              {/* Family profile selector */}
-              {isFamily && (
-                <div className="mb-4 flex items-center justify-center gap-3 p-3 bg-muted/50 rounded-lg">
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    className="h-8 w-8"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setFamilyProfileCount(Math.max(PRICING.family.minProfiles, familyProfileCount - 1));
-                    }}
-                    disabled={familyProfileCount <= PRICING.family.minProfiles}
-                  >
-                    <Minus className="h-4 w-4" />
-                  </Button>
-                  <span className="font-medium min-w-[80px] text-center">
-                    {familyProfileCount} {language === 'de' ? 'Profile' : 'Profiles'}
-                  </span>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    className="h-8 w-8"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setFamilyProfileCount(Math.min(PRICING.family.maxProfiles, familyProfileCount + 1));
-                    }}
-                    disabled={familyProfileCount >= PRICING.family.maxProfiles}
-                  >
-                    <Plus className="h-4 w-4" />
-                  </Button>
-                </div>
-              )}
-
               <div className="mb-6">
-                <div className="flex items-baseline gap-1">
-                  <span className="text-3xl font-bold text-foreground">+€{upgradePrice}</span>
-                  <span className="text-muted-foreground text-sm">
-                    {language === 'de' ? 'einmalig' : 'one-time'}
-                  </span>
-                </div>
-                <p className="text-xs text-muted-foreground mt-1">
-                  {language === 'de' 
-                    ? `Differenz zu Deinem aktuellen Paket`
-                    : `Difference from your current package`
-                  }
-                </p>
+                <span className="text-3xl font-bold text-foreground">€{pricing.price}</span>
+                <span className="text-muted-foreground text-sm">
+                  {pricing.mode === 'subscription' ? (language === 'de' ? '/Monat' : '/month') : (language === 'de' ? 'einmalig' : 'one-time')}
+                </span>
               </div>
 
               <ul className="space-y-2 mb-6">
-                {[
-                  language === 'de' 
-                    ? `${isFamily ? familyProfileCount : PRICING[pkg.key].maxProfiles} Profile verwalten`
-                    : `Manage ${isFamily ? familyProfileCount : PRICING[pkg.key].maxProfiles} profiles`,
-                  language === 'de' ? 'Alle Bereiche verfügbar' : 'All sections available',
-                  language === 'de' ? 'Link für Angehörige' : 'Link for relatives',
-                ].map((feature, idx) => (
+                {PRICING[planKey].modules.map((mod, idx) => (
                   <li key={idx} className="flex items-center gap-2 text-sm text-muted-foreground">
                     <Check className="h-4 w-4 text-primary flex-shrink-0" />
-                    {feature}
+                    {mod}
                   </li>
                 ))}
               </ul>
 
               <Button
-                onClick={() => handleUpgrade(pkg.key)}
+                onClick={() => handleUpgrade(planKey)}
                 disabled={isLoading}
                 className="w-full"
-                variant={pkg.highlight ? 'default' : 'outline'}
+                variant={info.highlight ? 'default' : 'outline'}
               >
-                {isLoading ? (
-                  texts.processing
-                ) : (
+                {isLoading ? texts.processing : (
                   <>
                     <ArrowUp className="h-4 w-4 mr-2" />
                     {texts.upgrade}
