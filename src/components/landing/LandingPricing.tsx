@@ -76,13 +76,13 @@ const LandingPricing = () => {
         </div>
 
         {/* Anker Familie */}
-        <div className="bg-[#FDFAF5] border border-[#E5E0D8] rounded-2xl p-6">
+        <div className="bg-[#FDFAF5] border border-[#E5E0D8] rounded-2xl p-6 flex flex-col">
           <h3 className="text-lg font-semibold text-[#262E38]">Anker Familie</h3>
           <div className="mt-3">
             <span className="text-4xl font-bold text-[#262E38]">€14</span>
             <span className="text-sm text-[#5C6570] ml-1">/Monat</span>
           </div>
-          <div className="border-t border-[#E5E0D8] mt-5 pt-5 space-y-2">
+          <div className="border-t border-[#E5E0D8] mt-5 pt-5 space-y-2 flex-1">
             {['Alles aus Anker Plus', 'Bis zu 10 Profile', 'Familienfreigabe', 'Geteilter Kalender'].map((f, i) => (
               <div key={i} className="flex items-center gap-2 text-sm text-[#5C6570]">
                 <Check className="h-3.5 w-3.5 text-[#437059] flex-shrink-0" />
