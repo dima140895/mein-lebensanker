@@ -156,7 +156,7 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange, embedd
 
     try {
       if (mode === 'login') {
-        const { error } = await signIn(email, password);
+        const { error, data } = await signIn(email, password);
         if (error) {
           if (error.message.includes('Email not confirmed')) {
             toast.error(texts.emailNotConfirmed);
@@ -165,6 +165,22 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange, embedd
           }
           throw error;
         }
+
+        // Check if MFA is required after successful password auth
+        const { data: factorsData } = await supabase.auth.mfa.listFactors();
+        const verifiedFactors = factorsData?.totp?.filter(f => f.status === 'verified') ?? [];
+        if (verifiedFactors.length > 0) {
+          // MFA is enabled — need to challenge
+          const factorId = verifiedFactors[0].id;
+          const { data: challengeData, error: challengeError } = await supabase.auth.mfa.challenge({ factorId });
+          if (challengeError) throw challengeError;
+          setMfaFactorId(factorId);
+          setMfaChallengeId(challengeData.id);
+          setMfaCode('');
+          handleModeChange('mfa');
+          return;
+        }
+
         toast.success(texts.welcomeBack);
         onSuccess?.();
       } else if (mode === 'register') {
