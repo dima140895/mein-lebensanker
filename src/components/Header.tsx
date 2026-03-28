@@ -342,9 +342,9 @@ const Header = () => {
                       <div className="flex items-center gap-2 bg-primary/10 px-2.5 py-1.5 rounded-md border border-primary/20">
                         <Package className="h-4 w-4 text-primary shrink-0" />
                         <span className="font-medium text-foreground text-sm">
-                          {profile.purchased_tier === 'single' && tx.single}
-                          {profile.purchased_tier === 'couple' && tx.couple}
-                          {profile.purchased_tier === 'family' && tx.family}
+                          {profile.purchased_tier === 'anker' && tx.anker}
+                          {profile.purchased_tier === 'plus' && tx.plus}
+                          {profile.purchased_tier === 'familie' && tx.familie}
                         </span>
                       </div>
                       <Button 
