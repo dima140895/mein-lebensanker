@@ -389,7 +389,7 @@ Legal basis: Art. 6(1)(f) GDPR (legitimate interest in improving our service).
 More information: https://plausible.io/data-policy`,
         },
         {
-          title: '13. Your Rights',
+          title: '14. Your Rights',
           content: `You have the following rights regarding your personal data:
 
 • Right to information (Art. 15 GDPR)
