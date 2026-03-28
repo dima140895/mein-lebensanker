@@ -423,8 +423,8 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange }: Auth
       animate={{ opacity: 1, y: 0 }}
       className="w-full max-w-md mx-auto"
     >
-      <div className="rounded-xl border border-border bg-card p-8 shadow-elevated">
-        <h2 className="font-serif text-2xl font-bold text-center text-foreground mb-6">
+       <div className="rounded-2xl border border-border bg-white p-8 shadow-card">
+        <h2 className="font-serif text-2xl font-semibold text-center text-forest mb-6">
           {mode === 'login' ? texts.login : texts.register}
         </h2>
 
