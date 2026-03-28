@@ -234,7 +234,7 @@ const PaymentSuccessContent = () => {
       <div className="flex min-h-screen items-center justify-center bg-background p-4">
         <ProfileSetupWizard 
           maxProfiles={maxProfiles} 
-          packageType={paymentType} 
+          packageType={plan} 
           onAllProfilesExist={handleAllProfilesExist}
         />
       </div>
