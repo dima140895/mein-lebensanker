@@ -658,9 +658,9 @@ const Header = () => {
                           <div>
                             <p className="text-[10px] uppercase tracking-wide text-muted-foreground">{tx.currentTier}</p>
                             <p className="font-semibold text-sm text-foreground">
-                              {profile.purchased_tier === 'single' && tx.single}
-                              {profile.purchased_tier === 'couple' && tx.couple}
-                              {profile.purchased_tier === 'family' && tx.family}
+                              {profile.purchased_tier === 'anker' && tx.anker}
+                              {profile.purchased_tier === 'plus' && tx.plus}
+                              {profile.purchased_tier === 'familie' && tx.familie}
                             </p>
                           </div>
                           <div className="text-right">
