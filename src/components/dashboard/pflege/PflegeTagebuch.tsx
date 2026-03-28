@@ -144,6 +144,7 @@ const PflegeTagebuch = () => {
       // Track first entry
       if (entries.length === 0) {
         trackEvent('Erster_Pflegeeintrag');
+        setShowReferral(true);
       }
       toast.success(texts.saved);
       setShowForm(false);
