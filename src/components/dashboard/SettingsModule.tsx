@@ -81,6 +81,15 @@ const SettingsModule = () => {
           <ShareLinkManager />
         </TabsContent>
       </Tabs>
+
+      {conversions !== null && conversions > 0 && (
+        <div className="flex items-center gap-3 p-4 rounded-xl border border-primary/20 bg-sage-light dark:bg-muted">
+          <Heart className="h-5 w-5 text-primary flex-shrink-0" />
+          <p className="font-body text-sm text-foreground">
+            {texts.referralStats.replace('{count}', String(conversions))}
+          </p>
+        </div>
+      )}
     </div>
   );
 };

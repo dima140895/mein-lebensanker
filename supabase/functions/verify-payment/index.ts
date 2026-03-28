@@ -193,6 +193,11 @@ serve(async (req) => {
         }, { onConflict: "user_id" })
         .select();
 
+      // Track referral conversion if applicable
+      if (referralCode) {
+        await supabaseAdmin.rpc("increment_referral_conversions", { _code: referralCode });
+      }
+
       return new Response(JSON.stringify({
         success: true,
         paymentStatus: "paid",
