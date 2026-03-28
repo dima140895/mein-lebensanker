@@ -50,7 +50,7 @@ const LandingHero = () => {
             <Button
               onClick={() => scrollTo('journey')}
               variant="outline"
-              className="border-[hsl(var(--forest))]/20 text-[hsl(var(--forest))] hover:bg-[hsl(var(--forest))]/5 font-body text-base rounded-full px-8 h-12"
+              className="border-primary/20 text-foreground hover:bg-primary/5 font-body text-base rounded-full px-8 h-12"
             >
               Wie es funktioniert
             </Button>

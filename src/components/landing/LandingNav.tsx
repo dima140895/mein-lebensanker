@@ -71,7 +71,7 @@ const LandingNav = () => {
               {link.label}
             </button>
           ))}
-          <Button onClick={() => { setMobileOpen(false); navigate('/dashboard?register=true'); }} className="w-full bg-[hsl(var(--forest))] hover:bg-[hsl(var(--forest))]/90 text-white font-body rounded-full">
+          <Button onClick={() => { setMobileOpen(false); navigate('/dashboard?register=true'); }} className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-body rounded-full">
             Jetzt starten
           </Button>
         </div>
