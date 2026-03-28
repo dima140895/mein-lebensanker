@@ -1,6 +1,8 @@
 import { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { ClipboardList, HeartHandshake, Stethoscope, ArrowRight, Lock, Zap, CheckCircle2, Circle, Anchor } from 'lucide-react';
+import { ClipboardList, HeartHandshake, Stethoscope, ArrowRight, Lock, Zap, CheckCircle2, Circle, Anchor, ShieldAlert } from 'lucide-react';
+import { useEncryption } from '@/contexts/EncryptionContext';
+import { EncryptionPasswordDialog } from '@/components/EncryptionPasswordDialog';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSectionStatus } from '@/hooks/useSectionStatus';
@@ -42,11 +44,13 @@ const SECTION_LABELS: Record<string, { de: string; en: string }> = {
 const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomeProps) => {
   const { language } = useLanguage();
   const { user, profile } = useAuth();
+  const { isEncryptionEnabled, isLoading: encryptionLoading } = useEncryption();
   const { sectionStatus, progressPercent, filledCount, totalCount, isComplete, loading: statusLoading } = useSectionStatus();
 
   const [lastPflege, setLastPflege] = useState<any>(null);
   const [todayCheckin, setTodayCheckin] = useState<any>(null);
   const [dataLoading, setDataLoading] = useState(true);
+  const [showEncryptionSetup, setShowEncryptionSetup] = useState(false);
 
   const isPlusOrHigher = userPlan === 'plus' || userPlan === 'familie';
   const onboardingFocus = profile?.onboarding_focus;
@@ -340,6 +344,32 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
           </Card>
         </motion.div>
       )}
+
+      {/* Encryption reminder — gentle hint when not encrypted */}
+      {!encryptionLoading && !isEncryptionEnabled && (
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
+          <div className="flex items-center gap-3 p-4 rounded-xl border border-amber-200 bg-amber-50/30">
+            <ShieldAlert className="h-4 w-4 text-amber-600 flex-shrink-0" />
+            <p className="text-sm text-foreground font-body flex-1">
+              {language === 'de'
+                ? 'Deine Daten sind noch nicht verschlüsselt.'
+                : 'Your data is not yet encrypted.'}
+            </p>
+            <button
+              onClick={() => setShowEncryptionSetup(true)}
+              className="text-sm font-medium text-primary hover:text-primary/80 transition-colors whitespace-nowrap font-body"
+            >
+              {language === 'de' ? 'Jetzt aktivieren →' : 'Enable now →'}
+            </button>
+          </div>
+        </motion.div>
+      )}
+
+      <EncryptionPasswordDialog
+        open={showEncryptionSetup}
+        onOpenChange={setShowEncryptionSetup}
+        mode="setup"
+      />
     </div>
   );
 };
