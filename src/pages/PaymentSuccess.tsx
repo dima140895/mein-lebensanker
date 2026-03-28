@@ -103,7 +103,7 @@ const PaymentSuccessContent = () => {
     };
 
     verifyPayment();
-  }, [user, authLoading, sessionId, paymentType, language, refreshProfile, hasVerified, profilesParam, isUpgrade, isAddingProfiles]);
+  }, [user, authLoading, sessionId, plan, language, refreshProfile, hasVerified, profilesParam]);
 
   const t = {
     de: {
