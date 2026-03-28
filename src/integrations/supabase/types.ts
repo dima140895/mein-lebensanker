@@ -14,6 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
+      medikamente: {
+        Row: {
+          aktiv: boolean
+          arzt: string | null
+          created_at: string
+          dosierung: string | null
+          einnahmezeiten: string | null
+          id: string
+          name: string
+          notizen: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          aktiv?: boolean
+          arzt?: string | null
+          created_at?: string
+          dosierung?: string | null
+          einnahmezeiten?: string | null
+          id?: string
+          name: string
+          notizen?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          aktiv?: boolean
+          arzt?: string | null
+          created_at?: string
+          dosierung?: string | null
+          einnahmezeiten?: string | null
+          id?: string
+          name?: string
+          notizen?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       person_profiles: {
         Row: {
           birth_date: string | null
@@ -36,6 +75,48 @@ export type Database = {
           created_at?: string
           id?: string
           name?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      pflege_eintraege: {
+        Row: {
+          aktivitaeten: string | null
+          besonderheiten: string | null
+          created_at: string
+          eintrags_datum: string
+          id: string
+          mahlzeiten: string | null
+          naechste_schritte: string | null
+          person_name: string
+          stimmung: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          aktivitaeten?: string | null
+          besonderheiten?: string | null
+          created_at?: string
+          eintrags_datum?: string
+          id?: string
+          mahlzeiten?: string | null
+          naechste_schritte?: string | null
+          person_name?: string
+          stimmung: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          aktivitaeten?: string | null
+          besonderheiten?: string | null
+          created_at?: string
+          eintrags_datum?: string
+          id?: string
+          mahlzeiten?: string | null
+          naechste_schritte?: string | null
+          person_name?: string
+          stimmung?: number
           updated_at?: string
           user_id?: string
         }
