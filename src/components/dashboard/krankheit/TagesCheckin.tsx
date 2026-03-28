@@ -297,7 +297,7 @@ const TagesCheckin = () => {
         </div>
       </div>
 
-      <Button onClick={handleSave} disabled={saving} className="w-full h-12 text-base">
+      <Button onClick={handleSave} disabled={saving} className="w-full h-12 text-base min-h-[44px]">
         {saving ? (
           <><Loader2 className="h-4 w-4 mr-2 animate-spin" />{texts.saving}</>
         ) : (
