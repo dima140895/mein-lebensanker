@@ -258,6 +258,92 @@ Without password and without recovery key, your encrypted data is not recoverabl
                 {texts.conclusion}
               </p>
             </div>
+
+            {/* Auftragsverarbeiter */}
+            <div className="mt-10">
+              <h2 className="font-serif text-2xl font-bold text-foreground mb-3">
+                {language === 'de' ? 'Auftragsverarbeiter' : 'Data Processors'}
+              </h2>
+              <p className="text-sm text-muted-foreground mb-4">
+                {language === 'de'
+                  ? 'Zur Bereitstellung unserer Dienste arbeiten wir mit folgenden geprüften Auftragsverarbeitern zusammen, mit denen wir Auftragsverarbeitungsverträge (AVV) gemäß Art. 28 DSGVO abgeschlossen haben:'
+                  : 'To provide our services, we work with the following vetted data processors, with whom we have concluded data processing agreements (DPA) pursuant to Art. 28 GDPR:'}
+              </p>
+              <div className="rounded-lg border overflow-hidden">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="bg-muted/50">
+                      <th className="text-left px-4 py-2.5 font-medium text-foreground">{language === 'de' ? 'Dienstleister' : 'Provider'}</th>
+                      <th className="text-left px-4 py-2.5 font-medium text-foreground">{language === 'de' ? 'Zweck' : 'Purpose'}</th>
+                      <th className="text-left px-4 py-2.5 font-medium text-foreground">{language === 'de' ? 'Standort' : 'Location'}</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-border">
+                    <tr>
+                      <td className="px-4 py-2.5 text-foreground">Supabase Inc.</td>
+                      <td className="px-4 py-2.5 text-muted-foreground">{language === 'de' ? 'Datenbank, Authentifizierung, Dateispeicher' : 'Database, Authentication, File Storage'}</td>
+                      <td className="px-4 py-2.5 text-muted-foreground">EU (Frankfurt)</td>
+                    </tr>
+                    <tr>
+                      <td className="px-4 py-2.5 text-foreground">Stripe Inc.</td>
+                      <td className="px-4 py-2.5 text-muted-foreground">{language === 'de' ? 'Zahlungsabwicklung' : 'Payment Processing'}</td>
+                      <td className="px-4 py-2.5 text-muted-foreground">{language === 'de' ? 'EU/USA (Standardvertragsklauseln)' : 'EU/USA (Standard Contractual Clauses)'}</td>
+                    </tr>
+                    <tr>
+                      <td className="px-4 py-2.5 text-foreground">Resend Inc.</td>
+                      <td className="px-4 py-2.5 text-muted-foreground">{language === 'de' ? 'E-Mail-Versand' : 'Email Delivery'}</td>
+                      <td className="px-4 py-2.5 text-muted-foreground">{language === 'de' ? 'USA (Standardvertragsklauseln)' : 'USA (Standard Contractual Clauses)'}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Verschlüsselung */}
+            <div className="mt-10">
+              <h2 className="font-serif text-2xl font-bold text-foreground mb-3">
+                {language === 'de' ? 'Verschlüsselung' : 'Encryption'}
+              </h2>
+              <div className="space-y-4 text-sm text-muted-foreground leading-relaxed">
+                <p>
+                  <strong className="text-foreground">{language === 'de' ? 'Transport-Verschlüsselung:' : 'Transport Encryption:'}</strong>{' '}
+                  {language === 'de'
+                    ? 'Alle Verbindungen zu Mein Lebensanker sind über HTTPS/TLS verschlüsselt. Daten werden zu keinem Zeitpunkt unverschlüsselt über das Internet übertragen.'
+                    : 'All connections to Mein Lebensanker are encrypted via HTTPS/TLS. Data is never transmitted unencrypted over the internet.'}
+                </p>
+                <p>
+                  <strong className="text-foreground">{language === 'de' ? 'Datenbankebene:' : 'Database Level:'}</strong>{' '}
+                  {language === 'de'
+                    ? 'Die Datenbank verschlüsselt alle gespeicherten Daten automatisch (Encryption at Rest). Die Server befinden sich in Frankfurt, Deutschland.'
+                    : 'The database automatically encrypts all stored data (Encryption at Rest). Servers are located in Frankfurt, Germany.'}
+                </p>
+                <p>
+                  <strong className="text-foreground">{language === 'de' ? 'Ende-zu-Ende-Verschlüsselung:' : 'End-to-End Encryption:'}</strong>{' '}
+                  {language === 'de'
+                    ? 'Optional aktivierbar mit AES-256-GCM. Bei aktivierter Verschlüsselung werden Ihre Daten ausschließlich auf Ihrem Gerät ent- und verschlüsselt (Zero-Knowledge). Weder Mein Lebensanker noch unsere Infrastruktur-Anbieter haben Zugriff auf unverschlüsselte Daten.'
+                    : 'Optionally activatable with AES-256-GCM. When enabled, your data is encrypted and decrypted exclusively on your device (Zero-Knowledge). Neither Mein Lebensanker nor our infrastructure providers have access to unencrypted data.'}
+                </p>
+              </div>
+            </div>
+
+            {/* Sicherheitsmeldungen */}
+            <div className="mt-10 rounded-lg border border-primary/20 bg-primary/5 p-5">
+              <h2 className="font-serif text-xl font-bold text-foreground mb-2">
+                {language === 'de' ? 'Sicherheitsmeldungen' : 'Security Reports'}
+              </h2>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                {language === 'de'
+                  ? 'Wenn Sie eine Sicherheitslücke gefunden haben, melden Sie diese bitte verantwortungsvoll an: '
+                  : 'If you have found a security vulnerability, please report it responsibly to: '}
+                <a href="mailto:security@mein-lebensanker.de" className="text-primary hover:underline font-medium">
+                  security@mein-lebensanker.de
+                </a>
+                <br />
+                {language === 'de'
+                  ? 'Wir antworten innerhalb von 48 Stunden und schließen bestätigte Lücken innerhalb von 30 Tagen.'
+                  : 'We respond within 48 hours and close confirmed vulnerabilities within 30 days.'}
+              </p>
+            </div>
           </div>
         </div>
       </main>

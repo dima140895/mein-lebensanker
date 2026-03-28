@@ -14,7 +14,8 @@ const LandingFooter = () => {
           <div className="flex flex-wrap items-center justify-center gap-6 text-xs font-body">
             <Link to="/datenschutz" className="hover:text-white transition-colors">Datenschutz</Link>
             <Link to="/impressum" className="hover:text-white transition-colors">Impressum</Link>
-            <Link to="/datensicherheit" className="hover:text-white transition-colors">Sicherheit</Link>
+            <Link to="/datensicherheit" className="hover:text-white transition-colors">Datensicherheit</Link>
+            <Link to="/security" className="hover:text-white transition-colors">Sicherheit</Link>
             <Link to="/partner" className="hover:text-white transition-colors">Für Partner</Link>
           </div>
 
