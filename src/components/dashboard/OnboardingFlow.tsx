@@ -198,7 +198,7 @@ const OnboardingFlow = ({ onComplete }: OnboardingFlowProps) => {
             >
               {/* Header */}
               <div className="flex items-center justify-between mb-8">
-                <button onClick={() => slideIdx === 0 ? setStep('welcome') : setSlideIdx(slideIdx - 1)} className="text-[#2C4A3E]/40 hover:text-[#2C4A3E] transition-colors">
+                <button onClick={() => slideIdx === 0 ? setStep('welcome') : setSlideIdx(slideIdx - 1)} className="text-foreground/40 hover:text-foreground transition-colors">
                   <ChevronLeft className="h-5 w-5" />
                 </button>
                 {/* Progress dots */}
