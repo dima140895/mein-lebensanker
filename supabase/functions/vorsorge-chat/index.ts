@@ -39,6 +39,19 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  // Only allow POST
+  if (req.method !== "POST") {
+    return new Response("Method Not Allowed", { status: 405, headers: corsHeaders });
+  }
+
+  // Content-Type check
+  const contentType = req.headers.get("content-type");
+  if (!contentType?.includes("application/json")) {
+    return new Response(JSON.stringify({ error: "Content-Type muss application/json sein" }), {
+      status: 415, headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
+
   try {
     // --- Authentication ---
     const authHeader = req.headers.get("Authorization");
@@ -86,7 +99,17 @@ serve(async (req) => {
       });
     }
 
-    const body = await req.json().catch(() => null);
+    // Safe JSON parse
+    let body: Record<string, unknown>;
+    try {
+      body = await req.json();
+    } catch {
+      return new Response(JSON.stringify({ error: "Ungültiges JSON" }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     // Validate input: messages must be a non-empty array of {role, content} objects
     if (
       !body ||
@@ -108,7 +131,7 @@ serve(async (req) => {
         validRoles.includes((m as any).role) &&
         typeof (m as any).content === "string" &&
         (m as any).content.length > 0 &&
-        (m as any).content.length <= 10000
+        (m as any).content.length <= 2000
     );
 
     if (messages.length === 0) {
@@ -117,6 +140,9 @@ serve(async (req) => {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
+
+    // Limit history to last 20 messages
+    const trimmedMessages = messages.slice(-20);
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     
@@ -134,7 +160,7 @@ serve(async (req) => {
         model: "google/gemini-3-flash-preview",
         messages: [
           { role: "system", content: systemPrompt },
-          ...messages,
+          ...trimmedMessages,
         ],
         stream: true,
       }),

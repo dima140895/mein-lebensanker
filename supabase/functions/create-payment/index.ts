@@ -1,7 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
-import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 
 const ALLOWED_ORIGINS = [
   "https://mein-lebensanker.lovable.app",
@@ -20,28 +19,40 @@ const getCorsHeaders = (origin: string | null) => {
   };
 };
 
-// Price IDs
-const PRICES = {
+// Server-side price mapping — never trust client-provided priceIds
+const VALID_PLANS = ['anker', 'plus', 'familie'] as const;
+type Plan = typeof VALID_PLANS[number];
+
+const PRICES: Record<Plan, string> = {
   anker: "price_1TFxsEEwPqOvJ6cUDbqzpbmI",
   plus: "price_1TFxtDICzkfBNYhy7DjVuBt7",
   familie: "price_1TFxtdICzkfBNYhyZbGYHWYU",
 };
 
-const PLAN_CONFIG = {
-  anker: { mode: "payment" as const, trialDays: 0, maxProfiles: 1 },
-  plus: { mode: "subscription" as const, trialDays: 14, maxProfiles: 1 },
-  familie: { mode: "subscription" as const, trialDays: 14, maxProfiles: 10 },
+const PLAN_CONFIG: Record<Plan, { mode: "payment" | "subscription"; trialDays: number; maxProfiles: number }> = {
+  anker: { mode: "payment", trialDays: 0, maxProfiles: 1 },
+  plus: { mode: "subscription", trialDays: 14, maxProfiles: 1 },
+  familie: { mode: "subscription", trialDays: 14, maxProfiles: 10 },
 };
-
-const PaymentRequestSchema = z.object({
-  plan: z.enum(["anker", "plus", "familie"]),
-});
 
 serve(async (req) => {
   const corsHeaders = getCorsHeaders(req.headers.get("origin"));
 
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
+  }
+
+  // Only allow POST
+  if (req.method !== "POST") {
+    return new Response("Method Not Allowed", { status: 405, headers: corsHeaders });
+  }
+
+  // Content-Type check
+  const contentType = req.headers.get("content-type");
+  if (!contentType?.includes("application/json")) {
+    return new Response(JSON.stringify({ error: "Content-Type muss application/json sein" }), {
+      status: 415, headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
   }
 
   const supabaseClient = createClient(
@@ -69,19 +80,29 @@ serve(async (req) => {
       });
     }
 
-    const rawBody = await req.json();
-    const parseResult = PaymentRequestSchema.safeParse(rawBody);
+    // Safe JSON parse
+    let rawBody: Record<string, unknown>;
+    try {
+      rawBody = await req.json();
+    } catch {
+      return new Response(JSON.stringify({ error: "Ungültiges JSON" }), {
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
 
-    if (!parseResult.success) {
-      return new Response(JSON.stringify({ error: "Invalid request parameters" }), {
+    // Validate plan
+    const plan = rawBody?.plan as string;
+    if (!plan || !(VALID_PLANS as readonly string[]).includes(plan)) {
+      return new Response(JSON.stringify({ error: "Ungültiger Plan" }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 400,
       });
     }
 
-    const { plan } = parseResult.data;
-    const config = PLAN_CONFIG[plan];
-    const priceId = PRICES[plan];
+    const validPlan = plan as Plan;
+    const config = PLAN_CONFIG[validPlan];
+    // Always use server-side price mapping
+    const priceId = PRICES[validPlan];
 
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
       apiVersion: "2025-08-27.basil",
@@ -101,12 +122,12 @@ serve(async (req) => {
       customer_email: customerId ? undefined : user.email,
       line_items: [{ price: priceId, quantity: 1 }],
       mode: config.mode,
-      success_url: `${origin}/payment-success?session_id={CHECKOUT_SESSION_ID}&plan=${plan}`,
+      success_url: `${origin}/payment-success?session_id={CHECKOUT_SESSION_ID}&plan=${validPlan}`,
       cancel_url: `${origin}/dashboard`,
       locale: "de",
       metadata: {
         user_id: user.id,
-        plan,
+        plan: validPlan,
         max_profiles: String(config.maxProfiles),
       },
     };
@@ -117,7 +138,7 @@ serve(async (req) => {
         trial_period_days: config.trialDays,
         metadata: {
           user_id: user.id,
-          plan,
+          plan: validPlan,
         },
       };
     }

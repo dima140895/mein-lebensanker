@@ -8,48 +8,36 @@ import { createClient } from "npm:@supabase/supabase-js@2";
 // --- CET/CEST timezone helpers ---
 
 function getCETOffset(date: Date): number {
-  // European Summer Time: last Sunday in March to last Sunday in October
   const year = date.getUTCFullYear();
-
-  // Last Sunday in March (switch at 01:00 UTC = 02:00 CET)
   const marchEnd = new Date(Date.UTC(year, 2, 31));
   marchEnd.setUTCDate(31 - marchEnd.getUTCDay());
   marchEnd.setUTCHours(1, 0, 0, 0);
-
-  // Last Sunday in October (switch at 01:00 UTC = 03:00 CEST → 02:00 CET)
   const octoberEnd = new Date(Date.UTC(year, 9, 31));
   octoberEnd.setUTCDate(31 - octoberEnd.getUTCDay());
   octoberEnd.setUTCHours(1, 0, 0, 0);
-
   if (date >= marchEnd && date < octoberEnd) {
-    return 2; // CEST = UTC+2
+    return 2; // CEST
   }
-  return 1; // CET = UTC+1
+  return 1; // CET
 }
-
-// Test: 15. Juli 2025, 07:00 UTC → getCETOffset = 2 → 09:00 CEST ✓
-// Test: 15. Januar 2025, 07:00 UTC → getCETOffset = 1 → 08:00 CET ✓
-// Test: 30. März 2025 01:30 UTC → Grenzfall, noch CET (Umstellung um 02:00 CET = 01:00 UTC)
 
 function getCurrentCETTime(date: Date): { hours: number; minutes: number } {
   const offset = getCETOffset(date);
   const cetMs = date.getTime() + offset * 60 * 60 * 1000;
   const cetDate = new Date(cetMs);
-  return {
-    hours: cetDate.getUTCHours(),
-    minutes: cetDate.getUTCMinutes(),
-  };
+  return { hours: cetDate.getUTCHours(), minutes: cetDate.getUTCMinutes() };
 }
 
 function getCurrentCETDayOfWeek(date: Date): number {
   const offset = getCETOffset(date);
   const cetDate = new Date(date.getTime() + offset * 60 * 60 * 1000);
-  return cetDate.getUTCDay(); // 0 = Sunday
+  return cetDate.getUTCDay();
 }
 
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+const CRON_SECRET = Deno.env.get("CRON_SECRET");
 
 const APP_URL = "https://mein-lebensanker.lovable.app";
 const FROM_EMAIL = "Mein Lebensanker <erinnerung@mein-lebensanker.de>";
@@ -115,7 +103,6 @@ async function processDailyCheckinReminders(supabase: ReturnType<typeof createCl
   const now = new Date();
   const cetTime = getCurrentCETTime(now);
 
-  // Get users who have daily reminders enabled and whose time matches (within 30 min window)
   const { data: prefs, error: prefsErr } = await supabase
     .from("reminder_preferences")
     .select("user_id, daily_checkin_time")
@@ -127,13 +114,9 @@ async function processDailyCheckinReminders(supabase: ReturnType<typeof createCl
   const today = now.toISOString().split("T")[0];
 
   for (const pref of prefs) {
-    // Parse time (HH:MM format) — stored as local CET/CEST time
     const [h, m] = pref.daily_checkin_time.split(":").map(Number);
-
-    // Compare directly with current CET time (no manual UTC conversion needed)
     if (Math.abs(cetTime.hours - h) > 0 || cetTime.minutes > 30) continue;
 
-    // Check if user already did check-in today
     const { data: checkins } = await supabase
       .from("symptom_checkins")
       .select("id")
@@ -143,7 +126,6 @@ async function processDailyCheckinReminders(supabase: ReturnType<typeof createCl
 
     if (checkins && checkins.length > 0) continue;
 
-    // Check subscription (must be plus or familie)
     const { data: sub } = await supabase
       .from("subscriptions")
       .select("plan, active_modules")
@@ -154,7 +136,6 @@ async function processDailyCheckinReminders(supabase: ReturnType<typeof createCl
 
     if (!sub || !["plus", "familie"].includes(sub.plan)) continue;
 
-    // Get user email
     const { data: profile } = await supabase
       .from("profiles")
       .select("email, full_name")
@@ -191,10 +172,9 @@ async function processDailyCheckinReminders(supabase: ReturnType<typeof createCl
 // REMINDER 2: Weekly care summary (Sundays at 18:00 CET)
 async function processWeeklySummary(supabase: ReturnType<typeof createClient>) {
   const now = new Date();
-  const cetDay = getCurrentCETDayOfWeek(now); // 0 = Sunday
+  const cetDay = getCurrentCETDayOfWeek(now);
   const cetTime = getCurrentCETTime(now);
   
-  // Sunday 18:00 CET/CEST (correctly handles both winter and summer)
   if (cetDay !== 0 || cetTime.hours !== 18) return;
 
   const { data: prefs } = await supabase
@@ -211,7 +191,6 @@ async function processWeeklySummary(supabase: ReturnType<typeof createClient>) {
   const todayStr = now.toISOString().split("T")[0];
 
   for (const pref of prefs) {
-    // Check subscription
     const { data: sub } = await supabase
       .from("subscriptions")
       .select("plan")
@@ -222,7 +201,6 @@ async function processWeeklySummary(supabase: ReturnType<typeof createClient>) {
 
     if (!sub || !["plus", "familie"].includes(sub.plan)) continue;
 
-    // Get entries this week
     const { data: entries } = await supabase
       .from("pflege_eintraege")
       .select("stimmung, eintrags_datum, person_name")
@@ -237,7 +215,6 @@ async function processWeeklySummary(supabase: ReturnType<typeof createClient>) {
     const avgIdx = Math.round(Number(avgStimmung));
     const emoji = stimmungEmojis[avgIdx] || "😐";
     
-    // Missing days
     const entryDates = new Set(entries.map(e => e.eintrags_datum));
     const missingDays = 7 - entryDates.size;
     const personName = entries[0]?.person_name || "der pflegebedürftigen Person";
@@ -294,7 +271,6 @@ async function processUpgradeReminders(supabase: ReturnType<typeof createClient>
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
   const cutoffDate = thirtyDaysAgo.toISOString();
 
-  // Get Anker-only users who purchased > 30 days ago
   const { data: subs } = await supabase
     .from("subscriptions")
     .select("user_id, created_at")
@@ -305,7 +281,6 @@ async function processUpgradeReminders(supabase: ReturnType<typeof createClient>
   if (!subs?.length) return;
 
   for (const sub of subs) {
-    // Check if already sent
     const { data: sent } = await supabase
       .from("sent_reminders")
       .select("id")
@@ -315,7 +290,6 @@ async function processUpgradeReminders(supabase: ReturnType<typeof createClient>
 
     if (sent && sent.length > 0) continue;
 
-    // Check unsubscribed
     const { data: pref } = await supabase
       .from("reminder_preferences")
       .select("email_unsubscribed")
@@ -374,11 +348,27 @@ Deno.serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  // Only allow POST
+  if (req.method !== "POST") {
+    return new Response("Method Not Allowed", { status: 405, headers: corsHeaders });
+  }
+
   try {
-    // Validate auth
+    // Authenticate via CRON_SECRET or Bearer token
     const authHeader = req.headers.get("authorization");
     if (!authHeader) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401, headers: corsHeaders });
+    }
+
+    // If CRON_SECRET is configured, validate against it
+    if (CRON_SECRET) {
+      if (authHeader !== `Bearer ${CRON_SECRET}`) {
+        // Fall back to checking if it's the anon key (for legacy pg_cron jobs)
+        const anonKey = Deno.env.get("SUPABASE_ANON_KEY") || "";
+        if (authHeader !== `Bearer ${anonKey}`) {
+          return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401, headers: corsHeaders });
+        }
+      }
     }
 
     const supabase = createClient(SUPABASE_URL!, SUPABASE_SERVICE_ROLE_KEY!);
