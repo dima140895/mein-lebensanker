@@ -253,10 +253,10 @@ const MeinVerlauf = () => {
               <TableHeader>
                 <TableRow>
                   <TableHead className="text-xs">{texts.date}</TableHead>
-                  <TableHead className="text-xs text-center">⚡</TableHead>
-                  <TableHead className="text-xs text-center">😣</TableHead>
-                  <TableHead className="text-xs text-center">😴</TableHead>
-                  <TableHead className="text-xs text-center">😊</TableHead>
+                  <TableHead className="text-xs text-center" aria-label={texts.energie}>⚡</TableHead>
+                  <TableHead className="text-xs text-center" aria-label={texts.schmerz}>😣</TableHead>
+                  <TableHead className="text-xs text-center" aria-label={texts.schlaf}>😴</TableHead>
+                  <TableHead className="text-xs text-center" aria-label={texts.stimmung}>😊</TableHead>
                   <TableHead className="text-xs">{texts.notiz}</TableHead>
                 </TableRow>
               </TableHeader>

@@ -138,6 +138,18 @@
     @apply border-border;
   }
 
+  /* Accessible focus rings for keyboard navigation */
+  :focus-visible {
+    outline: 2px solid hsl(var(--primary));
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  /* Skip link for keyboard users */
+  .skip-to-content {
+    @apply sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[9999] focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-lg;
+  }
+
   body {
     @apply bg-background text-foreground antialiased;
     font-family: 'DM Sans', sans-serif;
