@@ -168,7 +168,9 @@ export type Database = {
           has_paid: boolean | null
           id: string
           is_encrypted: boolean | null
+          is_new_user: boolean | null
           max_profiles: number | null
+          onboarding_focus: string | null
           partner_name: string | null
           payment_type: string | null
           purchased_tier: string | null
@@ -184,7 +186,9 @@ export type Database = {
           has_paid?: boolean | null
           id?: string
           is_encrypted?: boolean | null
+          is_new_user?: boolean | null
           max_profiles?: number | null
+          onboarding_focus?: string | null
           partner_name?: string | null
           payment_type?: string | null
           purchased_tier?: string | null
@@ -200,7 +204,9 @@ export type Database = {
           has_paid?: boolean | null
           id?: string
           is_encrypted?: boolean | null
+          is_new_user?: boolean | null
           max_profiles?: number | null
+          onboarding_focus?: string | null
           partner_name?: string | null
           payment_type?: string | null
           purchased_tier?: string | null
