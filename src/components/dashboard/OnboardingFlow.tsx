@@ -166,12 +166,12 @@ const OnboardingFlow = ({ onComplete }: OnboardingFlowProps) => {
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2">
-                            <span className="font-body font-semibold text-[#2C4A3E] text-sm">{opt.title}</span>
-                            <ArrowRight className="h-3.5 w-3.5 text-[#2C4A3E]/20 group-hover:text-[#2C4A3E]/50 group-hover:translate-x-0.5 transition-all" />
+                            <span className="font-body font-semibold text-foreground text-sm">{opt.title}</span>
+                            <ArrowRight className="h-3.5 w-3.5 text-foreground/20 group-hover:text-foreground/50 group-hover:translate-x-0.5 transition-all" />
                           </div>
-                          <p className="text-xs text-[#2C4A3E]/50 font-body mt-0.5">{opt.desc}</p>
+                          <p className="text-xs text-muted-foreground font-body mt-0.5">{opt.desc}</p>
                           {opt.upgradeHint && (
-                            <span className="inline-block text-[10px] font-semibold text-[#C4813A] bg-[#C4813A]/10 px-2 py-0.5 rounded-full mt-1.5 font-body">
+                            <span className="inline-block text-[10px] font-semibold text-accent bg-accent/10 px-2 py-0.5 rounded-full mt-1.5 font-body">
                               {opt.upgradeHint}
                             </span>
                           )}
