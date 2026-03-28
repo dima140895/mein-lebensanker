@@ -260,6 +260,7 @@ const ResetPassword = () => {
           </div>
         </motion.div>
       </main>
+      <LandingFooter />
     </div>
   );
 };

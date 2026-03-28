@@ -110,11 +110,7 @@ const PromoVideo = () => {
           </Button>
         </div>
       </main>
-
-      {/* Footer */}
-      <footer className="container mx-auto px-4 py-8 text-center text-sm text-muted-foreground">
-        <p>© {new Date().getFullYear()} Mein Lebensanker. {language === 'de' ? 'Alle Rechte vorbehalten.' : 'All rights reserved.'}</p>
-      </footer>
+      <LandingFooter />
     </div>
   );
 };

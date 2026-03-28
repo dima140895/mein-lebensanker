@@ -563,6 +563,7 @@ const LearnMore = () => {
       </main>
 
       <Disclaimer />
+      <LandingFooter />
       
       <SecurityDocDialog 
         open={securityDocOpen} 
