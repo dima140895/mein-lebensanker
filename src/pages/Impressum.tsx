@@ -164,7 +164,7 @@ Downloads and copies of this page are only permitted for private, non-commercial
           </div>
         </div>
       </main>
-      <Footer />
+      <LandingFooter />
     </div>
   );
 };

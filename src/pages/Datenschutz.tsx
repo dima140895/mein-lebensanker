@@ -405,7 +405,7 @@ Hufnerstrasse 11, 22083 Hamburg`,
           </div>
         </div>
       </main>
-      <Footer />
+      <LandingFooter />
     </div>
   );
 };

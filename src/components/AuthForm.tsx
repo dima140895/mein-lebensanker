@@ -283,24 +283,21 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange }: Auth
 
   // Wrapper with background
   const PageWrapper = ({ children }: { children: React.ReactNode }) => (
-    <div
-      className="min-h-screen flex items-center justify-center px-4 py-12 relative"
-      style={{
-        backgroundColor: 'hsl(var(--background))',
-        backgroundImage: `
-          radial-gradient(ellipse 60% 50% at 80% 20%, rgba(122,158,142,0.12) 0%, transparent 60%),
-          radial-gradient(ellipse 40% 60% at 10% 80%, rgba(196,129,58,0.07) 0%, transparent 50%)
-        `,
-      }}
-    >
-      {/* Back link */}
-      <Link
-        to="/"
-        className="fixed top-4 left-4 sm:top-6 sm:left-6 text-sm font-body text-muted-foreground hover:text-forest transition-colors z-10 min-h-[44px] flex items-center"
+    <div className="min-h-screen flex flex-col">
+      <StaticNav minimal />
+      <div
+        className="flex-1 flex items-center justify-center px-4 py-12 pt-24"
+        style={{
+          backgroundColor: 'hsl(var(--background))',
+          backgroundImage: `
+            radial-gradient(ellipse 60% 50% at 80% 20%, rgba(122,158,142,0.12) 0%, transparent 60%),
+            radial-gradient(ellipse 40% 60% at 10% 80%, rgba(196,129,58,0.07) 0%, transparent 50%)
+          `,
+        }}
       >
-        {texts.backToHome}
-      </Link>
-      {children}
+        {children}
+      </div>
+      <LandingFooter />
     </div>
   );
 
