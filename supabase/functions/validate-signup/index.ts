@@ -54,22 +54,6 @@ function validateEmail(email: string): boolean {
   if (email.length > 255) return false;
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
-// Simple in-memory rate limiter (per IP/email, 5 requests per 10 minutes)
-const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
-const RATE_LIMIT_WINDOW_MS = 600_000;
-const RATE_LIMIT_MAX = 5;
-
-function isRateLimited(key: string): boolean {
-  const now = Date.now();
-  const entry = rateLimitMap.get(key);
-  if (!entry || now > entry.resetAt) {
-    rateLimitMap.set(key, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
-    return false;
-  }
-  entry.count++;
-  return entry.count > RATE_LIMIT_MAX;
-}
-
 Deno.serve(async (req) => {
   const corsHeaders = getCorsHeaders(req.headers.get("origin"));
 
@@ -80,9 +64,22 @@ Deno.serve(async (req) => {
   try {
     const { email, password, emailRedirectTo } = await req.json();
 
-    // Rate limit per email
     const normalizedEmail = String(email || "").toLowerCase().trim();
-    if (isRateLimited(normalizedEmail)) {
+
+    // Persistent rate limit (5 signups per email per 10 minutes)
+    const supabaseAdmin = createClient(
+      Deno.env.get("SUPABASE_URL")!,
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
+    );
+
+    const { data: allowed } = await supabaseAdmin.rpc("check_rate_limit", {
+      p_identifier: `signup:${normalizedEmail}`,
+      p_action: "signup",
+      p_max_count: 5,
+      p_window_minutes: 10,
+    });
+
+    if (allowed === false) {
       return new Response(
         JSON.stringify({ error: "Zu viele Anfragen. Bitte versuche es später erneut." }),
         { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }

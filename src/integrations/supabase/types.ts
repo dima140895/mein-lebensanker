@@ -215,6 +215,33 @@ export type Database = {
         }
         Relationships: []
       }
+      rate_limit_log: {
+        Row: {
+          action: string
+          count: number
+          created_at: string
+          id: string
+          identifier: string
+          window_start: string
+        }
+        Insert: {
+          action: string
+          count?: number
+          created_at?: string
+          id?: string
+          identifier: string
+          window_start?: string
+        }
+        Update: {
+          action?: string
+          count?: number
+          created_at?: string
+          id?: string
+          identifier?: string
+          window_start?: string
+        }
+        Relationships: []
+      }
       referrals: {
         Row: {
           clicks: number
@@ -527,6 +554,15 @@ export type Database = {
     Functions: {
       accept_family_invitation: {
         Args: { _token: string; _user_id: string }
+        Returns: boolean
+      }
+      check_rate_limit: {
+        Args: {
+          p_action: string
+          p_identifier: string
+          p_max_count: number
+          p_window_minutes?: number
+        }
         Returns: boolean
       }
       cleanup_token_access_logs: { Args: never; Returns: undefined }
