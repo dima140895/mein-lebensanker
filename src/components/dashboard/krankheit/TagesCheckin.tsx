@@ -202,7 +202,7 @@ const TagesCheckin = () => {
           <p className="text-sm text-muted-foreground">{texts.doneSub}</p>
         </div>
 
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {[
             { icon: '⚡', label: texts.energie, value: todayCheckin.energie, labelFn: texts.energieLabel },
             { icon: '😣', label: texts.schmerz, value: todayCheckin.schmerz, labelFn: texts.schmerzLabel },

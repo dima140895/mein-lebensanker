@@ -272,7 +272,7 @@ const MeinVerlauf = () => {
       {/* Report Modal */}
       {showReport && (
         <Card className="border-2 border-primary/20 bg-card">
-          <CardHeader className="pb-2 flex flex-row items-center justify-between">
+          <CardHeader className="pb-2 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
             <CardTitle className="text-lg font-serif">{texts.report}</CardTitle>
             <div className="flex gap-2">
               <Button size="sm" onClick={handlePrint}>

@@ -309,8 +309,8 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
                 <button
                   key={step.key}
                   onClick={() => onNavigate('vorsorge')}
-                  className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-primary/5 transition-colors text-left group"
-                >
+                  className="w-full flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-primary/5 transition-colors text-left group min-h-[44px]"
+                 >
                   <Circle className="h-4 w-4 text-muted-foreground/30 group-hover:text-primary transition-colors flex-shrink-0" />
                   <span className="text-sm text-foreground group-hover:text-primary transition-colors">{step.label}</span>
                   <ArrowRight className="h-3.5 w-3.5 text-muted-foreground/30 group-hover:text-primary ml-auto transition-colors" />

@@ -199,11 +199,11 @@ const PflegeMedikamente = () => {
               <Label>{texts.arzt}</Label>
               <Input value={arzt} onChange={(e) => setArzt(e.target.value)} placeholder={texts.arztPlaceholder} />
             </div>
-            <div className="flex gap-2 pt-2">
-              <Button onClick={handleSave} disabled={saving || !name.trim()}>
+            <div className="flex flex-col sm:flex-row gap-2 pt-2">
+              <Button onClick={handleSave} disabled={saving || !name.trim()} className="w-full sm:w-auto min-h-[44px]">
                 {saving ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" />{texts.saving}</> : texts.save}
               </Button>
-              <Button variant="outline" onClick={() => { setShowForm(false); setName(''); setDosierung(''); setEinnahmezeiten(''); setArzt(''); }}>
+              <Button variant="outline" onClick={() => { setShowForm(false); setName(''); setDosierung(''); setEinnahmezeiten(''); setArzt(''); }} className="w-full sm:w-auto min-h-[44px]">
                 {texts.cancel}
               </Button>
             </div>

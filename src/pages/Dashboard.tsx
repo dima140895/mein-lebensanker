@@ -142,7 +142,7 @@ const DashboardContent = () => {
 
         {/* Main content */}
         <div className="flex-1 overflow-y-auto pb-20 md:pb-0">
-          <div className="container mx-auto px-6 sm:px-4 py-4 md:py-8 max-w-5xl">
+          <div className="mx-auto px-4 sm:px-6 lg:px-8 py-4 md:py-6 lg:py-8 max-w-6xl">
             {renderModule()}
           </div>
         </div>
