@@ -15,6 +15,7 @@ const LandingFooter = () => {
             <Link to="/datenschutz" className="hover:text-white transition-colors">Datenschutz</Link>
             <Link to="/impressum" className="hover:text-white transition-colors">Impressum</Link>
             <Link to="/datensicherheit" className="hover:text-white transition-colors">Sicherheit</Link>
+            <Link to="/partner" className="hover:text-white transition-colors">Für Partner</Link>
           </div>
 
           <p className="text-xs font-body">© {new Date().getFullYear()} Mein Lebensanker</p>
