@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Plus, Pill, X, Loader2, ToggleRight } from 'lucide-react';
+import { useState } from 'react';
+import { Plus, Pill, X, Loader2, ToggleRight, Bell, Clock } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Switch } from '@/components/ui/switch';
 import { toast } from 'sonner';
 
 interface Medikament {
@@ -20,6 +21,8 @@ interface Medikament {
   arzt: string | null;
   aktiv: boolean;
   notizen: string | null;
+  erinnerung_aktiv: boolean;
+  erinnerung_zeiten: string[] | null;
 }
 
 const PflegeMedikamente = () => {
@@ -34,6 +37,8 @@ const PflegeMedikamente = () => {
   const [dosierung, setDosierung] = useState('');
   const [einnahmezeiten, setEinnahmezeiten] = useState('');
   const [arzt, setArzt] = useState('');
+  const [erinnerungAktiv, setErinnerungAktiv] = useState(false);
+  const [erinnerungZeiten, setErinnerungZeiten] = useState<string[]>([]);
 
   const t = {
     de: {
@@ -60,6 +65,12 @@ const PflegeMedikamente = () => {
       saved: 'Medikament gespeichert',
       updated: 'Medikament aktualisiert',
       error: 'Fehler',
+      reminderSection: 'Erinnerungen',
+      reminderToggle: 'E-Mail-Erinnerung aktivieren',
+      reminderHint: 'Du erhältst eine E-Mail wenn es Zeit für dieses Medikament ist.',
+      addTime: '+ Zeit hinzufügen',
+      reminderActive: 'Erinnerung',
+      upgradeNeeded: 'Anker Plus',
     },
     en: {
       addMed: 'Add medication',
@@ -85,10 +96,34 @@ const PflegeMedikamente = () => {
       saved: 'Medication saved',
       updated: 'Medication updated',
       error: 'Error',
+      reminderSection: 'Reminders',
+      reminderToggle: 'Enable email reminder',
+      reminderHint: 'You will receive an email when it\'s time for this medication.',
+      addTime: '+ Add time',
+      reminderActive: 'Reminder',
+      upgradeNeeded: 'Anker Plus',
     },
   };
 
   const texts = t[language];
+
+  // Check subscription for reminder access
+  const { data: subscription } = useQuery({
+    queryKey: queryKeys.subscription(user?.id ?? ''),
+    queryFn: async () => {
+      const { data } = await supabase
+        .from('subscriptions')
+        .select('plan, status')
+        .eq('user_id', user!.id)
+        .eq('status', 'active')
+        .limit(1)
+        .single();
+      return data;
+    },
+    enabled: !!user,
+  });
+
+  const hasPlusAccess = subscription && ['plus', 'familie'].includes(subscription.plan);
 
   const { data: meds = [], isLoading: loading } = useQuery({
     queryKey: queryKeys.medikamente(user?.id ?? ''),
@@ -100,7 +135,7 @@ const PflegeMedikamente = () => {
         .order('aktiv', { ascending: false })
         .order('name', { ascending: true });
       if (error) throw error;
-      return (data as Medikament[]) || [];
+      return (data as unknown as Medikament[]) || [];
     },
     enabled: !!user,
   });
@@ -112,6 +147,8 @@ const PflegeMedikamente = () => {
       dosierung: string | null;
       einnahmezeiten: string | null;
       arzt: string | null;
+      erinnerung_aktiv: boolean;
+      erinnerung_zeiten: string[];
     }) => {
       const { data, error } = await supabase.from('medikamente').insert(newMed).select().single();
       if (error) throw error;
@@ -131,8 +168,7 @@ const PflegeMedikamente = () => {
     },
     onSuccess: () => {
       toast.success(texts.saved);
-      setShowForm(false);
-      setName(''); setDosierung(''); setEinnahmezeiten(''); setArzt('');
+      resetForm();
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.medikamente(user!.id) });
@@ -163,6 +199,27 @@ const PflegeMedikamente = () => {
     },
   });
 
+  const toggleReminderMutation = useMutation({
+    mutationFn: async ({ id, erinnerung_aktiv }: { id: string; erinnerung_aktiv: boolean }) => {
+      const { error } = await supabase.from('medikamente').update({ erinnerung_aktiv }).eq('id', id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success(texts.updated);
+      queryClient.invalidateQueries({ queryKey: queryKeys.medikamente(user!.id) });
+    },
+  });
+
+  const resetForm = () => {
+    setShowForm(false);
+    setName('');
+    setDosierung('');
+    setEinnahmezeiten('');
+    setArzt('');
+    setErinnerungAktiv(false);
+    setErinnerungZeiten([]);
+  };
+
   const handleSave = () => {
     if (!user || !name.trim()) return;
     createMutation.mutate({
@@ -171,7 +228,25 @@ const PflegeMedikamente = () => {
       dosierung: dosierung.trim() || null,
       einnahmezeiten: einnahmezeiten.trim() || null,
       arzt: arzt.trim() || null,
+      erinnerung_aktiv: hasPlusAccess ? erinnerungAktiv : false,
+      erinnerung_zeiten: hasPlusAccess ? erinnerungZeiten : [],
     });
+  };
+
+  const addReminderTime = () => {
+    if (erinnerungZeiten.length < 3) {
+      setErinnerungZeiten([...erinnerungZeiten, '08:00']);
+    }
+  };
+
+  const updateReminderTime = (index: number, value: string) => {
+    const updated = [...erinnerungZeiten];
+    updated[index] = value;
+    setErinnerungZeiten(updated);
+  };
+
+  const removeReminderTime = (index: number) => {
+    setErinnerungZeiten(erinnerungZeiten.filter((_, i) => i !== index));
   };
 
   const activeMeds = meds.filter((m) => m.aktiv);
@@ -225,11 +300,75 @@ const PflegeMedikamente = () => {
               <Label>{texts.arzt}</Label>
               <Input value={arzt} onChange={(e) => setArzt(e.target.value)} placeholder={texts.arztPlaceholder} />
             </div>
+
+            {/* Reminder section */}
+            <div className="border-t border-border pt-4 mt-4">
+              <div className="flex items-center gap-2 mb-3">
+                <Bell className="h-4 w-4 text-primary" />
+                <span className="text-sm font-semibold text-foreground">{texts.reminderSection}</span>
+                {!hasPlusAccess && (
+                  <Badge variant="outline" className="text-xs bg-amber-light/50 text-amber border-amber/30">
+                    {texts.upgradeNeeded}
+                  </Badge>
+                )}
+              </div>
+
+              <div className="flex items-center justify-between">
+                <Label htmlFor="reminder-toggle" className="text-sm font-normal text-foreground cursor-pointer">
+                  {texts.reminderToggle}
+                </Label>
+                <Switch
+                  id="reminder-toggle"
+                  checked={erinnerungAktiv}
+                  onCheckedChange={(checked) => {
+                    if (!hasPlusAccess) return;
+                    setErinnerungAktiv(checked);
+                    if (checked && erinnerungZeiten.length === 0) {
+                      setErinnerungZeiten(['08:00']);
+                    }
+                  }}
+                  disabled={!hasPlusAccess}
+                />
+              </div>
+
+              {erinnerungAktiv && hasPlusAccess && (
+                <div className="mt-3 space-y-2">
+                  {erinnerungZeiten.map((zeit, index) => (
+                    <div key={index} className="flex items-center gap-2">
+                      <Clock className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                      <Input
+                        type="time"
+                        value={zeit}
+                        onChange={(e) => updateReminderTime(index, e.target.value)}
+                        className="w-32"
+                      />
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8"
+                        onClick={() => removeReminderTime(index)}
+                      >
+                        <X className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  ))}
+                  {erinnerungZeiten.length < 3 && (
+                    <Button type="button" variant="ghost" size="sm" onClick={addReminderTime} className="text-xs text-primary">
+                      {texts.addTime}
+                    </Button>
+                  )}
+                </div>
+              )}
+
+              <p className="text-xs text-muted-foreground mt-2">{texts.reminderHint}</p>
+            </div>
+
             <div className="flex flex-col sm:flex-row gap-2 pt-2">
               <Button onClick={handleSave} disabled={createMutation.isPending || !name.trim()} className="w-full sm:w-auto min-h-[44px]">
                 {createMutation.isPending ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" />{texts.saving}</> : texts.save}
               </Button>
-              <Button variant="outline" onClick={() => { setShowForm(false); setName(''); setDosierung(''); setEinnahmezeiten(''); setArzt(''); }} className="w-full sm:w-auto min-h-[44px]">
+              <Button variant="outline" onClick={resetForm} className="w-full sm:w-auto min-h-[44px]">
                 {texts.cancel}
               </Button>
             </div>
@@ -258,16 +397,43 @@ const PflegeMedikamente = () => {
                     <Pill className="h-4 w-4 text-primary flex-shrink-0" />
                     <CardTitle className="text-sm font-semibold">{med.name}</CardTitle>
                   </div>
-                  <Badge variant="outline" className="text-xs bg-primary/5 text-primary border-primary/20">{texts.active}</Badge>
+                  <div className="flex items-center gap-1.5">
+                    {med.erinnerung_aktiv && (
+                      <Badge variant="outline" className="text-xs bg-amber-light/50 text-amber border-amber/30">
+                        <Bell className="h-3 w-3 mr-1" />
+                        {texts.reminderActive}
+                      </Badge>
+                    )}
+                    <Badge variant="outline" className="text-xs bg-primary/5 text-primary border-primary/20">{texts.active}</Badge>
+                  </div>
                 </div>
               </CardHeader>
               <CardContent className="pb-4 px-4 space-y-1.5 text-sm">
                 {med.dosierung && <p className="text-muted-foreground"><span className="font-medium text-foreground">{texts.dosierung}:</span> {med.dosierung}</p>}
                 {med.einnahmezeiten && <p className="text-muted-foreground"><span className="font-medium text-foreground">{texts.einnahmezeiten}:</span> {med.einnahmezeiten}</p>}
                 {med.arzt && <p className="text-muted-foreground"><span className="font-medium text-foreground">{texts.arzt}:</span> {med.arzt}</p>}
-                <Button variant="ghost" size="sm" className="text-xs text-muted-foreground mt-2" onClick={() => toggleMutation.mutate({ id: med.id, aktiv: med.aktiv })}>
-                  <X className="h-3 w-3 mr-1" />{texts.setInactive}
-                </Button>
+                {med.erinnerung_aktiv && med.erinnerung_zeiten && med.erinnerung_zeiten.length > 0 && (
+                  <p className="text-muted-foreground">
+                    <span className="font-medium text-foreground">{texts.reminderSection}:</span>{' '}
+                    {med.erinnerung_zeiten.map(z => z.substring(0, 5)).join(', ')} Uhr
+                  </p>
+                )}
+                <div className="flex items-center gap-2 mt-2">
+                  <Button variant="ghost" size="sm" className="text-xs text-muted-foreground" onClick={() => toggleMutation.mutate({ id: med.id, aktiv: med.aktiv })}>
+                    <X className="h-3 w-3 mr-1" />{texts.setInactive}
+                  </Button>
+                  {hasPlusAccess && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className={`text-xs ${med.erinnerung_aktiv ? 'text-amber' : 'text-muted-foreground'}`}
+                      onClick={() => toggleReminderMutation.mutate({ id: med.id, erinnerung_aktiv: !med.erinnerung_aktiv })}
+                    >
+                      <Bell className="h-3 w-3 mr-1" />
+                      {med.erinnerung_aktiv ? (language === 'de' ? 'Erinnerung aus' : 'Reminder off') : (language === 'de' ? 'Erinnerung an' : 'Reminder on')}
+                    </Button>
+                  )}
+                </div>
               </CardContent>
             </Card>
           ))}

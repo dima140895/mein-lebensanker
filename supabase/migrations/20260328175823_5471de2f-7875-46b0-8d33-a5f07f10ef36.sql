@@ -1,0 +1,2 @@
+ALTER TABLE public.medikamente ADD COLUMN IF NOT EXISTS erinnerung_aktiv boolean NOT NULL DEFAULT false;
+ALTER TABLE public.medikamente ADD COLUMN IF NOT EXISTS erinnerung_zeiten time[] DEFAULT ARRAY[]::time[];
