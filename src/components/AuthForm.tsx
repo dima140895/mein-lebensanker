@@ -29,11 +29,14 @@ interface AuthFormProps {
 const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange, embedded = false }: AuthFormProps) => {
   const { signUp, signIn } = useAuth();
   const { language } = useLanguage();
-  const [mode, setMode] = useState<'login' | 'register' | 'forgot' | 'verify'>(defaultMode);
+  const [mode, setMode] = useState<'login' | 'register' | 'forgot' | 'verify' | 'mfa'>(defaultMode);
+  const [mfaFactorId, setMfaFactorId] = useState<string | null>(null);
+  const [mfaChallengeId, setMfaChallengeId] = useState<string | null>(null);
+  const [mfaCode, setMfaCode] = useState('');
 
-  const handleModeChange = (newMode: 'login' | 'register' | 'forgot' | 'verify') => {
+  const handleModeChange = (newMode: 'login' | 'register' | 'forgot' | 'verify' | 'mfa') => {
     setMode(newMode);
-    onVerifyModeChange?.(newMode === 'verify');
+    onVerifyModeChange?.(newMode === 'verify' || newMode === 'mfa');
   };
 
   const [email, setEmail] = useState('');
@@ -81,6 +84,11 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange, embedd
       registerHeadline: 'Jetzt starten.',
       registerSub: 'Kostenlos — kein Abo-Zwang beim Start.',
       backToHome: '← Zurück zur Startseite',
+      mfaTitle: 'Zwei-Faktor-Authentifizierung',
+      mfaDesc: 'Bitte gib den Code aus deiner Authenticator-App ein',
+      mfaVerify: 'Bestätigen',
+      mfaInvalid: 'Ungültiger Code — bitte prüfe deine Authenticator-App.',
+      mfaOtherEmail: 'Andere E-Mail verwenden',
     },
     en: {
       login: 'Sign In',
@@ -118,6 +126,11 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange, embedd
       registerHeadline: 'Get started.',
       registerSub: 'Free — no subscription required to start.',
       backToHome: '← Back to home',
+      mfaTitle: 'Two-Factor Authentication',
+      mfaDesc: 'Please enter the code from your authenticator app',
+      mfaVerify: 'Verify',
+      mfaInvalid: 'Invalid code — please check your authenticator app.',
+      mfaOtherEmail: 'Use a different email',
     },
   };
 
@@ -152,6 +165,22 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange, embedd
           }
           throw error;
         }
+
+        // Check if MFA is required after successful password auth
+        const { data: factorsData } = await supabase.auth.mfa.listFactors();
+        const verifiedFactors = factorsData?.totp?.filter(f => f.status === 'verified') ?? [];
+        if (verifiedFactors.length > 0) {
+          // MFA is enabled — need to challenge
+          const factorId = verifiedFactors[0].id;
+          const { data: challengeData, error: challengeError } = await supabase.auth.mfa.challenge({ factorId });
+          if (challengeError) throw challengeError;
+          setMfaFactorId(factorId);
+          setMfaChallengeId(challengeData.id);
+          setMfaCode('');
+          handleModeChange('mfa');
+          return;
+        }
+
         toast.success(texts.welcomeBack);
         onSuccess?.();
       } else if (mode === 'register') {
@@ -237,7 +266,30 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange, embedd
     }
   };
 
-  // Poll for email verification
+  const handleMfaVerify = async () => {
+    if (!mfaFactorId || !mfaChallengeId || mfaCode.length !== 6) return;
+    setLoading(true);
+    try {
+      const { error } = await supabase.auth.mfa.verify({
+        factorId: mfaFactorId,
+        challengeId: mfaChallengeId,
+        code: mfaCode,
+      });
+      if (error) {
+        toast.error(texts.mfaInvalid);
+        setMfaCode('');
+        return;
+      }
+      toast.success(texts.welcomeBack);
+      onSuccess?.();
+    } catch (err) {
+      toast.error(texts.mfaInvalid);
+      setMfaCode('');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const pollingRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const [verified, setVerified] = useState(false);
 
@@ -349,6 +401,65 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange, embedd
       </span>
     </div>
   );
+
+  // MFA verification view
+  if (mode === 'mfa') {
+    return (
+      <PageWrapper>
+        <div className="w-full max-w-md mx-auto animate-fade-in-up">
+          <div className="bg-card rounded-2xl shadow-[0_8px_40px_rgba(44,74,62,0.12)] px-6 sm:px-8 py-8 sm:py-10 text-center">
+            <LogoHeader />
+
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
+              <Shield className="h-8 w-8 text-primary" />
+            </div>
+
+            <h2 className="font-serif text-2xl text-foreground mb-2">
+              {texts.mfaTitle}
+            </h2>
+            <p className="text-muted-foreground font-body mb-6">
+              {texts.mfaDesc}
+            </p>
+
+            <Input
+              type="text"
+              inputMode="numeric"
+              maxLength={6}
+              value={mfaCode}
+              onChange={(e) => setMfaCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
+              placeholder="000000"
+              className="text-center text-2xl tracking-[0.5em] font-mono mb-4"
+              autoFocus
+            />
+
+            <Button
+              onClick={handleMfaVerify}
+              disabled={mfaCode.length !== 6 || loading}
+              className="w-full min-h-[44px] rounded-lg font-body font-medium text-base bg-primary hover:bg-primary/90 mb-4"
+            >
+              {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : texts.mfaVerify}
+            </Button>
+
+            <button
+              type="button"
+              onClick={() => {
+                setMfaFactorId(null);
+                setMfaChallengeId(null);
+                setMfaCode('');
+                handleModeChange('login');
+              }}
+              className="text-sm text-muted-foreground hover:text-primary font-body transition-colors"
+            >
+              <ArrowLeft className="h-3.5 w-3.5 inline mr-1" />
+              {texts.mfaOtherEmail}
+            </button>
+
+            <TrustBadges />
+          </div>
+        </div>
+      </PageWrapper>
+    );
+  }
 
   // Email verification view
   if (mode === 'verify') {
