@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Check, X } from 'lucide-react';
+import { trackEvent } from '@/lib/analytics';
 
 const plans = [
   {
