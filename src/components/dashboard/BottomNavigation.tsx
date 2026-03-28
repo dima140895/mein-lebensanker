@@ -14,7 +14,7 @@ const BottomNavigation = ({ activeModule, onModuleChange, userPlan, onLockedClic
   const { language } = useLanguage();
 
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-card/95 backdrop-blur-md border-t border-border shadow-[0_-2px_10px_rgba(0,0,0,0.05)]">
+    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-border shadow-[0_-2px_10px_rgba(0,0,0,0.05)]">
       <div className="flex items-center justify-around px-1 py-1.5 safe-area-pb">
         {navItems.map((item) => {
           const Icon = item.icon;
@@ -27,18 +27,18 @@ const BottomNavigation = ({ activeModule, onModuleChange, userPlan, onLockedClic
               key={item.key}
               onClick={() => locked ? onLockedClick(item.key) : onModuleChange(item.key)}
               className={cn(
-                'flex flex-col items-center gap-0.5 px-1 py-2 rounded-lg min-w-0 flex-1 transition-colors min-h-[44px]',
+                'flex flex-col items-center gap-0.5 px-1 py-2 rounded-lg min-w-0 flex-1 transition-colors min-h-[44px] font-body',
                 isActive && !locked
                   ? 'text-primary'
                   : locked
-                    ? 'text-muted-foreground/40'
-                    : 'text-muted-foreground'
+                    ? 'text-charcoal-light/40'
+                    : 'text-charcoal-light'
               )}
             >
               <div className="relative">
                 <Icon className={cn('h-5 w-5', locked && 'opacity-40')} />
                 {locked && (
-                  <Lock className="absolute -top-1 -right-1.5 h-2.5 w-2.5 text-muted-foreground/60" />
+                  <Lock className="absolute -top-1 -right-1.5 h-2.5 w-2.5 text-charcoal-light/60" />
                 )}
               </div>
               <span className={cn(
