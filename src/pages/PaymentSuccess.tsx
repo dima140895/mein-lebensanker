@@ -14,10 +14,8 @@ const PaymentSuccessContent = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const sessionId = searchParams.get('session_id');
-  const paymentType = searchParams.get('type') || 'single';
+  const plan = searchParams.get('plan') || 'anker';
   const profilesParam = searchParams.get('profiles');
-  const isUpgrade = searchParams.get('upgrade') === 'true';
-  const isAddingProfiles = searchParams.get('add_profiles') === 'true';
   
   const [verificationStatus, setVerificationStatus] = useState<'loading' | 'success' | 'error' | 'redirecting'>('loading');
   const [errorMessage, setErrorMessage] = useState<string>('');
