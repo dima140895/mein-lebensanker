@@ -1,4 +1,51 @@
+// Zeitzone: Europa/Berlin (CET/CEST)
+// CET  = UTC+1 (Oktober bis März)
+// CEST = UTC+2 (März bis Oktober, Sommerzeit)
+// Umschaltung: Letzter Sonntag März / Letzter Sonntag Oktober jeweils 02:00 Lokalzeit
+
 import { createClient } from "npm:@supabase/supabase-js@2";
+
+// --- CET/CEST timezone helpers ---
+
+function getCETOffset(date: Date): number {
+  // European Summer Time: last Sunday in March to last Sunday in October
+  const year = date.getUTCFullYear();
+
+  // Last Sunday in March (switch at 01:00 UTC = 02:00 CET)
+  const marchEnd = new Date(Date.UTC(year, 2, 31));
+  marchEnd.setUTCDate(31 - marchEnd.getUTCDay());
+  marchEnd.setUTCHours(1, 0, 0, 0);
+
+  // Last Sunday in October (switch at 01:00 UTC = 03:00 CEST → 02:00 CET)
+  const octoberEnd = new Date(Date.UTC(year, 9, 31));
+  octoberEnd.setUTCDate(31 - octoberEnd.getUTCDay());
+  octoberEnd.setUTCHours(1, 0, 0, 0);
+
+  if (date >= marchEnd && date < octoberEnd) {
+    return 2; // CEST = UTC+2
+  }
+  return 1; // CET = UTC+1
+}
+
+// Test: 15. Juli 2025, 07:00 UTC → getCETOffset = 2 → 09:00 CEST ✓
+// Test: 15. Januar 2025, 07:00 UTC → getCETOffset = 1 → 08:00 CET ✓
+// Test: 30. März 2025 01:30 UTC → Grenzfall, noch CET (Umstellung um 02:00 CET = 01:00 UTC)
+
+function getCurrentCETTime(date: Date): { hours: number; minutes: number } {
+  const offset = getCETOffset(date);
+  const cetMs = date.getTime() + offset * 60 * 60 * 1000;
+  const cetDate = new Date(cetMs);
+  return {
+    hours: cetDate.getUTCHours(),
+    minutes: cetDate.getUTCMinutes(),
+  };
+}
+
+function getCurrentCETDayOfWeek(date: Date): number {
+  const offset = getCETOffset(date);
+  const cetDate = new Date(date.getTime() + offset * 60 * 60 * 1000);
+  return cetDate.getUTCDay(); // 0 = Sunday
+}
 
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
