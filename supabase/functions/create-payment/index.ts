@@ -150,7 +150,9 @@ serve(async (req) => {
       status: 200,
     });
   } catch (error: unknown) {
-    return new Response(JSON.stringify({ error: "Payment processing failed" }), {
+    const message = error instanceof Error ? error.message : String(error);
+    console.error("[create-payment] Error:", message);
+    return new Response(JSON.stringify({ error: message }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 500,
     });

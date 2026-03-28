@@ -124,14 +124,28 @@ const PaymentOptions = () => {
         body: { plan },
       });
 
-      if (error) throw error;
+      if (error) {
+        logger.error('Payment invoke error:', error);
+        throw new Error(error.message || 'Function invocation failed');
+      }
+
+      if (data?.error) {
+        logger.error('Payment response error:', data.error);
+        throw new Error(data.error);
+      }
 
       if (data?.url) {
         window.location.href = data.url;
+      } else {
+        throw new Error('No checkout URL returned');
       }
     } catch (error) {
       logger.error('Payment error:', error);
-      toast.error(language === 'de' ? 'Zahlungsfehler' : 'Payment error');
+      const msg = error instanceof Error ? error.message : '';
+      const userMsg = language === 'de'
+        ? `Zahlungsfehler: ${msg || 'Bitte versuche es erneut.'}`
+        : `Payment error: ${msg || 'Please try again.'}`;
+      toast.error(userMsg);
     } finally {
       setLoading(null);
     }
