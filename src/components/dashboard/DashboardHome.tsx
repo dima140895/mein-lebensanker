@@ -13,6 +13,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useIsMobile } from '@/hooks/use-mobile';
 import type { DashboardModule } from './DashboardSidebar';
+import WeeklySummary from './WeeklySummary';
 
 interface DashboardHomeProps {
   onNavigate: (module: DashboardModule) => void;
@@ -381,6 +382,9 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {cardOrder.map((key, i) => cardRenderers[key](0.05 + i * 0.05))}
       </div>
+
+      {/* Weekly Summary — Plus/Familie only */}
+      {isPlusOrHigher && <WeeklySummary />}
 
       {/* Guided Onboarding Tasks */}
       {showOnboardingTasks && nextTask && (
