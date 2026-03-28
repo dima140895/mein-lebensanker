@@ -207,6 +207,18 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange, embedd
         }
 
         setPasswordError(false);
+
+        // Validate consent checkboxes
+        const newConsentErrors = {
+          terms: !termsAccepted,
+          health: !healthDataConsent,
+        };
+        setConsentErrors(newConsentErrors);
+        if (newConsentErrors.terms || newConsentErrors.health) {
+          setLoading(false);
+          return;
+        }
+
         const { error, userExists } = await signUp(email, password);
         if (error) throw error;
 
@@ -216,6 +228,27 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange, embedd
           setLoading(false);
           return;
         }
+
+        // Store consent timestamps after successful signup
+        // The profile is created by handle_new_user trigger, so we update it
+        // We need a short delay for the trigger to complete
+        setTimeout(async () => {
+          try {
+            const { data: { user: currentUser } } = await supabase.auth.getUser();
+            if (currentUser) {
+              await (supabase as any)
+                .from('profiles')
+                .update({
+                  health_data_consent: true,
+                  health_data_consent_at: new Date().toISOString(),
+                  terms_accepted_at: new Date().toISOString(),
+                })
+                .eq('user_id', currentUser.id);
+            }
+          } catch (err) {
+            logger.error('Failed to store consent:', err);
+          }
+        }, 1000);
 
         await sendVerificationEmail(email);
         toast.success(texts.accountCreated);
