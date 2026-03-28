@@ -75,7 +75,7 @@ export const SecurityAuditDialog: React.FC<SecurityAuditDialogProps> = ({ trigge
           </Button>
         </div>
 
-        <div className="border rounded-lg overflow-hidden bg-white shadow-inner max-h-[60vh] overflow-y-auto">
+        <div className="border rounded-lg overflow-hidden bg-card shadow-inner max-h-[60vh] overflow-y-auto">
           <div className="transform scale-[0.7] origin-top">
             <PrintableSecurityAudit ref={printRef} />
           </div>
