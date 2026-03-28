@@ -30,12 +30,16 @@ const Abmelden = () => {
 
   if (!userId) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center p-4">
-        <div className="max-w-md text-center space-y-4">
-          <AlertCircle className="h-12 w-12 text-destructive mx-auto" />
-          <h1 className="text-xl font-semibold text-foreground">Ungültiger Link</h1>
-          <p className="text-muted-foreground">Dieser Abmelde-Link ist nicht gültig.</p>
-        </div>
+      <div className="flex min-h-screen flex-col bg-background">
+        <StaticNav minimal />
+        <main className="flex-1 pt-16 flex items-center justify-center p-4">
+          <div className="max-w-md text-center space-y-4">
+            <AlertCircle className="h-12 w-12 text-destructive mx-auto" />
+            <h1 className="text-xl font-semibold text-foreground">Ungültiger Link</h1>
+            <p className="text-muted-foreground">Dieser Abmelde-Link ist nicht gültig.</p>
+          </div>
+        </main>
+        <LandingFooter />
       </div>
     );
   }
