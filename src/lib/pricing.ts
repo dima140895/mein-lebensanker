@@ -1,64 +1,48 @@
-// Stripe Price IDs für die Pakete
+// New pricing model: Anker (one-time), Anker Plus (subscription), Anker Familie (subscription)
 export const PRICING = {
-  single: {
-    name: 'single',
+  anker: {
+    name: 'anker',
     price: 49,
-    priceId: 'price_1T0iZ9EwPqOvJ6cU78f3uayM',
+    priceId: 'price_1TFxsEEwPqOvJ6cUDbqzpbmI',
+    productId: 'prod_UEQj99bUYvaibb',
+    mode: 'payment' as const,
     maxProfiles: 1,
+    modules: ['vorsorge'],
   },
-  couple: {
-    name: 'couple',
-    price: 69,
-    priceId: 'price_1T0iZcEwPqOvJ6cUh4TsrHY4',
-    maxProfiles: 2,
+  plus: {
+    name: 'plus',
+    price: 9,
+    priceId: 'price_1TFxtDICzkfBNYhy7DjVuBt7',
+    productId: 'prod_UEQka5CkpEf8XO',
+    mode: 'subscription' as const,
+    trialDays: 14,
+    maxProfiles: 1,
+    modules: ['vorsorge', 'pflege-begleiter', 'krankheits-begleiter'],
   },
-  family: {
-    name: 'family',
-    basePrice: 99,
-    basePriceId: 'price_1T0iaAEwPqOvJ6cU57ldUbdi',
-    pricePerAdditionalProfile: 10,
-    additionalProfilePriceId: 'price_1T0iaAEwPqOvJ6cU57ldUbdi',
-    minProfiles: 4,
+  familie: {
+    name: 'familie',
+    price: 14,
+    priceId: 'price_1TFxtdICzkfBNYhyZbGYHWYU',
+    productId: 'prod_UEQlhCOAIAVMaV',
+    mode: 'subscription' as const,
+    trialDays: 14,
     maxProfiles: 10,
+    modules: ['vorsorge', 'pflege-begleiter', 'krankheits-begleiter', 'familienfreigabe'],
   },
 } as const;
 
-// Upgrade-Preise (Differenzbeträge) - für Family wird dynamisch berechnet
-export const UPGRADE_PRICES = {
-  single_to_couple: 20, // 69 - 49 = 20
-  // Family upgrades werden dynamisch berechnet basierend auf Profilanzahl
-} as const;
+export type PlanType = 'anker' | 'plus' | 'familie';
 
-// Berechne den Family-Preis basierend auf Profilanzahl
-export const calculateFamilyPrice = (profileCount: number): number => {
-  const { basePrice, pricePerAdditionalProfile, minProfiles, maxProfiles } = PRICING.family;
-  const clampedCount = Math.max(minProfiles, Math.min(maxProfiles, profileCount));
-  const additionalProfiles = clampedCount - minProfiles;
-  return basePrice + (additionalProfiles * pricePerAdditionalProfile);
+export const getPlanInfo = (plan: PlanType) => PRICING[plan];
+
+export const isSubscriptionPlan = (plan: PlanType): boolean => {
+  return PRICING[plan].mode === 'subscription';
 };
 
-// Berechne Upgrade-Preis zu Family
-export const calculateUpgradeToFamilyPrice = (from: 'single' | 'couple', familyProfileCount: number): number => {
-  const fromPrice = PRICING[from].price;
-  const familyPrice = calculateFamilyPrice(familyProfileCount);
-  return familyPrice - fromPrice;
+// Check if a module is available for a given plan
+export const isPlanModule = (plan: PlanType, module: string): boolean => {
+  return PRICING[plan].modules.includes(module);
 };
 
-export type PackageType = 'single' | 'couple' | 'family';
-
-export const getPackageInfo = (tier: PackageType) => PRICING[tier];
-
-export const getUpgradePrice = (from: PackageType, to: PackageType, familyProfileCount?: number): number | null => {
-  if (to === 'family' && (from === 'single' || from === 'couple')) {
-    return calculateUpgradeToFamilyPrice(from, familyProfileCount || PRICING.family.minProfiles);
-  }
-  if (from === 'single' && to === 'couple') {
-    return UPGRADE_PRICES.single_to_couple;
-  }
-  return null;
-};
-
-export const canUpgrade = (from: PackageType, to: PackageType): boolean => {
-  const tiers: PackageType[] = ['single', 'couple', 'family'];
-  return tiers.indexOf(to) > tiers.indexOf(from);
-};
+// Legacy exports for backward compatibility during migration
+export type PackageType = PlanType;
