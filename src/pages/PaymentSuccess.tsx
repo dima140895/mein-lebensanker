@@ -182,10 +182,10 @@ const PaymentSuccessContent = () => {
           <div className="mx-auto mb-6 h-20 w-20 rounded-full bg-destructive/10 flex items-center justify-center">
             <AlertCircle className="h-10 w-10 text-destructive" />
           </div>
-          <h1 className="font-serif text-3xl font-bold text-foreground mb-2">{texts.errorTitle}</h1>
-          <p className="text-muted-foreground mb-8">{errorMessage}</p>
+           <h1 className="font-serif text-3xl font-semibold text-forest mb-2">{texts.errorTitle}</h1>
+          <p className="text-charcoal-light mb-8 font-body">{errorMessage}</p>
           <div className="space-y-3">
-            <Button onClick={() => navigate('/dashboard')} size="lg" variant="outline">
+            <Button onClick={() => navigate('/dashboard')} size="lg" variant="outline" className="rounded-lg font-body min-h-[44px]">
               {texts.cta}
             </Button>
           </div>
