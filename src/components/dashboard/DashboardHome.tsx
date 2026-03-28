@@ -192,7 +192,7 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
           </CardContent>
         </Card>
       ) : (
-        <Card className="border-l-4 border-l-accent/30 h-full opacity-80 cursor-pointer" onClick={() => onLockedClick('pflege')}>
+        <Card className="border-l-4 border-l-accent/30 bg-white rounded-2xl shadow-card h-full opacity-80 cursor-pointer" onClick={() => onLockedClick('pflege')}>
           <CardHeader className="pb-2">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
