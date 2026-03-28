@@ -220,9 +220,9 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
       {isPlusOrHigher ? (
         <Card className="border-l-4 border-l-sage bg-white rounded-2xl shadow-card hover:-translate-y-0.5 hover:shadow-soft transition-all duration-200 cursor-pointer h-full" onClick={() => onNavigate('krankheit')}>
           <CardHeader className="pb-2">
-            <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-lg bg-[hsl(var(--sage))]/10 flex items-center justify-center">
-                <Stethoscope className="h-5 w-5 text-[hsl(var(--sage-dark))]" />
+             <div className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-lg bg-sage-light flex items-center justify-center">
+                <Stethoscope className="h-5 w-5 text-sage-dark" />
               </div>
               <CardTitle className="text-base font-semibold">{tx.krankheit}</CardTitle>
             </div>
