@@ -469,6 +469,7 @@ Deno.serve(async (req) => {
       processDailyCheckinReminders(supabase),
       processWeeklySummary(supabase),
       processUpgradeReminders(supabase),
+      processMedikamentenErinnerungen(supabase),
     ]);
 
     return new Response(JSON.stringify({ success: true }), {
