@@ -237,11 +237,11 @@ const PflegeTagebuch = () => {
               <Textarea value={naechsteSchritte} onChange={(e) => setNaechsteSchritte(e.target.value)} placeholder={texts.nextStepsPlaceholder} rows={2} />
             </div>
 
-            <div className="flex gap-2 pt-2">
-              <Button onClick={handleSave} disabled={saving || !personName.trim()}>
+            <div className="flex flex-col sm:flex-row gap-2 pt-2">
+              <Button onClick={handleSave} disabled={saving || !personName.trim()} className="w-full sm:w-auto min-h-[44px]">
                 {saving ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" />{texts.saving}</> : texts.save}
               </Button>
-              <Button variant="outline" onClick={() => setShowForm(false)}>{texts.cancel}</Button>
+              <Button variant="outline" onClick={() => setShowForm(false)} className="w-full sm:w-auto min-h-[44px]">{texts.cancel}</Button>
             </div>
           </CardContent>
         </Card>

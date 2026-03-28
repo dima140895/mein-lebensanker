@@ -27,7 +27,7 @@ const BottomNavigation = ({ activeModule, onModuleChange, userPlan, onLockedClic
               key={item.key}
               onClick={() => locked ? onLockedClick(item.key) : onModuleChange(item.key)}
               className={cn(
-                'flex flex-col items-center gap-0.5 px-1 py-1.5 rounded-lg min-w-0 flex-1 transition-colors',
+                'flex flex-col items-center gap-0.5 px-1 py-2 rounded-lg min-w-0 flex-1 transition-colors min-h-[44px]',
                 isActive && !locked
                   ? 'text-primary'
                   : locked

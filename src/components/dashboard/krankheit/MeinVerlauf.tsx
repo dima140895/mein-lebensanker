@@ -203,7 +203,7 @@ const MeinVerlauf = () => {
           <CardTitle className="text-sm font-semibold">{texts.chart}</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="h-64 sm:h-80">
+          <div className="h-[200px] sm:h-64 lg:h-80">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={chartData}>
                 <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
@@ -264,7 +264,7 @@ const MeinVerlauf = () => {
       </Card>
 
       {/* Doctor Summary Button */}
-      <Button onClick={generateReport} variant="outline" className="w-full">
+      <Button onClick={generateReport} variant="outline" className="w-full min-h-[44px]">
         <Printer className="h-4 w-4 mr-2" />
         {texts.generateReport}
       </Button>
@@ -272,7 +272,7 @@ const MeinVerlauf = () => {
       {/* Report Modal */}
       {showReport && (
         <Card className="border-2 border-primary/20 bg-card">
-          <CardHeader className="pb-2 flex flex-row items-center justify-between">
+          <CardHeader className="pb-2 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
             <CardTitle className="text-lg font-serif">{texts.report}</CardTitle>
             <div className="flex gap-2">
               <Button size="sm" onClick={handlePrint}>

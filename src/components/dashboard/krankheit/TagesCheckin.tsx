@@ -202,7 +202,7 @@ const TagesCheckin = () => {
           <p className="text-sm text-muted-foreground">{texts.doneSub}</p>
         </div>
 
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {[
             { icon: '⚡', label: texts.energie, value: todayCheckin.energie, labelFn: texts.energieLabel },
             { icon: '😣', label: texts.schmerz, value: todayCheckin.schmerz, labelFn: texts.schmerzLabel },
@@ -243,7 +243,7 @@ const TagesCheckin = () => {
   return (
     <div className="space-y-8 max-w-lg mx-auto">
       <div className="text-center space-y-2">
-        <h2 className="font-serif text-xl font-bold text-foreground">{texts.greeting}</h2>
+        <h2 className="font-serif text-2xl font-bold text-foreground">{texts.greeting}</h2>
         <p className="text-sm text-muted-foreground">{texts.greetingSub}</p>
       </div>
 
@@ -297,7 +297,7 @@ const TagesCheckin = () => {
         </div>
       </div>
 
-      <Button onClick={handleSave} disabled={saving} className="w-full h-12 text-base">
+      <Button onClick={handleSave} disabled={saving} className="w-full h-12 text-base min-h-[44px]">
         {saving ? (
           <><Loader2 className="h-4 w-4 mr-2 animate-spin" />{texts.saving}</>
         ) : (

@@ -151,9 +151,9 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
         <CardContent className="space-y-3">
           <Progress value={statusLoading ? 0 : progressPercent} className="h-2" />
           {!isComplete && (
-            <Button variant="ghost" size="sm" className="w-full text-primary hover:text-primary hover:bg-primary/5 gap-1.5">
-              {tx.continueBtn} <ArrowRight className="h-3.5 w-3.5" />
-            </Button>
+             <Button variant="ghost" size="sm" className="w-full text-primary hover:text-primary hover:bg-primary/5 gap-1.5 min-h-[44px]">
+               {tx.continueBtn} <ArrowRight className="h-3.5 w-3.5" />
+             </Button>
           )}
         </CardContent>
       </Card>
@@ -186,7 +186,7 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
             ) : (
               <p className="text-sm text-muted-foreground">{tx.pflegeEmpty}</p>
             )}
-            <Button variant="ghost" size="sm" className="w-full text-accent hover:text-accent hover:bg-accent/5 gap-1.5">
+            <Button variant="ghost" size="sm" className="w-full text-accent hover:text-accent hover:bg-accent/5 gap-1.5 min-h-[44px]">
               {tx.pflegeAdd} <ArrowRight className="h-3.5 w-3.5" />
             </Button>
           </CardContent>
@@ -247,7 +247,7 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
                 <span className="text-sm text-muted-foreground">{tx.krankheitPending}</span>
               </div>
             )}
-            <Button variant="ghost" size="sm" className="w-full text-[hsl(var(--sage-dark))] hover:text-[hsl(var(--sage-dark))] hover:bg-[hsl(var(--sage))]/5 gap-1.5">
+            <Button variant="ghost" size="sm" className="w-full text-[hsl(var(--sage-dark))] hover:text-[hsl(var(--sage-dark))] hover:bg-[hsl(var(--sage))]/5 gap-1.5 min-h-[44px]">
               {todayCheckin ? tx.krankheit : tx.krankheitStart} <ArrowRight className="h-3.5 w-3.5" />
             </Button>
           </CardContent>
@@ -286,14 +286,14 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
     <div className="space-y-6">
       {/* Greeting */}
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-        <h1 className="font-serif text-2xl md:text-3xl font-bold text-foreground">
+        <h1 className="font-serif text-2xl sm:text-3xl font-bold text-foreground">
           {greeting}{userName ? `, ${userName}` : ''}.
         </h1>
         <p className="text-sm text-muted-foreground mt-1">{tx.subtitle}</p>
       </motion.div>
 
       {/* Status Cards */}
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {cardOrder.map((key, i) => cardRenderers[key](0.05 + i * 0.05))}
       </div>
 
@@ -309,8 +309,8 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
                 <button
                   key={step.key}
                   onClick={() => onNavigate('vorsorge')}
-                  className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-primary/5 transition-colors text-left group"
-                >
+                  className="w-full flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-primary/5 transition-colors text-left group min-h-[44px]"
+                 >
                   <Circle className="h-4 w-4 text-muted-foreground/30 group-hover:text-primary transition-colors flex-shrink-0" />
                   <span className="text-sm text-foreground group-hover:text-primary transition-colors">{step.label}</span>
                   <ArrowRight className="h-3.5 w-3.5 text-muted-foreground/30 group-hover:text-primary ml-auto transition-colors" />
