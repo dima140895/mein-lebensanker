@@ -21,14 +21,28 @@ const SettingsModule = () => {
       export: 'Daten-Export',
       share: 'Für Angehörige',
       reminders: 'Erinnerungen',
+      referralStats: 'Du hast {count} Menschen zu Lebensanker eingeladen.',
     },
     en: {
       plan: 'My Plan',
       export: 'Data Export',
       share: 'For Relatives',
       reminders: 'Reminders',
+      referralStats: 'You have invited {count} people to Lebensanker.',
     },
   };
+
+  useEffect(() => {
+    if (!user) return;
+    (supabase as any)
+      .from('referrals')
+      .select('conversions')
+      .eq('referrer_user_id', user.id)
+      .maybeSingle()
+      .then(({ data }: any) => {
+        if (data?.conversions > 0) setConversions(data.conversions);
+      });
+  }, [user]);
 
   const texts = t[language];
 
