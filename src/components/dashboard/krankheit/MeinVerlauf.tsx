@@ -211,7 +211,7 @@ const MeinVerlauf = () => {
           <CardTitle className="text-sm font-semibold">{texts.chart}</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="h-[200px] sm:h-64 lg:h-80">
+          <div className="h-[200px] sm:h-64 lg:h-80" role="img" aria-label={language === 'de' ? 'Verlaufsdiagramm der Symptome' : 'Symptom trend chart'}>
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={chartData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
@@ -233,6 +233,12 @@ const MeinVerlauf = () => {
               </LineChart>
             </ResponsiveContainer>
           </div>
+          {/* Screen reader summary */}
+          <div className="sr-only" aria-live="polite">
+            {language === 'de'
+              ? `Verlauf der letzten ${entries.length} Tage: Durchschnittliche Energie: ${averages.e}/10, Durchschnittlicher Schmerz: ${averages.s}/10, Durchschnittlicher Schlaf: ${averages.sl}/10, Durchschnittliche Stimmung: ${averages.st}/10.`
+              : `Trend over the last ${entries.length} days: Average energy: ${averages.e}/10, Average pain: ${averages.s}/10, Average sleep: ${averages.sl}/10, Average mood: ${averages.st}/10.`}
+          </div>
         </CardContent>
       </Card>
 
@@ -247,10 +253,10 @@ const MeinVerlauf = () => {
               <TableHeader>
                 <TableRow>
                   <TableHead className="text-xs">{texts.date}</TableHead>
-                  <TableHead className="text-xs text-center">⚡</TableHead>
-                  <TableHead className="text-xs text-center">😣</TableHead>
-                  <TableHead className="text-xs text-center">😴</TableHead>
-                  <TableHead className="text-xs text-center">😊</TableHead>
+                  <TableHead className="text-xs text-center" aria-label={texts.energie}>⚡</TableHead>
+                  <TableHead className="text-xs text-center" aria-label={texts.schmerz}>😣</TableHead>
+                  <TableHead className="text-xs text-center" aria-label={texts.schlaf}>😴</TableHead>
+                  <TableHead className="text-xs text-center" aria-label={texts.stimmung}>😊</TableHead>
                   <TableHead className="text-xs">{texts.notiz}</TableHead>
                 </TableRow>
               </TableHeader>

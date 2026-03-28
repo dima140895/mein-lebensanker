@@ -247,21 +247,29 @@ const PflegeTagebuch = () => {
 
             <div className="space-y-2">
               <Label>{texts.mood}</Label>
-              <div className="flex gap-2">
-                {MOODS.map((emoji, i) => (
-                  <button
-                    key={i}
-                    type="button"
-                    onClick={() => setStimmung(i + 1)}
-                    className={`text-2xl sm:text-3xl p-2 rounded-lg transition-all ${
-                      stimmung === i + 1
-                        ? 'bg-primary/10 ring-2 ring-primary scale-110'
-                        : 'hover:bg-muted'
-                    }`}
-                  >
-                    {emoji}
-                  </button>
-                ))}
+              <div className="flex gap-2" role="radiogroup" aria-label={texts.mood}>
+                {MOODS.map((emoji, i) => {
+                  const moodLabels = language === 'de'
+                    ? ['Sehr schlecht', 'Schlecht', 'Neutral', 'Gut', 'Sehr gut']
+                    : ['Very bad', 'Bad', 'Neutral', 'Good', 'Very good'];
+                  return (
+                    <button
+                      key={i}
+                      type="button"
+                      role="radio"
+                      aria-checked={stimmung === i + 1}
+                      aria-label={`${moodLabels[i]}`}
+                      onClick={() => setStimmung(i + 1)}
+                      className={`text-2xl sm:text-3xl p-2 rounded-lg transition-all ${
+                        stimmung === i + 1
+                          ? 'bg-primary/10 ring-2 ring-primary scale-110'
+                          : 'hover:bg-muted'
+                      }`}
+                    >
+                      {emoji}
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
@@ -315,16 +323,20 @@ const PflegeTagebuch = () => {
                 <CardHeader
                   className="cursor-pointer py-3 px-4"
                   onClick={() => setExpandedEntry(isExpanded ? null : entry.id)}
+                  role="button"
+                  aria-expanded={isExpanded}
+                  tabIndex={0}
+                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setExpandedEntry(isExpanded ? null : entry.id); } }}
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <span className="text-xl">{MOODS[entry.stimmung - 1]}</span>
+                      <span className="text-xl" aria-hidden="true">{MOODS[entry.stimmung - 1]}</span>
                       <div>
                         <CardTitle className="text-sm font-medium">{entry.person_name}</CardTitle>
                         <p className="text-xs text-muted-foreground">{formatDate(entry.eintrags_datum)}</p>
                       </div>
                     </div>
-                    {isExpanded ? <ChevronUp className="h-4 w-4 text-muted-foreground" /> : <ChevronDown className="h-4 w-4 text-muted-foreground" />}
+                    {isExpanded ? <ChevronUp className="h-4 w-4 text-muted-foreground" aria-hidden="true" /> : <ChevronDown className="h-4 w-4 text-muted-foreground" aria-hidden="true" />}
                   </div>
                 </CardHeader>
 
@@ -354,7 +366,7 @@ const PflegeTagebuch = () => {
                         <p className="text-muted-foreground whitespace-pre-wrap">{entry.naechste_schritte}</p>
                       </div>
                     )}
-                    <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive hover:bg-destructive/10 mt-2" onClick={() => deleteMutation.mutate(entry.id)}>
+                    <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive hover:bg-destructive/10 mt-2" onClick={() => deleteMutation.mutate(entry.id)} aria-label={`${texts.delete} ${entry.person_name} ${formatDate(entry.eintrags_datum)}`}>
                       <Trash2 className="h-3.5 w-3.5 mr-1.5" />{texts.delete}
                     </Button>
                   </CardContent>
