@@ -477,7 +477,7 @@ const RelativesViewContent = () => {
 const RelativesView = () => {
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      <Header />
+      <StaticNav />
       <main className="flex-1">
         <RelativesViewContent />
       </main>

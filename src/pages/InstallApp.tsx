@@ -124,7 +124,7 @@ const InstallApp = () => {
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      <Header />
+      <StaticNav />
       <main className="flex-1">
         <div className="container mx-auto px-6 sm:px-4 py-12">
           <div className="max-w-2xl mx-auto space-y-8">
@@ -324,7 +324,7 @@ const InstallApp = () => {
           </div>
         </div>
       </main>
-      <Footer />
+      <LandingFooter />
     </div>
   );
 };

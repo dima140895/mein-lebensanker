@@ -133,7 +133,7 @@ const ResetPassword = () => {
   if (checking) {
     return (
       <div className="flex min-h-screen flex-col bg-background">
-        <Header />
+        <StaticNav />
         <main className="flex-1 flex items-center justify-center">
           <div className="animate-pulse text-muted-foreground">{language === 'de' ? 'Laden...' : 'Loading...'}</div>
         </main>
@@ -144,7 +144,7 @@ const ResetPassword = () => {
   if (!isValidSession && !success) {
     return (
       <div className="flex min-h-screen flex-col bg-background">
-        <Header />
+        <StaticNav />
         <main className="flex-1 flex items-center justify-center p-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -169,7 +169,7 @@ const ResetPassword = () => {
   if (success) {
     return (
       <div className="flex min-h-screen flex-col bg-background">
-        <Header />
+        <StaticNav />
         <main className="flex-1 flex items-center justify-center p-4">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
@@ -194,7 +194,7 @@ const ResetPassword = () => {
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      <Header />
+      <StaticNav />
       <main className="flex-1 flex items-center justify-center p-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
