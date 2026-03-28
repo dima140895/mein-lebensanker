@@ -58,7 +58,7 @@ const LandingNav = () => {
         </div>
 
         {/* Mobile toggle */}
-        <button onClick={() => setMobileOpen(!mobileOpen)} className="md:hidden p-2 text-[hsl(var(--forest))]">
+        <button onClick={() => setMobileOpen(!mobileOpen)} className="md:hidden p-2 text-foreground">
           {mobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
         </button>
       </div>
