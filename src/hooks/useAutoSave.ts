@@ -82,6 +82,15 @@ export const useAutoSave = ({ section, syncToProfile = false, onSaveComplete }: 
       
       logger.debug(`Auto-saved section: ${section} for profile: ${profileIdToSave}`);
     } catch (error) {
+      // Future enhancement: When offline, queue the save in IndexedDB
+      // and replay it when the connection is restored.
+      if (!navigator.onLine) {
+        const { toast } = await import('sonner');
+        toast.warning(
+          'Speichern nicht möglich — du bist offline. Deine Eingaben bleiben bis du wieder online bist.',
+          { duration: 5000 }
+        );
+      }
       logger.error(`Error auto-saving section ${section}:`, error);
     } finally {
       capturedDataRef.current = { profileId: null, data: null };
