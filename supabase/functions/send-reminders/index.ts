@@ -113,8 +113,7 @@ async function sendEmail(to: string, subject: string, html: string): Promise<boo
 // REMINDER 1: Daily check-in reminder
 async function processDailyCheckinReminders(supabase: ReturnType<typeof createClient>) {
   const now = new Date();
-  const currentHour = now.getUTCHours();
-  const currentMinute = now.getUTCMinutes();
+  const cetTime = getCurrentCETTime(now);
 
   // Get users who have daily reminders enabled and whose time matches (within 30 min window)
   const { data: prefs, error: prefsErr } = await supabase
@@ -128,13 +127,11 @@ async function processDailyCheckinReminders(supabase: ReturnType<typeof createCl
   const today = now.toISOString().split("T")[0];
 
   for (const pref of prefs) {
-    // Parse time (HH:MM format) - assume CET (UTC+1/+2)
+    // Parse time (HH:MM format) — stored as local CET/CEST time
     const [h, m] = pref.daily_checkin_time.split(":").map(Number);
-    // Convert CET to UTC (roughly UTC+1 in winter, UTC+2 in summer)
-    const utcHour = (h - 1 + 24) % 24; // simplified CET offset
-    
-    // Check if current time matches (within 30 min window for cron)
-    if (Math.abs(currentHour - utcHour) > 0 || currentMinute > 30) continue;
+
+    // Compare directly with current CET time (no manual UTC conversion needed)
+    if (Math.abs(cetTime.hours - h) > 0 || cetTime.minutes > 30) continue;
 
     // Check if user already did check-in today
     const { data: checkins } = await supabase
