@@ -92,6 +92,7 @@ const App = () => (
                       <Route path="/dev-dokumentation" element={<DevDocumentation />} />
                       <Route path="/familie-einladung/:token" element={<FamilyInvitation />} />
                       <Route path="/abmelden" element={<Abmelden />} />
+                      <Route path="/partner" element={<Partner />} />
                       <Route path="*" element={<NotFound />} />
                     </Routes>
                   </Suspense>
