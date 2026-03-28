@@ -102,7 +102,7 @@ const SettingsModule = () => {
     <div className="space-y-6">
       <SubscriptionManagement />
       <Tabs defaultValue="plan" className="w-full">
-        <TabsList className="w-full grid grid-cols-5">
+        <TabsList className="w-full grid grid-cols-6">
           <TabsTrigger value="plan" className="gap-1.5 text-xs sm:text-sm">
             <Package className="h-3.5 w-3.5" />
             <span className="hidden sm:inline">{texts.plan}</span>

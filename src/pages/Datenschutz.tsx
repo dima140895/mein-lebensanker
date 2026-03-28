@@ -413,7 +413,7 @@ Additional security measures:
 • Row-Level Security (RLS) for database access`,
         },
         {
-          title: '15. Contact',
+          title: '16. Contact',
           content: `For questions about data protection, you can contact us at any time:
 
 Email: datenschutz@mein-lebensanker.de
