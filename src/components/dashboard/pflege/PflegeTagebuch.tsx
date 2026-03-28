@@ -247,21 +247,29 @@ const PflegeTagebuch = () => {
 
             <div className="space-y-2">
               <Label>{texts.mood}</Label>
-              <div className="flex gap-2">
-                {MOODS.map((emoji, i) => (
-                  <button
-                    key={i}
-                    type="button"
-                    onClick={() => setStimmung(i + 1)}
-                    className={`text-2xl sm:text-3xl p-2 rounded-lg transition-all ${
-                      stimmung === i + 1
-                        ? 'bg-primary/10 ring-2 ring-primary scale-110'
-                        : 'hover:bg-muted'
-                    }`}
-                  >
-                    {emoji}
-                  </button>
-                ))}
+              <div className="flex gap-2" role="radiogroup" aria-label={texts.mood}>
+                {MOODS.map((emoji, i) => {
+                  const moodLabels = language === 'de'
+                    ? ['Sehr schlecht', 'Schlecht', 'Neutral', 'Gut', 'Sehr gut']
+                    : ['Very bad', 'Bad', 'Neutral', 'Good', 'Very good'];
+                  return (
+                    <button
+                      key={i}
+                      type="button"
+                      role="radio"
+                      aria-checked={stimmung === i + 1}
+                      aria-label={`${moodLabels[i]}`}
+                      onClick={() => setStimmung(i + 1)}
+                      className={`text-2xl sm:text-3xl p-2 rounded-lg transition-all ${
+                        stimmung === i + 1
+                          ? 'bg-primary/10 ring-2 ring-primary scale-110'
+                          : 'hover:bg-muted'
+                      }`}
+                    >
+                      {emoji}
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
