@@ -378,7 +378,7 @@ Data transfers are based on:
 Your sensitive advance planning data is additionally protected by our end-to-end encryption.`,
         },
         {
-          title: '12. Web Analytics',
+          title: '13. Web Analytics',
           content: `We use Plausible Analytics, a privacy-friendly analytics service that does not use cookies and does not collect personal data. No IP addresses are stored and no cross-site tracking is performed.
 
 Plausible only collects anonymized, aggregated usage statistics (e.g., page views, time on site). No cookie banner or consent is required.
