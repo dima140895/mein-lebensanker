@@ -39,6 +39,18 @@ interface DashboardSidebarProps {
 
 const DashboardSidebar = ({ activeModule, onModuleChange, userPlan, onLockedClick }: DashboardSidebarProps) => {
   const { language } = useLanguage();
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
+
+  const handlePrefetch = (moduleKey: DashboardModule) => {
+    if (!user) return;
+    if (moduleKey === 'pflege') {
+      prefetchPflegeEintraege(queryClient, user.id);
+      prefetchMedikamente(queryClient, user.id);
+    } else if (moduleKey === 'krankheit') {
+      prefetchSymptomCheckins(queryClient, user.id);
+    }
+  };
 
   return (
     <aside className="hidden md:flex flex-col w-56 lg:w-60 bg-forest text-white min-h-0">
