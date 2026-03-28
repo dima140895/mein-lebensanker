@@ -224,7 +224,7 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
               <div className="h-10 w-10 rounded-lg bg-sage-light flex items-center justify-center">
                 <Stethoscope className="h-5 w-5 text-sage-dark" />
               </div>
-              <CardTitle className="text-base font-semibold">{tx.krankheit}</CardTitle>
+              <CardTitle className="text-base font-semibold font-body text-forest">{tx.krankheit}</CardTitle>
             </div>
           </CardHeader>
           <CardContent className="space-y-3">
