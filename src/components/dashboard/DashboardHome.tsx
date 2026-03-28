@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ClipboardList, HeartHandshake, Stethoscope, ArrowRight, Lock, Zap, CheckCircle2, Circle, Anchor, ShieldAlert } from 'lucide-react';
+import { ClipboardList, HeartHandshake, Stethoscope, ArrowRight, Lock, Zap, CheckCircle2, Circle, Anchor, ShieldAlert, Shield, Link2, CheckCircle } from 'lucide-react';
 import { useEncryption } from '@/contexts/EncryptionContext';
 import { EncryptionPasswordDialog } from '@/components/EncryptionPasswordDialog';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -10,6 +11,7 @@ import { supabase } from '@/integrations/supabase/browserClient';
 import { Progress } from '@/components/ui/progress';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { useIsMobile } from '@/hooks/use-mobile';
 import type { DashboardModule } from './DashboardSidebar';
 
 interface DashboardHomeProps {
@@ -45,38 +47,97 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
   const { language } = useLanguage();
   const { user, profile } = useAuth();
   const { isEncryptionEnabled, isLoading: encryptionLoading } = useEncryption();
-  const { sectionStatus, progressPercent, filledCount, totalCount, isComplete, loading: statusLoading } = useSectionStatus();
+  const { sectionCompletion, sectionStatus, progressPercent, filledCount, totalCount, isComplete, loading: statusLoading } = useSectionStatus();
+  const [, setSearchParams] = useSearchParams();
+  const isMobile = useIsMobile();
 
   const [lastPflege, setLastPflege] = useState<any>(null);
   const [todayCheckin, setTodayCheckin] = useState<any>(null);
   const [dataLoading, setDataLoading] = useState(true);
   const [showEncryptionSetup, setShowEncryptionSetup] = useState(false);
+  const [hasShareToken, setHasShareToken] = useState(false);
 
   const isPlusOrHigher = userPlan === 'plus' || userPlan === 'familie';
   const onboardingFocus = profile?.onboarding_focus;
 
   useEffect(() => {
-    if (!user || !isPlusOrHigher) { setDataLoading(false); return; }
+    if (!user) { setDataLoading(false); return; }
     const load = async () => {
-      const [pflegeRes, checkinRes] = await Promise.all([
-        supabase.from('pflege_eintraege').select('eintrags_datum,stimmung').eq('user_id', user.id).order('eintrags_datum', { ascending: false }).limit(1),
-        supabase.from('symptom_checkins').select('energie,stimmung,checkin_datum').eq('user_id', user.id).eq('checkin_datum', new Date().toISOString().split('T')[0]).limit(1),
-      ]);
-      setLastPflege(pflegeRes.data?.[0] || null);
-      setTodayCheckin(checkinRes.data?.[0] || null);
+      const shareTokenRes = await supabase.from('share_tokens').select('id').eq('user_id', user.id).eq('is_active', true).limit(1);
+      setHasShareToken((shareTokenRes.data?.length ?? 0) > 0);
+      if (isPlusOrHigher) {
+        const [pflegeRes, checkinRes] = await Promise.all([
+          supabase.from('pflege_eintraege').select('eintrags_datum,stimmung').eq('user_id', user.id).order('eintrags_datum', { ascending: false }).limit(1),
+          supabase.from('symptom_checkins').select('energie,stimmung,checkin_datum').eq('user_id', user.id).eq('checkin_datum', new Date().toISOString().split('T')[0]).limit(1),
+        ]);
+        setLastPflege(pflegeRes.data?.[0] || null);
+        setTodayCheckin(checkinRes.data?.[0] || null);
+      }
       setDataLoading(false);
     };
     load();
   }, [user, isPlusOrHigher]);
 
-  // Least-filled sections for "next steps"
-  const nextSteps = useMemo(() => {
-    if (statusLoading || isComplete) return [];
-    return Object.entries(sectionStatus)
-      .filter(([, filled]) => !filled)
-      .slice(0, 2)
-      .map(([key]) => ({ key, label: SECTION_LABELS[key]?.[language] || key }));
-  }, [sectionStatus, statusLoading, isComplete, language]);
+  // Guided onboarding tasks
+  const onboardingTasks = useMemo(() => {
+    const tasks = [
+      {
+        id: 'personal',
+        titel: { de: 'Persönliche Daten ausfüllen', en: 'Fill in personal data' },
+        beschreibung: { de: 'Name, Adresse, Geburtsdatum', en: 'Name, address, date of birth' },
+        done: (sectionCompletion?.personal ?? 0) === 100,
+        module: 'vorsorge' as DashboardModule,
+        section: 'personal',
+      },
+      {
+        id: 'contacts',
+        titel: { de: 'Notfallkontakt hinterlegen', en: 'Add emergency contact' },
+        beschreibung: { de: 'Wer soll im Ernstfall erreichbar sein?', en: 'Who should be reachable in an emergency?' },
+        done: (sectionCompletion?.contacts ?? 0) === 100,
+        module: 'vorsorge' as DashboardModule,
+        section: 'contacts',
+      },
+      {
+        id: 'wishes',
+        titel: { de: 'Letzte Wünsche dokumentieren', en: 'Document final wishes' },
+        beschreibung: { de: 'Beerdigung, Organe, persönliche Wünsche', en: 'Burial, organs, personal wishes' },
+        done: (sectionCompletion?.wishes ?? 0) === 100,
+        module: 'vorsorge' as DashboardModule,
+        section: 'wishes',
+      },
+      {
+        id: 'share',
+        titel: { de: 'Freigabe-Link erstellen', en: 'Create sharing link' },
+        beschreibung: { de: 'Damit Angehörige im Ernstfall Zugriff haben', en: 'So relatives have access in an emergency' },
+        done: hasShareToken,
+        module: 'einstellungen' as DashboardModule,
+        section: null,
+      },
+      {
+        id: 'encryption',
+        titel: { de: 'Verschlüsselung aktivieren', en: 'Enable encryption' },
+        beschreibung: { de: 'Schütze deine Daten mit einem eigenen Passwort', en: 'Protect your data with your own password' },
+        done: isEncryptionEnabled,
+        module: 'einstellungen' as DashboardModule,
+        section: null,
+      },
+    ];
+    return tasks;
+  }, [sectionCompletion, hasShareToken, isEncryptionEnabled]);
+
+  const doneCount = onboardingTasks.filter(t => t.done).length;
+  const allTasksDone = doneCount === onboardingTasks.length;
+  const nextTask = onboardingTasks.find(t => !t.done);
+
+  // Show onboarding section only if user < 30 days old and not all done
+  const isNewEnough = useMemo(() => {
+    if (!user?.created_at) return false;
+    const created = new Date(user.created_at);
+    const daysSince = (Date.now() - created.getTime()) / (1000 * 60 * 60 * 24);
+    return daysSince < 30;
+  }, [user?.created_at]);
+
+  const showOnboardingTasks = isNewEnough && !allTasksDone && !statusLoading && !dataLoading;
 
   const userName = profile?.full_name?.split(' ')[0] || '';
   const greeting = getGreeting(language);
@@ -321,25 +382,62 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
         {cardOrder.map((key, i) => cardRenderers[key](0.05 + i * 0.05))}
       </div>
 
-      {/* Next Steps */}
-      {nextSteps.length > 0 && (
-         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}>
-          <Card className="bg-card rounded-2xl shadow-card">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-semibold text-charcoal-light uppercase tracking-wider font-body">{tx.nextSteps}</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-1">
-              {nextSteps.map((step) => (
-                <button
-                  key={step.key}
-                  onClick={() => onNavigate('vorsorge')}
-                  className="w-full flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-primary/5 transition-colors text-left group min-h-[44px]"
-                 >
-                  <Circle className="h-4 w-4 text-muted-foreground/30 group-hover:text-primary transition-colors flex-shrink-0" />
-                  <span className="text-sm text-foreground group-hover:text-primary transition-colors">{step.label}</span>
-                  <ArrowRight className="h-3.5 w-3.5 text-muted-foreground/30 group-hover:text-primary ml-auto transition-colors" />
-                </button>
-              ))}
+      {/* Guided Onboarding Tasks */}
+      {showOnboardingTasks && nextTask && (
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}>
+          <Card className="bg-card border border-primary/20 rounded-2xl shadow-card">
+            <CardContent className="p-5">
+              {/* Progress header */}
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-xs font-medium text-muted-foreground font-body">
+                  {doneCount} {language === 'de' ? 'von' : 'of'} {onboardingTasks.length} {language === 'de' ? 'erledigt' : 'done'}
+                </span>
+              </div>
+              <Progress value={(doneCount / onboardingTasks.length) * 100} className="h-1.5 mb-4" />
+
+              {/* Next task */}
+              <p className="text-xs uppercase tracking-wider text-muted-foreground font-body mb-1">
+                {language === 'de' ? 'Nächster Schritt:' : 'Next step:'}
+              </p>
+              <h3 className="font-serif text-lg text-forest font-semibold">{nextTask.titel[language]}</h3>
+              <p className="text-sm text-muted-foreground font-body mt-0.5 mb-4">{nextTask.beschreibung[language]}</p>
+              <Button
+                onClick={() => {
+                  if (nextTask.section) {
+                    setSearchParams({ module: nextTask.module, section: nextTask.section });
+                  }
+                  onNavigate(nextTask.module);
+                }}
+                className="min-h-[44px]"
+              >
+                {language === 'de' ? 'Jetzt erledigen →' : 'Do it now →'}
+              </Button>
+
+              {/* Task checklist — desktop only */}
+              {!isMobile && (
+                <div className="mt-5 pt-4 border-t border-border space-y-1.5">
+                  {onboardingTasks.map((task) => (
+                    <div key={task.id} className="flex items-center gap-2.5 text-sm">
+                      {task.done ? (
+                        <CheckCircle className="h-4 w-4 text-primary flex-shrink-0" />
+                      ) : task.id === nextTask.id ? (
+                        <Circle className="h-4 w-4 text-forest flex-shrink-0" />
+                      ) : (
+                        <Circle className="h-4 w-4 text-muted-foreground/30 flex-shrink-0" />
+                      )}
+                      <span className={
+                        task.done
+                          ? 'line-through text-muted-foreground'
+                          : task.id === nextTask.id
+                            ? 'text-forest font-medium'
+                            : 'text-muted-foreground'
+                      }>
+                        {task.titel[language]}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
             </CardContent>
           </Card>
         </motion.div>
