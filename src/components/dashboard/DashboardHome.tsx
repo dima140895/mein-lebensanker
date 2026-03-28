@@ -47,12 +47,15 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
   const { language } = useLanguage();
   const { user, profile } = useAuth();
   const { isEncryptionEnabled, isLoading: encryptionLoading } = useEncryption();
-  const { sectionStatus, progressPercent, filledCount, totalCount, isComplete, loading: statusLoading } = useSectionStatus();
+  const { sectionCompletion, sectionStatus, progressPercent, filledCount, totalCount, isComplete, loading: statusLoading } = useSectionStatus();
+  const [, setSearchParams] = useSearchParams();
+  const isMobile = useIsMobile();
 
   const [lastPflege, setLastPflege] = useState<any>(null);
   const [todayCheckin, setTodayCheckin] = useState<any>(null);
   const [dataLoading, setDataLoading] = useState(true);
   const [showEncryptionSetup, setShowEncryptionSetup] = useState(false);
+  const [hasShareToken, setHasShareToken] = useState(false);
 
   const isPlusOrHigher = userPlan === 'plus' || userPlan === 'familie';
   const onboardingFocus = profile?.onboarding_focus;
