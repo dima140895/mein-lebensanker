@@ -590,7 +590,7 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange }: Auth
             </div>
           )}
 
-          <Button type="submit" className="w-full" disabled={loading}>
+          <Button type="submit" className="w-full min-h-[44px] rounded-lg font-body font-medium" disabled={loading}>
             {loading ? '...' : mode === 'login' ? texts.login : texts.register}
           </Button>
         </form>
