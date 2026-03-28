@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -31,6 +32,7 @@ const DashboardContent = () => {
   const { language } = useLanguage();
   const { isEncryptionEnabled, isUnlocked, isLoading: encryptionLoading } = useEncryption();
   const [searchParams, setSearchParams] = useSearchParams();
+  useKeyboardShortcuts();
 
   const [activeModule, setActiveModule] = useState<DashboardModule>('home');
   const [showUnlockDialog, setShowUnlockDialog] = useState(false);
