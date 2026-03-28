@@ -120,7 +120,7 @@ const GuidanceSection = () => {
       className="space-y-6"
     >
       <div className="text-center max-w-2xl mx-auto">
-        <h2 className="font-serif text-2xl font-bold text-foreground mb-4">{texts.title}</h2>
+        <h2 className="font-sans text-2xl font-bold text-foreground mb-4">{texts.title}</h2>
         <p className="text-muted-foreground leading-relaxed">{texts.intro}</p>
       </div>
 
@@ -138,7 +138,7 @@ const GuidanceSection = () => {
                   <div className="h-10 w-10 rounded-lg bg-sage-light flex items-center justify-center">
                     <Icon className="h-5 w-5 text-sage-dark" />
                   </div>
-                  <span className="font-serif text-lg font-semibold text-foreground">{phase.title}</span>
+                  <span className="font-sans text-lg font-semibold text-foreground">{phase.title}</span>
                 </div>
               </AccordionTrigger>
               <AccordionContent className="pb-6">

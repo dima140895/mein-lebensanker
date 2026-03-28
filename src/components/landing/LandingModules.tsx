@@ -45,7 +45,7 @@ const LandingModules = () => {
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
         <div className="text-center mb-16">
           <span className="text-xs font-semibold text-accent font-body tracking-widest uppercase">Module</span>
-          <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mt-3 mb-4">
+          <h2 className="font-sans text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mt-3 mb-4">
             Ein System. Alle Lebensphasen.
           </h2>
           <p className="text-muted-foreground font-body max-w-lg mx-auto text-lg">
@@ -70,7 +70,7 @@ const LandingModules = () => {
                   <Icon className="h-5 w-5" style={{ color: mod.borderColor }} />
                 </div>
 
-                <h3 className="font-serif text-xl font-bold text-foreground mb-2">{mod.title}</h3>
+                <h3 className="font-sans text-xl font-bold text-foreground mb-2">{mod.title}</h3>
                 <p className="text-sm text-muted-foreground font-body leading-relaxed mb-4">{mod.description}</p>
 
                 <ul className="space-y-1.5">

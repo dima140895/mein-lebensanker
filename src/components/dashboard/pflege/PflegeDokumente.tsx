@@ -65,7 +65,7 @@ const PflegeDokumente = () => {
 
       {/* Important Documents List */}
       <div>
-        <h3 className="font-serif text-lg font-semibold text-foreground mb-4">{texts.importantTitle}</h3>
+        <h3 className="font-sans text-lg font-semibold text-foreground mb-4">{texts.importantTitle}</h3>
         <div className="space-y-3">
           {texts.docs.map((doc, i) => (
             <div key={i} className="flex gap-3 p-3 rounded-lg border border-border bg-card">

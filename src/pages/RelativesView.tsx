@@ -433,7 +433,7 @@ const RelativesViewContent = () => {
           <div className="inline-flex items-center justify-center h-16 w-16 rounded-full bg-primary/10 mb-6">
             <Heart className="h-8 w-8 text-primary" />
           </div>
-          <h1 className="font-serif text-3xl font-bold text-foreground mb-4">
+          <h1 className="font-sans text-3xl font-bold text-foreground mb-4">
             {texts.mainMessage}
           </h1>
           <p className="text-lg text-muted-foreground max-w-lg mx-auto">
@@ -480,7 +480,7 @@ const RelativesViewContent = () => {
           <div className="flex items-start gap-3">
             <Anchor className="h-6 w-6 text-primary flex-shrink-0 mt-0.5" />
             <div>
-              <h3 className="font-serif text-lg text-forest dark:text-foreground">
+              <h3 className="font-sans text-lg text-forest dark:text-foreground">
                 {language === 'de'
                   ? 'Möchten Sie Ihre eigene Vorsorge organisieren?'
                   : 'Would you like to organize your own advance planning?'}

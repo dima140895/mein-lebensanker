@@ -75,7 +75,7 @@ const FamilyInvitation = () => {
       <StaticNav />
       <main className="flex-1 pt-16 flex items-center justify-center px-4 py-12">
         <div className="w-full max-w-md">
-          <h1 className="font-serif text-2xl font-bold text-foreground text-center mb-6">
+          <h1 className="font-sans text-2xl font-bold text-foreground text-center mb-6">
             {texts.title}
           </h1>
 
@@ -97,7 +97,7 @@ const FamilyInvitation = () => {
                 <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
                   <Check className="h-8 w-8 text-primary" />
                 </div>
-                <h2 className="font-serif text-xl font-bold text-foreground">{texts.success}</h2>
+                <h2 className="font-sans text-xl font-bold text-foreground">{texts.success}</h2>
                 <p className="text-sm text-muted-foreground">{texts.successDesc}</p>
                 <Button onClick={() => navigate('/dashboard?module=familie')} className="mt-4">
                   {texts.toDashboard}
@@ -108,7 +108,7 @@ const FamilyInvitation = () => {
             <Card className="border-destructive/20">
               <CardContent className="py-8 text-center space-y-4">
                 <AlertCircle className="h-10 w-10 text-destructive mx-auto" />
-                <h2 className="font-serif text-lg font-bold text-foreground">{texts.error}</h2>
+                <h2 className="font-sans text-lg font-bold text-foreground">{texts.error}</h2>
                 <p className="text-sm text-muted-foreground">{errorMsg}</p>
               </CardContent>
             </Card>

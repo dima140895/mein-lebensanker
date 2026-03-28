@@ -139,7 +139,7 @@ const DashboardSections = () => {
             </div>
           </div>
           
-          <h3 className="mt-2.5 md:mt-5 font-serif text-sm md:text-xl font-semibold text-foreground break-words hyphens-auto leading-tight" lang={language}>
+          <h3 className="mt-2.5 md:mt-5 font-sans text-sm md:text-xl font-semibold text-foreground break-words hyphens-auto leading-tight" lang={language}>
             {t(`section.${section.key}`)}
           </h3>
           <p className="mt-0.5 md:mt-2 text-[11px] md:text-sm leading-relaxed text-muted-foreground line-clamp-2 flex-1">
@@ -168,7 +168,7 @@ const DashboardSections = () => {
           <span className="inline-block rounded-full bg-sage-light/80 backdrop-blur-sm px-3 py-1 md:px-4 md:py-1.5 text-xs md:text-sm font-medium text-sage-dark mb-2 md:mb-4">
             {tx.badge}
           </span>
-          <h2 className="font-serif text-xl md:text-3xl lg:text-4xl xl:text-5xl font-bold text-foreground">
+          <h2 className="font-sans text-xl md:text-3xl lg:text-4xl xl:text-5xl font-bold text-foreground">
             {tx.title}
           </h2>
           <p className="mx-auto mt-1.5 md:mt-5 max-w-2xl text-xs md:text-base lg:text-lg leading-relaxed text-muted-foreground px-2">

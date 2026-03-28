@@ -80,7 +80,7 @@ const WeeklySummary = () => {
 
   return (
     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}>
-      <h2 className="font-serif text-xl text-forest mb-3">
+      <h2 className="font-sans text-xl text-forest mb-3">
         {language === 'de' ? 'Diese Woche' : 'This Week'}
       </h2>
       <div className="grid gap-3 sm:grid-cols-2">

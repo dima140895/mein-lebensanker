@@ -137,7 +137,7 @@ const InstallApp = () => {
               <div className="inline-flex items-center justify-center h-16 w-16 rounded-full bg-primary/10 mb-6">
                 <Smartphone className="h-8 w-8 text-primary" />
               </div>
-              <h1 className="font-serif text-3xl font-bold text-foreground mb-4">
+              <h1 className="font-sans text-3xl font-bold text-foreground mb-4">
                 {texts.title}
               </h1>
               <p className="text-lg text-muted-foreground">

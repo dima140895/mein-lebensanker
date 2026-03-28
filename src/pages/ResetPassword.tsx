@@ -153,7 +153,7 @@ const ResetPassword = () => {
             className="w-full max-w-md text-center"
           >
             <div className="rounded-xl border border-border bg-card p-8 shadow-elevated">
-              <h2 className="font-serif text-2xl font-bold text-foreground mb-4">
+              <h2 className="font-sans text-2xl font-bold text-foreground mb-4">
                 {texts.invalidSession}
               </h2>
               <p className="text-muted-foreground mb-6">{texts.invalidSessionDesc}</p>
@@ -179,7 +179,7 @@ const ResetPassword = () => {
           >
             <div className="rounded-xl border border-border bg-card p-8 shadow-elevated">
               <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
-              <h2 className="font-serif text-2xl font-bold text-foreground mb-2">
+              <h2 className="font-sans text-2xl font-bold text-foreground mb-2">
                 {texts.success}
               </h2>
               <p className="text-muted-foreground mb-6">{texts.successMessage}</p>
@@ -203,7 +203,7 @@ const ResetPassword = () => {
           className="w-full max-w-md"
         >
           <div className="rounded-xl border border-border bg-card p-8 shadow-elevated">
-            <h2 className="font-serif text-2xl font-bold text-center text-foreground mb-6">
+            <h2 className="font-sans text-2xl font-bold text-center text-foreground mb-6">
               {texts.title}
             </h2>
 

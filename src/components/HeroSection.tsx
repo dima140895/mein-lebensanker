@@ -24,11 +24,11 @@ const HeroSection = () => {
               <span className="hidden sm:inline">{t('hero.treeMetaphor')}</span>
             </div>
 
-            <h1 className="font-serif text-[1.625rem] leading-[1.15] sm:text-3xl md:text-4xl lg:text-5xl xl:text-[3.5rem] font-bold md:leading-[1.15] text-foreground">
+            <h1 className="font-sans text-[1.625rem] leading-[1.15] sm:text-3xl md:text-4xl lg:text-5xl xl:text-[3.5rem] font-bold md:leading-[1.15] text-foreground">
               {t('hero.tagline')}
             </h1>
 
-            <p className="mt-1.5 sm:mt-3 md:mt-5 font-serif text-base leading-snug sm:text-xl md:text-xl lg:text-2xl text-sage-dark/90">
+            <p className="mt-1.5 sm:mt-3 md:mt-5 font-sans text-base leading-snug sm:text-xl md:text-xl lg:text-2xl text-sage-dark/90">
               {t('hero.subtitle')}
             </p>
 

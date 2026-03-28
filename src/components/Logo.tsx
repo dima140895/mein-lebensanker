@@ -21,7 +21,7 @@ const Logo = ({ showText = true, size = 'md', className = '' }: LogoProps) => {
         <Anchor className={`${icon} text-primary-foreground`} />
       </div>
       {showText && (
-        <span className={`font-serif ${text} font-semibold text-foreground`}>
+        <span className={`font-sans ${text} font-semibold text-foreground`}>
           Mein Lebensanker
         </span>
       )}

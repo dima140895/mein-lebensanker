@@ -140,7 +140,7 @@ const SettingsModule = () => {
             <div className="flex items-start gap-4">
               <LogOut className="h-8 w-8 text-muted-foreground shrink-0 mt-0.5" />
               <div className="flex-1">
-                <h3 className="font-serif text-lg font-semibold text-foreground mb-1">
+                <h3 className="font-sans text-lg font-semibold text-foreground mb-1">
                   {texts.sessionsTitle}
                 </h3>
                 <p className="text-sm text-muted-foreground font-body mb-4">
@@ -176,7 +176,7 @@ const SettingsModule = () => {
               <div className="flex items-start gap-4">
                 <Keyboard className="h-8 w-8 text-muted-foreground shrink-0 mt-0.5" />
                 <div className="flex-1">
-                  <h3 className="font-serif text-lg font-semibold text-foreground mb-3">
+                  <h3 className="font-sans text-lg font-semibold text-foreground mb-3">
                     {language === 'de' ? 'Tastenkürzel' : 'Keyboard Shortcuts'}
                   </h3>
                   <div className="space-y-1.5">

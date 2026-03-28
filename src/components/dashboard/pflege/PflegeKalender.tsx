@@ -114,7 +114,7 @@ const PflegeKalender = ({ onSelectDate }: PflegeKalenderProps) => {
         <Button variant="ghost" size="icon" onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}>
           <ChevronLeft className="h-4 w-4" />
         </Button>
-        <h3 className="font-serif text-lg font-semibold text-foreground capitalize">{monthLabel}</h3>
+        <h3 className="font-sans text-lg font-semibold text-foreground capitalize">{monthLabel}</h3>
         <Button variant="ghost" size="icon" onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}>
           <ChevronRight className="h-4 w-4" />
         </Button>
@@ -175,7 +175,7 @@ const PflegeKalender = ({ onSelectDate }: PflegeKalenderProps) => {
       {!loading && entries.length === 0 && (
         <div className="flex flex-col items-center justify-center py-10 text-center">
           <CalendarHeart className="h-12 w-12 text-muted-foreground mb-4" />
-          <h3 className="font-serif text-xl text-foreground mb-2">{language === 'de' ? 'Kein Eintrag in diesem Monat' : 'No entries this month'}</h3>
+          <h3 className="font-sans text-xl text-foreground mb-2">{language === 'de' ? 'Kein Eintrag in diesem Monat' : 'No entries this month'}</h3>
           <p className="text-sm text-muted-foreground max-w-xs font-body">{language === 'de' ? 'Erstelle heute den ersten Eintrag.' : 'Create your first entry today.'}</p>
           {onSelectDate && (
             <Button onClick={() => onSelectDate(format(new Date(), 'yyyy-MM-dd'))} className="mt-6 rounded-lg min-h-[44px]">

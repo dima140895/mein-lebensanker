@@ -130,7 +130,7 @@ const ChangePasswordDialog = ({ open, onOpenChange }: ChangePasswordDialogProps)
               <Key className="h-5 w-5 text-primary" />
             </div>
             <div>
-              <DialogTitle className="font-serif">{texts.title}</DialogTitle>
+              <DialogTitle className="font-sans">{texts.title}</DialogTitle>
               <DialogDescription className="text-sm">
                 {texts.description}
               </DialogDescription>

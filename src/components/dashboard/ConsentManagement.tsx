@@ -84,7 +84,7 @@ const ConsentManagement = () => {
 
   return (
     <div className="rounded-2xl border bg-card p-6 shadow-sm">
-      <h3 className="font-serif text-xl text-forest mb-4">
+      <h3 className="font-sans text-xl text-forest mb-4">
         {language === 'de' ? 'Meine Einwilligungen' : 'My Consents'}
       </h3>
 

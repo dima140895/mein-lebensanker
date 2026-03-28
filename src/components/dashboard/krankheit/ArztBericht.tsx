@@ -237,7 +237,7 @@ const ArztBericht = () => {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-center">
         <FileText className="h-12 w-12 text-muted-foreground mb-4" />
-        <h3 className="font-serif text-xl text-foreground mb-2">{t.emptyTitle}</h3>
+        <h3 className="font-sans text-xl text-foreground mb-2">{t.emptyTitle}</h3>
         <p className="text-sm text-muted-foreground max-w-xs font-body">
           {t.emptyText(filteredCheckins.length)}
         </p>
@@ -294,7 +294,7 @@ const ArztBericht = () => {
           <CardContent className="p-6 sm:p-8 space-y-8" data-pdf-section>
             {/* Header */}
             <div className="space-y-1">
-              <h2 className="font-serif text-2xl text-foreground">{t.subtitle}</h2>
+              <h2 className="font-sans text-2xl text-foreground">{t.subtitle}</h2>
               {profile?.full_name && (
                 <p className="text-sm text-foreground">{t.patientLabel}: {profile.full_name}</p>
               )}
@@ -306,7 +306,7 @@ const ArztBericht = () => {
 
             {/* Section 1: Summary metrics */}
             <div data-pdf-section>
-              <h3 className="font-serif text-lg text-foreground mb-3">{t.summary}</h3>
+              <h3 className="font-sans text-lg text-foreground mb-3">{t.summary}</h3>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 {metrics?.map(m => (
                   <div key={m.key} className="text-center p-4 rounded-xl border border-border bg-muted/30">
@@ -322,7 +322,7 @@ const ArztBericht = () => {
 
             {/* Section 2: Chart */}
             <div data-pdf-section>
-              <h3 className="font-serif text-lg text-foreground mb-1">{t.trend}</h3>
+              <h3 className="font-sans text-lg text-foreground mb-1">{t.trend}</h3>
               <p className="text-xs text-muted-foreground mb-3">{t.scale}</p>
               <div className="h-[200px]">
                 <ResponsiveContainer width="100%" height="100%">
@@ -351,7 +351,7 @@ const ArztBericht = () => {
             {/* Section 3: Findings */}
             {findings && (
               <div data-pdf-section>
-                <h3 className="font-serif text-lg text-foreground mb-2">{t.findings}</h3>
+                <h3 className="font-sans text-lg text-foreground mb-2">{t.findings}</h3>
                 <ul className="space-y-1.5 text-sm text-foreground">
                   <li className="flex items-start gap-2">
                     <span className="text-muted-foreground">•</span>
@@ -371,7 +371,7 @@ const ArztBericht = () => {
 
             {/* Section 4: Medications */}
             <div data-pdf-section>
-              <h3 className="font-serif text-lg text-foreground mb-2">{t.medications}</h3>
+              <h3 className="font-sans text-lg text-foreground mb-2">{t.medications}</h3>
               {meds.length === 0 ? (
                 <p className="text-sm text-muted-foreground">{t.noMeds}</p>
               ) : (
@@ -403,7 +403,7 @@ const ArztBericht = () => {
             {/* Section 5: Notes */}
             {notesEntries.length > 0 && (
               <div data-pdf-section>
-                <h3 className="font-serif text-lg text-foreground mb-2">{t.notes}</h3>
+                <h3 className="font-sans text-lg text-foreground mb-2">{t.notes}</h3>
                 <ul className="space-y-1 text-sm">
                   {notesEntries.map(c => (
                     <li key={c.id} className="text-foreground">

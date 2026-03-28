@@ -9,7 +9,7 @@ const LandingCTA = () => {
     <section className="py-24 sm:py-32 bg-card">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center">
         <Anchor className="h-10 w-10 text-primary/20 mx-auto mb-6" />
-        <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-4 leading-tight">
+        <h2 className="font-sans text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-4 leading-tight">
           Der beste Moment war gestern.{' '}
           <span className="text-accent">Der zweitbeste ist jetzt.</span>
         </h2>

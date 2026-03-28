@@ -180,7 +180,7 @@ const DecisionAssistant = () => {
         className="space-y-6"
       >
         <div className="text-center">
-          <h2 className="font-serif text-2xl font-bold text-foreground mb-2">{texts.summaryTitle}</h2>
+          <h2 className="font-sans text-2xl font-bold text-foreground mb-2">{texts.summaryTitle}</h2>
           <p className="text-muted-foreground">{texts.summaryIntro}</p>
         </div>
 
@@ -214,7 +214,7 @@ const DecisionAssistant = () => {
       className="space-y-6"
     >
       <div className="text-center max-w-2xl mx-auto">
-        <h2 className="font-serif text-2xl font-bold text-foreground mb-4">{texts.title}</h2>
+        <h2 className="font-sans text-2xl font-bold text-foreground mb-4">{texts.title}</h2>
         <p className="text-muted-foreground leading-relaxed">{texts.intro}</p>
       </div>
 
@@ -249,7 +249,7 @@ const DecisionAssistant = () => {
               <MessageCircle className="h-5 w-5 text-primary" />
             </div>
             <div className="flex-1">
-              <p className="font-serif text-lg font-semibold text-foreground mb-2">
+              <p className="font-sans text-lg font-semibold text-foreground mb-2">
                 {currentQuestion.question}
               </p>
               <p className="text-sm text-muted-foreground italic">{currentQuestion.hint}</p>

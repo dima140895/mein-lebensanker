@@ -127,7 +127,7 @@ const DigitalForm = () => {
 
       {/* Email Accounts */}
       <div className="space-y-4">
-        <h3 className="font-serif text-lg font-semibold text-foreground">{texts.emailAccounts}</h3>
+        <h3 className="font-sans text-lg font-semibold text-foreground">{texts.emailAccounts}</h3>
         {data.emailAccounts.map((account, i) => (
           <div key={i} className="flex gap-3 items-start">
             <div className="flex-1 grid gap-3 md:grid-cols-3">
@@ -165,7 +165,7 @@ const DigitalForm = () => {
 
       {/* Social Media */}
       <div className="space-y-4 border-t border-border pt-6">
-        <h3 className="font-serif text-lg font-semibold text-foreground">{texts.socialMedia}</h3>
+        <h3 className="font-sans text-lg font-semibold text-foreground">{texts.socialMedia}</h3>
         {data.socialMedia.map((social, i) => (
           <div key={i} className="flex gap-3 items-start">
             <div className="flex-1 grid gap-3 md:grid-cols-3">
@@ -200,7 +200,7 @@ const DigitalForm = () => {
 
       {/* Subscriptions */}
       <div className="space-y-4 border-t border-border pt-6">
-        <h3 className="font-serif text-lg font-semibold text-foreground">{texts.subscriptions}</h3>
+        <h3 className="font-sans text-lg font-semibold text-foreground">{texts.subscriptions}</h3>
         {data.subscriptions.map((sub, i) => (
           <div key={i} className="flex gap-3 items-start">
             <div className="flex-1 grid gap-3 md:grid-cols-2">

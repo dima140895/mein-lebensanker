@@ -66,7 +66,7 @@ const LogoHeader = () => (
     <div className="w-12 h-12 rounded-full bg-forest flex items-center justify-center mb-3">
       <Anchor className="h-6 w-6 text-white" />
     </div>
-    <span className="font-serif text-xl text-forest">Mein Lebensanker</span>
+    <span className="font-sans text-xl text-forest">Mein Lebensanker</span>
   </div>
 );
 
@@ -448,7 +448,7 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange, embedd
               <Shield className="h-8 w-8 text-primary" />
             </div>
 
-            <h2 className="font-serif text-2xl text-foreground mb-2">
+            <h2 className="font-sans text-2xl text-foreground mb-2">
               {texts.mfaTitle}
             </h2>
             <p className="text-muted-foreground font-body mb-6">
@@ -511,7 +511,7 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange, embedd
               )}
             </div>
 
-            <h2 className="font-serif text-2xl text-forest mb-2">
+            <h2 className="font-sans text-2xl text-forest mb-2">
               {verified
                 ? (language === 'de' ? 'E-Mail bestätigt!' : 'Email verified!')
                 : texts.verifyTitle}
@@ -572,7 +572,7 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange, embedd
               {texts.backToLogin}
             </button>
 
-            <h2 className="font-serif text-2xl text-forest mb-2">
+            <h2 className="font-sans text-2xl text-forest mb-2">
               {texts.forgotTitle}
             </h2>
             <p className="text-sm text-muted-foreground mb-6 font-body">
@@ -648,7 +648,7 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange, embedd
           </div>
 
           {/* Headline */}
-          <h2 className="font-serif text-2xl text-forest mb-1">
+          <h2 className="font-sans text-2xl text-forest mb-1">
             {mode === 'login' ? texts.welcomeHeadline : texts.registerHeadline}
           </h2>
           <p className="text-sm text-muted-foreground font-body mb-6">

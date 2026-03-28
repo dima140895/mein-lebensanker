@@ -76,7 +76,7 @@ const UpgradeOptions = () => {
     return (
       <div className="text-center py-12">
         <Users className="h-16 w-16 text-primary mx-auto mb-4" />
-        <h2 className="font-serif text-2xl font-bold text-foreground mb-2">{texts.noUpgrade}</h2>
+        <h2 className="font-sans text-2xl font-bold text-foreground mb-2">{texts.noUpgrade}</h2>
       </div>
     );
   }
@@ -89,7 +89,7 @@ const UpgradeOptions = () => {
   return (
     <div className="max-w-3xl mx-auto">
       <div className="text-center mb-8">
-        <h2 className="font-serif text-2xl font-bold text-foreground">{texts.title}</h2>
+        <h2 className="font-sans text-2xl font-bold text-foreground">{texts.title}</h2>
         <p className="mt-2 text-muted-foreground">{texts.subtitle}</p>
       </div>
 
@@ -118,7 +118,7 @@ const UpgradeOptions = () => {
                   <Icon className="h-6 w-6" />
                 </div>
                 <div>
-                  <h3 className="font-serif text-xl font-bold text-foreground">{info.name}</h3>
+                  <h3 className="font-sans text-xl font-bold text-foreground">{info.name}</h3>
                   <p className="text-sm text-muted-foreground">{info.desc}</p>
                 </div>
               </div>

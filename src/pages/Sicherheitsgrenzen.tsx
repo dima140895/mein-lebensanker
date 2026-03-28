@@ -87,14 +87,14 @@ const Sicherheitsgrenzen = () => {
               <div className="flex h-12 w-12 items-center justify-center rounded-full bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400">
                 <AlertTriangle className="h-6 w-6" />
               </div>
-              <h1 className="font-serif text-2xl md:text-3xl font-bold text-foreground">{texts.title}</h1>
+              <h1 className="font-sans text-2xl md:text-3xl font-bold text-foreground">{texts.title}</h1>
             </div>
             
             <p className="text-muted-foreground leading-relaxed">{texts.intro}</p>
 
             {/* Limits Section */}
             <div className="mt-8 rounded-lg border border-amber-200 bg-amber-50 p-5 dark:border-amber-800/50 dark:bg-amber-900/20">
-              <h2 className="font-serif text-lg font-semibold text-foreground mb-4">
+              <h2 className="font-sans text-lg font-semibold text-foreground mb-4">
                 {texts.limitsTitle}
               </h2>
               <ul className="space-y-3">
@@ -122,7 +122,7 @@ const Sicherheitsgrenzen = () => {
                 <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
                   <Shield className="h-5 w-5" />
                 </div>
-                <h2 className="font-serif text-lg font-semibold text-foreground">
+                <h2 className="font-sans text-lg font-semibold text-foreground">
                   {texts.recommendationsTitle}
                 </h2>
               </div>

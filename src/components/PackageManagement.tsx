@@ -141,7 +141,7 @@ const PackageManagement = () => {
   return (
     <div className="max-w-4xl mx-auto space-y-8">
       <div className="text-center">
-        <h2 className="font-serif text-2xl font-bold text-foreground">{texts.title}</h2>
+        <h2 className="font-sans text-2xl font-bold text-foreground">{texts.title}</h2>
         <p className="mt-2 text-muted-foreground">{texts.subtitle}</p>
       </div>
 
@@ -203,7 +203,7 @@ const PackageManagement = () => {
       {/* Upgrade Section */}
       {upgradeablePlans.length > 0 && (
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="space-y-4">
-          <h3 className="font-serif text-xl font-semibold text-foreground text-center">
+          <h3 className="font-sans text-xl font-semibold text-foreground text-center">
             {texts.upgradeSection}
           </h3>
 

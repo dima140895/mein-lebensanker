@@ -32,7 +32,7 @@ const LandingFAQ = () => {
       <div className="max-w-3xl mx-auto px-4 sm:px-6">
         <div className="text-center mb-16">
           <span className="text-xs font-semibold text-accent font-body tracking-widest uppercase">FAQ</span>
-          <h2 className="font-serif text-3xl sm:text-4xl font-bold text-foreground mt-3">
+          <h2 className="font-sans text-3xl sm:text-4xl font-bold text-foreground mt-3">
             Häufige Fragen
           </h2>
         </div>

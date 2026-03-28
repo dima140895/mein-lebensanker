@@ -37,7 +37,7 @@ const LandingPersonas = () => {
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
         <div className="text-center mb-16">
           <span className="text-xs font-semibold text-[hsl(var(--amber))] font-body tracking-widest uppercase">Für wen</span>
-          <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-white mt-3 mb-4">
+          <h2 className="font-sans text-3xl sm:text-4xl lg:text-5xl font-bold text-white mt-3 mb-4">
             Lebensanker ist für dich wenn...
           </h2>
           <p className="text-white/50 font-body max-w-lg mx-auto text-lg">
@@ -56,7 +56,7 @@ const LandingPersonas = () => {
                     <Icon className="h-5 w-5" style={{ color: p.color }} />
                   </div>
                 </div>
-                <h3 className="font-serif text-xl font-bold text-white mb-2">{p.title}</h3>
+                <h3 className="font-sans text-xl font-bold text-white mb-2">{p.title}</h3>
                 <p className="text-white/60 font-body text-sm leading-relaxed">{p.description}</p>
               </div>
             );

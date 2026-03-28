@@ -65,7 +65,7 @@ const WhatIsThisTool = () => {
             <span className="inline-block px-3 py-1 md:px-4 md:py-1.5 rounded-full bg-amber-light text-amber text-xs md:text-sm font-medium mb-3 md:mb-4">
               {texts.badge}
             </span>
-            <h2 className="font-serif text-xl md:text-3xl font-bold text-foreground mb-2 md:mb-4">{texts.title}</h2>
+            <h2 className="font-sans text-xl md:text-3xl font-bold text-foreground mb-2 md:mb-4">{texts.title}</h2>
             <p className="text-sm md:text-base text-foreground leading-relaxed max-w-2xl mx-auto">{texts.intro}</p>
           </div>
 
@@ -79,7 +79,7 @@ const WhatIsThisTool = () => {
               transition={{ duration: 0.5, delay: 0.1 }}
               className="rounded-2xl border border-sage/20 bg-card/60 backdrop-blur-sm p-4 md:p-6 shadow-card transition-shadow duration-300 hover:shadow-soft"
             >
-              <h3 className="font-serif text-lg font-semibold text-sage-dark mb-4">{texts.isTitle}</h3>
+              <h3 className="font-sans text-lg font-semibold text-sage-dark mb-4">{texts.isTitle}</h3>
               <ul className="space-y-3">
                 {texts.is.map((item, i) => {
                   const Icon = item.icon;
@@ -103,7 +103,7 @@ const WhatIsThisTool = () => {
               transition={{ duration: 0.5, delay: 0.2 }}
               className="rounded-2xl border border-amber/20 bg-card/60 backdrop-blur-sm p-4 md:p-6 shadow-card transition-shadow duration-300 hover:shadow-soft"
             >
-              <h3 className="font-serif text-lg font-semibold text-amber mb-4">{texts.isNotTitle}</h3>
+              <h3 className="font-sans text-lg font-semibold text-amber mb-4">{texts.isNotTitle}</h3>
               <ul className="space-y-3">
                 {texts.isNot.map((item, i) => {
                   const Icon = item.icon;

@@ -8,7 +8,7 @@ const LandingFooter = () => {
         <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-2">
             <Anchor className="h-5 w-5 text-white/40" />
-            <span className="font-serif text-sm font-bold text-white/80">Mein Lebensanker</span>
+            <span className="font-sans text-sm font-bold text-white/80">Mein Lebensanker</span>
           </div>
 
           <div className="flex flex-wrap items-center justify-center gap-6 text-xs font-body">

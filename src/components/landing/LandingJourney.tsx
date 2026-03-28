@@ -29,7 +29,7 @@ const LandingJourney = () => {
         {/* Section header */}
         <div className="text-center mb-16 sm:mb-20">
           <span className="text-xs font-semibold text-accent font-body tracking-widest uppercase">Dein Weg</span>
-          <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mt-3 mb-4">
+          <h2 className="font-sans text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mt-3 mb-4">
             Drei Momente. Ein Anker.
           </h2>
           <p className="text-muted-foreground font-body max-w-lg mx-auto text-lg">
@@ -57,7 +57,7 @@ const LandingJourney = () => {
                     style={{ color: step.color, backgroundColor: `${step.color}10` }}>
                     {step.phase}
                   </span>
-                  <h3 className="font-serif text-2xl sm:text-3xl font-bold text-foreground mb-3">{step.title}</h3>
+                  <h3 className="font-sans text-2xl sm:text-3xl font-bold text-foreground mb-3">{step.title}</h3>
                   <p className="text-muted-foreground font-body text-base leading-relaxed">{step.description}</p>
                 </div>
 

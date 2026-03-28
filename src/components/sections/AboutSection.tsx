@@ -55,14 +55,14 @@ const AboutSection = () => {
       className="space-y-8"
     >
       <div className="text-center max-w-2xl mx-auto">
-        <h2 className="font-serif text-2xl font-bold text-foreground mb-4">{texts.title}</h2>
+        <h2 className="font-sans text-2xl font-bold text-foreground mb-4">{texts.title}</h2>
         <p className="text-muted-foreground leading-relaxed">{texts.intro}</p>
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
         {/* What it IS */}
         <div className="rounded-xl border border-sage/30 bg-sage-light/30 p-6">
-          <h3 className="font-serif text-lg font-semibold text-sage-dark mb-4">{texts.isTitle}</h3>
+          <h3 className="font-sans text-lg font-semibold text-sage-dark mb-4">{texts.isTitle}</h3>
           <ul className="space-y-3">
             {texts.is.map((item, i) => {
               const Icon = item.icon;
@@ -80,7 +80,7 @@ const AboutSection = () => {
 
         {/* What it IS NOT */}
         <div className="rounded-xl border border-amber/30 bg-amber-light/30 p-6">
-          <h3 className="font-serif text-lg font-semibold text-amber mb-4">{texts.isNotTitle}</h3>
+          <h3 className="font-sans text-lg font-semibold text-amber mb-4">{texts.isNotTitle}</h3>
           <ul className="space-y-3">
             {texts.isNot.map((item, i) => {
               const Icon = item.icon;

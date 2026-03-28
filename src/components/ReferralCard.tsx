@@ -96,7 +96,7 @@ const ReferralCard = ({ delay = 1000 }: ReferralCardProps) => {
           <div className="flex items-start gap-3 pr-8">
             <Heart className="h-6 w-6 text-primary flex-shrink-0 mt-0.5" />
             <div className="space-y-2">
-              <h3 className="font-serif text-lg text-forest dark:text-foreground">
+              <h3 className="font-sans text-lg text-forest dark:text-foreground">
                 {texts.title}
               </h3>
               <p className="font-body text-sm text-muted-foreground">

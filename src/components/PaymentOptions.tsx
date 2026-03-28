@@ -177,7 +177,7 @@ const PaymentOptions = () => {
 
       {/* Header */}
       <div className="text-center mb-10 sm:mb-14">
-        <h2 className="font-serif text-3xl sm:text-4xl font-bold text-foreground tracking-tight">
+        <h2 className="font-sans text-3xl sm:text-4xl font-bold text-foreground tracking-tight">
           {texts.title}
         </h2>
         <p className="mt-3 text-muted-foreground font-body text-base sm:text-lg">
@@ -228,15 +228,15 @@ const PaymentOptions = () => {
                   }`} />
                 </div>
                 <div className="min-w-0">
-                  <h3 className="font-serif text-xl font-bold text-foreground leading-tight">{plan.name}</h3>
+                  <h3 className="font-sans text-xl font-bold text-foreground leading-tight">{plan.name}</h3>
                   <p className="text-sm text-muted-foreground font-body mt-0.5 leading-snug">{plan.desc}</p>
                 </div>
               </div>
 
               {/* Price */}
               <div className="mb-6 flex items-baseline gap-1.5">
-                <span className="font-serif text-5xl font-bold text-foreground tracking-tight">{plan.price}</span>
-                <span className="font-serif text-2xl font-bold text-foreground">{texts.currency}</span>
+                <span className="font-sans text-5xl font-bold text-foreground tracking-tight">{plan.price}</span>
+                <span className="font-sans text-2xl font-bold text-foreground">{texts.currency}</span>
                 <span className="text-sm text-muted-foreground font-body ml-1">{plan.period}</span>
                 <span className="text-xs text-muted-foreground font-body ml-1.5">{texts.inclVat}</span>
               </div>

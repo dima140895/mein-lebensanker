@@ -58,7 +58,7 @@ const DashboardSidebar = ({ activeModule, onModuleChange, userPlan, onLockedClic
       <div className="px-4 py-5 border-b border-white/10">
         <div className="flex items-center gap-2">
           <Anchor className="h-5 w-5 text-white/80" />
-          <span className="font-serif text-sm font-bold text-white leading-tight">Mein Lebensanker</span>
+          <span className="font-sans text-sm font-bold text-white leading-tight">Mein Lebensanker</span>
         </div>
       </div>
 

@@ -307,7 +307,7 @@ const PflegeTagebuch = () => {
       {entries.length === 0 && !showForm ? (
         <div className="flex flex-col items-center justify-center py-16 text-center">
           <BookHeart className="h-12 w-12 text-muted-foreground mb-4" />
-          <h3 className="font-serif text-xl text-foreground mb-2">{language === 'de' ? 'Noch kein Eintrag' : 'No entries yet'}</h3>
+          <h3 className="font-sans text-xl text-foreground mb-2">{language === 'de' ? 'Noch kein Eintrag' : 'No entries yet'}</h3>
           <p className="text-sm text-muted-foreground max-w-xs font-body">{language === 'de' ? 'Dokumentiere den heutigen Tag — Stimmung, Mahlzeiten, Besonderheiten.' : 'Document today — mood, meals, and notable events.'}</p>
           <Button onClick={() => setShowForm(true)} className="mt-6 rounded-lg min-h-[44px]">
             <Plus className="h-4 w-4 mr-2" />

@@ -16,7 +16,7 @@ const NotFound = () => {
       <StaticNav minimal />
       <main className="flex-1 pt-16 flex items-center justify-center">
         <div className="text-center">
-          <h1 className="mb-4 text-4xl font-serif font-bold text-foreground">404</h1>
+          <h1 className="mb-4 text-4xl font-sans font-bold text-foreground">404</h1>
           <p className="mb-4 text-xl text-muted-foreground font-body">Seite nicht gefunden</p>
           <Link to="/" className="text-primary underline hover:text-primary/90 font-body">
             Zurück zur Startseite

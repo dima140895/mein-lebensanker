@@ -189,7 +189,7 @@ const LearnMore = () => {
                 <PlayCircle className="h-4 w-4" />
                 {language === 'de' ? 'So funktioniert\'s' : 'How It Works'}
               </span>
-              <h1 className="font-serif text-3xl font-bold text-foreground md:text-4xl lg:text-5xl">
+              <h1 className="font-sans text-3xl font-bold text-foreground md:text-4xl lg:text-5xl">
                 {language === 'de' ? 'Ganz einfach erklärt' : 'Simply Explained'}
               </h1>
               <p className="mt-4 text-lg leading-relaxed text-muted-foreground max-w-xl mx-auto">
@@ -224,7 +224,7 @@ const LearnMore = () => {
                 <BookOpen className="inline h-4 w-4 mr-2" />
                 {language === 'de' ? 'Die wichtigsten Punkte' : 'Key Points'}
               </span>
-              <h2 className="font-serif text-3xl font-bold text-foreground md:text-4xl">
+              <h2 className="font-sans text-3xl font-bold text-foreground md:text-4xl">
                 {language === 'de' ? 'Was Du wissen solltest' : 'What You Should Know'}
               </h2>
             </motion.div>
@@ -247,7 +247,7 @@ const LearnMore = () => {
                     <div className={`inline-flex h-12 w-12 items-center justify-center rounded-xl ${point.color} mb-4`}>
                       <Icon className="h-6 w-6" />
                     </div>
-                    <h3 className="font-serif text-xl font-semibold text-foreground mb-2">
+                    <h3 className="font-sans text-xl font-semibold text-foreground mb-2">
                       {point.title}
                     </h3>
                     <p className="text-muted-foreground leading-relaxed">
@@ -272,7 +272,7 @@ const LearnMore = () => {
               <span className="inline-block rounded-full bg-rose-100 px-4 py-1.5 text-sm font-medium text-rose-600 mb-4">
                 {language === 'de' ? 'Wichtiger Hinweis' : 'Important Notice'}
               </span>
-              <h2 className="font-serif text-3xl font-bold text-foreground md:text-4xl mb-6">
+              <h2 className="font-sans text-3xl font-bold text-foreground md:text-4xl mb-6">
                 {language === 'de' ? 'Was dieses Tool nicht ist' : 'What This Tool Is NOT'}
               </h2>
               <div className="bg-card rounded-2xl border border-border p-8 text-left">
@@ -314,7 +314,7 @@ const LearnMore = () => {
                 <Shield className="inline h-4 w-4 mr-2" />
                 {language === 'de' ? 'Datensicherheit' : 'Data Security'}
               </span>
-              <h2 className="font-serif text-3xl font-bold text-foreground md:text-4xl">
+              <h2 className="font-sans text-3xl font-bold text-foreground md:text-4xl">
                 {language === 'de' ? 'Wie Deine Daten geschützt werden' : 'How Your Data Is Protected'}
               </h2>
               <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
@@ -390,7 +390,7 @@ const LearnMore = () => {
                     <Lock className="h-6 w-6" />
                   </div>
                   <div>
-                    <h3 className="font-serif text-lg font-semibold text-foreground mb-2">
+                    <h3 className="font-sans text-lg font-semibold text-foreground mb-2">
                       {language === 'de' ? 'Verschlüsselungspasswort' : 'Encryption Password'}
                     </h3>
                     <p className="text-muted-foreground text-sm leading-relaxed">
@@ -414,7 +414,7 @@ const LearnMore = () => {
                     <KeyRound className="h-6 w-6" />
                   </div>
                   <div>
-                    <h3 className="font-serif text-lg font-semibold text-foreground mb-2">
+                    <h3 className="font-sans text-lg font-semibold text-foreground mb-2">
                       {language === 'de' ? 'Recovery Key (Wiederherstellungsschlüssel)' : 'Recovery Key'}
                     </h3>
                     <p className="text-muted-foreground text-sm leading-relaxed">
@@ -438,7 +438,7 @@ const LearnMore = () => {
                     <Shield className="h-6 w-6" />
                   </div>
                   <div>
-                    <h3 className="font-serif text-lg font-semibold text-foreground mb-2">
+                    <h3 className="font-sans text-lg font-semibold text-foreground mb-2">
                       {language === 'de' ? 'So funktioniert der Schutz' : 'How Protection Works'}
                     </h3>
                     <ul className="text-muted-foreground text-sm leading-relaxed space-y-2">
@@ -466,7 +466,7 @@ const LearnMore = () => {
                     <RefreshCw className="h-6 w-6" />
                   </div>
                   <div>
-                    <h3 className="font-serif text-lg font-semibold text-foreground mb-2">
+                    <h3 className="font-sans text-lg font-semibold text-foreground mb-2">
                       {language === 'de' ? 'Passwort vergessen?' : 'Forgot Password?'}
                     </h3>
                     <p className="text-muted-foreground text-sm leading-relaxed">
@@ -503,7 +503,7 @@ const LearnMore = () => {
                 <HelpCircle className="inline h-4 w-4 mr-2" />
                 {language === 'de' ? 'Häufige Fragen' : 'FAQ'}
               </span>
-              <h2 className="font-serif text-3xl font-bold text-foreground md:text-4xl">
+              <h2 className="font-sans text-3xl font-bold text-foreground md:text-4xl">
                 {language === 'de' ? 'Fragen & Antworten' : 'Questions & Answers'}
               </h2>
             </motion.div>
@@ -542,7 +542,7 @@ const LearnMore = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
             >
-              <h2 className="font-serif text-3xl font-bold text-foreground md:text-4xl mb-4">
+              <h2 className="font-sans text-3xl font-bold text-foreground md:text-4xl mb-4">
                 {language === 'de' ? 'Bereit loszulegen?' : 'Ready to get started?'}
               </h2>
               <p className="text-lg text-muted-foreground mb-8 max-w-xl mx-auto">

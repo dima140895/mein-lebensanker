@@ -156,7 +156,7 @@ const VerifyEmail = () => {
             <div className="mb-6 flex justify-center">
               <div className="flex items-center gap-2 text-primary">
                 <Anchor className="h-8 w-8" />
-                <span className="font-serif text-xl font-semibold">Mein Lebensanker</span>
+                <span className="font-sans text-xl font-semibold">Mein Lebensanker</span>
               </div>
             </div>
 
@@ -165,7 +165,7 @@ const VerifyEmail = () => {
                 <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
                   <Loader2 className="h-8 w-8 text-primary animate-spin" />
                 </div>
-                <h2 className="font-serif text-2xl font-bold text-foreground mb-2">
+                <h2 className="font-sans text-2xl font-bold text-foreground mb-2">
                   {texts.verifying}
                 </h2>
               </>
@@ -176,7 +176,7 @@ const VerifyEmail = () => {
                 <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30">
                   <CheckCircle className="h-8 w-8 text-green-600 dark:text-green-400" />
                 </div>
-                <h2 className="font-serif text-2xl font-bold text-foreground mb-2">
+                <h2 className="font-sans text-2xl font-bold text-foreground mb-2">
                   {texts.success}
                 </h2>
                 <p className="text-muted-foreground mb-4">
@@ -197,7 +197,7 @@ const VerifyEmail = () => {
                 <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/30">
                   <XCircle className="h-8 w-8 text-red-600 dark:text-red-400" />
                 </div>
-                <h2 className="font-serif text-2xl font-bold text-foreground mb-2">
+                <h2 className="font-sans text-2xl font-bold text-foreground mb-2">
                   {texts.error}
                 </h2>
                 <p className="text-muted-foreground mb-6">

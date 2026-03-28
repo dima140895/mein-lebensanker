@@ -67,7 +67,7 @@ const UpgradeModal = ({ open, onOpenChange, lockedModule }: UpgradeModalProps) =
           <div className="h-14 w-14 rounded-2xl bg-amber-light/30 border border-accent/20 flex items-center justify-center mb-2">
             <Lock className="h-7 w-7 text-accent" />
           </div>
-          <DialogTitle className="font-serif text-xl text-forest">{info.name}</DialogTitle>
+          <DialogTitle className="font-sans text-xl text-forest">{info.name}</DialogTitle>
           <DialogDescription className="text-sm text-charcoal-light mt-1 font-body">
             {info.desc}
           </DialogDescription>

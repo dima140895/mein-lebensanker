@@ -80,7 +80,7 @@ const PINEntry = ({ onSubmit, language, initialRemainingAttempts = 3, isLocked =
             <ShieldX className="h-8 w-8 text-destructive" />
           </div>
           
-          <h1 className="font-serif text-2xl font-bold text-foreground mb-2">
+          <h1 className="font-sans text-2xl font-bold text-foreground mb-2">
             {texts.lockedTitle}
           </h1>
           
@@ -106,7 +106,7 @@ const PINEntry = ({ onSubmit, language, initialRemainingAttempts = 3, isLocked =
           <Lock className="h-8 w-8 text-primary" />
         </div>
         
-        <h1 className="font-serif text-2xl font-bold text-foreground mb-2">
+        <h1 className="font-sans text-2xl font-bold text-foreground mb-2">
           {texts.title}
         </h1>
         
