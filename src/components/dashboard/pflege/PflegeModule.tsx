@@ -6,9 +6,14 @@ import PflegeTagebuch from './PflegeTagebuch';
 import PflegeMedikamente from './PflegeMedikamente';
 import PflegeKalender from './PflegeKalender';
 import PflegeDokumente from './PflegeDokumente';
+import PflegegradRechner from '@/components/PflegegradRechner';
+import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 
 const PflegeModule = () => {
   const { language } = useLanguage();
+  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState('tagebuch');
 
   const t = {
@@ -18,6 +23,9 @@ const PflegeModule = () => {
       medikamente: 'Medikamente',
       kalender: 'Kalender',
       dokumente: 'Dokumente',
+      pflegegrad: 'Pflegegrad',
+      saved: 'Pflegegrad gespeichert',
+      saveError: 'Fehler beim Speichern',
     },
     en: {
       title: 'Care Companion',
@@ -25,10 +33,46 @@ const PflegeModule = () => {
       medikamente: 'Medications',
       kalender: 'Calendar',
       dokumente: 'Documents',
+      pflegegrad: 'Care Level',
+      saved: 'Care level saved',
+      saveError: 'Error saving',
     },
   };
 
   const texts = t[language];
+
+  const handleSavePflegegrad = async (result: { grad: number; datum: string; punkte: number }) => {
+    if (!user) return;
+    try {
+      // Load existing personal data, merge pflegegrad result
+      const { data: existing } = await supabase
+        .from('vorsorge_data')
+        .select('data')
+        .eq('user_id', user.id)
+        .eq('section_key', 'personal')
+        .maybeSingle();
+
+      const currentData = (existing?.data as Record<string, unknown>) || {};
+      const updatedData = {
+        ...currentData,
+        pflegegrad_selbsteinschaetzung: result,
+      };
+
+      const { error } = await supabase
+        .from('vorsorge_data')
+        .upsert({
+          user_id: user.id,
+          section_key: 'personal',
+          data: updatedData,
+          updated_at: new Date().toISOString(),
+        }, { onConflict: 'user_id,section_key' });
+
+      if (error) throw error;
+      toast.success(texts.saved);
+    } catch {
+      toast.error(texts.saveError);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -40,11 +84,12 @@ const PflegeModule = () => {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="w-full grid grid-cols-4">
+        <TabsList className="w-full grid grid-cols-5">
           <TabsTrigger value="tagebuch" className="text-xs sm:text-sm">{texts.tagebuch}</TabsTrigger>
           <TabsTrigger value="medikamente" className="text-xs sm:text-sm">{texts.medikamente}</TabsTrigger>
           <TabsTrigger value="kalender" className="text-xs sm:text-sm">{texts.kalender}</TabsTrigger>
           <TabsTrigger value="dokumente" className="text-xs sm:text-sm">{texts.dokumente}</TabsTrigger>
+          <TabsTrigger value="pflegegrad" className="text-xs sm:text-sm">{texts.pflegegrad}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="tagebuch" className="mt-6">
@@ -54,13 +99,18 @@ const PflegeModule = () => {
           <PflegeMedikamente />
         </TabsContent>
         <TabsContent value="kalender" className="mt-6">
-          <PflegeKalender onSelectDate={(date) => {
-            // Switch to tagebuch tab when a date with entry is clicked
+          <PflegeKalender onSelectDate={() => {
             setActiveTab('tagebuch');
           }} />
         </TabsContent>
         <TabsContent value="dokumente" className="mt-6">
           <PflegeDokumente />
+        </TabsContent>
+        <TabsContent value="pflegegrad" className="mt-6">
+          <PflegegradRechner
+            showCTA="dashboard"
+            onSave={handleSavePflegegrad}
+          />
         </TabsContent>
       </Tabs>
     </div>
