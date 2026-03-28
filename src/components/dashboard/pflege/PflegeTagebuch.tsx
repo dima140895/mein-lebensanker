@@ -12,6 +12,7 @@ import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { de as deLocale } from 'date-fns/locale';
 import { trackEvent } from '@/lib/analytics';
+import ReferralCard from '@/components/ReferralCard';
 
 const MOODS = ['😢', '😕', '😐', '🙂', '😊'];
 
