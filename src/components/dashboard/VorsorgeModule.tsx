@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { User, Wallet, Globe, Heart, FileText, ArrowLeft, Phone, Info, Compass, Link2, Download, CheckCircle, HelpCircle } from 'lucide-react';
+import ReferralCard from '@/components/ReferralCard';
 
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
