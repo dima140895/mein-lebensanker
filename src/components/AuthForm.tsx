@@ -266,7 +266,30 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange, embedd
     }
   };
 
-  // Poll for email verification
+  const handleMfaVerify = async () => {
+    if (!mfaFactorId || !mfaChallengeId || mfaCode.length !== 6) return;
+    setLoading(true);
+    try {
+      const { error } = await supabase.auth.mfa.verify({
+        factorId: mfaFactorId,
+        challengeId: mfaChallengeId,
+        code: mfaCode,
+      });
+      if (error) {
+        toast.error(texts.mfaInvalid);
+        setMfaCode('');
+        return;
+      }
+      toast.success(texts.welcomeBack);
+      onSuccess?.();
+    } catch (err) {
+      toast.error(texts.mfaInvalid);
+      setMfaCode('');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const pollingRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const [verified, setVerified] = useState(false);
 
