@@ -28,28 +28,28 @@ const LandingFAQ = () => {
   const [openIdx, setOpenIdx] = useState<number | null>(null);
 
   return (
-    <section className="py-24 sm:py-32 bg-[hsl(var(--warm-white))]">
+    <section className="py-24 sm:py-32 bg-background">
       <div className="max-w-3xl mx-auto px-4 sm:px-6">
         <div className="text-center mb-16">
-          <span className="text-xs font-semibold text-[hsl(var(--amber))] font-body tracking-widest uppercase">FAQ</span>
-          <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[hsl(var(--forest))] mt-3">
+          <span className="text-xs font-semibold text-accent font-body tracking-widest uppercase">FAQ</span>
+          <h2 className="font-serif text-3xl sm:text-4xl font-bold text-foreground mt-3">
             Häufige Fragen
           </h2>
         </div>
 
         <div className="space-y-3">
           {faqs.map((faq, i) => (
-            <div key={i} className="bg-white rounded-xl border border-[hsl(var(--forest))]/5 overflow-hidden">
+            <div key={i} className="bg-card rounded-xl border border-border overflow-hidden">
               <button
                 onClick={() => setOpenIdx(openIdx === i ? null : i)}
                 className="w-full text-left px-6 py-4 flex items-center justify-between gap-4"
               >
-                <span className="font-body font-medium text-[hsl(var(--forest))] text-sm sm:text-base">{faq.q}</span>
-                <ChevronDown className={`h-4 w-4 text-[hsl(var(--forest))]/40 flex-shrink-0 transition-transform ${openIdx === i ? 'rotate-180' : ''}`} />
+                <span className="font-body font-medium text-foreground text-sm sm:text-base">{faq.q}</span>
+                <ChevronDown className={`h-4 w-4 text-muted-foreground flex-shrink-0 transition-transform ${openIdx === i ? 'rotate-180' : ''}`} />
               </button>
               {openIdx === i && (
                 <div className="px-6 pb-4">
-                  <p className="text-sm text-[hsl(var(--forest))]/60 font-body leading-relaxed">{faq.a}</p>
+                  <p className="text-sm text-muted-foreground font-body leading-relaxed">{faq.a}</p>
                 </div>
               )}
             </div>

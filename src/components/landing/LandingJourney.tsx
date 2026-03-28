@@ -24,15 +24,15 @@ const steps = [
 
 const LandingJourney = () => {
   return (
-    <section id="journey" className="py-24 sm:py-32 bg-white">
+    <section id="journey" className="py-24 sm:py-32 bg-card">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
         {/* Section header */}
         <div className="text-center mb-16 sm:mb-20">
-          <span className="text-xs font-semibold text-[hsl(var(--amber))] font-body tracking-widest uppercase">Dein Weg</span>
-          <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-[hsl(var(--forest))] mt-3 mb-4">
+          <span className="text-xs font-semibold text-accent font-body tracking-widest uppercase">Dein Weg</span>
+          <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mt-3 mb-4">
             Drei Momente. Ein Anker.
           </h2>
-          <p className="text-[hsl(var(--forest))]/60 font-body max-w-lg mx-auto text-lg">
+          <p className="text-muted-foreground font-body max-w-lg mx-auto text-lg">
             Du startest mit Vorsorge. Alles andere kommt, wenn du es brauchst.
           </p>
         </div>
@@ -46,7 +46,7 @@ const LandingJourney = () => {
             {steps.map((step, i) => (
               <div key={i} className={`relative md:flex items-center gap-12 ${i % 2 === 1 ? 'md:flex-row-reverse' : ''}`}>
                 {/* Dot on timeline */}
-                <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 w-12 h-12 rounded-full border-4 border-white items-center justify-center text-white font-bold text-sm font-body z-10"
+                <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 w-12 h-12 rounded-full border-4 border-card items-center justify-center text-white font-bold text-sm font-body z-10"
                   style={{ backgroundColor: step.color, boxShadow: `0 0 0 4px ${step.color}20` }}>
                   {i + 1}
                 </div>
@@ -57,8 +57,8 @@ const LandingJourney = () => {
                     style={{ color: step.color, backgroundColor: `${step.color}10` }}>
                     {step.phase}
                   </span>
-                  <h3 className="font-serif text-2xl sm:text-3xl font-bold text-[hsl(var(--forest))] mb-3">{step.title}</h3>
-                  <p className="text-[hsl(var(--forest))]/60 font-body text-base leading-relaxed">{step.description}</p>
+                  <h3 className="font-serif text-2xl sm:text-3xl font-bold text-foreground mb-3">{step.title}</h3>
+                  <p className="text-muted-foreground font-body text-base leading-relaxed">{step.description}</p>
                 </div>
 
                 {/* Chips */}

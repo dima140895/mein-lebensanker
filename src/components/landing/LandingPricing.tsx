@@ -61,46 +61,46 @@ const LandingPricing = () => {
   const navigate = useNavigate();
 
   return (
-    <section id="preise" className="py-24 sm:py-32 bg-white">
+    <section id="preise" className="py-24 sm:py-32 bg-card">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
         <div className="text-center mb-16">
-          <span className="text-xs font-semibold text-[hsl(var(--amber))] font-body tracking-widest uppercase">Preise</span>
-          <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-[hsl(var(--forest))] mt-3 mb-4">
+          <span className="text-xs font-semibold text-accent font-body tracking-widest uppercase">Preise</span>
+          <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mt-3 mb-4">
             Einfach. Transparent. Fair.
           </h2>
-          <p className="text-[hsl(var(--forest))]/60 font-body max-w-lg mx-auto text-lg">
+          <p className="text-muted-foreground font-body max-w-lg mx-auto text-lg">
             Starte mit einem Einmalkauf oder wähle ein Abo für erweiterte Begleitung.
           </p>
         </div>
 
         <div className="grid md:grid-cols-3 gap-6 lg:gap-8 max-w-4xl mx-auto">
           {plans.map((plan, i) => (
-            <div key={i} className={`relative rounded-2xl p-6 sm:p-8 flex flex-col transition-all ${plan.highlighted ? 'ring-2 ring-[hsl(var(--forest))] shadow-elevated scale-[1.02] bg-white' : 'bg-white border border-[hsl(var(--forest))]/10'}`}>
+            <div key={i} className={`relative rounded-2xl p-6 sm:p-8 flex flex-col transition-all ${plan.highlighted ? 'ring-2 ring-primary shadow-elevated scale-[1.02] bg-card' : 'bg-card border border-border'}`}>
               {plan.highlighted && (
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                  <span className="bg-[hsl(var(--forest))] text-white text-[10px] font-bold font-body tracking-widest uppercase px-4 py-1.5 rounded-full">
+                  <span className="bg-primary text-primary-foreground text-[10px] font-bold font-body tracking-widest uppercase px-4 py-1.5 rounded-full">
                     Empfohlen
                   </span>
                 </div>
               )}
 
               <div className="mb-6">
-                <h3 className="font-serif text-xl font-bold text-[hsl(var(--forest))] mb-1">{plan.name}</h3>
-                <p className="text-sm text-[hsl(var(--forest))]/50 font-body">{plan.description}</p>
+                <h3 className="font-serif text-xl font-bold text-foreground mb-1">{plan.name}</h3>
+                <p className="text-sm text-muted-foreground font-body">{plan.description}</p>
               </div>
 
               <div className="mb-6">
-                <span className="text-4xl font-bold text-[hsl(var(--forest))] font-body">€{plan.price}</span>
-                <span className="text-sm text-[hsl(var(--forest))]/50 font-body ml-1">{plan.period}</span>
+                <span className="text-4xl font-bold text-foreground font-body">€{plan.price}</span>
+                <span className="text-sm text-muted-foreground font-body ml-1">{plan.period}</span>
               </div>
 
               <ul className="space-y-3 mb-8 flex-1">
                 {plan.features.map((f, j) => (
-                  <li key={j} className={`flex items-start gap-2.5 text-sm font-body ${f.included ? 'text-[hsl(var(--forest))]/70' : 'text-[hsl(var(--forest))]/30 line-through'}`}>
+                  <li key={j} className={`flex items-start gap-2.5 text-sm font-body ${f.included ? 'text-foreground/70' : 'text-muted-foreground/40 line-through'}`}>
                     {f.included ? (
-                      <Check className="h-4 w-4 mt-0.5 flex-shrink-0 text-[hsl(var(--primary))]" />
+                      <Check className="h-4 w-4 mt-0.5 flex-shrink-0 text-primary" />
                     ) : (
-                      <X className="h-4 w-4 mt-0.5 flex-shrink-0 text-[hsl(var(--forest))]/20" />
+                      <X className="h-4 w-4 mt-0.5 flex-shrink-0 text-muted-foreground/30" />
                     )}
                     {f.text}
                   </li>
@@ -109,7 +109,7 @@ const LandingPricing = () => {
 
               <Button
                 onClick={() => navigate('/dashboard?register=true')}
-                className={`w-full rounded-full h-11 font-body text-sm ${plan.highlighted ? 'bg-[hsl(var(--forest))] hover:bg-[hsl(var(--forest))]/90 text-white' : 'bg-[hsl(var(--forest))]/5 hover:bg-[hsl(var(--forest))]/10 text-[hsl(var(--forest))]'}`}
+                className={`w-full rounded-full h-11 font-body text-sm ${plan.highlighted ? 'bg-primary hover:bg-primary/90 text-primary-foreground' : 'bg-primary/5 hover:bg-primary/10 text-primary'}`}
               >
                 {plan.cta}
               </Button>

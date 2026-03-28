@@ -57,7 +57,7 @@ const LandingHero = () => {
           </div>
 
           {/* Trust icons */}
-          <div className="flex flex-wrap gap-6 text-sm text-[hsl(var(--forest))]/50 font-body animate-fade-in-up stagger-delay-4">
+          <div className="flex flex-wrap gap-6 text-sm text-muted-foreground font-body animate-fade-in-up stagger-delay-4">
             <div className="flex items-center gap-2">
               <Shield className="h-4 w-4" />
               <span>DSGVO-konform</span>
