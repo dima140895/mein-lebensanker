@@ -2,9 +2,13 @@ import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useEncryption } from '@/contexts/EncryptionContext';
 import { Button } from '@/components/ui/button';
-import { FileText, Heart, Activity, ArrowRight, ChevronLeft, X, Anchor } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { EncryptionPasswordDialog } from '@/components/EncryptionPasswordDialog';
+import { FileText, Heart, Activity, ArrowRight, ChevronLeft, X, Anchor, ShieldCheck, Shield } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { toast } from 'sonner';
 import type { DashboardModule } from '@/components/dashboard/DashboardSidebar';
 
 type Focus = 'vorsorge' | 'pflege' | 'krankheit';
@@ -60,10 +64,12 @@ const introSlides: Record<Focus, { title: string; body: string; action: string }
 const OnboardingFlow = ({ onComplete }: OnboardingFlowProps) => {
   const { user, profile } = useAuth();
   const { language } = useLanguage();
-  const [step, setStep] = useState<'welcome' | 'intro'>('welcome');
+  const { isEncryptionEnabled } = useEncryption();
+  const [step, setStep] = useState<'welcome' | 'intro' | 'encryption'>('welcome');
   const [selectedFocus, setSelectedFocus] = useState<Focus | null>(null);
   const [slideIdx, setSlideIdx] = useState(0);
   const [saving, setSaving] = useState(false);
+  const [showEncryptionDialog, setShowEncryptionDialog] = useState(false);
 
   const firstName = profile?.full_name?.split(' ')[0] || '';
 
@@ -71,6 +77,15 @@ const OnboardingFlow = ({ onComplete }: OnboardingFlowProps) => {
     setSelectedFocus(focus);
     setSlideIdx(0);
     setStep('intro');
+  };
+
+  const handleIntroComplete = () => {
+    // Show encryption step if not already enabled
+    if (!isEncryptionEnabled) {
+      setStep('encryption');
+    } else {
+      handleComplete();
+    }
   };
 
   const handleComplete = async () => {
@@ -109,145 +124,259 @@ const OnboardingFlow = ({ onComplete }: OnboardingFlowProps) => {
     onComplete('home');
   };
 
+  const handleEncryptionLater = () => {
+    // Store timestamp for delayed reminder (3 days)
+    localStorage.setItem('encryption_skipped_at', String(Date.now()));
+    handleComplete();
+  };
+
+  const handleEncryptionSetup = () => {
+    setShowEncryptionDialog(true);
+  };
+
+  const handleEncryptionDialogClose = (open: boolean) => {
+    setShowEncryptionDialog(open);
+    if (!open && isEncryptionEnabled) {
+      toast.success(
+        language === 'de'
+          ? 'Verschlüsselung aktiviert. Deine Daten sind jetzt geschützt.'
+          : 'Encryption enabled. Your data is now protected.'
+      );
+      handleComplete();
+    }
+  };
+
   const slides = selectedFocus ? introSlides[selectedFocus] : [];
   const currentSlide = slides[slideIdx];
   const focusColor = selectedFocus ? focusOptions.find(f => f.key === selectedFocus)?.color || '#2C4A3E' : '#2C4A3E';
 
   return (
-    <div className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="bg-card rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden"
-      >
-        <AnimatePresence mode="wait">
-          {step === 'welcome' && (
-            <motion.div
-              key="welcome"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              className="p-6 sm:p-8"
-            >
-              {/* Header */}
-              <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center gap-2">
-                  <Anchor className="h-5 w-5 text-foreground" />
-                  <span className="font-serif text-sm font-bold text-foreground">Mein Lebensanker</span>
-                </div>
-                <button onClick={handleSkip} className="text-foreground/30 hover:text-foreground/60 transition-colors" disabled={saving}>
-                  <X className="h-5 w-5" />
-                </button>
-              </div>
-
-              {/* Welcome text */}
-              <div className="mb-8">
-                <h1 className="font-serif text-2xl sm:text-3xl font-bold text-foreground mb-2">
-                  Willkommen{firstName ? `, ${firstName}` : ''}.
-                </h1>
-                <p className="text-muted-foreground font-body text-sm">
-                  Womit möchtest du beginnen?
-                </p>
-              </div>
-
-              {/* Focus cards */}
-              <div className="space-y-3">
-                {focusOptions.map((opt) => {
-                  const Icon = opt.icon;
-                  return (
-                    <button
-                      key={opt.key}
-                      onClick={() => handleFocusSelect(opt.key)}
-                      className="w-full text-left p-4 rounded-xl border-2 border-transparent hover:border-primary/10 bg-muted hover:bg-muted/80 transition-all group"
-                    >
-                      <div className="flex items-start gap-3">
-                        <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5" style={{ backgroundColor: `${opt.color}10` }}>
-                          <Icon className="h-5 w-5" style={{ color: opt.color }} />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2">
-                            <span className="font-body font-semibold text-foreground text-sm">{opt.title}</span>
-                            <ArrowRight className="h-3.5 w-3.5 text-foreground/20 group-hover:text-foreground/50 group-hover:translate-x-0.5 transition-all" />
-                          </div>
-                          <p className="text-xs text-muted-foreground font-body mt-0.5">{opt.desc}</p>
-                          {opt.upgradeHint && (
-                            <span className="inline-block text-[10px] font-semibold text-accent bg-accent/10 px-2 py-0.5 rounded-full mt-1.5 font-body">
-                              {opt.upgradeHint}
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
-
-              <button onClick={handleSkip} disabled={saving} className="w-full text-center text-xs text-foreground/30 hover:text-foreground/50 mt-6 font-body transition-colors">
-                Überspringen
-              </button>
-            </motion.div>
-          )}
-
-          {step === 'intro' && currentSlide && (
-            <motion.div
-              key={`intro-${slideIdx}`}
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              className="p-6 sm:p-8"
-            >
-              {/* Header */}
-              <div className="flex items-center justify-between mb-8">
-                <button onClick={() => slideIdx === 0 ? setStep('welcome') : setSlideIdx(slideIdx - 1)} className="text-foreground/40 hover:text-foreground transition-colors">
-                  <ChevronLeft className="h-5 w-5" />
-                </button>
-                {/* Progress dots */}
-                <div className="flex items-center gap-1.5">
-                  {slides.map((_, i) => (
-                    <div key={i} className="w-2 h-2 rounded-full transition-all" style={{ backgroundColor: i === slideIdx ? focusColor : `${focusColor}20` }} />
-                  ))}
-                </div>
-                <button onClick={handleSkip} disabled={saving} className="text-foreground/30 hover:text-foreground/60 transition-colors">
-                  <X className="h-5 w-5" />
-                </button>
-              </div>
-
-              {/* Slide content */}
-              <div className="text-center py-6">
-                <div className="w-16 h-16 rounded-2xl mx-auto mb-6 flex items-center justify-center" style={{ backgroundColor: `${focusColor}10` }}>
-                  {selectedFocus && (() => {
-                    const Icon = focusOptions.find(f => f.key === selectedFocus)!.icon;
-                    return <Icon className="h-8 w-8" style={{ color: focusColor }} />;
-                  })()}
-                </div>
-                <h2 className="font-serif text-xl sm:text-2xl font-bold text-foreground mb-3">{currentSlide.title}</h2>
-                <p className="text-sm text-muted-foreground font-body leading-relaxed max-w-sm mx-auto">{currentSlide.body}</p>
-              </div>
-
-              {/* Action */}
-              <Button
-                onClick={() => {
-                  if (slideIdx < slides.length - 1) {
-                    setSlideIdx(slideIdx + 1);
-                  } else {
-                    handleComplete();
-                  }
-                }}
-                disabled={saving}
-                className="w-full rounded-full h-11 font-body text-sm mt-4"
-                style={{ backgroundColor: focusColor }}
+    <>
+      <div className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="bg-card rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden"
+        >
+          <AnimatePresence mode="wait">
+            {step === 'welcome' && (
+              <motion.div
+                key="welcome"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                className="p-6 sm:p-8"
               >
-                {saving ? 'Speichern...' : currentSlide.action}
-              </Button>
+                {/* Header */}
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center gap-2">
+                    <Anchor className="h-5 w-5 text-foreground" />
+                    <span className="font-serif text-sm font-bold text-foreground">Mein Lebensanker</span>
+                  </div>
+                  <button onClick={handleSkip} className="text-foreground/30 hover:text-foreground/60 transition-colors" disabled={saving}>
+                    <X className="h-5 w-5" />
+                  </button>
+                </div>
 
-              <button onClick={handleSkip} disabled={saving} className="w-full text-center text-xs text-foreground/30 hover:text-foreground/50 mt-4 font-body transition-colors">
-                Überspringen
-              </button>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </motion.div>
-    </div>
+                {/* Welcome text */}
+                <div className="mb-8">
+                  <h1 className="font-serif text-2xl sm:text-3xl font-bold text-foreground mb-2">
+                    Willkommen{firstName ? `, ${firstName}` : ''}.
+                  </h1>
+                  <p className="text-muted-foreground font-body text-sm">
+                    Womit möchtest du beginnen?
+                  </p>
+                </div>
+
+                {/* Focus cards */}
+                <div className="space-y-3">
+                  {focusOptions.map((opt) => {
+                    const Icon = opt.icon;
+                    return (
+                      <button
+                        key={opt.key}
+                        onClick={() => handleFocusSelect(opt.key)}
+                        className="w-full text-left p-4 rounded-xl border-2 border-transparent hover:border-primary/10 bg-muted hover:bg-muted/80 transition-all group"
+                      >
+                        <div className="flex items-start gap-3">
+                          <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5" style={{ backgroundColor: `${opt.color}10` }}>
+                            <Icon className="h-5 w-5" style={{ color: opt.color }} />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2">
+                              <span className="font-body font-semibold text-foreground text-sm">{opt.title}</span>
+                              <ArrowRight className="h-3.5 w-3.5 text-foreground/20 group-hover:text-foreground/50 group-hover:translate-x-0.5 transition-all" />
+                            </div>
+                            <p className="text-xs text-muted-foreground font-body mt-0.5">{opt.desc}</p>
+                            {opt.upgradeHint && (
+                              <span className="inline-block text-[10px] font-semibold text-accent bg-accent/10 px-2 py-0.5 rounded-full mt-1.5 font-body">
+                                {opt.upgradeHint}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                <button onClick={handleSkip} disabled={saving} className="w-full text-center text-xs text-foreground/30 hover:text-foreground/50 mt-6 font-body transition-colors">
+                  Überspringen
+                </button>
+              </motion.div>
+            )}
+
+            {step === 'intro' && currentSlide && (
+              <motion.div
+                key={`intro-${slideIdx}`}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                className="p-6 sm:p-8"
+              >
+                {/* Header */}
+                <div className="flex items-center justify-between mb-8">
+                  <button onClick={() => slideIdx === 0 ? setStep('welcome') : setSlideIdx(slideIdx - 1)} className="text-foreground/40 hover:text-foreground transition-colors">
+                    <ChevronLeft className="h-5 w-5" />
+                  </button>
+                  {/* Progress dots */}
+                  <div className="flex items-center gap-1.5">
+                    {slides.map((_, i) => (
+                      <div key={i} className="w-2 h-2 rounded-full transition-all" style={{ backgroundColor: i === slideIdx ? focusColor : `${focusColor}20` }} />
+                    ))}
+                    {/* Extra dot for encryption step if applicable */}
+                    {!isEncryptionEnabled && (
+                      <div className="w-2 h-2 rounded-full bg-primary/20" />
+                    )}
+                  </div>
+                  <button onClick={handleSkip} disabled={saving} className="text-foreground/30 hover:text-foreground/60 transition-colors">
+                    <X className="h-5 w-5" />
+                  </button>
+                </div>
+
+                {/* Slide content */}
+                <div className="text-center py-6">
+                  <div className="w-16 h-16 rounded-2xl mx-auto mb-6 flex items-center justify-center" style={{ backgroundColor: `${focusColor}10` }}>
+                    {selectedFocus && (() => {
+                      const Icon = focusOptions.find(f => f.key === selectedFocus)!.icon;
+                      return <Icon className="h-8 w-8" style={{ color: focusColor }} />;
+                    })()}
+                  </div>
+                  <h2 className="font-serif text-xl sm:text-2xl font-bold text-foreground mb-3">{currentSlide.title}</h2>
+                  <p className="text-sm text-muted-foreground font-body leading-relaxed max-w-sm mx-auto">{currentSlide.body}</p>
+                </div>
+
+                {/* Action */}
+                <Button
+                  onClick={() => {
+                    if (slideIdx < slides.length - 1) {
+                      setSlideIdx(slideIdx + 1);
+                    } else {
+                      handleIntroComplete();
+                    }
+                  }}
+                  disabled={saving}
+                  className="w-full rounded-full h-11 font-body text-sm mt-4"
+                  style={{ backgroundColor: focusColor }}
+                >
+                  {saving ? 'Speichern...' : currentSlide.action}
+                </Button>
+
+                <button onClick={handleSkip} disabled={saving} className="w-full text-center text-xs text-foreground/30 hover:text-foreground/50 mt-4 font-body transition-colors">
+                  Überspringen
+                </button>
+              </motion.div>
+            )}
+
+            {step === 'encryption' && (
+              <motion.div
+                key="encryption"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                className="p-6 sm:p-8"
+              >
+                {/* Header */}
+                <div className="flex items-center justify-between mb-6">
+                  <button onClick={() => setStep('intro')} className="text-foreground/40 hover:text-foreground transition-colors">
+                    <ChevronLeft className="h-5 w-5" />
+                  </button>
+                  <div className="flex items-center gap-1.5">
+                    {slides.map((_, i) => (
+                      <div key={i} className="w-2 h-2 rounded-full" style={{ backgroundColor: `${focusColor}40` }} />
+                    ))}
+                    <div className="w-2 h-2 rounded-full bg-primary" />
+                  </div>
+                  <button onClick={handleEncryptionLater} disabled={saving} className="text-foreground/30 hover:text-foreground/60 transition-colors">
+                    <X className="h-5 w-5" />
+                  </button>
+                </div>
+
+                {/* Title */}
+                <div className="text-center mb-6">
+                  <div className="w-14 h-14 rounded-full bg-primary/10 mx-auto mb-4 flex items-center justify-center">
+                    <ShieldCheck className="h-7 w-7 text-primary" />
+                  </div>
+                  <h2 className="font-serif text-xl sm:text-2xl font-bold text-foreground mb-1">
+                    {language === 'de' ? 'Möchtest du deine Daten verschlüsseln?' : 'Want to encrypt your data?'}
+                  </h2>
+                </div>
+
+                {/* Two option cards */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {/* Card A — Recommended */}
+                  <button
+                    onClick={handleEncryptionSetup}
+                    className="text-left p-4 rounded-xl border-2 border-primary bg-primary/5 hover:bg-primary/10 transition-all group"
+                  >
+                    <div className="flex items-center gap-2 mb-2">
+                      <ShieldCheck className="h-5 w-5 text-primary" />
+                      <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20 text-[10px]">
+                        {language === 'de' ? 'Empfohlen' : 'Recommended'}
+                      </Badge>
+                    </div>
+                    <p className="font-body font-semibold text-foreground text-sm mb-1">
+                      {language === 'de' ? 'Ende-zu-Ende-Verschlüsselung' : 'End-to-End Encryption'}
+                    </p>
+                    <p className="text-xs text-muted-foreground font-body">
+                      {language === 'de'
+                        ? 'Nur du kannst deine Daten lesen. Selbst wir nicht.'
+                        : 'Only you can read your data. Not even us.'}
+                    </p>
+                  </button>
+
+                  {/* Card B — Skip */}
+                  <button
+                    onClick={handleEncryptionLater}
+                    disabled={saving}
+                    className="text-left p-4 rounded-xl border border-border bg-card hover:bg-muted/50 transition-all group"
+                  >
+                    <div className="flex items-center gap-2 mb-2">
+                      <Shield className="h-5 w-5 text-muted-foreground" />
+                    </div>
+                    <p className="font-body font-semibold text-foreground text-sm mb-1">
+                      {language === 'de' ? 'Erst einmal überspringen' : 'Skip for now'}
+                    </p>
+                    <p className="text-xs text-muted-foreground font-body">
+                      {language === 'de'
+                        ? 'Du kannst Verschlüsselung jederzeit in den Einstellungen aktivieren.'
+                        : 'You can enable encryption anytime in settings.'}
+                    </p>
+                  </button>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.div>
+      </div>
+
+      {/* Encryption setup dialog */}
+      <EncryptionPasswordDialog
+        open={showEncryptionDialog}
+        onOpenChange={handleEncryptionDialogClose}
+        mode="setup"
+      />
+    </>
   );
 };
 
