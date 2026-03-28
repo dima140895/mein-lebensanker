@@ -44,18 +44,18 @@ const StaticNav = ({ minimal = false }: StaticNavProps) => {
         </Link>
 
         {/* Desktop links */}
-        <div className="hidden md:flex items-center gap-6">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              to={link.href}
-              className="flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors font-body"
-            >
-              <link.icon className="h-4 w-4" />
-              {link.label}
-            </Link>
-          ))}
-          {!minimal && (
+        {!minimal && (
+          <div className="hidden md:flex items-center gap-6">
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                to={link.href}
+                className="flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors font-body"
+              >
+                <link.icon className="h-4 w-4" />
+                {link.label}
+              </Link>
+            ))}
             <Button
               onClick={() => navigate('/dashboard?register=true')}
               className="bg-primary hover:bg-primary/90 text-primary-foreground font-body rounded-full px-6 h-10 flex items-center gap-2"
@@ -63,17 +63,19 @@ const StaticNav = ({ minimal = false }: StaticNavProps) => {
               <UserPlus className="h-4 w-4" />
               {language === 'de' ? 'Registrieren' : 'Sign Up'}
             </Button>
-          )}
-          <LanguageToggle />
-        </div>
+            <LanguageToggle />
+          </div>
+        )}
 
         {/* Mobile toggle */}
-        <div className="flex md:hidden items-center gap-2">
-          <LanguageToggle />
-          <button onClick={() => setMobileOpen(!mobileOpen)} className="p-2 text-foreground">
-            {mobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-          </button>
-        </div>
+        {!minimal && (
+          <div className="flex md:hidden items-center gap-2">
+            <LanguageToggle />
+            <button onClick={() => setMobileOpen(!mobileOpen)} className="p-2 text-foreground">
+              {mobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Mobile menu */}
