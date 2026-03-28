@@ -19,6 +19,7 @@ import DashboardHome from '@/components/dashboard/DashboardHome';
 import SettingsModule from '@/components/dashboard/SettingsModule';
 import PlaceholderModule from '@/components/dashboard/PlaceholderModule';
 import VorsorgeModule from '@/components/dashboard/VorsorgeModule';
+import PflegeModule from '@/components/dashboard/pflege/PflegeModule';
 
 const DashboardContent = () => {
   const { user, profile, loading } = useAuth();
