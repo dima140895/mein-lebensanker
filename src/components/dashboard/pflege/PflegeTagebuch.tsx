@@ -11,6 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { de as deLocale } from 'date-fns/locale';
+import { trackEvent } from '@/lib/analytics';
 
 const MOODS = ['😢', '😕', '😐', '🙂', '😊'];
 
