@@ -292,6 +292,26 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
         <p className="text-sm text-charcoal-light mt-1 font-body">{tx.subtitle}</p>
       </motion.div>
 
+      {/* Start prompt when Vorsorge is 0% */}
+      {!statusLoading && progressPercent === 0 && (
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }}>
+          <Card className="bg-primary/5 border-primary/20 rounded-2xl shadow-card">
+            <CardContent className="flex flex-col items-center text-center py-8 px-6">
+              <Anchor className="h-12 w-12 text-muted-foreground mb-4" />
+              <h3 className="font-serif text-xl text-foreground mb-2">{language === 'de' ? 'Bereit? Lass uns beginnen.' : 'Ready? Let\'s begin.'}</h3>
+              <p className="text-sm text-muted-foreground max-w-xs font-body">
+                {language === 'de'
+                  ? 'Deine Vorsorge-Dokumentation dauert etwa 20 Minuten und gibt dir und deiner Familie echte Sicherheit.'
+                  : 'Your planning documentation takes about 20 minutes and gives you and your family real peace of mind.'}
+              </p>
+              <Button onClick={() => onNavigate('vorsorge')} className="mt-6 rounded-lg min-h-[44px]">
+                {language === 'de' ? 'Vorsorge jetzt starten →' : 'Start planning now →'}
+              </Button>
+            </CardContent>
+          </Card>
+        </motion.div>
+      )}
+
       {/* Status Cards */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {cardOrder.map((key, i) => cardRenderers[key](0.05 + i * 0.05))}

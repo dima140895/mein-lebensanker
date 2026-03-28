@@ -171,6 +171,20 @@ const PflegeKalender = ({ onSelectDate }: PflegeKalenderProps) => {
         )}
       </div>
 
+      {/* Empty state for month */}
+      {!loading && entries.length === 0 && (
+        <div className="flex flex-col items-center justify-center py-10 text-center">
+          <CalendarHeart className="h-12 w-12 text-muted-foreground mb-4" />
+          <h3 className="font-serif text-xl text-foreground mb-2">{language === 'de' ? 'Kein Eintrag in diesem Monat' : 'No entries this month'}</h3>
+          <p className="text-sm text-muted-foreground max-w-xs font-body">{language === 'de' ? 'Erstelle heute den ersten Eintrag.' : 'Create your first entry today.'}</p>
+          {onSelectDate && (
+            <Button onClick={() => onSelectDate(format(new Date(), 'yyyy-MM-dd'))} className="mt-6 rounded-lg min-h-[44px]">
+              {language === 'de' ? 'Heutigen Eintrag erstellen' : 'Create today\'s entry'}
+            </Button>
+          )}
+        </div>
+      )}
+
       {/* Selected Entry Detail */}
       {selectedEntry && (
         <Card className="border-primary/20 bg-primary/5">
