@@ -8,6 +8,7 @@ import { FormProvider } from '@/contexts/FormContext';
 import Header from '@/components/Header';
 import StaticNav from '@/components/StaticNav';
 import Footer from '@/components/Footer';
+import LandingFooter from '@/components/landing/LandingFooter';
 import Disclaimer from '@/components/Disclaimer';
 import AuthForm from '@/components/AuthForm';
 import PaymentOptions from '@/components/PaymentOptions';
