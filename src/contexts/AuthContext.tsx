@@ -18,6 +18,9 @@ interface Profile {
   is_encrypted: boolean;
   encryption_salt: string | null;
   encrypted_password_recovery: string | null;
+  health_data_consent: boolean;
+  health_data_consent_at: string | null;
+  terms_accepted_at: string | null;
 }
 
 interface AuthContextType {
