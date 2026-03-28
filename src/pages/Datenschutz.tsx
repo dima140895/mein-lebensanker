@@ -338,6 +338,20 @@ Processing is routed through an intermediary API gateway (Lovable / GPT Engineer
 Important notice: Please do not enter particularly sensitive personal data (e.g., passwords, payment data) in AI-powered input fields. Inputs are transmitted to external servers for processing.`,
         },
         {
+          title: '10. Processing of Special Categories of Personal Data',
+          content: `Mein Lebensanker processes health data within the meaning of Art. 9(1) GDPR at the request of users. This includes:
+
+• Symptom tracking and daily health check-ins
+• Medication plans and intake times
+• Care diaries and mood tracking
+
+The legal basis for this processing is your explicit consent pursuant to Art. 9(2)(a) GDPR, which you gave during registration.
+
+Withdrawal: You can withdraw your consent at any time with effect for the future. You can do this in the settings under "Privacy" or by contacting us at datenschutz@mein-lebensanker.de. After withdrawal, your health data will be deleted within 30 days.
+
+Please note: The withdrawal does not affect the lawfulness of the processing carried out until the withdrawal.`,
+        },
+        {
           title: '10. Data Retention Periods',
           content: `We store your data only as long as necessary for the respective purposes:
 
