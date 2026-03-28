@@ -208,8 +208,7 @@ const Header = () => {
       try {
         const { data, error } = await supabase.functions.invoke('create-payment', {
           body: {
-            paymentType: pending.packageType,
-            familyProfileCount: pending.packageType === 'family' ? pending.familyProfileCount : undefined,
+            plan: pending.packageType,
           },
         });
         if (error) throw error;
