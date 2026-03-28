@@ -55,6 +55,9 @@ const ShareLinkManager = () => {
   const { isEncryptionEnabled, encryptionSalt } = useEncryption();
   const [tokens, setTokens] = useState<ShareToken[]>([]);
   const [loading, setLoading] = useState(true);
+  const [notfallOpen, setNotfallOpen] = useState(false);
+  const [notfallMeds, setNotfallMeds] = useState<string[]>([]);
+  const [notfallContact, setNotfallContact] = useState<string | undefined>();
   const [creating, setCreating] = useState(false);
   const [newLabel, setNewLabel] = useState('');
   const [copiedId, setCopiedId] = useState<string | null>(null);
