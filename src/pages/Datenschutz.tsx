@@ -208,7 +208,7 @@ Zusätzliche Sicherheitsmaßnahmen:
 • Row-Level Security (RLS) für Datenbankzugriffe`,
         },
         {
-          title: '15. Kontakt',
+          title: '16. Kontakt',
           content: `Für Fragen zum Datenschutz können Sie sich jederzeit an uns wenden:
 
 E-Mail: datenschutz@mein-lebensanker.de
