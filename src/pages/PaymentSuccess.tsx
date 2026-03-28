@@ -249,11 +249,11 @@ const PaymentSuccessContent = () => {
           <CheckCircle className="h-10 w-10 text-sage-dark" />
         </div>
         <h1 className="font-serif text-3xl font-bold text-foreground mb-2">
-          {isAddingProfiles ? texts.addProfilesSuccess : isUpgrade ? texts.upgradeSuccess : texts.title}
+          {texts.title}
         </h1>
         <p className="text-xl text-sage-dark mb-4">{texts.subtitle}</p>
         <p className="text-muted-foreground mb-8">
-          {isAddingProfiles ? texts.addProfilesDesc : isUpgrade ? texts.upgradeDesc : texts.description}
+          {texts.description}
         </p>
         <Button onClick={() => navigate('/dashboard')} size="lg">
           {texts.cta}
