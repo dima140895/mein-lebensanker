@@ -209,7 +209,7 @@ const TagesCheckin = () => {
             { icon: '😴', label: texts.schlaf, value: todayCheckin.schlaf, labelFn: texts.schlafLabel },
             { icon: '😊', label: texts.stimmung, value: todayCheckin.stimmung, labelFn: texts.stimmungLabel },
           ].map((item) => (
-             <Card key={item.label} className="border-border bg-white rounded-2xl shadow-card">
+             <Card key={item.label} className="border-border bg-card rounded-2xl shadow-card">
               <CardContent className="py-4 px-4 text-center">
                 <span className="text-2xl">{item.icon}</span>
                 <p className="text-xs text-charcoal-light mt-1 font-body">{item.label}</p>
