@@ -13,6 +13,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useIsMobile } from '@/hooks/use-mobile';
 import type { DashboardModule } from './DashboardSidebar';
+import WeeklySummary from './WeeklySummary';
 
 interface DashboardHomeProps {
   onNavigate: (module: DashboardModule) => void;
