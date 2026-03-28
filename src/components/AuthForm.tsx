@@ -407,7 +407,7 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange }: Auth
               </div>
             </div>
 
-            <Button type="submit" className="w-full" disabled={loading}>
+             <Button type="submit" className="w-full min-h-[44px] rounded-lg font-body font-medium" disabled={loading}>
               {loading ? '...' : texts.sendResetLink}
             </Button>
           </form>
