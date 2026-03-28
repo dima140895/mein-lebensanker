@@ -170,6 +170,16 @@ const DashboardContent = () => {
         mode="unlock"
         preventClose
       />
+
+      {/* Onboarding Flow */}
+      {showOnboarding && (
+        <OnboardingFlow
+          onComplete={(module) => {
+            setShowOnboarding(false);
+            handleModuleChange(module);
+          }}
+        />
+      )}
     </>
   );
 };
