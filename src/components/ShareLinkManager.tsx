@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Link2, Plus, Trash2, Copy, Check, ExternalLink, Shield, Lock, Share2, Eye, Info, ShieldX, User, Wallet, Smartphone, Heart, FileText, Users, UserCircle, ChevronDown, ChevronRight } from 'lucide-react';
+import { Link2, Plus, Trash2, Copy, Check, ExternalLink, Shield, Lock, Share2, Eye, Info, ShieldX, User, Wallet, Smartphone, Heart, FileText, Users, UserCircle, ChevronDown, ChevronRight, CreditCard, Printer } from 'lucide-react';
+import NotfallKarte from '@/components/NotfallKarte';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useEncryption } from '@/contexts/EncryptionContext';
