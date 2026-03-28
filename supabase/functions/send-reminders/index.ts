@@ -191,11 +191,11 @@ async function processDailyCheckinReminders(supabase: ReturnType<typeof createCl
 // REMINDER 2: Weekly care summary (Sundays at 18:00 CET)
 async function processWeeklySummary(supabase: ReturnType<typeof createClient>) {
   const now = new Date();
-  const day = now.getUTCDay(); // 0 = Sunday
-  const hour = now.getUTCHours();
+  const cetDay = getCurrentCETDayOfWeek(now); // 0 = Sunday
+  const cetTime = getCurrentCETTime(now);
   
-  // Sunday 17:00 UTC = 18:00 CET (winter) / 19:00 CEST (summer)
-  if (day !== 0 || hour !== 17) return;
+  // Sunday 18:00 CET/CEST (correctly handles both winter and summer)
+  if (cetDay !== 0 || cetTime.hours !== 18) return;
 
   const { data: prefs } = await supabase
     .from("reminder_preferences")
