@@ -109,6 +109,7 @@ const DashboardContent = () => {
       case 'pflege':
         return <PflegeModule />;
       case 'krankheit':
+        return <KrankheitModule />;
       case 'familie':
         return <PlaceholderModule module={activeModule} />;
       case 'settings':
