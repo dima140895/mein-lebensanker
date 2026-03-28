@@ -1,0 +1,277 @@
+import { useState, useEffect } from 'react';
+import { Plus, Pill, X, Loader2, ToggleRight } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { supabase } from '@/integrations/supabase/client';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { toast } from 'sonner';
+
+interface Medikament {
+  id: string;
+  name: string;
+  dosierung: string | null;
+  einnahmezeiten: string | null;
+  arzt: string | null;
+  aktiv: boolean;
+  notizen: string | null;
+}
+
+const PflegeMedikamente = () => {
+  const { user } = useAuth();
+  const { language } = useLanguage();
+  const [meds, setMeds] = useState<Medikament[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [showForm, setShowForm] = useState(false);
+  const [showInactive, setShowInactive] = useState(false);
+
+  // Form state
+  const [name, setName] = useState('');
+  const [dosierung, setDosierung] = useState('');
+  const [einnahmezeiten, setEinnahmezeiten] = useState('');
+  const [arzt, setArzt] = useState('');
+
+  const t = {
+    de: {
+      addMed: 'Medikament hinzufügen',
+      name: 'Medikamentenname *',
+      namePlaceholder: 'z.B. Ibuprofen',
+      dosierung: 'Dosierung',
+      dosierungPlaceholder: 'z.B. 400mg',
+      einnahmezeiten: 'Einnahmezeiten',
+      einnahmezeitenPlaceholder: 'z.B. Morgens und Abends',
+      arzt: 'Verschreibender Arzt',
+      arztPlaceholder: 'z.B. Dr. Müller',
+      save: 'Speichern',
+      saving: 'Speichern...',
+      cancel: 'Abbrechen',
+      setInactive: 'Inaktiv setzen',
+      setActive: 'Wieder aktivieren',
+      noMeds: 'Noch keine Medikamente eingetragen',
+      noMedsDesc: 'Erfasse die aktuellen Medikamente der pflegebedürftigen Person.',
+      active: 'Aktiv',
+      inactive: 'Inaktiv',
+      showInactive: 'Inaktive anzeigen',
+      hideInactive: 'Inaktive ausblenden',
+      saved: 'Medikament gespeichert',
+      updated: 'Medikament aktualisiert',
+      error: 'Fehler',
+    },
+    en: {
+      addMed: 'Add medication',
+      name: 'Medication name *',
+      namePlaceholder: 'e.g. Ibuprofen',
+      dosierung: 'Dosage',
+      dosierungPlaceholder: 'e.g. 400mg',
+      einnahmezeiten: 'Schedule',
+      einnahmezeitenPlaceholder: 'e.g. Morning and Evening',
+      arzt: 'Prescribing doctor',
+      arztPlaceholder: 'e.g. Dr. Smith',
+      save: 'Save',
+      saving: 'Saving...',
+      cancel: 'Cancel',
+      setInactive: 'Set inactive',
+      setActive: 'Reactivate',
+      noMeds: 'No medications recorded',
+      noMedsDesc: 'Record the current medications of the person being cared for.',
+      active: 'Active',
+      inactive: 'Inactive',
+      showInactive: 'Show inactive',
+      hideInactive: 'Hide inactive',
+      saved: 'Medication saved',
+      updated: 'Medication updated',
+      error: 'Error',
+    },
+  };
+
+  const texts = t[language];
+
+  const fetchMeds = async () => {
+    if (!user) return;
+    setLoading(true);
+    const { data, error } = await supabase
+      .from('medikamente')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('aktiv', { ascending: false })
+      .order('name', { ascending: true });
+
+    if (!error && data) {
+      setMeds(data as Medikament[]);
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchMeds();
+  }, [user]);
+
+  const handleSave = async () => {
+    if (!user || !name.trim()) return;
+    setSaving(true);
+
+    const { error } = await supabase.from('medikamente').insert({
+      user_id: user.id,
+      name: name.trim(),
+      dosierung: dosierung.trim() || null,
+      einnahmezeiten: einnahmezeiten.trim() || null,
+      arzt: arzt.trim() || null,
+    });
+
+    if (error) {
+      toast.error(texts.error);
+    } else {
+      toast.success(texts.saved);
+      setShowForm(false);
+      setName('');
+      setDosierung('');
+      setEinnahmezeiten('');
+      setArzt('');
+      fetchMeds();
+    }
+    setSaving(false);
+  };
+
+  const toggleActive = async (id: string, currentActive: boolean) => {
+    const { error } = await supabase
+      .from('medikamente')
+      .update({ aktiv: !currentActive })
+      .eq('id', id);
+
+    if (!error) {
+      toast.success(texts.updated);
+      fetchMeds();
+    }
+  };
+
+  const activeMeds = meds.filter((m) => m.aktiv);
+  const inactiveMeds = meds.filter((m) => !m.aktiv);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-4">
+      {/* Top actions */}
+      <div className="flex flex-wrap gap-2">
+        {!showForm && (
+          <Button onClick={() => setShowForm(true)} className="w-full sm:w-auto">
+            <Plus className="h-4 w-4 mr-2" />
+            {texts.addMed}
+          </Button>
+        )}
+        {inactiveMeds.length > 0 && (
+          <Button variant="outline" size="sm" onClick={() => setShowInactive(!showInactive)}>
+            <ToggleRight className="h-4 w-4 mr-1.5" />
+            {showInactive ? texts.hideInactive : texts.showInactive}
+          </Button>
+        )}
+      </div>
+
+      {/* Add Form */}
+      {showForm && (
+        <Card className="border-2 border-primary/20 bg-primary/5">
+          <CardContent className="pt-6 space-y-4">
+            <div className="space-y-2">
+              <Label>{texts.name}</Label>
+              <Input value={name} onChange={(e) => setName(e.target.value)} placeholder={texts.namePlaceholder} />
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="space-y-2">
+                <Label>{texts.dosierung}</Label>
+                <Input value={dosierung} onChange={(e) => setDosierung(e.target.value)} placeholder={texts.dosierungPlaceholder} />
+              </div>
+              <div className="space-y-2">
+                <Label>{texts.einnahmezeiten}</Label>
+                <Input value={einnahmezeiten} onChange={(e) => setEinnahmezeiten(e.target.value)} placeholder={texts.einnahmezeitenPlaceholder} />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label>{texts.arzt}</Label>
+              <Input value={arzt} onChange={(e) => setArzt(e.target.value)} placeholder={texts.arztPlaceholder} />
+            </div>
+            <div className="flex gap-2 pt-2">
+              <Button onClick={handleSave} disabled={saving || !name.trim()}>
+                {saving ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" />{texts.saving}</> : texts.save}
+              </Button>
+              <Button variant="outline" onClick={() => { setShowForm(false); setName(''); setDosierung(''); setEinnahmezeiten(''); setArzt(''); }}>
+                {texts.cancel}
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Active Medications */}
+      {activeMeds.length === 0 && !showForm ? (
+        <div className="text-center py-12">
+          <Pill className="h-10 w-10 text-muted-foreground/30 mx-auto mb-3" />
+          <p className="text-muted-foreground font-medium">{texts.noMeds}</p>
+          <p className="text-sm text-muted-foreground mt-1">{texts.noMedsDesc}</p>
+        </div>
+      ) : (
+        <div className="grid gap-3 sm:grid-cols-2">
+          {activeMeds.map((med) => (
+            <Card key={med.id} className="border-border">
+              <CardHeader className="pb-2 pt-4 px-4">
+                <div className="flex items-start justify-between">
+                  <div className="flex items-center gap-2">
+                    <Pill className="h-4 w-4 text-primary flex-shrink-0" />
+                    <CardTitle className="text-sm font-semibold">{med.name}</CardTitle>
+                  </div>
+                  <Badge variant="outline" className="text-xs bg-primary/5 text-primary border-primary/20">{texts.active}</Badge>
+                </div>
+              </CardHeader>
+              <CardContent className="pb-4 px-4 space-y-1.5 text-sm">
+                {med.dosierung && <p className="text-muted-foreground"><span className="font-medium text-foreground">{texts.dosierung}:</span> {med.dosierung}</p>}
+                {med.einnahmezeiten && <p className="text-muted-foreground"><span className="font-medium text-foreground">{texts.einnahmezeiten}:</span> {med.einnahmezeiten}</p>}
+                {med.arzt && <p className="text-muted-foreground"><span className="font-medium text-foreground">{texts.arzt}:</span> {med.arzt}</p>}
+                <Button variant="ghost" size="sm" className="text-xs text-muted-foreground mt-2" onClick={() => toggleActive(med.id, med.aktiv)}>
+                  <X className="h-3 w-3 mr-1" />{texts.setInactive}
+                </Button>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
+
+      {/* Inactive Medications */}
+      {showInactive && inactiveMeds.length > 0 && (
+        <div className="space-y-3 pt-4 border-t border-border">
+          <h3 className="text-sm font-medium text-muted-foreground">{texts.inactive}</h3>
+          <div className="grid gap-3 sm:grid-cols-2">
+            {inactiveMeds.map((med) => (
+              <Card key={med.id} className="border-border opacity-60">
+                <CardHeader className="pb-2 pt-4 px-4">
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-center gap-2">
+                      <Pill className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                      <CardTitle className="text-sm font-semibold text-muted-foreground">{med.name}</CardTitle>
+                    </div>
+                    <Badge variant="outline" className="text-xs">{texts.inactive}</Badge>
+                  </div>
+                </CardHeader>
+                <CardContent className="pb-4 px-4">
+                  <Button variant="ghost" size="sm" className="text-xs text-primary" onClick={() => toggleActive(med.id, med.aktiv)}>
+                    {texts.setActive}
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default PflegeMedikamente;
