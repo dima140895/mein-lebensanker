@@ -85,7 +85,7 @@ const DashboardContent = () => {
   // Not logged in
   if (!user) {
     return (
-      <AuthForm defaultMode={new URLSearchParams(window.location.search).get('register') === 'true' ? 'register' : 'login'} />
+      <AuthForm embedded defaultMode={new URLSearchParams(window.location.search).get('register') === 'true' ? 'register' : 'login'} />
     );
   }
 

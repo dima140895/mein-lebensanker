@@ -22,9 +22,11 @@ interface AuthFormProps {
   onSuccess?: () => void;
   defaultMode?: 'login' | 'register';
   onVerifyModeChange?: (isVerifying: boolean) => void;
+  /** When true, skip the built-in StaticNav + Footer wrapper (e.g. when rendered inside Dashboard) */
+  embedded?: boolean;
 }
 
-const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange }: AuthFormProps) => {
+const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange, embedded = false }: AuthFormProps) => {
   const { signUp, signIn } = useAuth();
   const { language } = useLanguage();
   const [mode, setMode] = useState<'login' | 'register' | 'forgot' | 'verify'>(defaultMode);
@@ -282,24 +284,41 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange }: Auth
   const inputClassName = "w-full pl-10 pr-10 py-3 rounded-lg border border-border/60 focus:border-primary focus:ring-2 focus:ring-primary/10 font-body text-base bg-card text-foreground placeholder:text-muted-foreground/50 transition-all duration-200";
 
   // Wrapper with background
-  const PageWrapper = ({ children }: { children: React.ReactNode }) => (
-    <div className="min-h-screen flex flex-col">
-      <StaticNav minimal />
-      <div
-        className="flex-1 flex items-center justify-center px-4 py-12 pt-24"
-        style={{
-          backgroundColor: 'hsl(var(--background))',
-          backgroundImage: `
-            radial-gradient(ellipse 60% 50% at 80% 20%, rgba(122,158,142,0.12) 0%, transparent 60%),
-            radial-gradient(ellipse 40% 60% at 10% 80%, rgba(196,129,58,0.07) 0%, transparent 50%)
-          `,
-        }}
-      >
-        {children}
+  const PageWrapper = ({ children }: { children: React.ReactNode }) => {
+    if (embedded) {
+      return (
+        <div
+          className="flex-1 flex items-center justify-center px-4 py-12"
+          style={{
+            backgroundImage: `
+              radial-gradient(ellipse 60% 50% at 80% 20%, rgba(122,158,142,0.12) 0%, transparent 60%),
+              radial-gradient(ellipse 40% 60% at 10% 80%, rgba(196,129,58,0.07) 0%, transparent 50%)
+            `,
+          }}
+        >
+          {children}
+        </div>
+      );
+    }
+    return (
+      <div className="min-h-screen flex flex-col">
+        <StaticNav minimal />
+        <div
+          className="flex-1 flex items-center justify-center px-4 py-12 pt-24"
+          style={{
+            backgroundColor: 'hsl(var(--background))',
+            backgroundImage: `
+              radial-gradient(ellipse 60% 50% at 80% 20%, rgba(122,158,142,0.12) 0%, transparent 60%),
+              radial-gradient(ellipse 40% 60% at 10% 80%, rgba(196,129,58,0.07) 0%, transparent 50%)
+            `,
+          }}
+        >
+          {children}
+        </div>
+        <LandingFooter />
       </div>
-      <LandingFooter />
-    </div>
-  );
+    );
+  };
 
   // Logo component
   const LogoHeader = () => (
