@@ -6,6 +6,8 @@ import { supabase } from '@/integrations/supabase/browserClient';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { logger } from '@/lib/logger';
 import { Button } from '@/components/ui/button';
+import StaticNav from '@/components/StaticNav';
+import LandingFooter from '@/components/landing/LandingFooter';
 
 const REDIRECT_DELAY = 3;
 
