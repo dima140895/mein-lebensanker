@@ -247,7 +247,7 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
                 <span className="text-sm text-muted-foreground">{tx.krankheitPending}</span>
               </div>
             )}
-            <Button variant="ghost" size="sm" className="w-full text-[hsl(var(--sage-dark))] hover:text-[hsl(var(--sage-dark))] hover:bg-[hsl(var(--sage))]/5 gap-1.5">
+            <Button variant="ghost" size="sm" className="w-full text-[hsl(var(--sage-dark))] hover:text-[hsl(var(--sage-dark))] hover:bg-[hsl(var(--sage))]/5 gap-1.5 min-h-[44px]">
               {todayCheckin ? tx.krankheit : tx.krankheitStart} <ArrowRight className="h-3.5 w-3.5" />
             </Button>
           </CardContent>
