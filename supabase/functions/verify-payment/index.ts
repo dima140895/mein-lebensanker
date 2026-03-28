@@ -119,8 +119,13 @@ serve(async (req) => {
         })
         .eq("user_id", authenticatedUserId);
 
-      // Upsert subscription record
-      await supabaseAdmin
+      // Track referral conversion if applicable
+      if (referralCode) {
+        await supabaseAdmin.rpc("increment_referral_conversions", { _code: referralCode });
+      }
+
+      return new Response(JSON.stringify({
+        success: true,
         .from("subscriptions")
         .upsert({
           user_id: authenticatedUserId,
