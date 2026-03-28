@@ -198,7 +198,7 @@ Weitere Informationen: https://plausible.io/data-policy`,
 Sie haben zudem das Recht, sich bei einer Datenschutz-Aufsichtsbehörde über die Verarbeitung Ihrer personenbezogenen Daten durch uns zu beschweren.`,
         },
         {
-          title: '14. Datensicherheit',
+          title: '15. Datensicherheit',
           content: `Wir verwenden innerhalb des Website-Besuchs das verbreitete SSL-Verfahren (Secure Socket Layer) in Verbindung mit der jeweils höchsten Verschlüsselungsstufe, die von Ihrem Browser unterstützt wird.
 
 Zusätzliche Sicherheitsmaßnahmen:
