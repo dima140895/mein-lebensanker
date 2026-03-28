@@ -32,6 +32,7 @@ const SettingsModule = () => {
   const { user } = useAuth();
   const [conversions, setConversions] = useState<number | null>(null);
   const [signingOut, setSigningOut] = useState(false);
+  const isMobile = useIsMobile();
 
   const t = {
     de: {
