@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { User, Wallet, Globe, Heart, FileText, ArrowLeft, Phone, Info, Compass, Link2, Download, CheckCircle, HelpCircle } from 'lucide-react';
+import { User, Wallet, Globe, Heart, FileText, ArrowLeft, Phone, Info, Compass, Link2, Download, CheckCircle, HelpCircle, ShieldCheck } from 'lucide-react';
 import ReferralCard from '@/components/ReferralCard';
 
 import { useAuth } from '@/contexts/AuthContext';
@@ -16,6 +16,7 @@ import DocumentsForm from '@/components/forms/DocumentsForm';
 import ContactsForm from '@/components/forms/ContactsForm';
 import AdvisorFinderSection from '@/components/sections/AdvisorFinderSection';
 import PackageManagement from '@/components/PackageManagement';
+import ShareLinkManager from '@/components/ShareLinkManager';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -39,14 +40,38 @@ const infoSections = [
 const allSections = [...dataSections, ...infoSections];
 
 const VorsorgeModule = () => {
+  const { user } = useAuth();
   const { language } = useLanguage();
   const { activeProfile } = useProfiles();
   const [searchParams, setSearchParams] = useSearchParams();
   const [activeSection, setActiveSection] = useState<string | null>(null);
   const [tourKey, setTourKey] = useState(0);
+  const [showCelebration, setShowCelebration] = useState(false);
+  const [showShareManager, setShowShareManager] = useState(false);
   const isMobile = useIsMobile();
-  const { sectionStatus, progressPercent, filledCount, totalCount, isComplete, refetch, loading: statusLoading } = useSectionStatus();
+  const { sectionStatus, sectionCompletion, progressPercent, filledCount, totalCount, isComplete, refetch, loading: statusLoading } = useSectionStatus();
   const previousProfileId = useRef<string | null>(null);
+
+  // Check for first-time 100% celebration
+  useEffect(() => {
+    if (isComplete && user && !statusLoading) {
+      const celebratedKey = `vorsorge_complete_celebrated_${user.id}`;
+      if (!localStorage.getItem(celebratedKey)) {
+        const timer = setTimeout(() => setShowCelebration(true), 500);
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [isComplete, user, statusLoading]);
+
+  const dismissCelebration = (openShare?: boolean) => {
+    if (user) {
+      localStorage.setItem(`vorsorge_complete_celebrated_${user.id}`, 'true');
+    }
+    setShowCelebration(false);
+    if (openShare) {
+      setShowShareManager(true);
+    }
+  };
 
   // Refetch when active profile changes
   useEffect(() => {
@@ -110,6 +135,11 @@ const VorsorgeModule = () => {
       advisorsDesc: 'Notare, Anwälte, Steuerberater finden',
       progressLabel: 'Fortschritt',
       complete: 'Vollständig!',
+      progressPercent: 'vollständig',
+      celebrationTitle: 'Geschafft. Du bist vorbereitet.',
+      celebrationText: 'Deine Vorsorge ist vollständig dokumentiert. Das ist eines der wertvollsten Dinge, die du für deine Familie tun konntest.',
+      shareLink: 'Freigabe-Link erstellen',
+      continueDashboard: 'Weiter im Dashboard',
     },
     en: {
       title: 'My Planning',
@@ -133,6 +163,11 @@ const VorsorgeModule = () => {
       advisorsDesc: 'Find notaries, lawyers, tax advisors',
       progressLabel: 'Progress',
       complete: 'Complete!',
+      progressPercent: 'complete',
+      celebrationTitle: 'Done. You are prepared.',
+      celebrationText: 'Your planning is fully documented. This is one of the most valuable things you could have done for your family.',
+      shareLink: 'Create sharing link',
+      continueDashboard: 'Continue to dashboard',
     },
   };
 
@@ -151,6 +186,18 @@ const VorsorgeModule = () => {
       case 'contacts': return <ContactsForm />;
       default: return null;
     }
+  };
+
+  // Completion dot for section tiles
+  const getSectionDot = (sectionKey: string) => {
+    const completion = sectionCompletion[sectionKey] ?? 0;
+    if (completion === 100) {
+      return <CheckCircle className="h-4 w-4 md:h-5 md:w-5 text-primary" />;
+    }
+    if (completion > 0) {
+      return <span className="h-2.5 w-2.5 rounded-full bg-amber inline-block" />;
+    }
+    return <span className="h-2.5 w-2.5 rounded-full bg-muted-foreground/30 inline-block" />;
   };
 
   // Active section view
@@ -217,7 +264,7 @@ const VorsorgeModule = () => {
               <span className="text-xs md:text-sm font-medium text-muted-foreground animate-pulse">...</span>
             ) : (
               <span className={`text-xs md:text-sm font-medium ${isComplete ? 'text-primary' : 'text-muted-foreground'}`}>
-                {isComplete ? texts.complete : `${filledCount}/${totalCount}`}
+                {isComplete ? texts.complete : `${progressPercent}% ${texts.progressPercent}`}
               </span>
             )}
           </div>
@@ -241,7 +288,8 @@ const VorsorgeModule = () => {
           {dataSections.map((section, i) => {
             const Icon = section.icon;
             const descKey = `${section.key}Desc` as keyof typeof texts;
-            const isFilled = sectionStatus[section.key];
+            const completion = sectionCompletion[section.key] ?? 0;
+            const isFilled = completion === 100;
 
             return (
               <motion.button
@@ -252,14 +300,12 @@ const VorsorgeModule = () => {
                 onClick={() => handleSectionChange(section.key)}
                 data-tour={section.key === 'documents' ? 'documents-tile' : undefined}
                 className={`relative flex flex-col md:flex-row md:items-start gap-2 md:gap-4 p-3 md:p-5 rounded-xl border shadow-card hover:shadow-elevated transition-all text-left h-full min-h-[80px] md:min-h-[100px] ${
-                  isFilled ? 'border-primary/30 bg-primary/5' : 'border-border bg-card'
+                  isFilled ? 'border-primary/30 bg-primary/5' : completion > 0 ? 'border-amber/30 bg-amber-light/10' : 'border-border bg-card'
                 }`}
               >
-                {isFilled && (
-                  <div className="absolute top-2 right-2 md:top-3 md:right-3">
-                    <CheckCircle className="h-4 w-4 md:h-5 md:w-5 text-primary" />
-                  </div>
-                )}
+                <div className="absolute top-2 right-2 md:top-3 md:right-3">
+                  {getSectionDot(section.key)}
+                </div>
                 <div className={`h-9 w-9 md:h-11 md:w-11 rounded-lg flex items-center justify-center flex-shrink-0 ${section.color}`}>
                   <Icon className="h-4 w-4 md:h-5 md:w-5" />
                 </div>
@@ -270,6 +316,15 @@ const VorsorgeModule = () => {
                   <span className="text-[10px] md:text-xs text-muted-foreground line-clamp-2 leading-relaxed">
                     {texts[descKey]}
                   </span>
+                  {/* Mini progress bar per tile */}
+                  {completion > 0 && completion < 100 && (
+                    <div className="mt-1.5 h-1 bg-muted rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-amber rounded-full transition-all duration-500"
+                        style={{ width: `${completion}%` }}
+                      />
+                    </div>
+                  )}
                 </div>
               </motion.button>
             );
@@ -306,6 +361,43 @@ const VorsorgeModule = () => {
       <DashboardOnboardingTour key={tourKey} />
 
       {isComplete && <ReferralCard />}
+
+      {/* Celebration Card — one-time when 100% reached */}
+      {showCelebration && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 30, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: 0.4, ease: 'easeOut' }}
+            className="w-full max-w-md bg-gradient-to-br from-sage-light to-amber-light/30 border border-primary/20 rounded-2xl p-6 md:p-8 text-center shadow-elevated"
+          >
+            <div className="mx-auto mb-4 h-14 w-14 rounded-full bg-primary/10 flex items-center justify-center">
+              <ShieldCheck className="h-8 w-8 text-primary" />
+            </div>
+            <h2 className="font-serif text-2xl text-forest font-bold mb-2">
+              {texts.celebrationTitle}
+            </h2>
+            <p className="font-body text-base text-muted-foreground mb-6">
+              {texts.celebrationText}
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <Button onClick={() => dismissCelebration(true)} className="w-full sm:w-auto">
+                {texts.shareLink}
+              </Button>
+              <Button variant="outline" onClick={() => dismissCelebration(false)} className="w-full sm:w-auto">
+                {texts.continueDashboard}
+              </Button>
+            </div>
+          </motion.div>
+        </div>
+      )}
+
+      {/* Share Link Manager dialog triggered from celebration */}
+      {showShareManager && (
+        <div className="mt-6">
+          <ShareLinkManager />
+        </div>
+      )}
     </>
   );
 };
