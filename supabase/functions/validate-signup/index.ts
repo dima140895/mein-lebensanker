@@ -61,8 +61,31 @@ Deno.serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  // Only allow POST
+  if (req.method !== "POST") {
+    return new Response("Method Not Allowed", { status: 405, headers: corsHeaders });
+  }
+
+  // Content-Type check
+  const contentType = req.headers.get("content-type");
+  if (!contentType?.includes("application/json")) {
+    return new Response(JSON.stringify({ error: "Content-Type muss application/json sein" }), {
+      status: 415, headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
+
   try {
-    const { email, password, emailRedirectTo } = await req.json();
+    // Safe JSON parse
+    let rawBody: Record<string, unknown>;
+    try {
+      rawBody = await req.json();
+    } catch {
+      return new Response(JSON.stringify({ error: "Ungültiges JSON" }), {
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const { email, password, emailRedirectTo } = rawBody as { email: string; password: string; emailRedirectTo?: string };
 
     const normalizedEmail = String(email || "").toLowerCase().trim();
 
