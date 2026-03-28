@@ -49,7 +49,7 @@ const ALL_SECTIONS = ['personal', 'assets', 'digital', 'wishes', 'documents', 'c
 type SectionKey = typeof ALL_SECTIONS[number];
 
 const ShareLinkManager = () => {
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const { language } = useLanguage();
   const { personProfiles } = useProfiles();
   const { isEncryptionEnabled, encryptionSalt } = useEncryption();
