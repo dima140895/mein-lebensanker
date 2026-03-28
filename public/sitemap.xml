@@ -6,4 +6,5 @@
   <url><loc>https://mein-lebensanker.de/partner</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
   <url><loc>https://mein-lebensanker.de/datenschutz</loc><priority>0.3</priority><changefreq>yearly</changefreq></url>
   <url><loc>https://mein-lebensanker.de/impressum</loc><priority>0.3</priority><changefreq>yearly</changefreq></url>
+  <url><loc>https://mein-lebensanker.de/security</loc><priority>0.4</priority><changefreq>monthly</changefreq></url>
 </urlset>
