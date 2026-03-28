@@ -85,9 +85,7 @@ const DashboardContent = () => {
   // Not logged in
   if (!user) {
     return (
-      <div className="container mx-auto px-6 sm:px-4 py-12">
-        <AuthForm defaultMode={new URLSearchParams(window.location.search).get('register') === 'true' ? 'register' : 'login'} />
-      </div>
+      <AuthForm defaultMode={new URLSearchParams(window.location.search).get('register') === 'true' ? 'register' : 'login'} />
     );
   }
 
