@@ -42,7 +42,18 @@ const StaticNav = ({ minimal = false }: StaticNavProps) => {
         </Link>
 
         {/* Desktop links */}
-        {!minimal && (
+        {minimal ? (
+          <div className="hidden md:flex items-center gap-4">
+            <Button
+              variant="ghost"
+              onClick={() => navigate('/')}
+              className="font-body text-sm text-muted-foreground hover:text-foreground"
+            >
+              {language === 'de' ? '← Zurück zur Startseite' : '← Back to home'}
+            </Button>
+            <LanguageToggle />
+          </div>
+        ) : (
           <div className="hidden md:flex items-center gap-6">
             {navLinks.map((link) => (
               <Link
