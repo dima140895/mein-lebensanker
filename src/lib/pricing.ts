@@ -41,7 +41,7 @@ export const isSubscriptionPlan = (plan: PlanType): boolean => {
 
 // Check if a module is available for a given plan
 export const isPlanModule = (plan: PlanType, module: string): boolean => {
-  return PRICING[plan].modules.includes(module);
+  return (PRICING[plan].modules as readonly string[]).includes(module);
 };
 
 // Legacy exports for backward compatibility during migration

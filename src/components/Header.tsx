@@ -820,9 +820,9 @@ const Header = () => {
       <PricingDialog 
         open={pricingOpen} 
         onOpenChange={setPricingOpen}
-        onSelectPackage={(packageType, familyProfileCount) => {
+        onSelectPackage={(planType) => {
           setPricingOpen(false);
-          pendingPurchaseRef.current = { packageType, familyProfileCount };
+          pendingPurchaseRef.current = { packageType: planType };
           setAuthMode('register');
           setAuthOpen(true);
         }}
