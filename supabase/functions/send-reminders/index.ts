@@ -343,6 +343,97 @@ async function processUpgradeReminders(supabase: ReturnType<typeof createClient>
   }
 }
 
+// REMINDER 4: Medication reminders
+async function processMedikamentenErinnerungen(supabase: ReturnType<typeof createClient>) {
+  const now = new Date();
+  const cetTime = getCurrentCETTime(now);
+  const offset = getCETOffset(now);
+  const cetDate = new Date(now.getTime() + offset * 60 * 60 * 1000);
+  const todayStr = cetDate.toISOString().split("T")[0];
+
+  // Get all active medications with reminders enabled
+  const { data: meds, error } = await supabase
+    .from("medikamente")
+    .select("id, user_id, name, dosierung, einnahmezeiten, erinnerung_zeiten")
+    .eq("aktiv", true)
+    .eq("erinnerung_aktiv", true);
+
+  if (error || !meds?.length) return;
+
+  // Filter meds where a reminder time is within ±5 minutes of current CET time
+  const currentMinutes = cetTime.hours * 60 + cetTime.minutes;
+
+  for (const med of meds) {
+    if (!med.erinnerung_zeiten || med.erinnerung_zeiten.length === 0) continue;
+
+    // Check if any reminder time matches (within ±5 min)
+    const hasMatchingTime = med.erinnerung_zeiten.some((zeit: string) => {
+      const [h, m] = zeit.split(":").map(Number);
+      const reminderMinutes = h * 60 + m;
+      return Math.abs(currentMinutes - reminderMinutes) <= 5;
+    });
+
+    if (!hasMatchingTime) continue;
+
+    // Duplicate protection: check sent_reminders
+    const reminderType = `medikament_${med.id}_${todayStr}`;
+    const { data: alreadySent } = await supabase
+      .from("sent_reminders")
+      .select("id")
+      .eq("user_id", med.user_id)
+      .eq("reminder_type", reminderType)
+      .limit(1);
+
+    if (alreadySent && alreadySent.length > 0) continue;
+
+    // Check unsubscribe preference
+    const { data: pref } = await supabase
+      .from("reminder_preferences")
+      .select("email_unsubscribed")
+      .eq("user_id", med.user_id)
+      .single();
+
+    if (pref?.email_unsubscribed) continue;
+
+    // Get user email
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("email, full_name")
+      .eq("user_id", med.user_id)
+      .single();
+
+    if (!profile?.email) continue;
+
+    const dosierungText = med.dosierung ? ` — ${med.dosierung}` : "";
+    const zeitenText = med.einnahmezeiten ? `<br/>Einnahmezeiten: ${med.einnahmezeiten}` : "";
+
+    const html = wrapEmail(`
+      <tr><td style="padding:30px 25px;">
+        <h1 style="margin:0 0 16px;font-size:22px;color:#3d6b5e;font-weight:600;">
+          Zeit für ${med.name} 💊
+        </h1>
+        <p style="margin:0 0 20px;font-size:15px;color:#3a3a3a;line-height:1.6;">
+          Deine Erinnerung: <strong>${med.name}</strong>${dosierungText}${zeitenText}
+        </p>
+        <table cellpadding="0" cellspacing="0"><tr><td style="background-color:#3d6b5e;border-radius:8px;padding:14px 28px;">
+          <a href="${APP_URL}/dashboard?module=pflege" style="color:#ffffff;text-decoration:none;font-size:15px;font-weight:600;">
+            Zum Medikamentenplan →
+          </a>
+        </td></tr></table>
+      </td></tr>
+    `, med.user_id);
+
+    const sent_ok = await sendEmail(profile.email, `Zeit für ${med.name}`, html);
+
+    if (sent_ok) {
+      await supabase.from("sent_reminders").insert({
+        user_id: med.user_id,
+        reminder_type: reminderType,
+      });
+    }
+  }
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
