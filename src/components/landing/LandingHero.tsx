@@ -27,7 +27,7 @@ const LandingHero = () => {
             Für die Momente,{' '}
             <span className="relative">
               die das Leben
-              <span className="absolute -bottom-1 left-0 w-full h-2 bg-[hsl(var(--amber))]/20 rounded-full" />
+              <span className="absolute -bottom-1 left-0 w-full h-2 bg-accent/20 rounded-full" />
             </span>{' '}
             verändern.
           </h1>
