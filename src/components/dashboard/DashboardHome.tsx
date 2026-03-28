@@ -151,9 +151,9 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
         <CardContent className="space-y-3">
           <Progress value={statusLoading ? 0 : progressPercent} className="h-2" />
           {!isComplete && (
-            <Button variant="ghost" size="sm" className="w-full text-primary hover:text-primary hover:bg-primary/5 gap-1.5">
-              {tx.continueBtn} <ArrowRight className="h-3.5 w-3.5" />
-            </Button>
+             <Button variant="ghost" size="sm" className="w-full text-primary hover:text-primary hover:bg-primary/5 gap-1.5 min-h-[44px]">
+               {tx.continueBtn} <ArrowRight className="h-3.5 w-3.5" />
+             </Button>
           )}
         </CardContent>
       </Card>
