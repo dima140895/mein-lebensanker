@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Heart, Shield } from 'lucide-react';
+import { Heart, Shield, Anchor } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/browserClient';
 import { useLanguage } from '@/contexts/LanguageContext';
 import StaticNav from '@/components/StaticNav';
