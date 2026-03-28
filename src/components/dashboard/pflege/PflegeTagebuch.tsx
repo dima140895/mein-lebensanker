@@ -3,6 +3,8 @@ import { Plus, ChevronDown, ChevronUp, Trash2, Loader2, BookHeart } from 'lucide
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { supabase } from '@/integrations/supabase/client';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { queryKeys } from '@/lib/queryKeys';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -31,11 +33,8 @@ interface PflegeEintrag {
 const PflegeTagebuch = () => {
   const { user } = useAuth();
   const { language } = useLanguage();
-  const [entries, setEntries] = useState<PflegeEintrag[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
+  const queryClient = useQueryClient();
   const [showForm, setShowForm] = useState(false);
-  const [todayExists, setTodayExists] = useState(false);
   const [expandedEntry, setExpandedEntry] = useState<string | null>(null);
   const [showReferral, setShowReferral] = useState(false);
   // Form state
@@ -97,51 +96,53 @@ const PflegeTagebuch = () => {
 
   const texts = t[language];
 
-  const fetchEntries = async () => {
-    if (!user) return;
-    setLoading(true);
-    const { data, error } = await supabase
-      .from('pflege_eintraege')
-      .select('*')
-      .eq('user_id', user.id)
-      .order('eintrags_datum', { ascending: false });
+  const { data: entries = [], isLoading: loading } = useQuery({
+    queryKey: queryKeys.pflegeEintraege(user?.id ?? ''),
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('pflege_eintraege')
+        .select('*')
+        .eq('user_id', user!.id)
+        .order('eintrags_datum', { ascending: false });
+      if (error) throw error;
+      return (data as PflegeEintrag[]) || [];
+    },
+    enabled: !!user,
+  });
 
-    if (!error && data) {
-      setEntries(data as PflegeEintrag[]);
-      const today = format(new Date(), 'yyyy-MM-dd');
-      setTodayExists(data.some((e: any) => e.eintrags_datum === today));
+  const today = format(new Date(), 'yyyy-MM-dd');
+  const todayExists = entries.some((e) => e.eintrags_datum === today);
 
-      // Pre-fill person name from most recent entry
-      if (data.length > 0 && !personName) {
-        setPersonName((data[0] as any).person_name || '');
-      }
-    }
-    setLoading(false);
-  };
-
+  // Pre-fill person name from most recent entry
   useEffect(() => {
-    fetchEntries();
-  }, [user]);
+    if (entries.length > 0 && !personName) {
+      setPersonName(entries[0].person_name || '');
+    }
+  }, [entries]);
 
-  const handleSave = async () => {
-    if (!user || !personName.trim()) return;
-    setSaving(true);
-
-    const { error } = await supabase.from('pflege_eintraege').insert({
-      user_id: user.id,
-      person_name: personName.trim(),
-      stimmung,
-      mahlzeiten: mahlzeiten.trim() || null,
-      aktivitaeten: aktivitaeten.trim() || null,
-      besonderheiten: besonderheiten.trim() || null,
-      naechste_schritte: naechsteSchritte.trim() || null,
-      eintrags_datum: format(new Date(), 'yyyy-MM-dd'),
-    });
-
-    if (error) {
+  const createMutation = useMutation({
+    mutationFn: async (newEintrag: Record<string, unknown>) => {
+      const { data, error } = await supabase
+        .from('pflege_eintraege')
+        .insert(newEintrag)
+        .select()
+        .single();
+      if (error) throw error;
+      return data;
+    },
+    onMutate: async (newEintrag) => {
+      await queryClient.cancelQueries({ queryKey: queryKeys.pflegeEintraege(user!.id) });
+      const previousData = queryClient.getQueryData(queryKeys.pflegeEintraege(user!.id));
+      queryClient.setQueryData(queryKeys.pflegeEintraege(user!.id), (old: PflegeEintrag[] | undefined) =>
+        [{ ...newEintrag, id: 'temp-' + Date.now(), created_at: new Date().toISOString() } as PflegeEintrag, ...(old || [])]
+      );
+      return { previousData };
+    },
+    onError: (_err, _newEintrag, context) => {
+      queryClient.setQueryData(queryKeys.pflegeEintraege(user!.id), context?.previousData);
       toast.error(texts.error);
-    } else {
-      // Track first entry
+    },
+    onSuccess: () => {
       if (entries.length === 0) {
         trackEvent('Erster_Pflegeeintrag');
         setShowReferral(true);
@@ -153,17 +154,48 @@ const PflegeTagebuch = () => {
       setBesonderheiten('');
       setNaechsteSchritte('');
       setStimmung(3);
-      fetchEntries();
-    }
-    setSaving(false);
-  };
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.pflegeEintraege(user!.id) });
+    },
+  });
 
-  const handleDelete = async (id: string) => {
-    const { error } = await supabase.from('pflege_eintraege').delete().eq('id', id);
-    if (!error) {
+  const deleteMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from('pflege_eintraege').delete().eq('id', id);
+      if (error) throw error;
+    },
+    onMutate: async (id) => {
+      await queryClient.cancelQueries({ queryKey: queryKeys.pflegeEintraege(user!.id) });
+      const previousData = queryClient.getQueryData(queryKeys.pflegeEintraege(user!.id));
+      queryClient.setQueryData(queryKeys.pflegeEintraege(user!.id), (old: PflegeEintrag[] | undefined) =>
+        (old || []).filter((e) => e.id !== id)
+      );
+      return { previousData };
+    },
+    onError: (_err, _id, context) => {
+      queryClient.setQueryData(queryKeys.pflegeEintraege(user!.id), context?.previousData);
+    },
+    onSuccess: () => {
       toast.success(texts.deleted);
-      fetchEntries();
-    }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.pflegeEintraege(user!.id) });
+    },
+  });
+
+  const handleSave = () => {
+    if (!user || !personName.trim()) return;
+    createMutation.mutate({
+      user_id: user.id,
+      person_name: personName.trim(),
+      stimmung,
+      mahlzeiten: mahlzeiten.trim() || null,
+      aktivitaeten: aktivitaeten.trim() || null,
+      besonderheiten: besonderheiten.trim() || null,
+      naechste_schritte: naechsteSchritte.trim() || null,
+      eintrags_datum: format(new Date(), 'yyyy-MM-dd'),
+    });
   };
 
   const formatDate = (dateStr: string) => {
@@ -245,8 +277,8 @@ const PflegeTagebuch = () => {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-2 pt-2">
-              <Button onClick={handleSave} disabled={saving || !personName.trim()} className="w-full sm:w-auto min-h-[44px]">
-                {saving ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" />{texts.saving}</> : texts.save}
+              <Button onClick={handleSave} disabled={createMutation.isPending || !personName.trim()} className="w-full sm:w-auto min-h-[44px]">
+                {createMutation.isPending ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" />{texts.saving}</> : texts.save}
               </Button>
               <Button variant="outline" onClick={() => setShowForm(false)} className="w-full sm:w-auto min-h-[44px]">{texts.cancel}</Button>
             </div>
@@ -313,7 +345,7 @@ const PflegeTagebuch = () => {
                         <p className="text-muted-foreground whitespace-pre-wrap">{entry.naechste_schritte}</p>
                       </div>
                     )}
-                    <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive hover:bg-destructive/10 mt-2" onClick={() => handleDelete(entry.id)}>
+                    <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive hover:bg-destructive/10 mt-2" onClick={() => deleteMutation.mutate(entry.id)}>
                       <Trash2 className="h-3.5 w-3.5 mr-1.5" />{texts.delete}
                     </Button>
                   </CardContent>

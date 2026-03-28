@@ -3,6 +3,8 @@ import { Check, Pencil, Loader2 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { supabase } from '@/integrations/supabase/client';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { queryKeys } from '@/lib/queryKeys';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { Textarea } from '@/components/ui/textarea';
@@ -10,7 +12,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { trackEvent } from '@/lib/analytics';
 
 interface CheckinData {
@@ -26,9 +28,7 @@ interface CheckinData {
 const TagesCheckin = () => {
   const { user } = useAuth();
   const { language } = useLanguage();
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [todayCheckin, setTodayCheckin] = useState<CheckinData | null>(null);
+  const queryClient = useQueryClient();
   const [editing, setEditing] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
 
@@ -38,6 +38,8 @@ const TagesCheckin = () => {
   const [schlaf, setSchlaf] = useState(5);
   const [stimmung, setStimmung] = useState(5);
   const [notiz, setNotiz] = useState('');
+
+  const today = format(new Date(), 'yyyy-MM-dd');
 
   const t = {
     de: {
@@ -90,81 +92,73 @@ const TagesCheckin = () => {
 
   const texts = t[language];
 
-  const fetchToday = async () => {
-    if (!user) return;
-    setLoading(true);
-    const today = format(new Date(), 'yyyy-MM-dd');
-    const { data } = await supabase
-      .from('symptom_checkins')
-      .select('*')
-      .eq('user_id', user.id)
-      .eq('checkin_datum', today)
-      .maybeSingle();
-
-    if (data) {
-      setTodayCheckin(data as CheckinData);
-      setEnergie(data.energie);
-      setSchmerz(data.schmerz);
-      setSchlaf(data.schlaf);
-      setStimmung(data.stimmung);
-      setNotiz(data.notiz || '');
-    }
-    setLoading(false);
-  };
-
-  useEffect(() => {
-    fetchToday();
-  }, [user]);
-
-  const handleSave = async () => {
-    if (!user) return;
-    setSaving(true);
-
-    const payload = {
-      user_id: user.id,
-      energie,
-      schmerz,
-      schlaf,
-      stimmung,
-      notiz: notiz.trim() || null,
-      checkin_datum: format(new Date(), 'yyyy-MM-dd'),
-    };
-
-    let error;
-    if (todayCheckin) {
-      ({ error } = await supabase
+  const { data: todayCheckin, isLoading: loading } = useQuery({
+    queryKey: [...queryKeys.symptomCheckins(user?.id ?? ''), 'today', today],
+    queryFn: async () => {
+      const { data } = await supabase
         .from('symptom_checkins')
-        .update(payload)
-        .eq('id', todayCheckin.id));
-    } else {
-      ({ error } = await supabase.from('symptom_checkins').insert(payload));
-    }
+        .select('*')
+        .eq('user_id', user!.id)
+        .eq('checkin_datum', today)
+        .maybeSingle();
+      return (data as CheckinData) || null;
+    },
+    enabled: !!user,
+  });
 
-    if (error) {
-      toast.error(texts.error);
-    } else {
-      // Track first check-in
-      if (!todayCheckin) {
-        // Check if this was the very first check-in ever
+  // Sync form state when data loads
+  useEffect(() => {
+    if (todayCheckin) {
+      setEnergie(todayCheckin.energie);
+      setSchmerz(todayCheckin.schmerz);
+      setSchlaf(todayCheckin.schlaf);
+      setStimmung(todayCheckin.stimmung);
+      setNotiz(todayCheckin.notiz || '');
+    }
+  }, [todayCheckin]);
+
+  const saveMutation = useMutation({
+    mutationFn: async () => {
+      const payload = {
+        user_id: user!.id,
+        energie,
+        schmerz,
+        schlaf,
+        stimmung,
+        notiz: notiz.trim() || null,
+        checkin_datum: today,
+      };
+
+      if (todayCheckin) {
+        const { error } = await supabase.from('symptom_checkins').update(payload).eq('id', todayCheckin.id);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase.from('symptom_checkins').insert(payload);
+        if (error) throw error;
+
+        // Track first ever check-in
         const { count } = await supabase
           .from('symptom_checkins')
           .select('id', { count: 'exact', head: true })
-          .eq('user_id', user.id);
+          .eq('user_id', user!.id);
         if (count !== null && count <= 1) {
           trackEvent('Erster_Checkin');
         }
       }
-      // Show success animation
+    },
+    onSuccess: () => {
       setShowSuccess(true);
       setTimeout(() => {
         setShowSuccess(false);
         toast.success(todayCheckin ? texts.updated : texts.saved);
         setEditing(false);
-        fetchToday();
+        queryClient.invalidateQueries({ queryKey: queryKeys.symptomCheckins(user!.id) });
       }, 1500);
-    }
-    setSaving(false);
-  };
+    },
+    onError: () => {
+      toast.error(texts.error);
+    },
+  });
 
   if (loading) {
     return (
@@ -260,43 +254,11 @@ const TagesCheckin = () => {
       </div>
 
       <div className="space-y-8">
-        {/* Energie */}
-        <SliderField
-          icon="⚡"
-          label={texts.energie}
-          value={energie}
-          onChange={setEnergie}
-          description={texts.energieLabel(energie)}
-        />
+        <SliderField icon="⚡" label={texts.energie} value={energie} onChange={setEnergie} description={texts.energieLabel(energie)} />
+        <SliderField icon="😣" label={texts.schmerz} value={schmerz} onChange={setSchmerz} description={texts.schmerzLabel(schmerz)} />
+        <SliderField icon="😴" label={texts.schlaf} value={schlaf} onChange={setSchlaf} description={texts.schlafLabel(schlaf)} />
+        <SliderField icon="😊" label={texts.stimmung} value={stimmung} onChange={setStimmung} description={texts.stimmungLabel(stimmung)} />
 
-        {/* Schmerz */}
-        <SliderField
-          icon="😣"
-          label={texts.schmerz}
-          value={schmerz}
-          onChange={setSchmerz}
-          description={texts.schmerzLabel(schmerz)}
-        />
-
-        {/* Schlaf */}
-        <SliderField
-          icon="😴"
-          label={texts.schlaf}
-          value={schlaf}
-          onChange={setSchlaf}
-          description={texts.schlafLabel(schlaf)}
-        />
-
-        {/* Stimmung */}
-        <SliderField
-          icon="😊"
-          label={texts.stimmung}
-          value={stimmung}
-          onChange={setStimmung}
-          description={texts.stimmungLabel(stimmung)}
-        />
-
-        {/* Notiz */}
         <div className="space-y-2">
           <Label className="text-sm text-muted-foreground">{texts.notiz}</Label>
           <Textarea
@@ -309,8 +271,8 @@ const TagesCheckin = () => {
         </div>
       </div>
 
-      <Button onClick={handleSave} disabled={saving} className="w-full h-12 text-base min-h-[44px]">
-        {saving ? (
+      <Button onClick={() => saveMutation.mutate()} disabled={saveMutation.isPending} className="w-full h-12 text-base min-h-[44px]">
+        {saveMutation.isPending ? (
           <><Loader2 className="h-4 w-4 mr-2 animate-spin" />{texts.saving}</>
         ) : (
           texts.save
