@@ -49,8 +49,8 @@ const LandingPricing = () => {
         </div>
 
         {/* Anker Plus */}
-        <div className="bg-[#437059] rounded-2xl p-6 shadow-xl shadow-[#437059]/25 flex flex-col text-center">
-          <span className="bg-white/15 text-white/90 text-xs font-medium px-2.5 py-1 rounded-full inline-block mx-auto mb-3">
+        <div className="relative bg-[#437059] rounded-2xl p-6 pt-8 shadow-xl shadow-[#437059]/25 flex flex-col">
+          <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-white/20 text-white text-xs font-medium px-3 py-1 rounded-full backdrop-blur-sm">
             Empfohlen
           </span>
           <h3 className="text-lg font-semibold text-white text-left">Anker Plus</h3>
