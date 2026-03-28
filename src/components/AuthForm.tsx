@@ -430,7 +430,7 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange }: Auth
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="email" className="text-sm font-medium">
+             <Label htmlFor="email" className="text-sm font-medium font-body text-forest">
               {texts.email}
             </Label>
             <div className="relative">
