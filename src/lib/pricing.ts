@@ -22,8 +22,8 @@ export const PRICING = {
   familie: {
     name: 'familie',
     price: 14,
-    priceId: 'price_1TFxtdICzkfBNYhyZbGYHWYU',
-    productId: 'prod_UEQlhCOAIAVMaV',
+    priceId: 'price_1TG2DfEwPqOvJ6cUQsH3IBxO',
+    productId: 'prod_UEVEPHwvIkxPeM',
     mode: 'subscription' as const,
     trialDays: 14,
     maxProfiles: 10,
