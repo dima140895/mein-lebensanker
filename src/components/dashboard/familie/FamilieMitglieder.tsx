@@ -221,10 +221,14 @@ const FamilieMitglieder = () => {
 
       {/* Members List */}
       {members.length === 0 && !showForm ? (
-        <div className="text-center py-16">
-          <Users className="h-10 w-10 text-muted-foreground/30 mx-auto mb-3" />
-          <p className="text-muted-foreground font-medium">{texts.noMembers}</p>
-          <p className="text-sm text-muted-foreground mt-1">{texts.noMembersDesc}</p>
+        <div className="flex flex-col items-center justify-center py-16 text-center">
+          <Users className="h-12 w-12 text-muted-foreground mb-4" />
+          <h3 className="font-serif text-xl text-foreground mb-2">{language === 'de' ? 'Noch niemand eingeladen' : 'No one invited yet'}</h3>
+          <p className="text-sm text-muted-foreground max-w-xs font-body">{language === 'de' ? 'Lade Familienmitglieder ein um gemeinsam Pflege und Gesundheit zu dokumentieren.' : 'Invite family members to collaborate on care documentation.'}</p>
+          <Button onClick={() => setShowForm(true)} className="mt-6 rounded-lg min-h-[44px]">
+            <Plus className="h-4 w-4 mr-2" />
+            {language === 'de' ? 'Erstes Mitglied einladen' : 'Invite first member'}
+          </Button>
         </div>
       ) : (
         <div className="space-y-3">

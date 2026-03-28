@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Loader2, Printer } from 'lucide-react';
+import { Loader2, Printer, TrendingUp, ArrowRight } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -169,11 +169,19 @@ const MeinVerlauf = () => {
     );
   }
 
-  if (entries.length === 0) {
+  if (entries.length < 3) {
     return (
-      <div className="text-center py-16">
-        <p className="text-muted-foreground font-medium">{texts.noData}</p>
-        <p className="text-sm text-muted-foreground mt-1">{texts.noDataDesc}</p>
+      <div className="flex flex-col items-center justify-center py-16 text-center">
+        <TrendingUp className="h-12 w-12 text-muted-foreground mb-4" />
+        <h3 className="font-serif text-xl text-foreground mb-2">{language === 'de' ? 'Noch zu wenig Daten' : 'Not enough data yet'}</h3>
+        <p className="text-sm text-muted-foreground max-w-xs font-body mb-2">
+          {language === 'de'
+            ? `Ab 3 Check-ins siehst du hier deinen Verlauf.${entries.length > 0 ? ` Du hast bereits ${entries.length}.` : ''} Du bist auf dem richtigen Weg.`
+            : `You need at least 3 check-ins to see your trend.${entries.length > 0 ? ` You have ${entries.length} so far.` : ''} You're on the right track.`}
+        </p>
+        <button onClick={() => {}} className="inline-flex items-center gap-1.5 text-sm text-primary font-medium font-body mt-4 hover:underline">
+          {language === 'de' ? 'Mache heute deinen Check-in' : 'Do your check-in today'} <ArrowRight className="h-3.5 w-3.5" />
+        </button>
       </div>
     );
   }

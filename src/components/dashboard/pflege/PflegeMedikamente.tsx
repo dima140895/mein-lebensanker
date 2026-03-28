@@ -213,10 +213,14 @@ const PflegeMedikamente = () => {
 
       {/* Active Medications */}
       {activeMeds.length === 0 && !showForm ? (
-        <div className="text-center py-12">
-          <Pill className="h-10 w-10 text-muted-foreground/30 mx-auto mb-3" />
-          <p className="text-muted-foreground font-medium">{texts.noMeds}</p>
-          <p className="text-sm text-muted-foreground mt-1">{texts.noMedsDesc}</p>
+        <div className="flex flex-col items-center justify-center py-16 text-center">
+          <Pill className="h-12 w-12 text-muted-foreground mb-4" />
+          <h3 className="font-serif text-xl text-foreground mb-2">{language === 'de' ? 'Keine Medikamente hinterlegt' : 'No medications recorded'}</h3>
+          <p className="text-sm text-muted-foreground max-w-xs font-body">{language === 'de' ? 'Füge Medikamente hinzu um den Überblick zu behalten.' : 'Add medications to keep track.'}</p>
+          <Button onClick={() => setShowForm(true)} className="mt-6 rounded-lg min-h-[44px]">
+            <Plus className="h-4 w-4 mr-2" />
+            {language === 'de' ? 'Medikament hinzufügen' : 'Add medication'}
+          </Button>
         </div>
       ) : (
         <div className="grid gap-3 sm:grid-cols-2">

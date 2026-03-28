@@ -674,9 +674,14 @@ const ShareLinkManager = () => {
       {loading ? (
         <div className="text-center py-8 text-muted-foreground">...</div>
       ) : tokens.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-border p-8 text-center">
-          <Link2 className="h-8 w-8 text-muted-foreground mx-auto mb-3" />
-          <p className="text-muted-foreground">{texts.noLinks}</p>
+        <div className="flex flex-col items-center justify-center py-16 text-center">
+          <Share2 className="h-12 w-12 text-muted-foreground mb-4" />
+          <h3 className="font-serif text-xl text-foreground mb-2">{language === 'de' ? 'Noch kein Freigabe-Link' : 'No share links yet'}</h3>
+          <p className="text-sm text-muted-foreground max-w-xs font-body">{language === 'de' ? 'Erstelle einen sicheren Link damit Angehörige im Ernstfall auf deine Daten zugreifen können.' : 'Create a secure link so relatives can access your data in an emergency.'}</p>
+          <Button onClick={() => setDialogOpen(true)} className="mt-6 rounded-lg min-h-[44px]">
+            <Plus className="h-4 w-4 mr-2" />
+            {language === 'de' ? 'Link erstellen' : 'Create link'}
+          </Button>
         </div>
       ) : (
         <div className="space-y-3">
