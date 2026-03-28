@@ -215,6 +215,33 @@ export type Database = {
         }
         Relationships: []
       }
+      referrals: {
+        Row: {
+          clicks: number
+          conversions: number
+          created_at: string
+          id: string
+          referral_code: string
+          referrer_user_id: string
+        }
+        Insert: {
+          clicks?: number
+          conversions?: number
+          created_at?: string
+          id?: string
+          referral_code?: string
+          referrer_user_id: string
+        }
+        Update: {
+          clicks?: number
+          conversions?: number
+          created_at?: string
+          id?: string
+          referral_code?: string
+          referrer_user_id?: string
+        }
+        Relationships: []
+      }
       reminder_preferences: {
         Row: {
           created_at: string
