@@ -14,6 +14,42 @@ export type Database = {
   }
   public: {
     Tables: {
+      familienzugang: {
+        Row: {
+          created_at: string
+          id: string
+          invitation_token: string
+          member_email: string
+          member_id: string | null
+          owner_id: string
+          rolle: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          invitation_token?: string
+          member_email: string
+          member_id?: string | null
+          owner_id: string
+          rolle?: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          invitation_token?: string
+          member_email?: string
+          member_id?: string | null
+          owner_id?: string
+          rolle?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       medikamente: {
         Row: {
           aktiv: boolean
@@ -402,6 +438,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      accept_family_invitation: {
+        Args: { _token: string; _user_id: string }
+        Returns: boolean
+      }
       cleanup_token_access_logs: { Args: never; Returns: undefined }
       get_encryption_info_by_token: {
         Args: { _pin?: string; _token: string }

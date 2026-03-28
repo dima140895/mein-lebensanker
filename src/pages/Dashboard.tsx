@@ -21,6 +21,7 @@ import PlaceholderModule from '@/components/dashboard/PlaceholderModule';
 import VorsorgeModule from '@/components/dashboard/VorsorgeModule';
 import PflegeModule from '@/components/dashboard/pflege/PflegeModule';
 import KrankheitModule from '@/components/dashboard/krankheit/KrankheitModule';
+import FamilieModule from '@/components/dashboard/familie/FamilieModule';
 
 const DashboardContent = () => {
   const { user, profile, loading } = useAuth();
@@ -111,7 +112,7 @@ const DashboardContent = () => {
       case 'krankheit':
         return <KrankheitModule />;
       case 'familie':
-        return <PlaceholderModule module={activeModule} />;
+        return <FamilieModule />;
       case 'settings':
         return <SettingsModule />;
       default:
