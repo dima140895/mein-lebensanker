@@ -138,22 +138,22 @@ Downloads and copies of this page are only permitted for private, non-commercial
     <div className="flex min-h-screen flex-col bg-background">
       <Header />
       <main className="flex-1">
-        <div className="container mx-auto max-w-3xl px-6 sm:px-4 py-8">
-          <Button variant="ghost" onClick={() => navigate(-1)} className="mb-6">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8 sm:py-16">
+          <Button variant="ghost" onClick={() => navigate(-1)} className="mb-6 font-body min-h-[44px]">
             <ArrowLeft className="mr-2 h-4 w-4" />
             {texts.back}
           </Button>
 
-          <div className="rounded-xl border border-border bg-card p-6 md:p-8">
-            <h1 className="font-serif text-3xl font-bold text-foreground">{texts.title}</h1>
+          <div className="rounded-2xl bg-white p-6 md:p-8 shadow-card">
+            <h1 className="font-serif text-3xl sm:text-4xl font-semibold text-forest tracking-[-0.02em]">{texts.title}</h1>
 
             <div className="mt-8 space-y-8">
               {texts.sections.map((section, index) => (
                 <section key={index}>
-                  <h2 className="font-serif text-xl font-semibold text-foreground">
+                  <h2 className="font-serif text-xl sm:text-2xl font-semibold text-forest">
                     {section.title}
                   </h2>
-                  <div className="mt-3 whitespace-pre-line text-muted-foreground">
+                  <div className="mt-3 whitespace-pre-line text-charcoal-light font-body leading-relaxed">
                     {section.content}
                   </div>
                 </section>
