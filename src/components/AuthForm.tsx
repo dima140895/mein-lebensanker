@@ -402,6 +402,65 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange, embedd
     </div>
   );
 
+  // MFA verification view
+  if (mode === 'mfa') {
+    return (
+      <PageWrapper>
+        <div className="w-full max-w-md mx-auto animate-fade-in-up">
+          <div className="bg-card rounded-2xl shadow-[0_8px_40px_rgba(44,74,62,0.12)] px-6 sm:px-8 py-8 sm:py-10 text-center">
+            <LogoHeader />
+
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
+              <Shield className="h-8 w-8 text-primary" />
+            </div>
+
+            <h2 className="font-serif text-2xl text-foreground mb-2">
+              {texts.mfaTitle}
+            </h2>
+            <p className="text-muted-foreground font-body mb-6">
+              {texts.mfaDesc}
+            </p>
+
+            <Input
+              type="text"
+              inputMode="numeric"
+              maxLength={6}
+              value={mfaCode}
+              onChange={(e) => setMfaCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
+              placeholder="000000"
+              className="text-center text-2xl tracking-[0.5em] font-mono mb-4"
+              autoFocus
+            />
+
+            <Button
+              onClick={handleMfaVerify}
+              disabled={mfaCode.length !== 6 || loading}
+              className="w-full min-h-[44px] rounded-lg font-body font-medium text-base bg-primary hover:bg-primary/90 mb-4"
+            >
+              {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : texts.mfaVerify}
+            </Button>
+
+            <button
+              type="button"
+              onClick={() => {
+                setMfaFactorId(null);
+                setMfaChallengeId(null);
+                setMfaCode('');
+                handleModeChange('login');
+              }}
+              className="text-sm text-muted-foreground hover:text-primary font-body transition-colors"
+            >
+              <ArrowLeft className="h-3.5 w-3.5 inline mr-1" />
+              {texts.mfaOtherEmail}
+            </button>
+
+            <TrustBadges />
+          </div>
+        </div>
+      </PageWrapper>
+    );
+  }
+
   // Email verification view
   if (mode === 'verify') {
     return (
