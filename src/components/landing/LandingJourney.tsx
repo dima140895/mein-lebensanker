@@ -2,23 +2,23 @@ const steps = [
   {
     phase: 'Heute',
     title: 'Vorsorge in Ruhe organisieren',
-    description: 'Patientenverfügung, Vollmachten, Testament — alles an einem sicheren Ort. Verschlüsselt und nur für dich.',
-    chips: ['📄 Vollmachten', '🔐 Dokumenten-Safe', '📋 Testament', '👥 Angehörige teilen'],
-    color: '#2C4A3E',
+    description: 'Vollmachten, Dokumenten-Safe, Kontakte, Verträge — alles verschlüsselt und jederzeit für deine Angehörigen teilbar.',
+    chips: ['📄 Vollmachten', '🔐 Dokumenten-Safe', '👥 Kontakte', '📋 Verträge'],
+    color: 'hsl(160 28% 23%)', // forest
   },
   {
     phase: 'Wenn nötig',
     title: 'Pflege & Krankheit begleiten',
-    description: 'Wenn ein Familienmitglied Pflege braucht oder du selbst krank wirst — tägliche Dokumentation, Medikamente, Verlauf.',
-    chips: ['📔 Pflege-Tagebuch', '💊 Medikamente', '📊 Symptom-Tracking', '🩺 Arzt-Berichte'],
-    color: '#C4813A',
+    description: 'Medikamentenplan, Familienkalender, Symptom-Verlauf und Arztberichte — strukturierte Begleitung im Alltag.',
+    chips: ['💊 Medikamentenplan', '📅 Familienkalender', '📊 Symptom-Verlauf', '🩺 Arztbericht'],
+    color: 'hsl(36 72% 54%)', // amber
   },
   {
     phase: 'Langfristig',
     title: 'Gemeinsam durch lange Phasen',
-    description: 'Teile die Pflege mit der Familie. Jeder sieht den Verlauf, kann Einträge machen und bleibt informiert.',
-    chips: ['👨‍👩‍👧 Familienfreigabe', '📅 Kalender', '📈 Verlaufs-Ansicht', '🔔 Erinnerungen'],
-    color: '#7A9E8E',
+    description: 'Familienfreigabe, Verlaufskurven und MDK-Dokumentation — damit alle Beteiligten informiert bleiben.',
+    chips: ['👨‍👩‍👧 Familienfreigabe', '📈 Verlaufskurven', '📝 MDK-Dokumentation', '🔔 Erinnerungen'],
+    color: 'hsl(152 28% 36%)', // sage
   },
 ];
 
@@ -28,11 +28,11 @@ const LandingJourney = () => {
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
         {/* Section header */}
         <div className="text-center mb-16 sm:mb-20">
-          <span className="text-xs font-semibold text-[#C4813A] font-body tracking-widest uppercase">Dein Weg</span>
-          <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-[#2C4A3E] mt-3 mb-4">
-            Wie es funktioniert
+          <span className="text-xs font-semibold text-[hsl(var(--amber))] font-body tracking-widest uppercase">Dein Weg</span>
+          <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-[hsl(var(--forest))] mt-3 mb-4">
+            Drei Momente. Ein Anker.
           </h2>
-          <p className="text-[#2C4A3E]/60 font-body max-w-lg mx-auto text-lg">
+          <p className="text-[hsl(var(--forest))]/60 font-body max-w-lg mx-auto text-lg">
             Du startest mit Vorsorge. Alles andere kommt, wenn du es brauchst.
           </p>
         </div>
@@ -40,7 +40,7 @@ const LandingJourney = () => {
         {/* Steps */}
         <div className="relative">
           {/* Vertical connector line (desktop) */}
-          <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-[#2C4A3E]/20 via-[#C4813A]/20 to-[#7A9E8E]/20" />
+          <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-px" style={{ background: 'linear-gradient(to bottom, hsl(160 28% 23% / 0.2), hsl(36 72% 54% / 0.2), hsl(152 28% 36% / 0.2))' }} />
 
           <div className="space-y-16 md:space-y-24">
             {steps.map((step, i) => (
@@ -57,8 +57,8 @@ const LandingJourney = () => {
                     style={{ color: step.color, backgroundColor: `${step.color}10` }}>
                     {step.phase}
                   </span>
-                  <h3 className="font-serif text-2xl sm:text-3xl font-bold text-[#2C4A3E] mb-3">{step.title}</h3>
-                  <p className="text-[#2C4A3E]/60 font-body text-base leading-relaxed">{step.description}</p>
+                  <h3 className="font-serif text-2xl sm:text-3xl font-bold text-[hsl(var(--forest))] mb-3">{step.title}</h3>
+                  <p className="text-[hsl(var(--forest))]/60 font-body text-base leading-relaxed">{step.description}</p>
                 </div>
 
                 {/* Chips */}

@@ -4,51 +4,51 @@ const modules = [
   {
     icon: FileText,
     title: 'Vorsorge & Nachlass',
-    description: 'Patientenverfügung, Vollmachten, Testament, digitaler Nachlass — verschlüsselt und teilbar.',
+    description: 'Vollmachten, Testament, Versicherungen, digitaler Nachlass und Notfallbrief — verschlüsselt und teilbar.',
     badge: 'Inklusive',
-    badgeColor: '#2C4A3E',
-    borderColor: '#2C4A3E',
-    features: ['Dokumenten-Safe', 'Angehörigen-Zugang', 'PDF-Export', 'Verschlüsselung'],
+    badgeColor: 'hsl(160 28% 23%)',
+    borderColor: 'hsl(160 28% 23%)',
+    features: ['Vollmachten & Testament', 'Versicherungen & Verträge', 'Digitaler Nachlass', 'Notfallbrief', 'E2E-Verschlüsselung'],
   },
   {
     icon: Heart,
     title: 'Pflege-Begleiter',
-    description: 'Tägliches Pflegetagebuch, Medikamenten-Verwaltung, Kalenderübersicht für pflegebedürftige Angehörige.',
+    description: 'Familienkalender, Medikamente, Pflegetagebuch und Familienfreigabe für pflegende Angehörige.',
     badge: 'Ab €9/Monat',
-    badgeColor: '#C4813A',
-    borderColor: '#C4813A',
-    features: ['Tages-Einträge', 'Medikamente', 'Pflege-Kalender', 'Wochen-Zusammenfassung'],
+    badgeColor: 'hsl(36 72% 54%)',
+    borderColor: 'hsl(36 72% 54%)',
+    features: ['Familienkalender', 'Medikamente', 'Pflegetagebuch', 'Entlastungsbudget', 'Familienfreigabe'],
   },
   {
     icon: Activity,
     title: 'Krankheits-Begleiter',
-    description: 'Symptom-Tracking, Verlaufsdiagramme und automatische Arzttermin-Zusammenfassungen.',
+    description: 'Tages-Check-in, Verlaufsdiagramm und Arzttermin-Zusammenfassung für chronisch Kranke.',
     badge: 'Ab €9/Monat',
-    badgeColor: '#7A9E8E',
-    borderColor: '#7A9E8E',
-    features: ['Tages-Check-in', 'Verlaufsdiagramme', 'Arzt-Berichte', 'Erinnerungen'],
+    badgeColor: 'hsl(152 28% 36%)',
+    borderColor: 'hsl(152 28% 36%)',
+    features: ['Tages-Check-in (60 Sek.)', 'Verlaufsdiagramm', 'Arzttermin-Zusammenfassung', 'Medikamente'],
   },
   {
     icon: Brain,
     title: 'Demenz Frühphase',
-    description: 'Gedächtnisstützen, Routinen, Notfallkarten — behutsame Begleitung für den Anfang.',
+    description: 'Tagesstruktur, einfache Bedienoberfläche und Familien-Mitlese-Modus — behutsame Begleitung.',
     badge: 'Bald',
     badgeColor: '#999',
     borderColor: '#ddd',
-    features: ['Tagesroutinen', 'Erinnerungshilfen', 'Notfallkarten', 'Angehörigen-Info'],
+    features: ['Tagesstruktur', 'Einfache Bedienoberfläche', 'Familien-Mitlese-Modus', 'Erinnerungshilfen'],
   },
 ];
 
 const LandingModules = () => {
   return (
-    <section id="module" className="py-24 sm:py-32" style={{ backgroundColor: '#FDFAF5' }}>
+    <section id="module" className="py-24 sm:py-32 bg-[hsl(var(--warm-white))]">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
         <div className="text-center mb-16">
-          <span className="text-xs font-semibold text-[#C4813A] font-body tracking-widest uppercase">Module</span>
-          <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-[#2C4A3E] mt-3 mb-4">
-            Alles, was du brauchst
+          <span className="text-xs font-semibold text-[hsl(var(--amber))] font-body tracking-widest uppercase">Module</span>
+          <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-[hsl(var(--forest))] mt-3 mb-4">
+            Ein System. Alle Lebensphasen.
           </h2>
-          <p className="text-[#2C4A3E]/60 font-body max-w-lg mx-auto text-lg">
+          <p className="text-[hsl(var(--forest))]/60 font-body max-w-lg mx-auto text-lg">
             Starte mit Vorsorge. Aktiviere weitere Module, wenn das Leben es erfordert.
           </p>
         </div>
@@ -70,12 +70,12 @@ const LandingModules = () => {
                   <Icon className="h-5 w-5" style={{ color: mod.borderColor }} />
                 </div>
 
-                <h3 className="font-serif text-xl font-bold text-[#2C4A3E] mb-2">{mod.title}</h3>
-                <p className="text-sm text-[#2C4A3E]/60 font-body leading-relaxed mb-4">{mod.description}</p>
+                <h3 className="font-serif text-xl font-bold text-[hsl(var(--forest))] mb-2">{mod.title}</h3>
+                <p className="text-sm text-[hsl(var(--forest))]/60 font-body leading-relaxed mb-4">{mod.description}</p>
 
                 <ul className="space-y-1.5">
                   {mod.features.map((f, j) => (
-                    <li key={j} className="text-xs text-[#2C4A3E]/50 font-body flex items-center gap-1.5">
+                    <li key={j} className="text-xs text-[hsl(var(--forest))]/50 font-body flex items-center gap-1.5">
                       <span className="w-1 h-1 rounded-full" style={{ backgroundColor: mod.borderColor }} />
                       {f}
                     </li>
