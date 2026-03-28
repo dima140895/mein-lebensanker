@@ -218,7 +218,7 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
   const renderKrankheitCard = (delay: number) => (
     <motion.div key="krankheit" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay }}>
       {isPlusOrHigher ? (
-        <Card className="border-l-4 border-l-[hsl(var(--sage))] hover:shadow-card transition-shadow cursor-pointer h-full" onClick={() => onNavigate('krankheit')}>
+        <Card className="border-l-4 border-l-sage bg-white rounded-2xl shadow-card hover:-translate-y-0.5 hover:shadow-soft transition-all duration-200 cursor-pointer h-full" onClick={() => onNavigate('krankheit')}>
           <CardHeader className="pb-2">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-lg bg-[hsl(var(--sage))]/10 flex items-center justify-center">
