@@ -23,9 +23,7 @@ const StaticNav = ({ minimal = false }: StaticNavProps) => {
   }, []);
 
   const navLinks = minimal
-    ? [
-        { label: language === 'de' ? 'Preise' : 'Pricing', href: '/#preise', icon: CreditCard },
-      ]
+    ? []
     : [
         { label: language === 'de' ? 'Preise' : 'Pricing', href: '/#preise', icon: CreditCard },
         { label: language === 'de' ? 'Anmelden' : 'Sign In', href: '/dashboard', icon: LogIn },
@@ -44,7 +42,18 @@ const StaticNav = ({ minimal = false }: StaticNavProps) => {
         </Link>
 
         {/* Desktop links */}
-        {!minimal && (
+        {minimal ? (
+          <div className="hidden md:flex items-center gap-4">
+            <Button
+              variant="ghost"
+              onClick={() => navigate('/')}
+              className="font-body text-sm text-muted-foreground hover:text-foreground"
+            >
+              {language === 'de' ? '← Zurück zur Startseite' : '← Back to home'}
+            </Button>
+            <LanguageToggle />
+          </div>
+        ) : (
           <div className="hidden md:flex items-center gap-6">
             {navLinks.map((link) => (
               <Link
@@ -68,7 +77,19 @@ const StaticNav = ({ minimal = false }: StaticNavProps) => {
         )}
 
         {/* Mobile toggle */}
-        {!minimal && (
+        {minimal ? (
+          <div className="flex md:hidden items-center gap-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => navigate('/')}
+              className="font-body text-xs text-muted-foreground"
+            >
+              ← {language === 'de' ? 'Startseite' : 'Home'}
+            </Button>
+            <LanguageToggle />
+          </div>
+        ) : (
           <div className="flex md:hidden items-center gap-2">
             <LanguageToggle />
             <button onClick={() => setMobileOpen(!mobileOpen)} className="p-2 text-foreground">
