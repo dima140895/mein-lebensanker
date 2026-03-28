@@ -345,7 +345,18 @@ Data transfers are based on:
 Your sensitive advance planning data is additionally protected by our end-to-end encryption.`,
         },
         {
-          title: '12. Your Rights',
+          title: '12. Web Analytics',
+          content: `We use Plausible Analytics, a privacy-friendly analytics service that does not use cookies and does not collect personal data. No IP addresses are stored and no cross-site tracking is performed.
+
+Plausible only collects anonymized, aggregated usage statistics (e.g., page views, time on site). No cookie banner or consent is required.
+
+Operator: Plausible Insights OÜ, Västriku tn 2, 50403 Tartu, Estonia.
+Legal basis: Art. 6(1)(f) GDPR (legitimate interest in improving our service).
+
+More information: https://plausible.io/data-policy`,
+        },
+        {
+          title: '13. Your Rights',
           content: `You have the following rights regarding your personal data:
 
 • Right to information (Art. 15 GDPR)
@@ -359,7 +370,7 @@ Your sensitive advance planning data is additionally protected by our end-to-end
 You also have the right to lodge a complaint with a data protection supervisory authority about our processing of your personal data.`,
         },
         {
-          title: '13. Data Security',
+          title: '14. Data Security',
           content: `We use the widespread SSL procedure (Secure Socket Layer) in connection with the highest level of encryption supported by your browser when visiting the website.
 
 Additional security measures:
@@ -369,7 +380,7 @@ Additional security measures:
 • Row-Level Security (RLS) for database access`,
         },
         {
-          title: '14. Contact',
+          title: '15. Contact',
           content: `For questions about data protection, you can contact us at any time:
 
 Email: datenschutz@mein-lebensanker.de
