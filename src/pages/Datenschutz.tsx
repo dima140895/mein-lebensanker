@@ -352,7 +352,7 @@ Withdrawal: You can withdraw your consent at any time with effect for the future
 Please note: The withdrawal does not affect the lawfulness of the processing carried out until the withdrawal.`,
         },
         {
-          title: '10. Data Retention Periods',
+          title: '11. Data Retention Periods',
           content: `We store your data only as long as necessary for the respective purposes:
 
 • Account data: Until deletion of your account
