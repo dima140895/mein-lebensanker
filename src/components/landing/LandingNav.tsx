@@ -41,7 +41,7 @@ const LandingNav = () => {
         {/* Desktop links */}
         <div className="hidden md:flex items-center gap-8">
           {navLinks.map((link) => (
-            <button key={link.id} onClick={() => scrollTo(link.id)} className="text-sm font-medium text-[hsl(var(--forest))]/70 hover:text-[hsl(var(--forest))] transition-colors font-body">
+            <button key={link.id} onClick={() => scrollTo(link.id)} className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors font-body">
               {link.label}
             </button>
           ))}
