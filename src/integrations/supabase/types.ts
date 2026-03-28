@@ -296,6 +296,45 @@ export type Database = {
         }
         Relationships: []
       }
+      symptom_checkins: {
+        Row: {
+          checkin_datum: string
+          created_at: string
+          energie: number
+          id: string
+          notiz: string | null
+          schlaf: number
+          schmerz: number
+          stimmung: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          checkin_datum?: string
+          created_at?: string
+          energie: number
+          id?: string
+          notiz?: string | null
+          schlaf: number
+          schmerz: number
+          stimmung: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          checkin_datum?: string
+          created_at?: string
+          energie?: number
+          id?: string
+          notiz?: string | null
+          schlaf?: number
+          schmerz?: number
+          stimmung?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
