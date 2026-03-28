@@ -47,6 +47,9 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange, embedd
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
+  const [termsAccepted, setTermsAccepted] = useState(false);
+  const [healthDataConsent, setHealthDataConsent] = useState(false);
+  const [consentErrors, setConsentErrors] = useState({ terms: false, health: false });
 
   const t = {
     de: {
