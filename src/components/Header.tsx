@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { LogIn, UserPlus, Menu, Home, User, Info, ClipboardList, Wallet, Globe, ScrollText, FolderOpen, Phone, ChevronDown, Link2, CreditCard, Package, Key, LogOut, Shield, KeyRound, Lock, Unlock, Settings, Trash2 } from 'lucide-react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import LanguageToggle from './LanguageToggle';
+
 import Logo from './Logo';
 import ProfileSwitcher from './ProfileSwitcher';
 
@@ -513,13 +513,6 @@ const Header = () => {
 
               {/* Mobile Menu Footer - fixed at bottom */}
               <div className="border-t border-border p-4 space-y-3 shrink-0 bg-background">
-                {/* Language Toggle */}
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">
-                    {language === 'de' ? 'Sprache' : 'Language'}
-                  </span>
-                  <LanguageToggle />
-                </div>
                 
                 {/* Auth buttons */}
                 {user ? (
@@ -799,7 +792,6 @@ const Header = () => {
               </DialogContent>
             </Dialog>
           )}
-          <LanguageToggle />
         </nav>
 
         {/* Mobile Pricing Button (top right, visible only on mobile for non-authenticated users OR users who haven't paid) */}
