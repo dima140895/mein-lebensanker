@@ -8,6 +8,7 @@ import ShareLinkManager from '@/components/ShareLinkManager';
 import ReminderSettings from '@/components/dashboard/ReminderSettings';
 import SubscriptionManagement from '@/components/dashboard/SubscriptionManagement';
 import MFASettings from '@/components/dashboard/MFASettings';
+import ConsentManagement from '@/components/dashboard/ConsentManagement';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
