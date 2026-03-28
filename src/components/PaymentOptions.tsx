@@ -13,6 +13,7 @@ import { type PlanType } from '@/lib/pricing';
 const PaymentOptions = () => {
   const { user, profile } = useAuth();
   const { language } = useLanguage();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState<string | null>(null);
 
   const currentPlan = profile?.purchased_tier as PlanType | null;
