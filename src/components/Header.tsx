@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { LogIn, UserPlus, Menu, Home, User, Info, ClipboardList, Wallet, Globe, ScrollText, FolderOpen, Phone, ChevronDown, Link2, CreditCard, Package, Key, LogOut, Shield, KeyRound, Lock, Unlock, Settings, Trash2 } from 'lucide-react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import LanguageToggle from './LanguageToggle';
+
 import Logo from './Logo';
 import ProfileSwitcher from './ProfileSwitcher';
 

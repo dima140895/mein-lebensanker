@@ -1,18 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Menu, X, Anchor, LogIn, UserPlus, CreditCard } from 'lucide-react';
+import { Menu, X, Anchor, LogIn, UserPlus, CreditCard, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useLanguage } from '@/contexts/LanguageContext';
-import LanguageToggle from '@/components/LanguageToggle';
 
 interface StaticNavProps {
-  /** Hide pricing/auth links (e.g. on the auth page itself) */
   minimal?: boolean;
 }
 
 const StaticNav = ({ minimal = false }: StaticNavProps) => {
   const navigate = useNavigate();
-  const { language } = useLanguage();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -25,8 +21,8 @@ const StaticNav = ({ minimal = false }: StaticNavProps) => {
   const navLinks = minimal
     ? []
     : [
-        { label: language === 'de' ? 'Preise' : 'Pricing', href: '/#preise', icon: CreditCard },
-        { label: language === 'de' ? 'Anmelden' : 'Sign In', href: '/dashboard', icon: LogIn },
+        { label: 'Preise', href: '/#preise', icon: CreditCard },
+        { label: 'Anmelden', href: '/dashboard', icon: LogIn },
       ];
 
   return (
@@ -43,15 +39,16 @@ const StaticNav = ({ minimal = false }: StaticNavProps) => {
 
         {/* Desktop links */}
         {minimal ? (
-          <div className="hidden md:flex items-center gap-4">
+          <div className="hidden md:flex items-center">
             <Button
-              variant="ghost"
+              variant="outline"
+              size="sm"
               onClick={() => navigate('/')}
-              className="font-body text-sm text-muted-foreground hover:text-foreground"
+              className="font-body text-sm rounded-full px-5 gap-2"
             >
-              {language === 'de' ? '← Zurück zur Startseite' : '← Back to home'}
+              <ArrowLeft className="h-4 w-4" />
+              Zurück zur Startseite
             </Button>
-            <LanguageToggle />
           </div>
         ) : (
           <div className="hidden md:flex items-center gap-6">
@@ -70,28 +67,26 @@ const StaticNav = ({ minimal = false }: StaticNavProps) => {
               className="bg-primary hover:bg-primary/90 text-primary-foreground font-body rounded-full px-6 h-10 flex items-center gap-2"
             >
               <UserPlus className="h-4 w-4" />
-              {language === 'de' ? 'Registrieren' : 'Sign Up'}
+              Registrieren
             </Button>
-            <LanguageToggle />
           </div>
         )}
 
         {/* Mobile toggle */}
         {minimal ? (
-          <div className="flex md:hidden items-center gap-2">
+          <div className="flex md:hidden items-center">
             <Button
-              variant="ghost"
+              variant="outline"
               size="sm"
               onClick={() => navigate('/')}
-              className="font-body text-xs text-muted-foreground"
+              className="font-body text-xs rounded-full px-4 gap-1.5"
             >
-              ← {language === 'de' ? 'Startseite' : 'Home'}
+              <ArrowLeft className="h-3.5 w-3.5" />
+              Startseite
             </Button>
-            <LanguageToggle />
           </div>
         ) : (
           <div className="flex md:hidden items-center gap-2">
-            <LanguageToggle />
             <button onClick={() => setMobileOpen(!mobileOpen)} className="p-2 text-foreground">
               {mobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
@@ -119,7 +114,7 @@ const StaticNav = ({ minimal = false }: StaticNavProps) => {
               className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-body rounded-full"
             >
               <UserPlus className="h-4 w-4 mr-2" />
-              {language === 'de' ? 'Registrieren' : 'Sign Up'}
+              Registrieren
             </Button>
           )}
         </div>
