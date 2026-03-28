@@ -70,7 +70,7 @@ const Header = () => {
   const [recoveryKeyRecoveryOpen, setRecoveryKeyRecoveryOpen] = useState(false);
   const [changeEncryptionPasswordOpen, setChangeEncryptionPasswordOpen] = useState(false);
   const [deleteAllDataOpen, setDeleteAllDataOpen] = useState(false);
-  const pendingPurchaseRef = useRef<{ packageType: PackageType; familyProfileCount?: number } | null>(null);
+  const pendingPurchaseRef = useRef<{ packageType: PackageType } | null>(null);
 
   // Prevent closing dialog when in verify mode
   const handleAuthOpenChange = (open: boolean) => {
