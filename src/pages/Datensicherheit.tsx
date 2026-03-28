@@ -256,7 +256,7 @@ Without password and without recovery key, your encrypted data is not recoverabl
           </div>
         </div>
       </main>
-      <Footer />
+      <LandingFooter />
     </div>
   );
 };

@@ -133,7 +133,7 @@ const Sicherheitsgrenzen = () => {
           </div>
         </div>
       </main>
-      <Footer />
+      <LandingFooter />
     </div>
   );
 };
