@@ -115,9 +115,9 @@ const Header = () => {
   ];
 
   const pricingItems = [
-    { key: 'single', label: { de: 'Einzelperson', en: 'Individual' }, price: '49 €', profiles: 1 },
-    { key: 'couple', label: { de: 'Ehepaar-Paket', en: 'Couple Package' }, price: '69 €', profiles: 2 },
-    { key: 'family', label: { de: 'Familien-Paket', en: 'Family Package' }, price: '99 €', profiles: 4 },
+    { key: 'anker', label: { de: 'Anker', en: 'Anker' }, price: '49 €', profiles: 1 },
+    { key: 'plus', label: { de: 'Anker Plus', en: 'Anker Plus' }, price: '9 €/Mo.', profiles: 1 },
+    { key: 'familie', label: { de: 'Anker Familie', en: 'Anker Familie' }, price: '14 €/Mo.', profiles: 10 },
   ];
 
   const texts = {
