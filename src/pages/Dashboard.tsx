@@ -106,11 +106,20 @@ const DashboardContent = () => {
   // Not paid
   if (!profile?.has_paid) {
     return (
-      <div className="container mx-auto px-6 sm:px-4 py-8">
-        <p className="text-center text-muted-foreground mb-4">
-          {language === 'de' ? 'Um Deine Daten zu speichern, wähle ein Paket:' : 'To save your data, choose a package:'}
-        </p>
-        <PaymentOptions />
+      <div className="min-h-screen flex flex-col bg-background">
+        <div className="flex-1 flex items-center justify-center px-4 py-12"
+          style={{
+            backgroundImage: `
+              radial-gradient(ellipse 60% 50% at 80% 20%, rgba(122,158,142,0.08) 0%, transparent 60%),
+              radial-gradient(ellipse 40% 60% at 10% 80%, rgba(196,129,58,0.05) 0%, transparent 50%)
+            `,
+          }}
+        >
+          <div className="w-full max-w-5xl mx-auto">
+            <PaymentOptions />
+          </div>
+        </div>
+        <Disclaimer />
       </div>
     );
   }
