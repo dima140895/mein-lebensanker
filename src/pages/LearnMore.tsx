@@ -32,6 +32,10 @@ const LearnMore = () => {
   const { language } = useLanguage();
   const [securityDocOpen, setSecurityDocOpen] = useState(false);
 
+  useEffect(() => {
+    document.title = 'Mehr erfahren | Mein Lebensanker';
+  }, []);
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
