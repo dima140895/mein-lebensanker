@@ -11,6 +11,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { motion, AnimatePresence } from 'framer-motion';
+import { trackEvent } from '@/lib/analytics';
 
 interface CheckinData {
   id: string;
@@ -142,6 +143,17 @@ const TagesCheckin = () => {
     if (error) {
       toast.error(texts.error);
     } else {
+      // Track first check-in
+      if (!todayCheckin) {
+        // Check if this was the very first check-in ever
+        const { count } = await supabase
+          .from('symptom_checkins')
+          .select('id', { count: 'exact', head: true })
+          .eq('user_id', user.id);
+        if (count !== null && count <= 1) {
+          trackEvent('Erster_Checkin');
+        }
+      }
       // Show success animation
       setShowSuccess(true);
       setTimeout(() => {

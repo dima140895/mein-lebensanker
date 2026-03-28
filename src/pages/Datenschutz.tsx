@@ -154,7 +154,18 @@ Die Datenübertragung erfolgt auf Basis von:
 Ihre sensiblen Vorsorgedaten werden zusätzlich durch unsere Ende-zu-Ende-Verschlüsselung geschützt.`,
         },
         {
-          title: '12. Ihre Rechte',
+          title: '12. Webanalyse',
+          content: `Wir nutzen Plausible Analytics, einen datenschutzfreundlichen Analysedienst ohne Cookies und ohne personenbezogene Daten. Es werden keine IP-Adressen gespeichert und kein Tracking über Websites hinweg durchgeführt.
+
+Plausible erhebt ausschließlich anonymisierte, aggregierte Nutzungsstatistiken (z.B. Seitenaufrufe, Verweildauer). Ein Cookie-Banner oder eine Einwilligung ist daher nicht erforderlich.
+
+Betreiber: Plausible Insights OÜ, Västriku tn 2, 50403 Tartu, Estland.
+Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an der Verbesserung unseres Angebots).
+
+Weitere Informationen: https://plausible.io/data-policy`,
+        },
+        {
+          title: '13. Ihre Rechte',
           content: `Sie haben gegenüber uns folgende Rechte hinsichtlich der Sie betreffenden personenbezogenen Daten:
 
 • Recht auf Auskunft (Art. 15 DSGVO)
@@ -168,7 +179,7 @@ Ihre sensiblen Vorsorgedaten werden zusätzlich durch unsere Ende-zu-Ende-Versch
 Sie haben zudem das Recht, sich bei einer Datenschutz-Aufsichtsbehörde über die Verarbeitung Ihrer personenbezogenen Daten durch uns zu beschweren.`,
         },
         {
-          title: '13. Datensicherheit',
+          title: '14. Datensicherheit',
           content: `Wir verwenden innerhalb des Website-Besuchs das verbreitete SSL-Verfahren (Secure Socket Layer) in Verbindung mit der jeweils höchsten Verschlüsselungsstufe, die von Ihrem Browser unterstützt wird.
 
 Zusätzliche Sicherheitsmaßnahmen:
@@ -178,7 +189,7 @@ Zusätzliche Sicherheitsmaßnahmen:
 • Row-Level Security (RLS) für Datenbankzugriffe`,
         },
         {
-          title: '14. Kontakt',
+          title: '15. Kontakt',
           content: `Für Fragen zum Datenschutz können Sie sich jederzeit an uns wenden:
 
 E-Mail: datenschutz@mein-lebensanker.de
@@ -334,7 +345,18 @@ Data transfers are based on:
 Your sensitive advance planning data is additionally protected by our end-to-end encryption.`,
         },
         {
-          title: '12. Your Rights',
+          title: '12. Web Analytics',
+          content: `We use Plausible Analytics, a privacy-friendly analytics service that does not use cookies and does not collect personal data. No IP addresses are stored and no cross-site tracking is performed.
+
+Plausible only collects anonymized, aggregated usage statistics (e.g., page views, time on site). No cookie banner or consent is required.
+
+Operator: Plausible Insights OÜ, Västriku tn 2, 50403 Tartu, Estonia.
+Legal basis: Art. 6(1)(f) GDPR (legitimate interest in improving our service).
+
+More information: https://plausible.io/data-policy`,
+        },
+        {
+          title: '13. Your Rights',
           content: `You have the following rights regarding your personal data:
 
 • Right to information (Art. 15 GDPR)
@@ -348,7 +370,7 @@ Your sensitive advance planning data is additionally protected by our end-to-end
 You also have the right to lodge a complaint with a data protection supervisory authority about our processing of your personal data.`,
         },
         {
-          title: '13. Data Security',
+          title: '14. Data Security',
           content: `We use the widespread SSL procedure (Secure Socket Layer) in connection with the highest level of encryption supported by your browser when visiting the website.
 
 Additional security measures:
@@ -358,7 +380,7 @@ Additional security measures:
 • Row-Level Security (RLS) for database access`,
         },
         {
-          title: '14. Contact',
+          title: '15. Contact',
           content: `For questions about data protection, you can contact us at any time:
 
 Email: datenschutz@mein-lebensanker.de

@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Check, X } from 'lucide-react';
+import { trackEvent } from '@/lib/analytics';
 
 const plans = [
   {
@@ -108,7 +109,10 @@ const LandingPricing = () => {
               </ul>
 
               <Button
-                onClick={() => navigate('/dashboard?register=true')}
+                onClick={() => {
+                  trackEvent('Upgrade_Klick', { plan: plan.name.toLowerCase().replace(' ', '_') });
+                  navigate('/dashboard?register=true');
+                }}
                 className={`w-full rounded-full h-11 font-body text-sm ${plan.highlighted ? 'bg-primary hover:bg-primary/90 text-primary-foreground' : 'bg-primary/5 hover:bg-primary/10 text-primary'}`}
               >
                 {plan.cta}

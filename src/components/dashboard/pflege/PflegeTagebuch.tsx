@@ -11,6 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { de as deLocale } from 'date-fns/locale';
+import { trackEvent } from '@/lib/analytics';
 
 const MOODS = ['😢', '😕', '😐', '🙂', '😊'];
 
@@ -139,6 +140,10 @@ const PflegeTagebuch = () => {
     if (error) {
       toast.error(texts.error);
     } else {
+      // Track first entry
+      if (entries.length === 0) {
+        trackEvent('Erster_Pflegeeintrag');
+      }
       toast.success(texts.saved);
       setShowForm(false);
       setMahlzeiten('');

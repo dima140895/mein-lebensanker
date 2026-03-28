@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/browserClient';
+import { trackEvent } from '@/lib/analytics';
 
 interface Profile {
   id: string;
@@ -140,6 +141,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     const user = responseData?.data?.user;
     const userExists = user && (!user.identities || user.identities.length === 0);
+    if (!userExists && user) {
+      trackEvent('Registrierung');
+    }
     return { error: null, userExists: !!userExists };
   };
 

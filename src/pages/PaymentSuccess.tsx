@@ -6,6 +6,7 @@ import { supabase } from '@/integrations/supabase/browserClient';
 import { CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { logger } from '@/lib/logger';
+import { trackEvent } from '@/lib/analytics';
 import ProfileSetupWizard from '@/components/ProfileSetupWizard';
 
 const PaymentSuccessContent = () => {
@@ -70,6 +71,12 @@ const PaymentSuccessContent = () => {
         if (data?.success && data?.paymentStatus === 'paid') {
           setVerificationStatus('success');
           await refreshProfile();
+          
+          // Track purchase event
+          const eventMap: Record<string, 'Kauf_Anker' | 'Kauf_Plus' | 'Kauf_Familie'> = {
+            anker: 'Kauf_Anker', plus: 'Kauf_Plus', familie: 'Kauf_Familie',
+          };
+          trackEvent(eventMap[plan] || 'Kauf_Anker');
           
           // Determine max profiles from URL param or payment type
           let profiles = 1;
