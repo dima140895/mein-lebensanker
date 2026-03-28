@@ -53,6 +53,7 @@ const DevDocumentation = lazy(() => import("./pages/DevDocumentation"));
 const FamilyInvitation = lazy(() => import("./pages/FamilyInvitation"));
 const Abmelden = lazy(() => import("./pages/Abmelden"));
 const Partner = lazy(() => import("./pages/Partner"));
+const Security = lazy(() => import("./pages/Security"));
 const VorsorgeAssistant = lazy(() => import("./components/VorsorgeAssistant"));
 
 const queryClient = new QueryClient();
