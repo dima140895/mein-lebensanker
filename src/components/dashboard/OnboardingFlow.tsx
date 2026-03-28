@@ -142,10 +142,10 @@ const OnboardingFlow = ({ onComplete }: OnboardingFlowProps) => {
 
               {/* Welcome text */}
               <div className="mb-8">
-                <h1 className="font-serif text-2xl sm:text-3xl font-bold text-[#2C4A3E] mb-2">
+                <h1 className="font-serif text-2xl sm:text-3xl font-bold text-foreground mb-2">
                   Willkommen{firstName ? `, ${firstName}` : ''}.
                 </h1>
-                <p className="text-[#2C4A3E]/60 font-body text-sm">
+                <p className="text-muted-foreground font-body text-sm">
                   Womit möchtest du beginnen?
                 </p>
               </div>
