@@ -1,4 +1,6 @@
 /* Self-hosted fonts – eliminates render-blocking Google Fonts request */
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap');
+
 @font-face {
   font-family: 'Inter';
   font-style: normal;
@@ -67,6 +69,9 @@
     --amber-light: 36 62% 91%;
     --charcoal: 220 18% 18%;
     --charcoal-light: 220 14% 42%;
+    --forest: 160 28% 23%;
+    --forest-light: 155 20% 55%;
+    --warm-white: 37 60% 98%;
 
     /* Gradients – refreshed */
     --gradient-hero: linear-gradient(145deg, hsl(152 28% 36%) 0%, hsl(152 32% 24%) 100%);
