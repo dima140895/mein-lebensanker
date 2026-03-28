@@ -323,6 +323,8 @@ const PflegeTagebuch = () => {
           })}
         </div>
       )}
+
+      {showReferral && <ReferralCard />}
     </div>
   );
 };
