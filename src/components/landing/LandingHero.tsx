@@ -33,7 +33,7 @@ const LandingHero = () => {
           </h1>
 
           {/* Subheadline */}
-          <p className="text-lg sm:text-xl text-[hsl(var(--forest))]/70 leading-relaxed mb-10 font-body max-w-xl animate-fade-in-up stagger-delay-2">
+          <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed mb-10 font-body max-w-xl animate-fade-in-up stagger-delay-2">
             Mein Lebensanker begleitet dich — von der ruhigen Vorsorge heute 
             bis zur aktiven Unterstützung wenn Pflege, Krankheit oder Verlust 
             plötzlich zum Alltag werden.
