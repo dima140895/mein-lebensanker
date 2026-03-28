@@ -286,7 +286,7 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
     <div className="space-y-6">
       {/* Greeting */}
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-        <h1 className="font-serif text-2xl md:text-3xl font-bold text-foreground">
+        <h1 className="font-serif text-2xl sm:text-3xl font-bold text-foreground">
           {greeting}{userName ? `, ${userName}` : ''}.
         </h1>
         <p className="text-sm text-muted-foreground mt-1">{tx.subtitle}</p>
