@@ -311,7 +311,7 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange }: Auth
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-md mx-auto"
       >
-        <div className="rounded-xl border border-border bg-card p-8 shadow-elevated text-center">
+        <div className="rounded-2xl border border-border bg-white p-8 shadow-card text-center">
           <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
             {verified ? (
               <Check className="h-8 w-8 text-green-600 dark:text-green-400" />
