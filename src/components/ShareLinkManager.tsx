@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Link2, Plus, Trash2, Copy, Check, ExternalLink, Shield, Lock, Share2, Eye, Info, ShieldX, User, Wallet, Smartphone, Heart, FileText, Users, UserCircle, ChevronDown, ChevronRight } from 'lucide-react';
+import { Link2, Plus, Trash2, Copy, Check, ExternalLink, Shield, Lock, Share2, Eye, Info, ShieldX, User, Wallet, Smartphone, Heart, FileText, Users, UserCircle, ChevronDown, ChevronRight, CreditCard, Printer } from 'lucide-react';
+import NotfallKarte from '@/components/NotfallKarte';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useEncryption } from '@/contexts/EncryptionContext';
@@ -48,12 +49,15 @@ const ALL_SECTIONS = ['personal', 'assets', 'digital', 'wishes', 'documents', 'c
 type SectionKey = typeof ALL_SECTIONS[number];
 
 const ShareLinkManager = () => {
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const { language } = useLanguage();
   const { personProfiles } = useProfiles();
   const { isEncryptionEnabled, encryptionSalt } = useEncryption();
   const [tokens, setTokens] = useState<ShareToken[]>([]);
   const [loading, setLoading] = useState(true);
+  const [notfallOpen, setNotfallOpen] = useState(false);
+  const [notfallMeds, setNotfallMeds] = useState<string[]>([]);
+  const [notfallContact, setNotfallContact] = useState<string | undefined>();
   const [creating, setCreating] = useState(false);
   const [newLabel, setNewLabel] = useState('');
   const [copiedId, setCopiedId] = useState<string | null>(null);
@@ -205,6 +209,23 @@ const ShareLinkManager = () => {
   useEffect(() => {
     loadTokens();
   }, [user]);
+
+  // Load emergency card data when opening
+  const loadNotfallData = async () => {
+    if (!user) return;
+    const [medsRes, personalRes] = await Promise.all([
+      supabase.from('medikamente').select('name').eq('user_id', user.id).eq('aktiv', true).limit(3),
+      supabase.from('vorsorge_data').select('data').eq('user_id', user.id).eq('section_key', 'contacts').limit(1),
+    ]);
+    if (medsRes.data) setNotfallMeds(medsRes.data.map(m => m.name));
+    // Try to extract emergency contact from contacts data
+    if (personalRes.data?.[0]?.data) {
+      const d = personalRes.data[0].data as Record<string, unknown>;
+      const contact = (d as any)?.emergency_contact_name || (d as any)?.emergencyContact;
+      if (contact) setNotfallContact(String(contact));
+    }
+    setNotfallOpen(true);
+  };
 
   // Initialize profile sections when profiles load or dialog opens
   useEffect(() => {
@@ -822,6 +843,54 @@ const ShareLinkManager = () => {
             );
           })}
         </div>
+      )}
+
+      {/* Emergency Card Button — only when active tokens exist */}
+      {tokens.some(t => t.is_active && t.failed_attempts < 3) && (
+        <>
+          <Button
+            variant="outline"
+            className="w-full min-h-[44px]"
+            onClick={loadNotfallData}
+          >
+            <CreditCard className="h-4 w-4 mr-2" />
+            {language === 'de' ? 'Notfall-Karte drucken' : 'Print emergency card'}
+          </Button>
+
+          <Dialog open={notfallOpen} onOpenChange={setNotfallOpen}>
+            <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle className="font-serif">
+                  {language === 'de' ? 'Notfall-Karte' : 'Emergency Card'}
+                </DialogTitle>
+                <DialogDescription>
+                  {language === 'de'
+                    ? 'Drucke diese Karte aus und trage sie im Portemonnaie.'
+                    : 'Print this card and carry it in your wallet.'}
+                </DialogDescription>
+              </DialogHeader>
+              <div className="py-4 print:p-0" id="notfall-karte-print">
+                <NotfallKarte
+                  shareToken={tokens.find(t => t.is_active && t.failed_attempts < 3)?.token || ''}
+                  userData={{
+                    name: user ? (profile?.full_name || '') : '',
+                    emergencyContact: notfallContact,
+                    medications: notfallMeds.length > 0 ? notfallMeds : undefined,
+                  }}
+                />
+              </div>
+              <div className="flex justify-end gap-2 print:hidden">
+                <Button variant="outline" onClick={() => setNotfallOpen(false)}>
+                  {language === 'de' ? 'Schließen' : 'Close'}
+                </Button>
+                <Button onClick={() => window.print()}>
+                  <Printer className="h-4 w-4 mr-2" />
+                  {language === 'de' ? 'Drucken' : 'Print'}
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
+        </>
       )}
     </motion.div>
   );
