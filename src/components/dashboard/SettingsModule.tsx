@@ -3,6 +3,7 @@ import PackageManagement from '@/components/PackageManagement';
 import DataExport from '@/components/DataExport';
 import ShareLinkManager from '@/components/ShareLinkManager';
 import ReminderSettings from '@/components/dashboard/ReminderSettings';
+import SubscriptionManagement from '@/components/dashboard/SubscriptionManagement';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Package, Download, Link2, Bell } from 'lucide-react';
 
@@ -28,6 +29,7 @@ const SettingsModule = () => {
 
   return (
     <div className="space-y-6">
+      <SubscriptionManagement />
       <Tabs defaultValue="plan" className="w-full">
         <TabsList className="w-full grid grid-cols-4">
           <TabsTrigger value="plan" className="gap-1.5 text-xs sm:text-sm">
