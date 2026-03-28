@@ -23,7 +23,7 @@ const LandingHero = () => {
           </div>
 
           {/* Headline */}
-          <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold text-[hsl(var(--forest))] leading-[1.1] mb-6 animate-fade-in-up">
+          <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground leading-[1.1] mb-6 animate-fade-in-up">
             Für die Momente,{' '}
             <span className="relative">
               die das Leben
