@@ -11,6 +11,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { motion, AnimatePresence } from 'framer-motion';
+import { trackEvent } from '@/lib/analytics';
 
 interface CheckinData {
   id: string;
