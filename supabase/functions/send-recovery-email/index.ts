@@ -40,6 +40,19 @@ Deno.serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  // Only allow POST
+  if (req.method !== "POST") {
+    return new Response("Method Not Allowed", { status: 405, headers: corsHeaders });
+  }
+
+  // Content-Type check
+  const contentType = req.headers.get("content-type");
+  if (!contentType?.includes("application/json")) {
+    return new Response(JSON.stringify({ error: "Content-Type muss application/json sein" }), {
+      status: 415, headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
+
   try {
     if (!RESEND_API_KEY || !SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
       console.error("Missing required env vars");
@@ -49,8 +62,17 @@ Deno.serve(async (req) => {
       });
     }
 
-    const body = await req.json().catch(() => null);
-    if (!body || typeof body.email !== "string" || typeof body.redirectTo !== "string") {
+    // Safe JSON parse
+    let body: Record<string, unknown>;
+    try {
+      body = await req.json();
+    } catch {
+      return new Response(JSON.stringify({ error: "Ungültiges JSON" }), {
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    if (typeof body.email !== "string" || typeof body.redirectTo !== "string") {
       return new Response(JSON.stringify({ error: "Invalid request" }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
