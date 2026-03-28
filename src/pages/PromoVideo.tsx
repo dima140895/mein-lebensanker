@@ -5,6 +5,8 @@ import { Play, Share2, MessageCircle, Mail, Copy, Check, Presentation } from 'lu
 import Logo from '@/components/Logo';
 import ExplainerSlideshow from '@/components/ExplainerSlideshow';
 import { useLanguage } from '@/contexts/LanguageContext';
+import StaticNav from '@/components/StaticNav';
+import LandingFooter from '@/components/landing/LandingFooter';
 
 const PromoVideo = () => {
   const { language } = useLanguage();
