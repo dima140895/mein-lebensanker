@@ -12,6 +12,7 @@ import { EncryptionProvider } from "@/contexts/EncryptionContext";
 import Index from "./pages/Index";
 import CookieConsent from "./components/CookieConsent";
 import { EncryptionReminder } from "./components/EncryptionReminder";
+import OfflineBanner from "./components/OfflineBanner";
 
 // Lazy load all routes except the landing page
 const Dashboard = lazy(() => import("./pages/Dashboard"));
