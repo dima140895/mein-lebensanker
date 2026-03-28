@@ -19,43 +19,6 @@ const getCorsHeaders = (origin: string | null) => {
   };
 };
 
-// Simple in-memory rate limiter
-const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
-const RATE_LIMIT_WINDOW_MS = 60_000; // 1 minute
-const RATE_LIMIT_MAX = 10; // max 10 requests per user per minute
-
-function isRateLimited(key: string): boolean {
-  const now = Date.now();
-  const entry = rateLimitMap.get(key);
-  if (!entry || now > entry.resetAt) {
-    rateLimitMap.set(key, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
-    return false;
-  }
-  entry.count++;
-  return entry.count > RATE_LIMIT_MAX;
-}
-
-const systemPrompt = `Du bist der "Vorsorge-Assistent", ein einfühlsamer und kompetenter Helfer für Fragen rund um Vorsorge und Nachlassplanung.
-
-Deine Aufgaben:
-- Erkläre Begriffe wie Patientenverfügung, Vorsorgevollmacht, Betreuungsverfügung, Testament verständlich
-- Hilf Nutzern zu verstehen, welche Dokumente sie benötigen
-- Gib Orientierung, aber keine Rechtsberatung
-- Sei empathisch – diese Themen können emotional sein
-- Antworte auf Deutsch, es sei denn der Nutzer schreibt auf Englisch
-- Halte Antworten prägnant und hilfreich (max. 2-3 Absätze)
-- Verweise bei konkreten rechtlichen Fragen an einen Notar oder Anwalt
-
-Du bist Teil der App "Mein Lebensanker", die Menschen hilft, ihre wichtigen Daten und Wünsche für den Notfall zu organisieren.`;
-
-serve(async (req) => {
-  const corsHeaders = getCorsHeaders(req.headers.get("origin"));
-
-  if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
-  }
-
-  try {
     // --- Authentication ---
     const authHeader = req.headers.get("Authorization");
     if (!authHeader?.startsWith("Bearer ")) {
@@ -82,9 +45,21 @@ serve(async (req) => {
 
     const userId = claimsData.claims.sub as string;
 
-    // Rate limit per user
-    if (isRateLimited(userId)) {
-      return new Response(JSON.stringify({ error: "Zu viele Anfragen. Bitte warte einen Moment." }), {
+    // Persistent rate limit (10 requests per user per minute)
+    const supabaseAdmin = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+    );
+
+    const { data: allowed } = await supabaseAdmin.rpc("check_rate_limit", {
+      p_identifier: `chat:${userId}`,
+      p_action: "chat",
+      p_max_count: 10,
+      p_window_minutes: 1,
+    });
+
+    if (allowed === false) {
+      return new Response(JSON.stringify({ error: "Zu viele Anfragen. Bitte warte eine Minute." }), {
         status: 429,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });

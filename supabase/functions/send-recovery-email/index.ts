@@ -24,31 +24,6 @@ const getCorsHeaders = (origin: string | null) => {
   };
 };
 
-// Simple in-memory rate limiter (per email, 3 requests per 10 minutes)
-const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
-const RATE_LIMIT_WINDOW_MS = 600_000;
-const RATE_LIMIT_MAX = 3;
-
-function isRateLimited(key: string): boolean {
-  const now = Date.now();
-  const entry = rateLimitMap.get(key);
-  if (!entry || now > entry.resetAt) {
-    rateLimitMap.set(key, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
-    return false;
-  }
-  entry.count++;
-  return entry.count > RATE_LIMIT_MAX;
-}
-
-// Robust HTML escaping
-const escapeHtml = (str: string): string =>
-  str
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#x27;");
-
 Deno.serve(async (req) => {
   const corsHeaders = getCorsHeaders(req.headers.get("origin"));
 
@@ -76,8 +51,18 @@ Deno.serve(async (req) => {
     const email = String(body.email).toLowerCase().trim();
     const redirectTo = String(body.redirectTo);
 
-    // Rate limit per email address
-    if (isRateLimited(email)) {
+    // Persistent rate limit (3 recovery emails per address per 10 minutes)
+    const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+
+    const { data: allowed } = await supabase.rpc("check_rate_limit", {
+      p_identifier: `recovery:${email}`,
+      p_action: "recovery",
+      p_max_count: 3,
+      p_window_minutes: 10,
+    });
+
+    if (allowed === false) {
+      // Silent success to not reveal user existence
       return new Response(JSON.stringify({ success: true }), {
         status: 200,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
