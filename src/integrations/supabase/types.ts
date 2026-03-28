@@ -57,6 +57,8 @@ export type Database = {
           created_at: string
           dosierung: string | null
           einnahmezeiten: string | null
+          erinnerung_aktiv: boolean
+          erinnerung_zeiten: string[] | null
           id: string
           name: string
           notizen: string | null
@@ -69,6 +71,8 @@ export type Database = {
           created_at?: string
           dosierung?: string | null
           einnahmezeiten?: string | null
+          erinnerung_aktiv?: boolean
+          erinnerung_zeiten?: string[] | null
           id?: string
           name: string
           notizen?: string | null
@@ -81,6 +85,8 @@ export type Database = {
           created_at?: string
           dosierung?: string | null
           einnahmezeiten?: string | null
+          erinnerung_aktiv?: boolean
+          erinnerung_zeiten?: string[] | null
           id?: string
           name?: string
           notizen?: string | null
