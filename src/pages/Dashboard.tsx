@@ -22,6 +22,7 @@ import VorsorgeModule from '@/components/dashboard/VorsorgeModule';
 import PflegeModule from '@/components/dashboard/pflege/PflegeModule';
 import KrankheitModule from '@/components/dashboard/krankheit/KrankheitModule';
 import FamilieModule from '@/components/dashboard/familie/FamilieModule';
+import OnboardingFlow from '@/components/dashboard/OnboardingFlow';
 
 const DashboardContent = () => {
   const { user, profile, loading } = useAuth();
@@ -33,6 +34,7 @@ const DashboardContent = () => {
   const [showUnlockDialog, setShowUnlockDialog] = useState(false);
   const [upgradeModalOpen, setUpgradeModalOpen] = useState(false);
   const [lockedModule, setLockedModule] = useState<DashboardModule | null>(null);
+  const [showOnboarding, setShowOnboarding] = useState(false);
 
   const userPlan = profile?.purchased_tier as string | null;
 
@@ -101,6 +103,13 @@ const DashboardContent = () => {
     );
   }
 
+  // Check for new user onboarding
+  const isNewUser = (profile as any)?.is_new_user === true;
+  if (isNewUser && !showOnboarding) {
+    // Trigger onboarding on first render for new users
+    setTimeout(() => setShowOnboarding(true), 300);
+  }
+
   const renderModule = () => {
     switch (activeModule) {
       case 'home':
@@ -161,6 +170,16 @@ const DashboardContent = () => {
         mode="unlock"
         preventClose
       />
+
+      {/* Onboarding Flow */}
+      {showOnboarding && (
+        <OnboardingFlow
+          onComplete={(module) => {
+            setShowOnboarding(false);
+            handleModuleChange(module);
+          }}
+        />
+      )}
     </>
   );
 };
