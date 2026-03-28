@@ -1,11 +1,14 @@
+import { useState, useEffect } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
 import PackageManagement from '@/components/PackageManagement';
 import DataExport from '@/components/DataExport';
 import ShareLinkManager from '@/components/ShareLinkManager';
 import ReminderSettings from '@/components/dashboard/ReminderSettings';
 import SubscriptionManagement from '@/components/dashboard/SubscriptionManagement';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Package, Download, Link2, Bell } from 'lucide-react';
+import { Package, Download, Link2, Bell, Heart } from 'lucide-react';
 
 const SettingsModule = () => {
   const { language } = useLanguage();
