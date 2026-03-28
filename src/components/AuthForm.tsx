@@ -381,10 +381,10 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange }: Auth
             {texts.backToLogin}
           </button>
 
-          <h2 className="font-serif text-2xl font-bold text-center text-foreground mb-2">
+           <h2 className="font-serif text-2xl font-semibold text-center text-forest mb-2">
             {texts.forgotTitle}
           </h2>
-          <p className="text-center text-muted-foreground text-sm mb-6">
+          <p className="text-center text-charcoal-light text-sm mb-6 font-body">
             {texts.forgotDesc}
           </p>
 
