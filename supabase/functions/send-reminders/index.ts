@@ -1,4 +1,51 @@
+// Zeitzone: Europa/Berlin (CET/CEST)
+// CET  = UTC+1 (Oktober bis März)
+// CEST = UTC+2 (März bis Oktober, Sommerzeit)
+// Umschaltung: Letzter Sonntag März / Letzter Sonntag Oktober jeweils 02:00 Lokalzeit
+
 import { createClient } from "npm:@supabase/supabase-js@2";
+
+// --- CET/CEST timezone helpers ---
+
+function getCETOffset(date: Date): number {
+  // European Summer Time: last Sunday in March to last Sunday in October
+  const year = date.getUTCFullYear();
+
+  // Last Sunday in March (switch at 01:00 UTC = 02:00 CET)
+  const marchEnd = new Date(Date.UTC(year, 2, 31));
+  marchEnd.setUTCDate(31 - marchEnd.getUTCDay());
+  marchEnd.setUTCHours(1, 0, 0, 0);
+
+  // Last Sunday in October (switch at 01:00 UTC = 03:00 CEST → 02:00 CET)
+  const octoberEnd = new Date(Date.UTC(year, 9, 31));
+  octoberEnd.setUTCDate(31 - octoberEnd.getUTCDay());
+  octoberEnd.setUTCHours(1, 0, 0, 0);
+
+  if (date >= marchEnd && date < octoberEnd) {
+    return 2; // CEST = UTC+2
+  }
+  return 1; // CET = UTC+1
+}
+
+// Test: 15. Juli 2025, 07:00 UTC → getCETOffset = 2 → 09:00 CEST ✓
+// Test: 15. Januar 2025, 07:00 UTC → getCETOffset = 1 → 08:00 CET ✓
+// Test: 30. März 2025 01:30 UTC → Grenzfall, noch CET (Umstellung um 02:00 CET = 01:00 UTC)
+
+function getCurrentCETTime(date: Date): { hours: number; minutes: number } {
+  const offset = getCETOffset(date);
+  const cetMs = date.getTime() + offset * 60 * 60 * 1000;
+  const cetDate = new Date(cetMs);
+  return {
+    hours: cetDate.getUTCHours(),
+    minutes: cetDate.getUTCMinutes(),
+  };
+}
+
+function getCurrentCETDayOfWeek(date: Date): number {
+  const offset = getCETOffset(date);
+  const cetDate = new Date(date.getTime() + offset * 60 * 60 * 1000);
+  return cetDate.getUTCDay(); // 0 = Sunday
+}
 
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
@@ -66,8 +113,7 @@ async function sendEmail(to: string, subject: string, html: string): Promise<boo
 // REMINDER 1: Daily check-in reminder
 async function processDailyCheckinReminders(supabase: ReturnType<typeof createClient>) {
   const now = new Date();
-  const currentHour = now.getUTCHours();
-  const currentMinute = now.getUTCMinutes();
+  const cetTime = getCurrentCETTime(now);
 
   // Get users who have daily reminders enabled and whose time matches (within 30 min window)
   const { data: prefs, error: prefsErr } = await supabase
@@ -81,13 +127,11 @@ async function processDailyCheckinReminders(supabase: ReturnType<typeof createCl
   const today = now.toISOString().split("T")[0];
 
   for (const pref of prefs) {
-    // Parse time (HH:MM format) - assume CET (UTC+1/+2)
+    // Parse time (HH:MM format) — stored as local CET/CEST time
     const [h, m] = pref.daily_checkin_time.split(":").map(Number);
-    // Convert CET to UTC (roughly UTC+1 in winter, UTC+2 in summer)
-    const utcHour = (h - 1 + 24) % 24; // simplified CET offset
-    
-    // Check if current time matches (within 30 min window for cron)
-    if (Math.abs(currentHour - utcHour) > 0 || currentMinute > 30) continue;
+
+    // Compare directly with current CET time (no manual UTC conversion needed)
+    if (Math.abs(cetTime.hours - h) > 0 || cetTime.minutes > 30) continue;
 
     // Check if user already did check-in today
     const { data: checkins } = await supabase
@@ -147,11 +191,11 @@ async function processDailyCheckinReminders(supabase: ReturnType<typeof createCl
 // REMINDER 2: Weekly care summary (Sundays at 18:00 CET)
 async function processWeeklySummary(supabase: ReturnType<typeof createClient>) {
   const now = new Date();
-  const day = now.getUTCDay(); // 0 = Sunday
-  const hour = now.getUTCHours();
+  const cetDay = getCurrentCETDayOfWeek(now); // 0 = Sunday
+  const cetTime = getCurrentCETTime(now);
   
-  // Sunday 17:00 UTC = 18:00 CET (winter) / 19:00 CEST (summer)
-  if (day !== 0 || hour !== 17) return;
+  // Sunday 18:00 CET/CEST (correctly handles both winter and summer)
+  if (cetDay !== 0 || cetTime.hours !== 18) return;
 
   const { data: prefs } = await supabase
     .from("reminder_preferences")
