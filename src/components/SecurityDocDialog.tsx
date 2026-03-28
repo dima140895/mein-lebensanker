@@ -51,7 +51,7 @@ const SecurityDocDialog: React.FC<SecurityDocDialogProps> = ({ open, onOpenChang
           <DialogDescription>{text.description}</DialogDescription>
         </DialogHeader>
         
-        <div className="flex-1 overflow-y-auto border rounded-lg bg-white">
+        <div className="flex-1 overflow-y-auto border rounded-lg bg-card">
           <PrintableSecurityDoc ref={printRef} />
         </div>
         
