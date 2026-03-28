@@ -6,6 +6,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { useEncryption } from '@/contexts/EncryptionContext';
 import { FormProvider } from '@/contexts/FormContext';
 import Header from '@/components/Header';
+import StaticNav from '@/components/StaticNav';
 import Footer from '@/components/Footer';
 import Disclaimer from '@/components/Disclaimer';
 import AuthForm from '@/components/AuthForm';
