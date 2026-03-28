@@ -32,6 +32,7 @@ const DashboardContent = () => {
   const { language } = useLanguage();
   const { isEncryptionEnabled, isUnlocked, isLoading: encryptionLoading } = useEncryption();
   const [searchParams, setSearchParams] = useSearchParams();
+  useKeyboardShortcuts();
 
   const [activeModule, setActiveModule] = useState<DashboardModule>('home');
   const [showUnlockDialog, setShowUnlockDialog] = useState(false);

@@ -164,6 +164,41 @@ const SettingsModule = () => {
               </div>
             </div>
           </div>
+
+          {/* Keyboard Shortcuts — desktop only */}
+          {!isMobile && (
+            <div className="rounded-2xl border bg-card p-6 shadow-sm">
+              <div className="flex items-start gap-4">
+                <Keyboard className="h-8 w-8 text-muted-foreground shrink-0 mt-0.5" />
+                <div className="flex-1">
+                  <h3 className="font-serif text-lg font-semibold text-foreground mb-3">
+                    {language === 'de' ? 'Tastenkürzel' : 'Keyboard Shortcuts'}
+                  </h3>
+                  <div className="space-y-1.5">
+                    {[
+                      { keys: '⌘⇧V', label: language === 'de' ? 'Vorsorge' : 'Planning' },
+                      { keys: '⌘⇧P', label: language === 'de' ? 'Pflege' : 'Care' },
+                      { keys: '⌘⇧K', label: language === 'de' ? 'Krankheit' : 'Illness' },
+                      { keys: '⌘⇧H', label: language === 'de' ? 'Startseite' : 'Home' },
+                      { keys: '⌘⇧E', label: language === 'de' ? 'Einstellungen' : 'Settings' },
+                    ].map(({ keys, label }) => (
+                      <div key={keys} className="flex items-center gap-3 text-sm">
+                        <kbd className="inline-flex items-center gap-0.5 rounded border border-border bg-muted px-2 py-0.5 font-mono text-xs text-muted-foreground">
+                          {keys}
+                        </kbd>
+                        <span className="text-foreground">{label}</span>
+                      </div>
+                    ))}
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-3">
+                    {language === 'de'
+                      ? 'Tastenkürzel funktionieren wenn kein Textfeld aktiv ist.'
+                      : 'Shortcuts work when no text field is active.'}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
         </TabsContent>
         <TabsContent value="reminders" className="mt-6">
           <ReminderSettings />
