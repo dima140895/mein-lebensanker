@@ -144,7 +144,7 @@ Downloads and copies of this page are only permitted for private, non-commercial
             {texts.back}
           </Button>
 
-          <div className="rounded-2xl bg-white p-6 md:p-8 shadow-card">
+          <div className="rounded-2xl bg-card p-6 md:p-8 shadow-card">
             <h1 className="font-serif text-3xl sm:text-4xl font-semibold text-forest tracking-[-0.02em]">{texts.title}</h1>
 
             <div className="mt-8 space-y-8">

@@ -14,7 +14,7 @@ const BottomNavigation = ({ activeModule, onModuleChange, userPlan, onLockedClic
   const { language } = useLanguage();
 
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-border shadow-[0_-2px_10px_rgba(0,0,0,0.05)]">
+    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-background border-t border-border shadow-[0_-2px_10px_rgba(0,0,0,0.05)]">
       <div className="flex items-center justify-around px-1 py-1.5 safe-area-pb">
         {navItems.map((item) => {
           const Icon = item.icon;

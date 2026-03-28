@@ -62,7 +62,7 @@ const UpgradeModal = ({ open, onOpenChange, lockedModule }: UpgradeModalProps) =
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md rounded-2xl shadow-elevated bg-white">
+      <DialogContent className="sm:max-w-md rounded-2xl shadow-elevated bg-card">
         <DialogHeader className="text-center items-center">
           <div className="h-14 w-14 rounded-2xl bg-amber-light/30 border border-accent/20 flex items-center justify-center mb-2">
             <Lock className="h-7 w-7 text-accent" />

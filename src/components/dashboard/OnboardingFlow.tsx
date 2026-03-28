@@ -240,7 +240,7 @@ const OnboardingFlow = ({ onComplete }: OnboardingFlowProps) => {
                 {saving ? 'Speichern...' : currentSlide.action}
               </Button>
 
-              <button onClick={handleSkip} disabled={saving} className="w-full text-center text-xs text-[#2C4A3E]/30 hover:text-[#2C4A3E]/50 mt-4 font-body transition-colors">
+              <button onClick={handleSkip} disabled={saving} className="w-full text-center text-xs text-foreground/30 hover:text-foreground/50 mt-4 font-body transition-colors">
                 Überspringen
               </button>
             </motion.div>
