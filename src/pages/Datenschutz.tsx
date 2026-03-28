@@ -364,7 +364,7 @@ Please note: The withdrawal does not affect the lawfulness of the processing car
 After expiration of the retention periods, your data will be automatically deleted or anonymized.`,
         },
         {
-          title: '11. Data Transfers to Third Countries',
+          title: '12. Data Transfers to Third Countries',
           content: `Some of our service providers are located outside the EU/EEA:
 
 • USA: Supabase Inc., Amazon Web Services (infrastructure operated in EU)
