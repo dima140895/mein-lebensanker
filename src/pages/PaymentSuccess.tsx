@@ -59,8 +59,7 @@ const PaymentSuccessContent = () => {
         const { data, error } = await supabase.functions.invoke('verify-payment', {
           body: {
             sessionId,
-            userId: user.id,
-            paymentType
+            plan,
           }
         });
 
