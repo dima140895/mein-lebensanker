@@ -51,7 +51,7 @@ const LandingNav = () => {
         <div className="hidden md:block">
           <Button
             onClick={() => scrollTo('preise')}
-            className="bg-[hsl(var(--forest))] hover:bg-[hsl(var(--forest))]/90 text-white font-body rounded-full px-6 h-10"
+            className="bg-primary hover:bg-primary/90 text-primary-foreground font-body rounded-full px-6 h-10"
           >
             Jetzt starten
           </Button>
