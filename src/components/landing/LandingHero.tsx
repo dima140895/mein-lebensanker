@@ -18,8 +18,8 @@ const LandingHero = () => {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-24 pb-16 relative z-10">
         <div className="max-w-2xl">
           {/* Small tag */}
-          <div className="inline-flex items-center gap-2 bg-[hsl(var(--forest))]/5 border border-[hsl(var(--forest))]/10 rounded-full px-4 py-1.5 mb-8 animate-fade-in">
-            <span className="text-xs font-semibold text-[hsl(var(--forest))] font-body tracking-wide uppercase">Vorsorge · Pflege · Begleitung</span>
+          <div className="inline-flex items-center gap-2 bg-primary/5 border border-primary/10 rounded-full px-4 py-1.5 mb-8 animate-fade-in">
+            <span className="text-xs font-semibold text-primary font-body tracking-wide uppercase">Vorsorge · Pflege · Begleitung</span>
           </div>
 
           {/* Headline */}
