@@ -279,7 +279,7 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange }: Auth
   }, [mode, email, password, language]);
 
   // Shared input classes
-  const inputClassName = "w-full pl-10 pr-10 py-3 rounded-lg border border-border/60 focus:border-primary focus:ring-2 focus:ring-primary/10 font-body text-base bg-white text-foreground placeholder:text-muted-foreground/50 transition-all duration-200";
+  const inputClassName = "w-full pl-10 pr-10 py-3 rounded-lg border border-border/60 focus:border-primary focus:ring-2 focus:ring-primary/10 font-body text-base bg-card text-foreground placeholder:text-muted-foreground/50 transition-all duration-200";
 
   // Wrapper with background
   const PageWrapper = ({ children }: { children: React.ReactNode }) => (
