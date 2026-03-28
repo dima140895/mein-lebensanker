@@ -159,7 +159,7 @@ Deno.serve(async (req) => {
 
     // Get user's name for personalization
     let displayName = "Nutzer";
-    const { data: profile } = await supabase
+    const { data: profile } = await supabaseAdmin
       .from("profiles")
       .select("full_name")
       .eq("email", email)
