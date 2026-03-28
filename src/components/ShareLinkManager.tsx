@@ -210,12 +210,22 @@ const ShareLinkManager = () => {
     loadTokens();
   }, [user]);
 
-  // Initialize profile sections when profiles load or dialog opens
-  useEffect(() => {
-    if (personProfiles.length > 0 && Object.keys(profileSections).length === 0) {
-      initializeProfileSections();
+  // Load emergency card data when opening
+  const loadNotfallData = async () => {
+    if (!user) return;
+    const [medsRes, personalRes] = await Promise.all([
+      supabase.from('medikamente').select('name').eq('user_id', user.id).eq('aktiv', true).limit(3),
+      supabase.from('vorsorge_data').select('data').eq('user_id', user.id).eq('section_key', 'contacts').limit(1),
+    ]);
+    if (medsRes.data) setNotfallMeds(medsRes.data.map(m => m.name));
+    // Try to extract emergency contact from contacts data
+    if (personalRes.data?.[0]?.data) {
+      const d = personalRes.data[0].data as Record<string, unknown>;
+      const contact = (d as any)?.emergency_contact_name || (d as any)?.emergencyContact;
+      if (contact) setNotfallContact(String(contact));
     }
-  }, [personProfiles]);
+    setNotfallOpen(true);
+  };
 
   const initializeProfileSections = () => {
     const initial: ProfileSectionSelection = {};
