@@ -135,7 +135,7 @@ const OnboardingFlow = ({ onComplete }: OnboardingFlowProps) => {
                   <Anchor className="h-5 w-5 text-foreground" />
                   <span className="font-serif text-sm font-bold text-foreground">Mein Lebensanker</span>
                 </div>
-                <button onClick={handleSkip} className="text-[#2C4A3E]/30 hover:text-[#2C4A3E]/60 transition-colors" disabled={saving}>
+                <button onClick={handleSkip} className="text-foreground/30 hover:text-foreground/60 transition-colors" disabled={saving}>
                   <X className="h-5 w-5" />
                 </button>
               </div>
