@@ -320,7 +320,7 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange }: Auth
             )}
           </div>
           
-          <h2 className="font-serif text-2xl font-bold text-foreground mb-2">
+          <h2 className="font-serif text-2xl font-semibold text-forest mb-2">
             {verified
               ? (language === 'de' ? 'E-Mail bestätigt!' : 'Email verified!')
               : texts.verifyTitle}
