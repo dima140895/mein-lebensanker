@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/browserClient';
+import { trackEvent } from '@/lib/analytics';
 
 interface Profile {
   id: string;
