@@ -4,6 +4,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import TagesCheckin from './TagesCheckin';
 import MeinVerlauf from './MeinVerlauf';
+import ArztBericht from './ArztBericht';
 import PflegeMedikamente from '@/components/dashboard/pflege/PflegeMedikamente';
 
 const KrankheitModule = () => {
@@ -16,12 +17,14 @@ const KrankheitModule = () => {
       checkin: 'Tages-Check-in',
       verlauf: 'Mein Verlauf',
       medikamente: 'Medikamente',
+      arztbericht: 'Arztbericht',
     },
     en: {
       title: 'Health Companion',
       checkin: 'Daily Check-in',
       verlauf: 'My Progress',
       medikamente: 'Medications',
+      arztbericht: 'Doctor Report',
     },
   };
 
@@ -37,10 +40,11 @@ const KrankheitModule = () => {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="w-full grid grid-cols-3">
+        <TabsList className="w-full grid grid-cols-4">
           <TabsTrigger value="checkin" className="text-xs sm:text-sm">{texts.checkin}</TabsTrigger>
           <TabsTrigger value="verlauf" className="text-xs sm:text-sm">{texts.verlauf}</TabsTrigger>
           <TabsTrigger value="medikamente" className="text-xs sm:text-sm">{texts.medikamente}</TabsTrigger>
+          <TabsTrigger value="arztbericht" className="text-xs sm:text-sm">{texts.arztbericht}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="checkin" className="mt-6">
@@ -51,6 +55,9 @@ const KrankheitModule = () => {
         </TabsContent>
         <TabsContent value="medikamente" className="mt-6">
           <PflegeMedikamente />
+        </TabsContent>
+        <TabsContent value="arztbericht" className="mt-6">
+          <ArztBericht />
         </TabsContent>
       </Tabs>
     </div>
