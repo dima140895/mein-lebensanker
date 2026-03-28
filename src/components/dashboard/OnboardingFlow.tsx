@@ -158,7 +158,7 @@ const OnboardingFlow = ({ onComplete }: OnboardingFlowProps) => {
                     <button
                       key={opt.key}
                       onClick={() => handleFocusSelect(opt.key)}
-                      className="w-full text-left p-4 rounded-xl border-2 border-transparent hover:border-[#2C4A3E]/10 bg-[#FDFAF5] hover:bg-[#f5f0e8] transition-all group"
+                      className="w-full text-left p-4 rounded-xl border-2 border-transparent hover:border-primary/10 bg-muted hover:bg-muted/80 transition-all group"
                     >
                       <div className="flex items-start gap-3">
                         <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5" style={{ backgroundColor: `${opt.color}10` }}>
