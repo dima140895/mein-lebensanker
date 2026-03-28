@@ -123,22 +123,24 @@ const DashboardContent = () => {
   }
 
   const renderModule = () => {
-    switch (activeModule) {
-      case 'home':
-        return <DashboardHome onNavigate={handleModuleChange} userPlan={userPlan} onLockedClick={handleLockedClick} />;
-      case 'vorsorge':
-        return <VorsorgeModule />;
-      case 'pflege':
-        return <PflegeModule />;
-      case 'krankheit':
-        return <KrankheitModule />;
-      case 'familie':
-        return <FamilieModule />;
-      case 'settings':
-        return <SettingsModule />;
-      default:
-        return null;
+    if (activeModule === 'home') {
+      return <DashboardHome onNavigate={handleModuleChange} userPlan={userPlan} onLockedClick={handleLockedClick} />;
     }
+    // All other modules are lazy-loaded
+    const ModuleMap: Record<string, React.LazyExoticComponent<React.ComponentType>> = {
+      vorsorge: VorsorgeModule,
+      pflege: PflegeModule,
+      krankheit: KrankheitModule,
+      familie: FamilieModule,
+      settings: SettingsModule,
+    };
+    const Module = ModuleMap[activeModule];
+    if (!Module) return null;
+    return (
+      <Suspense fallback={<ModuleLoadingFallback />}>
+        <Module />
+      </Suspense>
+    );
   };
 
   return (
