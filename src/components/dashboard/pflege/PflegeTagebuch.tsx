@@ -37,7 +37,7 @@ const PflegeTagebuch = () => {
   const [showForm, setShowForm] = useState(false);
   const [todayExists, setTodayExists] = useState(false);
   const [expandedEntry, setExpandedEntry] = useState<string | null>(null);
-
+  const [showReferral, setShowReferral] = useState(false);
   // Form state
   const [personName, setPersonName] = useState('');
   const [stimmung, setStimmung] = useState(3);
