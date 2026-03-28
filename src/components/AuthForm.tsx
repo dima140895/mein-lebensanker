@@ -558,7 +558,7 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange, embedd
   // Forgot password view
   if (mode === 'forgot') {
     return (
-      <PageWrapper>
+      <PageWrapper embedded={embedded}>
         <div className="w-full max-w-md mx-auto animate-fade-in-up">
            <div className="bg-card rounded-2xl shadow-[0_8px_40px_rgba(44,74,62,0.12)] px-6 sm:px-8 py-8 sm:py-10">
             <LogoHeader />
