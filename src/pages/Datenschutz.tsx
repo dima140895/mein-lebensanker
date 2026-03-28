@@ -154,7 +154,18 @@ Die Datenübertragung erfolgt auf Basis von:
 Ihre sensiblen Vorsorgedaten werden zusätzlich durch unsere Ende-zu-Ende-Verschlüsselung geschützt.`,
         },
         {
-          title: '12. Ihre Rechte',
+          title: '12. Webanalyse',
+          content: `Wir nutzen Plausible Analytics, einen datenschutzfreundlichen Analysedienst ohne Cookies und ohne personenbezogene Daten. Es werden keine IP-Adressen gespeichert und kein Tracking über Websites hinweg durchgeführt.
+
+Plausible erhebt ausschließlich anonymisierte, aggregierte Nutzungsstatistiken (z.B. Seitenaufrufe, Verweildauer). Ein Cookie-Banner oder eine Einwilligung ist daher nicht erforderlich.
+
+Betreiber: Plausible Insights OÜ, Västriku tn 2, 50403 Tartu, Estland.
+Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an der Verbesserung unseres Angebots).
+
+Weitere Informationen: https://plausible.io/data-policy`,
+        },
+        {
+          title: '13. Ihre Rechte',
           content: `Sie haben gegenüber uns folgende Rechte hinsichtlich der Sie betreffenden personenbezogenen Daten:
 
 • Recht auf Auskunft (Art. 15 DSGVO)
