@@ -31,10 +31,10 @@ const LandingNav = () => {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 flex items-center justify-between h-16">
         {/* Logo + Tagline */}
         <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="flex items-center gap-2 group">
-          <Anchor className="h-6 w-6 text-[hsl(var(--forest))] group-hover:rotate-12 transition-transform" />
+          <Anchor className="h-6 w-6 text-primary group-hover:rotate-12 transition-transform" />
           <div className="flex flex-col items-start">
-            <span className="font-serif text-lg font-bold text-[hsl(var(--forest))] leading-tight">Mein Lebensanker</span>
-            <span className="text-[9px] font-body text-[hsl(var(--forest))]/50 tracking-widest uppercase hidden sm:block">Vorsorge · Pflege · Begleitung</span>
+            <span className="font-serif text-lg font-bold text-foreground leading-tight">Mein Lebensanker</span>
+            <span className="text-[9px] font-body text-muted-foreground tracking-widest uppercase hidden sm:block">Vorsorge · Pflege · Begleitung</span>
           </div>
         </button>
 
