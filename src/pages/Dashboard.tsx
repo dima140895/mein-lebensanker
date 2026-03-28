@@ -8,6 +8,7 @@ import { FormProvider } from '@/contexts/FormContext';
 import Header from '@/components/Header';
 import StaticNav from '@/components/StaticNav';
 import Footer from '@/components/Footer';
+import LandingFooter from '@/components/landing/LandingFooter';
 import Disclaimer from '@/components/Disclaimer';
 import AuthForm from '@/components/AuthForm';
 import PaymentOptions from '@/components/PaymentOptions';
@@ -191,8 +192,8 @@ const Dashboard = () => {
         <div className={`flex min-h-screen flex-col bg-background ${!user ? 'pt-16' : ''}`}>
           {user ? <Header /> : <StaticNav minimal />}
           <main className="flex-1 flex flex-col"><DashboardContent /></main>
-        <Disclaimer />
-        <Footer />
+          <Disclaimer />
+          {user ? <Footer /> : <LandingFooter />}
       </div>
     </FormProvider>
   );

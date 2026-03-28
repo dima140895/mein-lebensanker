@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import encryptionDiagram from '@/assets/encryption-diagram.png';
 import StaticNav from '@/components/StaticNav';
+import LandingFooter from '@/components/landing/LandingFooter';
 import Disclaimer from '@/components/Disclaimer';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
@@ -562,6 +563,7 @@ const LearnMore = () => {
       </main>
 
       <Disclaimer />
+      <LandingFooter />
       
       <SecurityDocDialog 
         open={securityDocOpen} 

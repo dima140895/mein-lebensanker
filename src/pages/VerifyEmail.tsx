@@ -6,6 +6,8 @@ import { supabase } from '@/integrations/supabase/browserClient';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { logger } from '@/lib/logger';
 import { Button } from '@/components/ui/button';
+import StaticNav from '@/components/StaticNav';
+import LandingFooter from '@/components/landing/LandingFooter';
 
 const REDIRECT_DELAY = 3;
 
@@ -141,80 +143,84 @@ const VerifyEmail = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-muted/30 flex items-center justify-center p-4">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-md"
-      >
-        <div className="rounded-xl border border-border bg-card p-8 shadow-elevated text-center">
-          {/* Logo */}
-          <div className="mb-6 flex justify-center">
-            <div className="flex items-center gap-2 text-primary">
-              <Anchor className="h-8 w-8" />
-              <span className="font-serif text-xl font-semibold">Mein Lebensanker</span>
+    <div className="flex min-h-screen flex-col bg-background">
+      <StaticNav minimal />
+      <main className="flex-1 pt-16 flex items-center justify-center p-4">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="w-full max-w-md"
+        >
+          <div className="rounded-xl border border-border bg-card p-8 shadow-elevated text-center">
+            {/* Logo */}
+            <div className="mb-6 flex justify-center">
+              <div className="flex items-center gap-2 text-primary">
+                <Anchor className="h-8 w-8" />
+                <span className="font-serif text-xl font-semibold">Mein Lebensanker</span>
+              </div>
             </div>
-          </div>
 
-          {status === 'loading' && (
-            <>
-              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
-                <Loader2 className="h-8 w-8 text-primary animate-spin" />
-              </div>
-              <h2 className="font-serif text-2xl font-bold text-foreground mb-2">
-                {texts.verifying}
-              </h2>
-            </>
-          )}
+            {status === 'loading' && (
+              <>
+                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
+                  <Loader2 className="h-8 w-8 text-primary animate-spin" />
+                </div>
+                <h2 className="font-serif text-2xl font-bold text-foreground mb-2">
+                  {texts.verifying}
+                </h2>
+              </>
+            )}
 
-          {status === 'success' && (
-            <>
-              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30">
-                <CheckCircle className="h-8 w-8 text-green-600 dark:text-green-400" />
-              </div>
-              <h2 className="font-serif text-2xl font-bold text-foreground mb-2">
-                {texts.success}
-              </h2>
-              <p className="text-muted-foreground mb-4">
-                {texts.successDesc}
-              </p>
-              <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground mb-6">
-                <Loader2 className="h-4 w-4 animate-spin" />
-                <span>{texts.redirecting} {countdown} {texts.seconds}...</span>
-              </div>
-              <Button onClick={handleContinueClick} className="w-full">
-                {texts.continueNow}
-              </Button>
-            </>
-          )}
-
-          {status === 'error' && (
-            <>
-              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/30">
-                <XCircle className="h-8 w-8 text-red-600 dark:text-red-400" />
-              </div>
-              <h2 className="font-serif text-2xl font-bold text-foreground mb-2">
-                {texts.error}
-              </h2>
-              <p className="text-muted-foreground mb-6">
-                {errorMessage || texts.errorDesc}
-              </p>
-              <div className="space-y-3">
-                <Button onClick={handleContinueClick} variant="outline" className="w-full">
-                  {texts.tryAgain}
+            {status === 'success' && (
+              <>
+                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30">
+                  <CheckCircle className="h-8 w-8 text-green-600 dark:text-green-400" />
+                </div>
+                <h2 className="font-serif text-2xl font-bold text-foreground mb-2">
+                  {texts.success}
+                </h2>
+                <p className="text-muted-foreground mb-4">
+                  {texts.successDesc}
+                </p>
+                <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground mb-6">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <span>{texts.redirecting} {countdown} {texts.seconds}...</span>
+                </div>
+                <Button onClick={handleContinueClick} className="w-full">
+                  {texts.continueNow}
                 </Button>
-                <Link
-                  to="/"
-                  className="flex items-center justify-center text-sm text-muted-foreground hover:text-foreground"
-                >
-                  <ArrowLeft className="h-4 w-4 mr-1" />
-                  {texts.backToHome}
-                </Link>
-              </div>
-            </>
-          )}
-        </div>
-      </motion.div>
+              </>
+            )}
+
+            {status === 'error' && (
+              <>
+                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/30">
+                  <XCircle className="h-8 w-8 text-red-600 dark:text-red-400" />
+                </div>
+                <h2 className="font-serif text-2xl font-bold text-foreground mb-2">
+                  {texts.error}
+                </h2>
+                <p className="text-muted-foreground mb-6">
+                  {errorMessage || texts.errorDesc}
+                </p>
+                <div className="space-y-3">
+                  <Button onClick={handleContinueClick} variant="outline" className="w-full">
+                    {texts.tryAgain}
+                  </Button>
+                  <Link
+                    to="/"
+                    className="flex items-center justify-center text-sm text-muted-foreground hover:text-foreground"
+                  >
+                    <ArrowLeft className="h-4 w-4 mr-1" />
+                    {texts.backToHome}
+                  </Link>
+                </div>
+              </>
+            )}
+          </div>
+        </motion.div>
+      </main>
+      <LandingFooter />
     </div>
   );
 };
