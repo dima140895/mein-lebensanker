@@ -173,7 +173,7 @@ Die Datenübertragung erfolgt auf Basis von:
 Ihre sensiblen Vorsorgedaten werden zusätzlich durch unsere Ende-zu-Ende-Verschlüsselung geschützt.`,
         },
         {
-          title: '12. Webanalyse',
+          title: '13. Webanalyse',
           content: `Wir nutzen Plausible Analytics, einen datenschutzfreundlichen Analysedienst ohne Cookies und ohne personenbezogene Daten. Es werden keine IP-Adressen gespeichert und kein Tracking über Websites hinweg durchgeführt.
 
 Plausible erhebt ausschließlich anonymisierte, aggregierte Nutzungsstatistiken (z.B. Seitenaufrufe, Verweildauer). Ein Cookie-Banner oder eine Einwilligung ist daher nicht erforderlich.
