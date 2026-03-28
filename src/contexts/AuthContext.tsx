@@ -12,6 +12,7 @@ interface Profile {
   partner_name: string | null;
   max_profiles: number;
   purchased_tier: string | null;
+  onboarding_focus: string | null;
 }
 
 interface AuthContextType {
@@ -41,7 +42,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       .from('profiles')
       // SECURITY: Avoid selecting sensitive encryption fields (e.g. encrypted_password_recovery)
       // in the general auth/profile loading path. Only fetch the fields needed for UI + access.
-      .select('id,user_id,email,full_name,has_paid,payment_type,partner_name,max_profiles,purchased_tier')
+      .select('id,user_id,email,full_name,has_paid,payment_type,partner_name,max_profiles,purchased_tier,onboarding_focus')
       .eq('user_id', userId)
       .maybeSingle();
     
