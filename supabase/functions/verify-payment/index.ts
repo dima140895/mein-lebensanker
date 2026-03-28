@@ -119,13 +119,8 @@ serve(async (req) => {
         })
         .eq("user_id", authenticatedUserId);
 
-      // Track referral conversion if applicable
-      if (referralCode) {
-        await supabaseAdmin.rpc("increment_referral_conversions", { _code: referralCode });
-      }
-
-      return new Response(JSON.stringify({
-        success: true,
+      // Upsert subscription record
+      await supabaseAdmin
         .from("subscriptions")
         .upsert({
           user_id: authenticatedUserId,
@@ -136,6 +131,11 @@ serve(async (req) => {
           stripe_customer_id: session.customer as string || null,
         }, { onConflict: "user_id" })
         .select();
+
+      // Track referral conversion if applicable
+      if (referralCode) {
+        await supabaseAdmin.rpc("increment_referral_conversions", { _code: referralCode });
+      }
 
       return new Response(JSON.stringify({
         success: true,
