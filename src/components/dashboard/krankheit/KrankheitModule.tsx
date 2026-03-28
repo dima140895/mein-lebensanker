@@ -33,7 +33,7 @@ const KrankheitModule = () => {
         <div className="h-10 w-10 rounded-lg bg-amber-light flex items-center justify-center">
           <Stethoscope className="h-5 w-5 text-amber" />
         </div>
-        <h1 className="font-serif text-2xl md:text-3xl font-bold text-foreground">{texts.title}</h1>
+        <h1 className="font-serif text-2xl sm:text-3xl font-bold text-foreground">{texts.title}</h1>
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
