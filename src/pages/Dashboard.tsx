@@ -38,7 +38,7 @@ const ModuleLoadingFallback = () => (
 );
 
 const DashboardContent = () => {
-  const { user, profile, loading } = useAuth();
+  const { user, profile, loading, signOut } = useAuth();
   const { language } = useLanguage();
   const { isEncryptionEnabled, isUnlocked, isLoading: encryptionLoading } = useEncryption();
   const [searchParams, setSearchParams] = useSearchParams();
