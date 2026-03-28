@@ -10,7 +10,7 @@ const LandingHero = () => {
   };
 
   return (
-    <section className="relative min-h-[90vh] flex items-center overflow-hidden bg-[hsl(var(--warm-white))]">
+    <section className="relative min-h-[90vh] flex items-center overflow-hidden bg-background">
       {/* Subtle gradient blobs */}
       <div className="absolute top-[-20%] right-[-10%] w-[60%] h-[70%] rounded-full opacity-[0.07]" style={{ background: 'radial-gradient(circle, hsl(152 28% 36%) 0%, transparent 70%)' }} />
       <div className="absolute bottom-[-10%] left-[-5%] w-[40%] h-[50%] rounded-full opacity-[0.05]" style={{ background: 'radial-gradient(circle, hsl(160 28% 23%) 0%, transparent 70%)' }} />
