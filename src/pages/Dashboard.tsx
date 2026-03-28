@@ -106,9 +106,11 @@ const DashboardContent = () => {
   // Not paid
   if (!profile?.has_paid) {
     return (
-      <div className="min-h-screen flex flex-col bg-background">
-        <div className="flex-1 flex items-center justify-center px-4 py-12"
+      <div className="min-h-screen flex flex-col">
+        <StaticNav minimal />
+        <div className="flex-1 flex items-center justify-center px-4 py-12 pt-24"
           style={{
+            backgroundColor: 'hsl(var(--background))',
             backgroundImage: `
               radial-gradient(ellipse 60% 50% at 80% 20%, rgba(122,158,142,0.08) 0%, transparent 60%),
               radial-gradient(ellipse 40% 60% at 10% 80%, rgba(196,129,58,0.05) 0%, transparent 50%)
@@ -119,7 +121,7 @@ const DashboardContent = () => {
             <PaymentOptions />
           </div>
         </div>
-        <Disclaimer />
+        <LandingFooter />
       </div>
     );
   }
