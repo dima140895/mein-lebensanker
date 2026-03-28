@@ -173,6 +173,18 @@ const PaymentOptions = () => {
 
   return (
     <div className="py-8 sm:py-12">
+      {/* Back button */}
+      <div className="max-w-5xl mx-auto px-4 mb-6">
+        <button
+          type="button"
+          onClick={() => navigate('/')}
+          className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary font-body transition-colors min-h-[44px]"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          {language === 'de' ? '← Zurück zur Startseite' : '← Back to home'}
+        </button>
+      </div>
+
       {/* Header */}
       <div className="text-center mb-10 sm:mb-14">
         <h2 className="font-serif text-3xl sm:text-4xl font-bold text-foreground tracking-tight">
