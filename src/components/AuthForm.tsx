@@ -126,6 +126,11 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange, embedd
       registerHeadline: 'Get started.',
       registerSub: 'Free — no subscription required to start.',
       backToHome: '← Back to home',
+      mfaTitle: 'Two-Factor Authentication',
+      mfaDesc: 'Please enter the code from your authenticator app',
+      mfaVerify: 'Verify',
+      mfaInvalid: 'Invalid code — please check your authenticator app.',
+      mfaOtherEmail: 'Use a different email',
     },
   };
 
