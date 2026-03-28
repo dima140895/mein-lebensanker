@@ -121,7 +121,16 @@ const PflegeTagebuch = () => {
   }, [entries]);
 
   const createMutation = useMutation({
-    mutationFn: async (newEintrag: Record<string, unknown>) => {
+    mutationFn: async (newEintrag: {
+      user_id: string;
+      person_name: string;
+      stimmung: number;
+      mahlzeiten: string | null;
+      aktivitaeten: string | null;
+      besonderheiten: string | null;
+      naechste_schritte: string | null;
+      eintrags_datum: string;
+    }) => {
       const { data, error } = await supabase
         .from('pflege_eintraege')
         .insert(newEintrag)

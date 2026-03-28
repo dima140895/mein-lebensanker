@@ -106,7 +106,13 @@ const PflegeMedikamente = () => {
   });
 
   const createMutation = useMutation({
-    mutationFn: async (newMed: Record<string, unknown>) => {
+    mutationFn: async (newMed: {
+      user_id: string;
+      name: string;
+      dosierung: string | null;
+      einnahmezeiten: string | null;
+      arzt: string | null;
+    }) => {
       const { data, error } = await supabase.from('medikamente').insert(newMed).select().single();
       if (error) throw error;
       return data;
