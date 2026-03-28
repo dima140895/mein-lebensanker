@@ -188,9 +188,9 @@ const Dashboard = () => {
 
   return (
     <FormProvider>
-      <div className="flex min-h-screen flex-col bg-background">
-        {user ? <Header /> : <StaticNav minimal />}
-        <main className="flex-1 flex flex-col"><DashboardContent /></main>
+        <div className={`flex min-h-screen flex-col bg-background ${!user ? 'pt-16' : ''}`}>
+          {user ? <Header /> : <StaticNav minimal />}
+          <main className="flex-1 flex flex-col"><DashboardContent /></main>
         <Disclaimer />
         <Footer />
       </div>
