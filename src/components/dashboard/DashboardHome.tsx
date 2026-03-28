@@ -131,11 +131,11 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
 
   // Show onboarding section only if user < 30 days old and not all done
   const isNewEnough = useMemo(() => {
-    if (!profile?.created_at) return false;
-    const created = new Date(profile.created_at);
+    if (!user?.created_at) return false;
+    const created = new Date(user.created_at);
     const daysSince = (Date.now() - created.getTime()) / (1000 * 60 * 60 * 24);
     return daysSince < 30;
-  }, [profile?.created_at]);
+  }, [user?.created_at]);
 
   const showOnboardingTasks = isNewEnough && !allTasksDone && !statusLoading && !dataLoading;
 
