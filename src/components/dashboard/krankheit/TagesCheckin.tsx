@@ -243,7 +243,7 @@ const TagesCheckin = () => {
   return (
     <div className="space-y-8 max-w-lg mx-auto">
       <div className="text-center space-y-2">
-        <h2 className="font-serif text-xl font-bold text-foreground">{texts.greeting}</h2>
+        <h2 className="font-serif text-2xl font-bold text-foreground">{texts.greeting}</h2>
         <p className="text-sm text-muted-foreground">{texts.greetingSub}</p>
       </div>
 
