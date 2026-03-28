@@ -227,6 +227,13 @@ const ShareLinkManager = () => {
     setNotfallOpen(true);
   };
 
+  // Initialize profile sections when profiles load or dialog opens
+  useEffect(() => {
+    if (personProfiles.length > 0 && Object.keys(profileSections).length === 0) {
+      initializeProfileSections();
+    }
+  }, [personProfiles]);
+
   const initializeProfileSections = () => {
     const initial: ProfileSectionSelection = {};
     personProfiles.forEach(p => {
