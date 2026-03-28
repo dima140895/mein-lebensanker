@@ -184,10 +184,12 @@ const DashboardContent = () => {
 };
 
 const Dashboard = () => {
+  const { user } = useAuth();
+
   return (
     <FormProvider>
       <div className="flex min-h-screen flex-col bg-background">
-        <Header />
+        {user ? <Header /> : <StaticNav minimal />}
         <main className="flex-1 flex flex-col"><DashboardContent /></main>
         <Disclaimer />
         <Footer />
