@@ -169,7 +169,7 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
               <div className="h-10 w-10 rounded-lg bg-accent/10 flex items-center justify-center">
                 <HeartHandshake className="h-5 w-5 text-accent" />
               </div>
-              <CardTitle className="text-base font-semibold">{tx.pflege}</CardTitle>
+              <CardTitle className="text-base font-semibold font-body text-forest">{tx.pflege}</CardTitle>
             </div>
           </CardHeader>
           <CardContent className="space-y-3">
