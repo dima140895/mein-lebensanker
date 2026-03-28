@@ -1,14 +1,19 @@
+import { useState, useEffect } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
 import PackageManagement from '@/components/PackageManagement';
 import DataExport from '@/components/DataExport';
 import ShareLinkManager from '@/components/ShareLinkManager';
 import ReminderSettings from '@/components/dashboard/ReminderSettings';
 import SubscriptionManagement from '@/components/dashboard/SubscriptionManagement';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Package, Download, Link2, Bell } from 'lucide-react';
+import { Package, Download, Link2, Bell, Heart } from 'lucide-react';
 
 const SettingsModule = () => {
   const { language } = useLanguage();
+  const { user } = useAuth();
+  const [conversions, setConversions] = useState<number | null>(null);
 
   const t = {
     de: {
@@ -16,14 +21,28 @@ const SettingsModule = () => {
       export: 'Daten-Export',
       share: 'Für Angehörige',
       reminders: 'Erinnerungen',
+      referralStats: 'Du hast {count} Menschen zu Lebensanker eingeladen.',
     },
     en: {
       plan: 'My Plan',
       export: 'Data Export',
       share: 'For Relatives',
       reminders: 'Reminders',
+      referralStats: 'You have invited {count} people to Lebensanker.',
     },
   };
+
+  useEffect(() => {
+    if (!user) return;
+    (supabase as any)
+      .from('referrals')
+      .select('conversions')
+      .eq('referrer_user_id', user.id)
+      .maybeSingle()
+      .then(({ data }: any) => {
+        if (data?.conversions > 0) setConversions(data.conversions);
+      });
+  }, [user]);
 
   const texts = t[language];
 
@@ -62,6 +81,15 @@ const SettingsModule = () => {
           <ShareLinkManager />
         </TabsContent>
       </Tabs>
+
+      {conversions !== null && conversions > 0 && (
+        <div className="flex items-center gap-3 p-4 rounded-xl border border-primary/20 bg-sage-light dark:bg-muted">
+          <Heart className="h-5 w-5 text-primary flex-shrink-0" />
+          <p className="font-body text-sm text-foreground">
+            {texts.referralStats.replace('{count}', String(conversions))}
+          </p>
+        </div>
+      )}
     </div>
   );
 };

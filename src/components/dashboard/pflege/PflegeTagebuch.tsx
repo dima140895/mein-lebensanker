@@ -12,6 +12,7 @@ import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { de as deLocale } from 'date-fns/locale';
 import { trackEvent } from '@/lib/analytics';
+import ReferralCard from '@/components/ReferralCard';
 
 const MOODS = ['😢', '😕', '😐', '🙂', '😊'];
 
@@ -36,7 +37,7 @@ const PflegeTagebuch = () => {
   const [showForm, setShowForm] = useState(false);
   const [todayExists, setTodayExists] = useState(false);
   const [expandedEntry, setExpandedEntry] = useState<string | null>(null);
-
+  const [showReferral, setShowReferral] = useState(false);
   // Form state
   const [personName, setPersonName] = useState('');
   const [stimmung, setStimmung] = useState(3);
@@ -143,6 +144,7 @@ const PflegeTagebuch = () => {
       // Track first entry
       if (entries.length === 0) {
         trackEvent('Erster_Pflegeeintrag');
+        setShowReferral(true);
       }
       toast.success(texts.saved);
       setShowForm(false);
@@ -321,6 +323,8 @@ const PflegeTagebuch = () => {
           })}
         </div>
       )}
+
+      {showReferral && <ReferralCard />}
     </div>
   );
 };

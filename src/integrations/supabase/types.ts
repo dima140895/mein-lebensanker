@@ -215,6 +215,33 @@ export type Database = {
         }
         Relationships: []
       }
+      referrals: {
+        Row: {
+          clicks: number
+          conversions: number
+          created_at: string
+          id: string
+          referral_code: string
+          referrer_user_id: string
+        }
+        Insert: {
+          clicks?: number
+          conversions?: number
+          created_at?: string
+          id?: string
+          referral_code?: string
+          referrer_user_id: string
+        }
+        Update: {
+          clicks?: number
+          conversions?: number
+          created_at?: string
+          id?: string
+          referral_code?: string
+          referrer_user_id?: string
+        }
+        Relationships: []
+      }
       reminder_preferences: {
         Row: {
           created_at: string
@@ -587,6 +614,11 @@ export type Database = {
       hash_pin_secure: {
         Args: { _pin: string; _salt: string }
         Returns: string
+      }
+      increment_referral_clicks: { Args: { _code: string }; Returns: undefined }
+      increment_referral_conversions: {
+        Args: { _code: string }
+        Returns: undefined
       }
       user_has_access: { Args: { _user_id: string }; Returns: boolean }
       user_owns_token_hash: {

@@ -35,6 +35,7 @@ const PLAN_MAX_PROFILES: Record<string, number> = {
 const VerifyPaymentSchema = z.object({
   sessionId: z.string().min(1).max(500),
   plan: z.enum(["anker", "plus", "familie"]).optional(),
+  referralCode: z.string().max(20).optional(),
 });
 
 serve(async (req) => {
@@ -80,7 +81,7 @@ serve(async (req) => {
       });
     }
 
-    const { sessionId, plan: planParam } = parseResult.data;
+    const { sessionId, plan: planParam, referralCode } = parseResult.data;
 
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
       apiVersion: "2025-08-27.basil",
@@ -130,6 +131,11 @@ serve(async (req) => {
           stripe_customer_id: session.customer as string || null,
         }, { onConflict: "user_id" })
         .select();
+
+      // Track referral conversion if applicable
+      if (referralCode) {
+        await supabaseAdmin.rpc("increment_referral_conversions", { _code: referralCode });
+      }
 
       return new Response(JSON.stringify({
         success: true,
@@ -186,6 +192,11 @@ serve(async (req) => {
           max_profiles: maxProfiles,
         }, { onConflict: "user_id" })
         .select();
+
+      // Track referral conversion if applicable
+      if (referralCode) {
+        await supabaseAdmin.rpc("increment_referral_conversions", { _code: referralCode });
+      }
 
       return new Response(JSON.stringify({
         success: true,

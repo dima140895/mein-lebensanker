@@ -1,9 +1,9 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster"; // v2
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useSearchParams } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { ProfileProvider } from "@/contexts/ProfileContext";
@@ -13,6 +13,23 @@ import Index from "./pages/Index";
 import CookieConsent from "./components/CookieConsent";
 import { EncryptionReminder } from "./components/EncryptionReminder";
 import OfflineBanner from "./components/OfflineBanner";
+import { supabase } from "@/integrations/supabase/client";
+
+/** Captures ?ref= referral codes from the URL, stores them, and tracks clicks */
+const ReferralCapture = () => {
+  const [searchParams] = useSearchParams();
+  useEffect(() => {
+    const ref = searchParams.get("ref");
+    if (ref && /^[a-f0-9]{12}$/.test(ref)) {
+      localStorage.setItem("referral_code", ref);
+      // Track click (fire-and-forget)
+      supabase.functions.invoke("track-referral-click", {
+        body: { referralCode: ref },
+      }).catch(() => {});
+    }
+  }, [searchParams]);
+  return null;
+};
 
 // Lazy load all routes except the landing page
 const Dashboard = lazy(() => import("./pages/Dashboard"));
@@ -50,6 +67,7 @@ const App = () => (
                 <Toaster />
                 <Sonner />
                 <BrowserRouter>
+                  <ReferralCapture />
                   <OfflineBanner />
                   <Suspense fallback={null}>
                     <Routes>

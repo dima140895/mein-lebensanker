@@ -61,6 +61,7 @@ const PaymentSuccessContent = () => {
           body: {
             sessionId,
             plan,
+            referralCode: localStorage.getItem('referral_code') || undefined,
           }
         });
 
