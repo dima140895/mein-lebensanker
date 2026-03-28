@@ -23,12 +23,28 @@ const getCorsHeaders = (origin: string | null) => {
   };
 };
 
+const VALID_ROLES = ["lesen", "mitbearbeiten"];
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 Deno.serve(async (req) => {
   const origin = req.headers.get("origin");
   const corsHeaders = getCorsHeaders(origin);
 
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
+  }
+
+  // Only allow POST
+  if (req.method !== "POST") {
+    return new Response("Method Not Allowed", { status: 405, headers: corsHeaders });
+  }
+
+  // Content-Type check
+  const contentType = req.headers.get("content-type");
+  if (!contentType?.includes("application/json")) {
+    return new Response(JSON.stringify({ error: "Content-Type muss application/json sein" }), {
+      status: 415, headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
   }
 
   try {
@@ -60,19 +76,31 @@ Deno.serve(async (req) => {
       });
     }
 
-    const body = await req.json();
-    const { memberEmail, rolle, ownerName } = body;
+    // Safe JSON parse
+    let body: Record<string, unknown>;
+    try {
+      body = await req.json();
+    } catch {
+      return new Response(JSON.stringify({ error: "Ungültiges JSON" }), {
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
 
-    // Validate inputs
-    if (!memberEmail || typeof memberEmail !== "string" || !memberEmail.includes("@")) {
-      return new Response(JSON.stringify({ error: "Invalid email" }), {
+    const memberEmail = body.memberEmail as string;
+    const rolle = body.rolle as string;
+    const ownerName = body.ownerName as string;
+
+    // Validate email format and length
+    if (!memberEmail || typeof memberEmail !== "string" || !emailRegex.test(memberEmail) || memberEmail.length > 254) {
+      return new Response(JSON.stringify({ error: "Ungültige E-Mail-Adresse" }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
-    if (!rolle || !["lesen", "mitbearbeiten"].includes(rolle)) {
-      return new Response(JSON.stringify({ error: "Invalid role" }), {
+    // Validate role
+    if (!rolle || !VALID_ROLES.includes(rolle)) {
+      return new Response(JSON.stringify({ error: "Ungültige Rolle" }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
@@ -96,14 +124,14 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Count existing members
+    // Count existing members (all statuses)
     const { count } = await supabase
       .from("familienzugang")
       .select("id", { count: "exact", head: true })
       .eq("owner_id", user.id);
 
     if ((count || 0) >= maxMembers) {
-      return new Response(JSON.stringify({ error: "Member limit reached", max: maxMembers }), {
+      return new Response(JSON.stringify({ error: "Mitgliederlimit erreicht", max: maxMembers }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
@@ -134,7 +162,7 @@ Deno.serve(async (req) => {
     const appUrl = "https://mein-lebensanker.lovable.app";
     const inviteLink = `${appUrl}/familie-einladung/${invitation.invitation_token}`;
 
-    const senderName = ownerName || "Jemand";
+    const senderName = typeof ownerName === "string" && ownerName.trim() ? ownerName.trim().slice(0, 100) : "Jemand";
 
     // Send email via Resend
     const emailRes = await fetch("https://api.resend.com/emails", {
