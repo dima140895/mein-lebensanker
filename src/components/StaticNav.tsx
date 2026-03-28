@@ -23,9 +23,7 @@ const StaticNav = ({ minimal = false }: StaticNavProps) => {
   }, []);
 
   const navLinks = minimal
-    ? [
-        { label: language === 'de' ? 'Preise' : 'Pricing', href: '/#preise', icon: CreditCard },
-      ]
+    ? []
     : [
         { label: language === 'de' ? 'Preise' : 'Pricing', href: '/#preise', icon: CreditCard },
         { label: language === 'de' ? 'Anmelden' : 'Sign In', href: '/dashboard', icon: LogIn },
