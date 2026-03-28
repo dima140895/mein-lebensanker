@@ -132,8 +132,8 @@ const OnboardingFlow = ({ onComplete }: OnboardingFlowProps) => {
               {/* Header */}
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-2">
-                  <Anchor className="h-5 w-5 text-[#2C4A3E]" />
-                  <span className="font-serif text-sm font-bold text-[#2C4A3E]">Mein Lebensanker</span>
+                  <Anchor className="h-5 w-5 text-foreground" />
+                  <span className="font-serif text-sm font-bold text-foreground">Mein Lebensanker</span>
                 </div>
                 <button onClick={handleSkip} className="text-[#2C4A3E]/30 hover:text-[#2C4A3E]/60 transition-colors" disabled={saving}>
                   <X className="h-5 w-5" />
