@@ -166,9 +166,9 @@ const PaymentSuccessContent = () => {
           <div className="mx-auto mb-6 h-20 w-20 rounded-full bg-sage-light flex items-center justify-center">
             <CheckCircle className="h-10 w-10 text-sage-dark" />
           </div>
-          <h1 className="font-serif text-3xl font-bold text-foreground mb-2">{texts.title}</h1>
-          <p className="text-xl text-sage-dark mb-4">{texts.subtitle}</p>
-          <p className="text-muted-foreground">{language === 'de' ? 'Du wirst weitergeleitet...' : 'Redirecting...'}</p>
+           <h1 className="font-serif text-3xl font-semibold text-forest mb-2">{texts.title}</h1>
+          <p className="text-xl text-sage-dark mb-4 font-body">{texts.subtitle}</p>
+          <p className="text-charcoal-light font-body">{language === 'de' ? 'Du wirst weitergeleitet...' : 'Redirecting...'}</p>
         </div>
       </div>
     );
