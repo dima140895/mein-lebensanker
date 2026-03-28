@@ -34,9 +34,9 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange, embedd
   const [mfaChallengeId, setMfaChallengeId] = useState<string | null>(null);
   const [mfaCode, setMfaCode] = useState('');
 
-  const handleModeChange = (newMode: 'login' | 'register' | 'forgot' | 'verify') => {
+  const handleModeChange = (newMode: 'login' | 'register' | 'forgot' | 'verify' | 'mfa') => {
     setMode(newMode);
-    onVerifyModeChange?.(newMode === 'verify');
+    onVerifyModeChange?.(newMode === 'verify' || newMode === 'mfa');
   };
 
   const [email, setEmail] = useState('');
