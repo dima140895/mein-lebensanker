@@ -79,9 +79,12 @@ export default defineConfig(({ mode }) => ({
     rollupOptions: {
       output: {
         manualChunks: {
+          'vendor-react': ['react', 'react-dom', 'react-router-dom'],
+          'vendor-supabase': ['@supabase/supabase-js'],
           'vendor-pdf': ['jspdf', 'html2canvas'],
           'vendor-charts': ['recharts'],
-          'vendor-ui': ['framer-motion'],
+          'vendor-forms': ['react-hook-form', 'zod'],
+          'vendor-animation': ['framer-motion'],
         },
       },
     },
