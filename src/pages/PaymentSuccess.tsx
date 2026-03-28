@@ -75,10 +75,8 @@ const PaymentSuccessContent = () => {
           let profiles = 1;
           if (profilesParam) {
             profiles = parseInt(profilesParam, 10);
-          } else if (paymentType === 'couple') {
-            profiles = 2;
-          } else if (paymentType === 'family') {
-            profiles = 4;
+          } else if (plan === 'familie') {
+            profiles = 10;
           }
           setMaxProfiles(profiles);
           
