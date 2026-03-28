@@ -23,3 +23,6 @@ verify_jwt = false
 
 [functions.validate-signup]
 verify_jwt = false
+
+[functions.track-referral-click]
+verify_jwt = false

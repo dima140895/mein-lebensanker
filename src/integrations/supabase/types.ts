@@ -615,6 +615,11 @@ export type Database = {
         Args: { _pin: string; _salt: string }
         Returns: string
       }
+      increment_referral_clicks: { Args: { _code: string }; Returns: undefined }
+      increment_referral_conversions: {
+        Args: { _code: string }
+        Returns: undefined
+      }
       user_has_access: { Args: { _user_id: string }; Returns: boolean }
       user_owns_token_hash: {
         Args: { _token_hash: string; _user_id: string }
