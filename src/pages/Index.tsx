@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import StaticNav from '@/components/StaticNav';
+import LandingNav from '@/components/landing/LandingNav';
 import LandingHero from '@/components/landing/LandingHero';
 import LandingJourney from '@/components/landing/LandingJourney';
 import LandingModules from '@/components/landing/LandingModules';
@@ -49,7 +49,7 @@ const Index = () => {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <StaticNav landingMode />
+      <LandingNav />
       <LandingHero />
       <LandingJourney />
       <LandingModules />
