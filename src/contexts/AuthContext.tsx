@@ -12,6 +12,7 @@ interface Profile {
   partner_name: string | null;
   max_profiles: number;
   purchased_tier: string | null;
+  onboarding_focus: string | null;
 }
 
 interface AuthContextType {
