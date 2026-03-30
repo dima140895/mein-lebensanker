@@ -1,4 +1,4 @@
-import { Home, ClipboardList, HeartHandshake, Stethoscope, Users, Settings, Lock, Anchor } from 'lucide-react';
+import { Home, ClipboardList, HeartHandshake, Stethoscope, Users, Settings, Lock, Anchor, LogOut } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useQueryClient } from '@tanstack/react-query';
@@ -39,7 +39,7 @@ interface DashboardSidebarProps {
 
 const DashboardSidebar = ({ activeModule, onModuleChange, userPlan, onLockedClick }: DashboardSidebarProps) => {
   const { language } = useLanguage();
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
   const queryClient = useQueryClient();
 
   const handlePrefetch = (moduleKey: DashboardModule) => {
@@ -90,6 +90,17 @@ const DashboardSidebar = ({ activeModule, onModuleChange, userPlan, onLockedClic
           );
         })}
       </nav>
+
+      {/* Abmelden */}
+      <div className="px-3 py-4 border-t border-white/10">
+        <button
+          onClick={() => signOut()}
+          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-white/60 hover:bg-white/10 hover:text-white transition-all font-body"
+        >
+          <LogOut className="h-5 w-5 flex-shrink-0" />
+          <span>{language === 'de' ? 'Abmelden' : 'Sign out'}</span>
+        </button>
+      </div>
     </aside>
   );
 };
