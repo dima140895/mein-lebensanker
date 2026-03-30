@@ -386,15 +386,34 @@ const PflegeTagebuch = () => {
 
       {/* Entry List */}
       {filteredEntries.length === 0 && !showForm ? (
-        <div className="flex flex-col items-center justify-center py-16 text-center">
-          <BookHeart className="h-12 w-12 text-muted-foreground mb-4" />
-          <h3 className="font-sans text-xl text-foreground mb-2">{language === 'de' ? 'Noch kein Eintrag' : 'No entries yet'}</h3>
-          <p className="text-sm text-muted-foreground max-w-xs font-body">{language === 'de' ? 'Dokumentiere den heutigen Tag — Stimmung, Mahlzeiten, Besonderheiten.' : 'Document today — mood, meals, and notable events.'}</p>
-          <Button onClick={() => setShowForm(true)} className="mt-6 rounded-lg min-h-[44px]">
-            <Plus className="h-4 w-4 mr-2" />
-            {language === 'de' ? 'Ersten Eintrag erstellen' : 'Create first entry'}
-          </Button>
-        </div>
+        entries.length === 0 ? (
+          <PflegeFirstEntryFlow
+            onSave={(data) => {
+              if (!user) return;
+              createMutation.mutate({
+                user_id: user.id,
+                person_name: data.personName,
+                stimmung: data.stimmung,
+                mahlzeiten: data.mahlzeiten || null,
+                aktivitaeten: data.aktivitaeten || null,
+                besonderheiten: data.besonderheiten || null,
+                naechste_schritte: data.naechsteSchritte || null,
+                eintrags_datum: format(new Date(), 'yyyy-MM-dd'),
+              });
+            }}
+            isSaving={createMutation.isPending}
+          />
+        ) : (
+          <div className="flex flex-col items-center justify-center py-16 text-center">
+            <BookHeart className="h-12 w-12 text-muted-foreground mb-4" />
+            <h3 className="font-sans text-xl text-foreground mb-2">{language === 'de' ? 'Keine Einträge für diese Person' : 'No entries for this person'}</h3>
+            <p className="text-sm text-muted-foreground max-w-xs font-body">{language === 'de' ? 'Erstelle einen neuen Eintrag für diese Person.' : 'Create a new entry for this person.'}</p>
+            <Button onClick={() => setShowForm(true)} className="mt-6 rounded-lg min-h-[44px]">
+              <Plus className="h-4 w-4 mr-2" />
+              {language === 'de' ? 'Eintrag erstellen' : 'Create entry'}
+            </Button>
+          </div>
+        )
       ) : (
         <div className="space-y-3">
           {filteredEntries.map((entry) => {
