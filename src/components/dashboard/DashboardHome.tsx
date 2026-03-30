@@ -512,9 +512,20 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
                       {language === 'de' ? 'Heute erledigt' : 'Done today'}
                     </span>
                   </div>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    {language === 'de' ? 'Energie' : 'Energy'} {todayCheckin.energie}/5
-                  </p>
+                  <div className="grid grid-cols-2 gap-x-4 gap-y-0.5 mt-1.5">
+                    <p className="text-xs text-muted-foreground">
+                      {language === 'de' ? 'Energie' : 'Energy'} {todayCheckin.energie}/10
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {language === 'de' ? 'Schmerz' : 'Pain'} {todayCheckin.schmerz}/10
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {language === 'de' ? 'Schlaf' : 'Sleep'} {todayCheckin.schlaf}/10
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {language === 'de' ? 'Stimmung' : 'Mood'} {todayCheckin.stimmung}/10
+                    </p>
+                  </div>
                   <span className="text-sm text-muted-foreground mt-2 inline-block cursor-pointer">
                     {language === 'de' ? 'Verlauf ansehen' : 'View history'} <ChevronRight className="inline h-3.5 w-3.5 ml-0.5" />
                   </span>
