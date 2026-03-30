@@ -143,8 +143,25 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
 
   const showOnboardingTasks = isNewEnough && !allTasksDone && !statusLoading && !dataLoading;
 
-  const userName = profile?.full_name?.split(' ')[0] || '';
+  const isMultiProfile = (profile?.max_profiles || 1) > 1 && personProfiles.length >= 2;
+  const isOwnProfile = activeProfile && profile?.full_name && activeProfile.name === profile.full_name;
+
+  // Build greeting based on active profile
   const greeting = getGreeting(language);
+  const greetingLine = useMemo(() => {
+    if (!isMultiProfile || !activeProfile) {
+      const firstName = profile?.full_name?.split(' ')[0] || '';
+      return firstName ? `${greeting}, ${firstName}.` : `${greeting}.`;
+    }
+    if (isOwnProfile) {
+      const firstName = profile?.full_name?.split(' ')[0] || activeProfile.name;
+      return `${greeting}, ${firstName}.`;
+    }
+    // Foreign profile — skip greeting, show profile label
+    return language === 'de' ? `Profil: ${activeProfile.name}` : `Profile: ${activeProfile.name}`;
+  }, [greeting, profile?.full_name, activeProfile, isMultiProfile, isOwnProfile, language]);
+
+  const userName = profile?.full_name?.split(' ')[0] || '';
 
   const t = {
     de: {
