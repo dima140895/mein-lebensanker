@@ -232,7 +232,8 @@ const PflegeMedikamente = () => {
       arzt: arzt.trim() || null,
       erinnerung_aktiv: hasPlusAccess ? erinnerungAktiv : false,
       erinnerung_zeiten: hasPlusAccess ? erinnerungZeiten : [],
-    });
+      person_name: selectedPerson || null,
+    } as any);
   };
 
   const addReminderTime = () => {
