@@ -84,7 +84,7 @@ const KrankheitModule = () => {
           <MeinVerlauf />
         </TabsContent>
         <TabsContent value="medikamente" className="mt-6">
-          <PflegeMedikamente />
+          <PflegeMedikamente selfOnly />
         </TabsContent>
         <TabsContent value="arztbericht" className="mt-6">
           <ArztBericht />

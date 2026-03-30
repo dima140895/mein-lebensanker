@@ -29,9 +29,10 @@ interface Medikament {
 
 interface PflegeMedikamenteProps {
   activePersonName?: string;
+  selfOnly?: boolean;
 }
 
-const PflegeMedikamente = ({ activePersonName = '' }: PflegeMedikamenteProps) => {
+const PflegeMedikamente = ({ activePersonName = '', selfOnly = false }: PflegeMedikamenteProps) => {
   const { user } = useAuth();
   const { language } = useLanguage();
   const queryClient = useQueryClient();
@@ -237,7 +238,7 @@ const PflegeMedikamente = ({ activePersonName = '' }: PflegeMedikamenteProps) =>
       arzt: arzt.trim() || null,
       erinnerung_aktiv: hasPlusAccess ? erinnerungAktiv : false,
       erinnerung_zeiten: hasPlusAccess ? erinnerungZeiten : [],
-      person_name: selectedPerson || null,
+      person_name: selfOnly ? null : (selectedPerson || null),
     } as any);
   };
 
@@ -257,7 +258,9 @@ const PflegeMedikamente = ({ activePersonName = '' }: PflegeMedikamenteProps) =>
     setErinnerungZeiten(erinnerungZeiten.filter((_, i) => i !== index));
   };
 
-  const filteredMeds = selectedPerson
+  const filteredMeds = selfOnly
+    ? meds.filter(m => !(m as any).person_name)
+    : selectedPerson
     ? meds.filter(m => (m as any).person_name === selectedPerson)
     : meds;
   const activeMeds = filteredMeds.filter((m) => m.aktiv);
