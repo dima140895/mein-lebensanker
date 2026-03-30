@@ -295,8 +295,9 @@ const PflegeTagebuch = () => {
           value={selectedPerson}
           onChange={(val) => {
             setSelectedPerson(val);
-            setPersonName(val);
+            if (val && val !== '__all__') setPersonName(val);
           }}
+          showAllOption
           className="mb-2"
         />
       )}
@@ -305,7 +306,7 @@ const PflegeTagebuch = () => {
       {!showForm && (
         <Button
           onClick={() => {
-            if (selectedPerson) setPersonName(selectedPerson);
+            if (selectedPerson && selectedPerson !== '__all__') setPersonName(selectedPerson);
             setShowForm(true);
           }}
           className="w-full sm:w-auto"
