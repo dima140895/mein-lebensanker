@@ -13,4 +13,5 @@ export const queryKeys = {
   personProfiles: (userId: string) => ['person-profiles', userId] as const,
   reminderPreferences: (userId: string) =>
     ['reminder-preferences', userId] as const,
+  pflegePersonen: (userId: string) => ['pflege-personen', userId] as const,
 } as const;
