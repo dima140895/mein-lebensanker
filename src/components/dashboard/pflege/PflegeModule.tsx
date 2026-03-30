@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { HeartHandshake } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useProfiles } from '@/contexts/ProfileContext';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import PflegeTagebuch from './PflegeTagebuch';
 import PflegeMedikamente from './PflegeMedikamente';
