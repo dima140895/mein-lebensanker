@@ -252,8 +252,11 @@ const PflegeMedikamente = () => {
     setErinnerungZeiten(erinnerungZeiten.filter((_, i) => i !== index));
   };
 
-  const activeMeds = meds.filter((m) => m.aktiv);
-  const inactiveMeds = meds.filter((m) => !m.aktiv);
+  const filteredMeds = selectedPerson
+    ? meds.filter(m => (m as any).person_name === selectedPerson)
+    : meds;
+  const activeMeds = filteredMeds.filter((m) => m.aktiv);
+  const inactiveMeds = filteredMeds.filter((m) => !m.aktiv);
 
   if (loading) {
     return (
