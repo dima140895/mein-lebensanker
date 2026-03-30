@@ -238,7 +238,7 @@ const PflegeMedikamente = ({ activePersonName = '', selfOnly = false }: PflegeMe
       arzt: arzt.trim() || null,
       erinnerung_aktiv: hasPlusAccess ? erinnerungAktiv : false,
       erinnerung_zeiten: hasPlusAccess ? erinnerungZeiten : [],
-      person_name: selectedPerson || null,
+      person_name: selfOnly ? null : (selectedPerson || null),
     } as any);
   };
 
