@@ -515,7 +515,16 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
               <div className="mt-3 flex flex-col sm:flex-row gap-2">
                 <Button
                   size="sm"
-                  onClick={() => onNavigate('vorsorge-share' as any)}
+                  onClick={() => {
+                    onNavigate('vorsorge');
+                    setTimeout(() => {
+                      const params = new URLSearchParams(window.location.search);
+                      params.set('module', 'vorsorge');
+                      params.set('section', 'share');
+                      window.history.replaceState(null, '', '?' + params.toString());
+                      window.dispatchEvent(new PopStateEvent('popstate'));
+                    }, 100);
+                  }}
                   className="bg-amber hover:bg-amber/90 text-white text-xs px-3 py-1.5 rounded-lg min-h-[32px]"
                 >
                   {language === 'de' ? 'Link jetzt erstellen →' : 'Create link now →'}
