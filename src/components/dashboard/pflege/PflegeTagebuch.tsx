@@ -200,18 +200,71 @@ const PflegeTagebuch = () => {
     },
   });
 
+  const updateMutation = useMutation({
+    mutationFn: async (updated: { id: string; person_name: string; stimmung: number; mahlzeiten: string | null; aktivitaeten: string | null; besonderheiten: string | null; naechste_schritte: string | null }) => {
+      const { id, ...fields } = updated;
+      const { error } = await supabase.from('pflege_eintraege').update(fields).eq('id', id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success(texts.updated);
+      resetForm();
+    },
+    onError: () => {
+      toast.error(texts.error);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.pflegeEintraege(user!.id) });
+    },
+  });
+
+  const resetForm = () => {
+    setShowForm(false);
+    setEditingEntry(null);
+    setMahlzeiten('');
+    setAktivitaeten('');
+    setBesonderheiten('');
+    setNaechsteSchritte('');
+    setStimmung(3);
+  };
+
+  const startEdit = (entry: PflegeEintrag) => {
+    setEditingEntry(entry);
+    setPersonName(entry.person_name);
+    setStimmung(entry.stimmung);
+    setMahlzeiten(entry.mahlzeiten || '');
+    setAktivitaeten(entry.aktivitaeten || '');
+    setBesonderheiten(entry.besonderheiten || '');
+    setNaechsteSchritte(entry.naechste_schritte || '');
+    setShowForm(true);
+    setExpandedEntry(null);
+  };
+
   const handleSave = () => {
     if (!user || !personName.trim()) return;
-    createMutation.mutate({
-      user_id: user.id,
-      person_name: personName.trim(),
-      stimmung,
-      mahlzeiten: mahlzeiten.trim() || null,
-      aktivitaeten: aktivitaeten.trim() || null,
-      besonderheiten: besonderheiten.trim() || null,
-      naechste_schritte: naechsteSchritte.trim() || null,
-      eintrags_datum: format(new Date(), 'yyyy-MM-dd'),
-    });
+
+    if (editingEntry) {
+      updateMutation.mutate({
+        id: editingEntry.id,
+        person_name: personName.trim(),
+        stimmung,
+        mahlzeiten: mahlzeiten.trim() || null,
+        aktivitaeten: aktivitaeten.trim() || null,
+        besonderheiten: besonderheiten.trim() || null,
+        naechste_schritte: naechsteSchritte.trim() || null,
+      });
+    } else {
+      createMutation.mutate({
+        user_id: user.id,
+        person_name: personName.trim(),
+        stimmung,
+        mahlzeiten: mahlzeiten.trim() || null,
+        aktivitaeten: aktivitaeten.trim() || null,
+        besonderheiten: besonderheiten.trim() || null,
+        naechste_schritte: naechsteSchritte.trim() || null,
+        eintrags_datum: format(new Date(), 'yyyy-MM-dd'),
+      });
+    }
   };
 
   const formatDate = (dateStr: string) => {
