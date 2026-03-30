@@ -89,7 +89,7 @@ const VorsorgeModule = () => {
     }
     setShowCelebration(false);
     if (openShare) {
-      setShowShareManager(true);
+      setShareDialogOpen(true);
     }
     // Show upgrade modal after celebration for Anker-only users
     if (isAnkerOnly && user && !localStorage.getItem(upgradeKey)) {
@@ -479,8 +479,7 @@ const VorsorgeModule = () => {
         </div>
       )}
 
-      {/* Share Link Manager dialog triggered from celebration */}
-      {showShareManager && (() => { setShareDialogOpen(true); setShowShareManager(false); return null; })()}
+
 
       {/* Contextual Upgrade Modal for Anker users after 100% */}
       <Dialog open={showUpgradeModal} onOpenChange={(open) => { if (!open) dismissUpgradeModal(); }}>
