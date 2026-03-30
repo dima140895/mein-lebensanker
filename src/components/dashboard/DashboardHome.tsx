@@ -261,41 +261,69 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
 
   const renderVorsorgeCard = (delay: number) => {
     const passive = isPassive('vorsorge');
+    const percent = progressPercent;
+    // State A: nothing filled, State B: in progress, State C: complete
+    const stateA = !statusLoading && filledCount === 0;
+    const stateC = !statusLoading && isComplete;
+    const stateB = !statusLoading && !stateA && !stateC;
+
+    const cardBorder = stateC
+      ? 'border border-[#C8DDD1] bg-[#F8FBF9]'
+      : stateB
+      ? 'border border-[#E5E0D8] border-l-2 border-l-[#437059]'
+      : 'border border-[#E5E0D8]';
+    const badgeBg = stateC ? 'bg-[#E8F0EC]' : stateA ? 'bg-muted' : 'bg-primary/10';
+
     return (
       <motion.div key="vorsorge" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay }}>
-          <Card
-          className={`rounded-2xl shadow-card hover:-translate-y-0.5 hover:shadow-soft transition-all duration-200 cursor-pointer h-full border border-[#E5E0D8] bg-card`}
+        <Card
+          className={`rounded-2xl shadow-card hover:-translate-y-0.5 hover:shadow-soft transition-all duration-200 cursor-pointer h-full min-h-[120px] ${cardBorder} bg-card ${stateC ? '!bg-[#F8FBF9]' : ''}`}
           onClick={() => onNavigate('vorsorge')}
         >
           <CardHeader className="pb-2">
             <div className="flex items-center gap-3">
-              <div className={`h-10 w-10 rounded-lg flex items-center justify-center ${passive ? 'bg-muted' : 'bg-primary/10'}`}>
+              <div className={`h-10 w-10 rounded-lg flex items-center justify-center ${passive ? 'bg-muted' : badgeBg}`}>
                 <ClipboardList className={`h-5 w-5 ${passive ? 'text-muted-foreground' : 'text-primary'}`} />
               </div>
               <div className="flex-1">
                 <CardTitle className={`text-base font-semibold font-body ${passive ? 'text-foreground' : 'text-forest'}`}>{tx.vorsorge}</CardTitle>
-                {passive ? (
-                  <span className="text-sm text-muted-foreground mt-1">{tx.vorsorgePassive}</span>
-                ) : (
-                  <span className="text-xs text-charcoal-light font-body">
-                    {statusLoading ? '...' : isComplete ? tx.complete : `${filledCount} ${tx.sectionOf} ${totalCount}`}
-                  </span>
-                )}
               </div>
-              {!passive && isComplete && <CheckCircle2 className="h-5 w-5 text-primary" />}
             </div>
           </CardHeader>
-          <CardContent className="space-y-3">
+          <CardContent className="space-y-2">
             {passive ? (
-              <span className="text-xs text-muted-foreground hover:text-foreground transition-colors">{tx.discover}</span>
+              <>
+                <p className="text-sm text-muted-foreground">{tx.vorsorgePassive}</p>
+                <span className="text-xs text-muted-foreground hover:text-foreground transition-colors">{tx.discover} →</span>
+              </>
+            ) : statusLoading ? (
+              <p className="text-sm text-muted-foreground">...</p>
+            ) : stateA ? (
+              <>
+                <p className="text-sm text-muted-foreground">{tx.vorsorgePassive}</p>
+                <span className="text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer">{tx.discover} →</span>
+              </>
+            ) : stateB ? (
+              <>
+                <p className="text-sm text-muted-foreground">
+                  {filledCount} {tx.sectionOf} {totalCount} {language === 'de' ? 'Sektionen ausgefüllt' : 'sections completed'}
+                </p>
+                <div className="mt-3 bg-[#E5E0D8] h-1.5 rounded-full overflow-hidden">
+                  <div className="bg-[#437059] h-1.5 rounded-full transition-all duration-500" style={{ width: `${percent}%` }} />
+                </div>
+                <span className="text-sm text-[#437059] font-medium mt-3 inline-block cursor-pointer">
+                  {language === 'de' ? 'Weiter ausfüllen →' : 'Continue →'}
+                </span>
+              </>
             ) : (
               <>
-                <Progress value={statusLoading ? 0 : progressPercent} className="h-2" />
-                {!isComplete && (
-                  <Button variant="ghost" size="sm" className="w-full text-primary hover:text-primary hover:bg-primary/5 gap-1.5 min-h-[44px]">
-                    {tx.continueBtn} <ArrowRight className="h-3.5 w-3.5" />
-                  </Button>
-                )}
+                <div className="flex items-center gap-1.5">
+                  <CheckCircle className="h-4 w-4 text-[#437059]" />
+                  <span className="text-sm text-[#437059] font-medium">{language === 'de' ? 'Vollständig' : 'Complete'}</span>
+                </div>
+                <span className="text-sm text-muted-foreground mt-2 inline-block cursor-pointer">
+                  {language === 'de' ? 'Ansehen →' : 'View →'}
+                </span>
               </>
             )}
           </CardContent>
