@@ -88,6 +88,16 @@ const DashboardContent = () => {
     setUpgradeModalOpen(true);
   };
 
+  useEffect(() => {
+    if (!profile?.is_new_user) {
+      setShowOnboarding(false);
+      return;
+    }
+
+    const timer = window.setTimeout(() => setShowOnboarding(true), 300);
+    return () => window.clearTimeout(timer);
+  }, [profile?.is_new_user]);
+
   // Loading state
   if (loading || (user && profile === null)) {
     return <div className="flex items-center justify-center min-h-[50vh]">{language === 'de' ? 'Laden...' : 'Loading...'}</div>;
@@ -125,13 +135,6 @@ const DashboardContent = () => {
         </div>
       </div>
     );
-  }
-
-  // Check for new user onboarding
-  const isNewUser = profile?.is_new_user === true;
-  if (isNewUser && !showOnboarding) {
-    // Trigger onboarding on first render for new users
-    setTimeout(() => setShowOnboarding(true), 300);
   }
 
   const renderModule = () => {

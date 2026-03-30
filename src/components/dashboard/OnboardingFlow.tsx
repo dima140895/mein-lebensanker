@@ -62,7 +62,7 @@ const introSlides: Record<Focus, { title: string; body: string; action: string }
 };
 
 const OnboardingFlow = ({ onComplete }: OnboardingFlowProps) => {
-  const { user, profile } = useAuth();
+  const { user, profile, refreshProfile } = useAuth();
   const { language } = useLanguage();
   const { isEncryptionEnabled } = useEncryption();
   const [step, setStep] = useState<'welcome' | 'intro' | 'encryption'>('welcome');
@@ -90,38 +90,62 @@ const OnboardingFlow = ({ onComplete }: OnboardingFlowProps) => {
 
   const handleComplete = async () => {
     if (!user || !selectedFocus) return;
+
     setSaving(true);
     try {
-      await supabase
+      const { error } = await supabase
         .from('profiles')
         .update({ is_new_user: false, onboarding_focus: selectedFocus } as any)
         .eq('user_id', user.id);
-    } catch (e) {
-      console.error('Onboarding save error:', e);
-    }
-    setSaving(false);
 
-    const moduleMap: Record<Focus, DashboardModule> = {
-      vorsorge: 'vorsorge',
-      pflege: 'pflege',
-      krankheit: 'krankheit',
-    };
-    onComplete(moduleMap[selectedFocus]);
+      if (error) {
+        console.error('Onboarding save error:', error);
+        toast.error(
+          language === 'de'
+            ? 'Onboarding konnte nicht gespeichert werden. Bitte erneut versuchen.'
+            : 'Could not save onboarding. Please try again.'
+        );
+        return;
+      }
+
+      await refreshProfile();
+
+      const moduleMap: Record<Focus, DashboardModule> = {
+        vorsorge: 'vorsorge',
+        pflege: 'pflege',
+        krankheit: 'krankheit',
+      };
+      onComplete(moduleMap[selectedFocus]);
+    } finally {
+      setSaving(false);
+    }
   };
 
   const handleSkip = async () => {
     if (!user) return;
+
     setSaving(true);
     try {
-      await supabase
+      const { error } = await supabase
         .from('profiles')
         .update({ is_new_user: false } as any)
         .eq('user_id', user.id);
-    } catch (e) {
-      console.error('Onboarding skip error:', e);
+
+      if (error) {
+        console.error('Onboarding skip error:', error);
+        toast.error(
+          language === 'de'
+            ? 'Onboarding konnte nicht übersprungen werden. Bitte erneut versuchen.'
+            : 'Could not skip onboarding. Please try again.'
+        );
+        return;
+      }
+
+      await refreshProfile();
+      onComplete('home');
+    } finally {
+      setSaving(false);
     }
-    setSaving(false);
-    onComplete('home');
   };
 
   const handleEncryptionLater = () => {
