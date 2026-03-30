@@ -306,7 +306,7 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
             ) : stateA ? (
               <>
                 <p className="text-sm text-muted-foreground">{tx.vorsorgePassive}</p>
-                <span className="text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer">{tx.discover} →</span>
+                <span className="text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer">{tx.discover} <ChevronRight className="inline h-3.5 w-3.5 ml-0.5" /></span>
               </>
             ) : stateB ? (
               <>
