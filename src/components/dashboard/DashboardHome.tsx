@@ -86,15 +86,24 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
       setHasShareToken((shareTokenRes.data?.length ?? 0) > 0);
       if (isPlusOrHigher) {
         const [pflegeRes, checkinRes, checkinCountRes, pflegePersonenRes, lastCheckinRes] = await Promise.all([
-          supabase.from('pflege_eintraege').select('eintrags_datum,stimmung,person_name').eq('user_id', user.id).order('eintrags_datum', { ascending: false }).limit(1),
+          supabase.from('pflege_eintraege').select('eintrags_datum,stimmung,person_name').eq('user_id', user.id).order('eintrags_datum', { ascending: false }).limit(20),
           supabase.from('symptom_checkins').select('energie,stimmung,checkin_datum').eq('user_id', user.id).eq('checkin_datum', new Date().toISOString().split('T')[0]).limit(1),
           supabase.from('symptom_checkins').select('id', { count: 'exact', head: true }).eq('user_id', user.id),
           (supabase as any).from('pflege_personen').select('name').eq('user_id', user.id).order('created_at', { ascending: true }),
           supabase.from('symptom_checkins').select('checkin_datum,energie').eq('user_id', user.id).order('checkin_datum', { ascending: false }).limit(1),
         ]);
-        setLastPflege(pflegeRes.data?.[0] || null);
+        const allPflegeEntries = pflegeRes.data || [];
+        setLastPflege(allPflegeEntries[0] || null);
+        // Build last entry per person (deduplicated, ordered by most recent)
+        const perPersonMap = new Map<string, any>();
+        for (const entry of allPflegeEntries) {
+          if (entry.person_name && !perPersonMap.has(entry.person_name)) {
+            perPersonMap.set(entry.person_name, entry);
+          }
+        }
+        setLastPflegePerPerson(Array.from(perPersonMap.values()));
         const todayStr = new Date().toISOString().split('T')[0];
-        setTodayPflegeExists(pflegeRes.data?.[0]?.eintrags_datum === todayStr);
+        setTodayPflegeExists(allPflegeEntries[0]?.eintrags_datum === todayStr);
         setTodayCheckin(checkinRes.data?.[0] || null);
         setCheckinCount(checkinCountRes.count ?? 0);
         setPflegePersonenNames((pflegePersonenRes.data || []).map((p: any) => p.name));
