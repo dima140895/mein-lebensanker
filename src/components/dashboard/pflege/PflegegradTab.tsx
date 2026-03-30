@@ -269,11 +269,14 @@ const PflegegradTab = () => {
   // Rechner mode
   if (mode === 'rechner') {
     return (
-      <PflegegradRechner
-        showCTA="dashboard"
-        onSave={handleRechnerSave}
-        onClose={() => setMode(savedGrad ? 'overview' : null)}
-      />
+      <div className="space-y-6">
+        <PflegePersonSelector value={selectedPerson} onChange={setSelectedPerson} />
+        <PflegegradRechner
+          showCTA="dashboard"
+          onSave={handleRechnerSave}
+          onClose={() => setMode(savedGrad ? 'overview' : null)}
+        />
+      </div>
     );
   }
 
