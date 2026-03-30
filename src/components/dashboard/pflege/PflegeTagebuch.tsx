@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Plus, ChevronDown, ChevronUp, Trash2, Loader2, BookHeart, Pencil } from 'lucide-react';
+import { Plus, ChevronDown, ChevronUp, Trash2, Loader2, BookHeart, Pencil, Activity } from 'lucide-react';
+import { useSearchParams } from 'react-router-dom';
 import PflegeFirstEntryFlow from './PflegeFirstEntryFlow';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -51,20 +52,24 @@ const PflegeTagebuch = ({ activePersonName = '' }: PflegeTagebuchProps) => {
   const [besonderheiten, setBesonderheiten] = useState('');
   const [naechsteSchritte, setNaechsteSchritte] = useState('');
 
+  const pName = activePersonName || '';
+  const pFallbackDe = pName || 'die Person';
+  const pFallbackEn = pName || 'the person';
+
   const t = {
     de: {
-      addEntry: 'Heutigen Eintrag hinzufügen',
+      addEntry: pName ? `Eintrag für ${pName} hinzufügen` : 'Eintrag hinzufügen',
       alreadyExists: 'Heute wurde bereits ein Eintrag erstellt',
       personName: 'Name der pflegebedürftigen Person',
-      mood: 'Stimmung heute',
+      mood: pName ? `${pName}s Stimmung` : 'Stimmung heute',
       meals: 'Mahlzeiten',
-      mealsPlaceholder: 'Was wurde heute gegessen?',
+      mealsPlaceholder: `Was hat ${pFallbackDe} heute gegessen?`,
       activities: 'Aktivitäten',
-      activitiesPlaceholder: 'Spaziergänge, Besuche, Übungen...',
+      activitiesPlaceholder: `Was hat ${pFallbackDe} heute unternommen?`,
       incidents: 'Besonderheiten / Vorfälle',
-      incidentsPlaceholder: 'Auffälligkeiten, Vorfälle...',
+      incidentsPlaceholder: `Was war heute bei ${pFallbackDe} besonders?`,
       nextSteps: 'Nächste Schritte',
-      nextStepsPlaceholder: 'Arzttermine, Anrufe, Erledigungen...',
+      nextStepsPlaceholder: `Was ist als nächstes zu tun für ${pFallbackDe}?`,
       save: 'Eintrag speichern',
       saving: 'Speichern...',
       cancel: 'Abbrechen',
@@ -79,18 +84,18 @@ const PflegeTagebuch = ({ activePersonName = '' }: PflegeTagebuchProps) => {
       error: 'Fehler beim Speichern',
     },
     en: {
-      addEntry: 'Add today\'s entry',
+      addEntry: pName ? `Add entry for ${pName}` : 'Add entry',
       alreadyExists: 'An entry for today already exists',
       personName: 'Name of the person being cared for',
-      mood: 'Mood today',
+      mood: pName ? `${pName}'s mood` : 'Mood today',
       meals: 'Meals',
-      mealsPlaceholder: 'What was eaten today?',
+      mealsPlaceholder: `What did ${pFallbackEn} eat today?`,
       activities: 'Activities',
-      activitiesPlaceholder: 'Walks, visits, exercises...',
+      activitiesPlaceholder: `What did ${pFallbackEn} do today?`,
       incidents: 'Incidents / Notes',
-      incidentsPlaceholder: 'Anything notable...',
+      incidentsPlaceholder: `What was notable about ${pFallbackEn} today?`,
       nextSteps: 'Next Steps',
-      nextStepsPlaceholder: 'Appointments, calls, tasks...',
+      nextStepsPlaceholder: `What needs to be done next for ${pFallbackEn}?`,
       save: 'Save entry',
       saving: 'Saving...',
       cancel: 'Cancel',
@@ -393,6 +398,7 @@ const PflegeTagebuch = ({ activePersonName = '' }: PflegeTagebuchProps) => {
               });
             }}
             isSaving={createMutation.isPending}
+            activePersonName={activePersonName}
           />
         ) : (
           <div className="flex flex-col items-center justify-center py-16 text-center">
@@ -477,6 +483,51 @@ const PflegeTagebuch = ({ activePersonName = '' }: PflegeTagebuchProps) => {
       )}
 
       {showReferral && <ReferralCard />}
+
+      {/* Self check-in hint */}
+      <SelfCheckinHint userId={user?.id} language={language} />
+    </div>
+  );
+};
+
+/** Small hint linking to Krankheits-Begleiter for the caregiver's own check-in */
+const SelfCheckinHint = ({ userId, language }: { userId?: string; language: 'de' | 'en' }) => {
+  const [, setSearchParams] = useSearchParams();
+  const { profile } = useAuth();
+
+  const plan = profile?.purchased_tier;
+  const hasPlanAccess = plan === 'plus' || plan === 'familie';
+
+  const { data: todayCheckins } = useQuery({
+    queryKey: ['symptom-checkins-today', userId],
+    queryFn: async () => {
+      const today = format(new Date(), 'yyyy-MM-dd');
+      const { data } = await supabase
+        .from('symptom_checkins')
+        .select('id')
+        .eq('user_id', userId!)
+        .eq('checkin_datum', today)
+        .limit(1);
+      return data || [];
+    },
+    enabled: !!userId && hasPlanAccess,
+    staleTime: 5 * 60 * 1000,
+  });
+
+  if (!hasPlanAccess || !todayCheckins || todayCheckins.length > 0) return null;
+
+  return (
+    <div className="border-t border-[hsl(var(--border))] mt-6 pt-4">
+      <button
+        onClick={() => setSearchParams({ module: 'krankheit' })}
+        className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors"
+      >
+        <Activity className="h-3 w-3" />
+        {language === 'de' ? 'Wie geht es dir selbst heute?' : 'How are you doing today?'}
+        <span className="text-primary ml-0.5">
+          {language === 'de' ? 'Eigenen Check-in starten' : 'Start your own check-in'}
+        </span>
+      </button>
     </div>
   );
 };
