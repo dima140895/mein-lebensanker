@@ -354,16 +354,11 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
                 <Button variant="ghost" size="sm" className="w-full text-primary hover:text-primary hover:bg-primary/5 gap-1.5 min-h-[44px]" style={{ marginTop: "auto" }}>
                   {language === 'de' ? 'Weiter ausfüllen' : 'Continue'} <ChevronRight className="inline h-3.5 w-3.5 ml-0.5" />
                 </Button>
-                {hasShareToken ? (
+                {hasShareToken && (
                   <div className="flex items-center gap-1.5 justify-center">
                     <CheckCircle className="h-3 w-3 text-primary" />
                     <span className="text-xs text-primary">{language === 'de' ? 'Freigabe-Link aktiv' : 'Share link active'}</span>
                   </div>
-                ) : (
-                  <button onClick={(e) => { e.stopPropagation(); onNavigate('vorsorge'); }} className="flex items-center gap-1.5 justify-center text-xs text-muted-foreground hover:text-primary transition-colors w-full">
-                    <Share2 className="h-3 w-3" />
-                    {language === 'de' ? 'Freigabe-Link erstellen' : 'Create share link'}
-                  </button>
                 )}
               </>
 
