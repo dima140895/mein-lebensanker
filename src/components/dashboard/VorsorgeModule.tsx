@@ -1,7 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { User, Wallet, Globe, Heart, FileText, ArrowLeft, Phone, Info, Compass, Link2, Download, CheckCircle, HelpCircle, ShieldCheck } from 'lucide-react';
+import { User, Wallet, Globe, Heart, FileText, ArrowLeft, Phone, Info, Compass, Link2, Download, CheckCircle, HelpCircle, ShieldCheck, Check } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 import ReferralCard from '@/components/ReferralCard';
 
 import { useAuth } from '@/contexts/AuthContext';
@@ -19,6 +21,7 @@ import PackageManagement from '@/components/PackageManagement';
 import ShareLinkManager from '@/components/ShareLinkManager';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useSectionStatus } from '@/hooks/useSectionStatus';
 import { DashboardOnboardingTour, triggerDashboardTour } from '@/components/DashboardOnboardingTour';
@@ -40,7 +43,7 @@ const infoSections = [
 const allSections = [...dataSections, ...infoSections];
 
 const VorsorgeModule = () => {
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const { language } = useLanguage();
   const { activeProfile } = useProfiles();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -48,6 +51,8 @@ const VorsorgeModule = () => {
   const [tourKey, setTourKey] = useState(0);
   const [showCelebration, setShowCelebration] = useState(false);
   const [showShareManager, setShowShareManager] = useState(false);
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const [upgradeLoading, setUpgradeLoading] = useState(false);
   const isMobile = useIsMobile();
   const { sectionStatus, sectionCompletion, progressPercent, filledCount, totalCount, isComplete, refetch, loading: statusLoading } = useSectionStatus();
   const previousProfileId = useRef<string | null>(null);
@@ -63,6 +68,9 @@ const VorsorgeModule = () => {
     }
   }, [isComplete, user, statusLoading]);
 
+  const isAnkerOnly = profile?.purchased_tier === 'anker' || (!profile?.purchased_tier && profile?.has_paid);
+  const upgradeKey = user ? `upgrade_trigger_shown_${user.id}` : '';
+
   const dismissCelebration = (openShare?: boolean) => {
     if (user) {
       localStorage.setItem(`vorsorge_complete_celebrated_${user.id}`, 'true');
@@ -70,6 +78,30 @@ const VorsorgeModule = () => {
     setShowCelebration(false);
     if (openShare) {
       setShowShareManager(true);
+    }
+    // Show upgrade modal after celebration for Anker-only users
+    if (isAnkerOnly && user && !localStorage.getItem(upgradeKey)) {
+      setTimeout(() => setShowUpgradeModal(true), 1500);
+    }
+  };
+
+  const dismissUpgradeModal = () => {
+    if (user) localStorage.setItem(upgradeKey, 'true');
+    setShowUpgradeModal(false);
+  };
+
+  const handleUpgradeClick = async () => {
+    setUpgradeLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('create-payment', {
+        body: { plan: 'plus' },
+      });
+      if (error) throw error;
+      if (data?.url) window.location.href = data.url;
+    } catch (e) {
+      toast.error(language === 'de' ? 'Fehler beim Starten des Checkouts' : 'Error starting checkout');
+    } finally {
+      setUpgradeLoading(false);
     }
   };
 
@@ -398,6 +430,47 @@ const VorsorgeModule = () => {
           <ShareLinkManager />
         </div>
       )}
+
+      {/* Contextual Upgrade Modal for Anker users after 100% */}
+      <Dialog open={showUpgradeModal} onOpenChange={(open) => { if (!open) dismissUpgradeModal(); }}>
+        <DialogContent className="max-w-md">
+          <DialogHeader className="text-center items-center">
+            <CheckCircle className="h-8 w-8 text-primary mx-auto mb-2" />
+            <DialogTitle className="text-xl text-center">
+              {language === 'de' ? 'Deine Vorsorge ist vollständig.' : 'Your planning is complete.'}
+            </DialogTitle>
+          </DialogHeader>
+          <div className="border-t border-border my-2" />
+          <p className="text-sm text-muted-foreground text-center">
+            {language === 'de'
+              ? 'Was passiert wenn sich etwas ändert? Wenn ein Elternteil Pflege braucht oder du selbst mit einer Diagnose konfrontiert wirst — Lebensanker ist dann mehr als ein Archiv.'
+              : 'What happens when things change? When a parent needs care or you face a diagnosis — Lebensanker becomes more than an archive.'}
+          </p>
+          <div className="space-y-2 mt-4">
+            {[
+              { de: 'Pflegetagebuch für Angehörige', en: 'Care journal for family members' },
+              { de: 'Täglicher Symptom-Check-in für dich', en: 'Daily symptom check-in for you' },
+              { de: 'Arztberichte automatisch erstellt', en: 'Doctor reports created automatically' },
+            ].map((feat, i) => (
+              <div key={i} className="flex items-center gap-2">
+                <Check className="h-3.5 w-3.5 text-primary flex-shrink-0" />
+                <span className="text-sm text-foreground">{feat[language]}</span>
+              </div>
+            ))}
+          </div>
+          <p className="text-center text-sm text-muted-foreground mt-4">
+            {language === 'de' ? 'Ab €9/Monat · 14 Tage kostenlos testen' : 'From €9/month · 14-day free trial'}
+          </p>
+          <Button onClick={handleUpgradeClick} disabled={upgradeLoading} className="w-full rounded-xl py-3 font-medium mt-2">
+            {upgradeLoading
+              ? (language === 'de' ? 'Wird geladen…' : 'Loading…')
+              : (language === 'de' ? '14 Tage kostenlos testen →' : '14-day free trial →')}
+          </Button>
+          <button onClick={dismissUpgradeModal} className="text-muted-foreground text-sm text-center w-full mt-1 hover:text-foreground transition-colors">
+            {language === 'de' ? 'Vielleicht später' : 'Maybe later'}
+          </button>
+        </DialogContent>
+      </Dialog>
     </>
   );
 };
