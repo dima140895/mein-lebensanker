@@ -13,6 +13,7 @@ import { Progress } from '@/components/ui/progress';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { relativesDatum } from '@/lib/utils';
 import type { DashboardModule } from './DashboardSidebar';
 import WeeklySummary from './WeeklySummary';
 
@@ -58,6 +59,7 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
   const [lastPflege, setLastPflege] = useState<any>(null);
   const [pflegePersonenNames, setPflegePersonenNames] = useState<string[]>([]);
   const [todayCheckin, setTodayCheckin] = useState<any>(null);
+  const [lastCheckin, setLastCheckin] = useState<any>(null);
   const [checkinCount, setCheckinCount] = useState(0);
   const [dataLoading, setDataLoading] = useState(true);
   const [showEncryptionSetup, setShowEncryptionSetup] = useState(false);
@@ -81,16 +83,18 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
       const shareTokenRes = await supabase.from('share_tokens').select('id').eq('user_id', user.id).eq('is_active', true).limit(1);
       setHasShareToken((shareTokenRes.data?.length ?? 0) > 0);
       if (isPlusOrHigher) {
-        const [pflegeRes, checkinRes, checkinCountRes, pflegePersonenRes] = await Promise.all([
+        const [pflegeRes, checkinRes, checkinCountRes, pflegePersonenRes, lastCheckinRes] = await Promise.all([
           supabase.from('pflege_eintraege').select('eintrags_datum,stimmung,person_name').eq('user_id', user.id).order('eintrags_datum', { ascending: false }).limit(1),
           supabase.from('symptom_checkins').select('energie,stimmung,checkin_datum').eq('user_id', user.id).eq('checkin_datum', new Date().toISOString().split('T')[0]).limit(1),
           supabase.from('symptom_checkins').select('id', { count: 'exact', head: true }).eq('user_id', user.id),
           (supabase as any).from('pflege_personen').select('name').eq('user_id', user.id).order('created_at', { ascending: true }),
+          supabase.from('symptom_checkins').select('checkin_datum,energie').eq('user_id', user.id).order('checkin_datum', { ascending: false }).limit(1),
         ]);
         setLastPflege(pflegeRes.data?.[0] || null);
         setTodayCheckin(checkinRes.data?.[0] || null);
         setCheckinCount(checkinCountRes.count ?? 0);
         setPflegePersonenNames((pflegePersonenRes.data || []).map((p: any) => p.name));
+        setLastCheckin(lastCheckinRes.data?.[0] || null);
       }
       setDataLoading(false);
     };
@@ -257,41 +261,69 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
 
   const renderVorsorgeCard = (delay: number) => {
     const passive = isPassive('vorsorge');
+    const percent = progressPercent;
+    // State A: nothing filled, State B: in progress, State C: complete
+    const stateA = !statusLoading && filledCount === 0;
+    const stateC = !statusLoading && isComplete;
+    const stateB = !statusLoading && !stateA && !stateC;
+
+    const cardBorder = stateC
+      ? 'border border-[#C8DDD1] bg-[#F8FBF9]'
+      : stateB
+      ? 'border border-[#E5E0D8] border-l-2 border-l-[#437059]'
+      : 'border border-[#E5E0D8]';
+    const badgeBg = stateC ? 'bg-[#E8F0EC]' : stateA ? 'bg-muted' : 'bg-primary/10';
+
     return (
       <motion.div key="vorsorge" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay }}>
-          <Card
-          className={`rounded-2xl shadow-card hover:-translate-y-0.5 hover:shadow-soft transition-all duration-200 cursor-pointer h-full border border-[#E5E0D8] bg-card`}
+        <Card
+          className={`rounded-2xl shadow-card hover:-translate-y-0.5 hover:shadow-soft transition-all duration-200 cursor-pointer h-full min-h-[120px] ${cardBorder} bg-card ${stateC ? '!bg-[#F8FBF9]' : ''}`}
           onClick={() => onNavigate('vorsorge')}
         >
           <CardHeader className="pb-2">
             <div className="flex items-center gap-3">
-              <div className={`h-10 w-10 rounded-lg flex items-center justify-center ${passive ? 'bg-muted' : 'bg-primary/10'}`}>
+              <div className={`h-10 w-10 rounded-lg flex items-center justify-center ${passive ? 'bg-muted' : badgeBg}`}>
                 <ClipboardList className={`h-5 w-5 ${passive ? 'text-muted-foreground' : 'text-primary'}`} />
               </div>
               <div className="flex-1">
                 <CardTitle className={`text-base font-semibold font-body ${passive ? 'text-foreground' : 'text-forest'}`}>{tx.vorsorge}</CardTitle>
-                {passive ? (
-                  <span className="text-sm text-muted-foreground mt-1">{tx.vorsorgePassive}</span>
-                ) : (
-                  <span className="text-xs text-charcoal-light font-body">
-                    {statusLoading ? '...' : isComplete ? tx.complete : `${filledCount} ${tx.sectionOf} ${totalCount}`}
-                  </span>
-                )}
               </div>
-              {!passive && isComplete && <CheckCircle2 className="h-5 w-5 text-primary" />}
             </div>
           </CardHeader>
-          <CardContent className="space-y-3">
+          <CardContent className="space-y-2">
             {passive ? (
-              <span className="text-xs text-muted-foreground hover:text-foreground transition-colors">{tx.discover}</span>
+              <>
+                <p className="text-sm text-muted-foreground">{tx.vorsorgePassive}</p>
+                <span className="text-xs text-muted-foreground hover:text-foreground transition-colors">{tx.discover} →</span>
+              </>
+            ) : statusLoading ? (
+              <p className="text-sm text-muted-foreground">...</p>
+            ) : stateA ? (
+              <>
+                <p className="text-sm text-muted-foreground">{tx.vorsorgePassive}</p>
+                <span className="text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer">{tx.discover} →</span>
+              </>
+            ) : stateB ? (
+              <>
+                <p className="text-sm text-muted-foreground">
+                  {filledCount} {tx.sectionOf} {totalCount} {language === 'de' ? 'Sektionen ausgefüllt' : 'sections completed'}
+                </p>
+                <div className="mt-3 bg-[#E5E0D8] h-1.5 rounded-full overflow-hidden">
+                  <div className="bg-[#437059] h-1.5 rounded-full transition-all duration-500" style={{ width: `${percent}%` }} />
+                </div>
+                <span className="text-sm text-[#437059] font-medium mt-3 inline-block cursor-pointer">
+                  {language === 'de' ? 'Weiter ausfüllen →' : 'Continue →'}
+                </span>
+              </>
             ) : (
               <>
-                <Progress value={statusLoading ? 0 : progressPercent} className="h-2" />
-                {!isComplete && (
-                  <Button variant="ghost" size="sm" className="w-full text-primary hover:text-primary hover:bg-primary/5 gap-1.5 min-h-[44px]">
-                    {tx.continueBtn} <ArrowRight className="h-3.5 w-3.5" />
-                  </Button>
-                )}
+                <div className="flex items-center gap-1.5">
+                  <CheckCircle className="h-4 w-4 text-[#437059]" />
+                  <span className="text-sm text-[#437059] font-medium">{language === 'de' ? 'Vollständig' : 'Complete'}</span>
+                </div>
+                <span className="text-sm text-muted-foreground mt-2 inline-block cursor-pointer">
+                  {language === 'de' ? 'Ansehen →' : 'View →'}
+                </span>
               </>
             )}
           </CardContent>
@@ -388,51 +420,82 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
 
   const renderKrankheitCard = (delay: number) => {
     const passive = isPassive('krankheit');
+    // State A: never used, State B: used but not today, State C: checked in today
+    const stateA = !dataLoading && checkinCount === 0;
+    const stateC = !dataLoading && !!todayCheckin;
+    const stateB = !dataLoading && !stateA && !stateC;
+
+    const cardBorder = stateC
+      ? 'border border-[#C8DDD1] bg-[#F8FBF9]'
+      : stateB
+      ? 'border border-[#E5E0D8] border-l-2 border-l-[#437059]'
+      : 'border border-[#E5E0D8]';
+    const badgeBg = stateC ? 'bg-[#E8F0EC]' : stateA ? 'bg-muted' : 'bg-sage-light';
+
     return (
       <motion.div key="krankheit" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay }}>
         {isPlusOrHigher ? (
           <Card
-            className={`rounded-2xl shadow-card hover:-translate-y-0.5 hover:shadow-soft transition-all duration-200 cursor-pointer h-full border border-[#E5E0D8] bg-card`}
-            onClick={() => onNavigate('krankheit')}
+            className={`rounded-2xl shadow-card hover:-translate-y-0.5 hover:shadow-soft transition-all duration-200 cursor-pointer h-full min-h-[120px] ${cardBorder} ${stateC ? '!bg-[#F8FBF9]' : 'bg-card'}`}
+            onClick={() => {
+              if (stateC) {
+                setSearchParams({ module: 'krankheit', tab: 'verlauf' });
+              } else {
+                onNavigate('krankheit');
+              }
+            }}
           >
             <CardHeader className="pb-2">
               <div className="flex items-center gap-3">
-                <div className={`h-10 w-10 rounded-lg flex items-center justify-center ${passive ? 'bg-muted' : 'bg-sage-light'}`}>
+                <div className={`h-10 w-10 rounded-lg flex items-center justify-center ${passive ? 'bg-muted' : badgeBg}`}>
                   <Stethoscope className={`h-5 w-5 ${passive ? 'text-muted-foreground' : 'text-sage-dark'}`} />
                 </div>
-                <div>
+                <div className="flex-1">
                   <CardTitle className={`text-base font-semibold font-body ${passive ? 'text-foreground' : 'text-forest'}`}>{tx.krankheit}</CardTitle>
-                  {passive && <p className="text-sm text-muted-foreground mt-1">{tx.krankheitPassive}</p>}
                 </div>
               </div>
             </CardHeader>
-            <CardContent className="space-y-3">
+            <CardContent className="space-y-2">
               {passive ? (
-                <span className="text-xs text-muted-foreground hover:text-foreground transition-colors">{tx.discover}</span>
+                <>
+                  <p className="text-sm text-muted-foreground">{tx.krankheitPassive}</p>
+                  <span className="text-xs text-muted-foreground hover:text-foreground transition-colors">{tx.discover} →</span>
+                </>
+              ) : dataLoading ? (
+                <p className="text-sm text-muted-foreground">...</p>
+              ) : stateA ? (
+                <>
+                  <p className="text-sm text-muted-foreground">{tx.krankheitPassive}</p>
+                  <span className="text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer">{tx.discover} →</span>
+                </>
+              ) : stateB ? (
+                <>
+                  <p className="text-sm text-muted-foreground">
+                    {language === 'de' ? 'Heute noch kein Check-in' : 'No check-in today yet'}
+                  </p>
+                  {lastCheckin && (
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {language === 'de' ? 'Zuletzt' : 'Last'}: {relativesDatum(lastCheckin.checkin_datum)}
+                    </p>
+                  )}
+                  <span className="text-sm text-[#437059] font-medium mt-2 inline-block cursor-pointer">
+                    {language === 'de' ? 'Check-in starten →' : 'Start check-in →'}
+                  </span>
+                </>
               ) : (
                 <>
-                  {dataLoading ? (
-                    <p className="text-sm text-muted-foreground">...</p>
-                  ) : todayCheckin ? (
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <CheckCircle2 className="h-4 w-4 text-primary" />
-                        <span className="text-sm font-medium">{tx.krankheitDone}</span>
-                      </div>
-                      <div className="flex items-center gap-1.5 text-sm">
-                        <Zap className="h-3.5 w-3.5 text-accent" />
-                        <span className="font-medium">{todayCheckin.energie}/10</span>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="flex items-center gap-2">
-                      <Circle className="h-4 w-4 text-muted-foreground/40" />
-                      <span className="text-sm text-muted-foreground">{tx.krankheitPending}</span>
-                    </div>
-                  )}
-                  <Button variant="ghost" size="sm" className="w-full text-sage-dark hover:text-sage-dark hover:bg-sage-light/50 gap-1.5 min-h-[44px] font-body">
-                    {todayCheckin ? tx.krankheit : tx.krankheitStart} <ArrowRight className="h-3.5 w-3.5" />
-                  </Button>
+                  <div className="flex items-center gap-1.5">
+                    <CheckCircle className="h-4 w-4 text-[#437059]" />
+                    <span className="text-sm text-[#437059] font-medium">
+                      {language === 'de' ? 'Heute erledigt' : 'Done today'}
+                    </span>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {language === 'de' ? 'Energie' : 'Energy'} {todayCheckin.energie}/5
+                  </p>
+                  <span className="text-sm text-muted-foreground mt-2 inline-block cursor-pointer">
+                    {language === 'de' ? 'Verlauf ansehen →' : 'View history →'}
+                  </span>
                 </>
               )}
             </CardContent>
