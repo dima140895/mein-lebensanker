@@ -1,13 +1,18 @@
 import { useState, useEffect } from 'react';
-import { Users, Loader2 } from 'lucide-react';
+import { Users } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { supabase } from '@/integrations/supabase/client';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import FamilieMitglieder from './FamilieMitglieder';
 import FamilieSharedView from './FamilieSharedView';
+import FamilieAktivitaet from './FamilieAktivitaet';
 
-const FamilieModule = () => {
+interface FamilieModuleProps {
+  onNavigate?: (module: string) => void;
+}
+
+const FamilieModule = ({ onNavigate }: FamilieModuleProps) => {
   const { user } = useAuth();
   const { language } = useLanguage();
   const [activeTab, setActiveTab] = useState('mitglieder');
@@ -18,16 +23,17 @@ const FamilieModule = () => {
       title: 'Familienfreigabe',
       mitglieder: 'Meine Familie',
       shared: 'Geteilte Ansicht',
+      aktivitaet: 'Aktivität',
     },
     en: {
       title: 'Family Sharing',
       mitglieder: 'My Family',
       shared: 'Shared View',
+      aktivitaet: 'Activity',
     },
   };
   const texts = t[language];
 
-  // Check if user has been invited to any family
   useEffect(() => {
     const checkShared = async () => {
       if (!user) return;
@@ -51,7 +57,7 @@ const FamilieModule = () => {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="w-full grid grid-cols-2">
+        <TabsList className="w-full grid grid-cols-3">
           <TabsTrigger value="mitglieder" className="text-xs sm:text-sm">{texts.mitglieder}</TabsTrigger>
           <TabsTrigger value="shared" className="text-xs sm:text-sm">
             {texts.shared}
@@ -61,6 +67,7 @@ const FamilieModule = () => {
               </span>
             )}
           </TabsTrigger>
+          <TabsTrigger value="aktivitaet" className="text-xs sm:text-sm">{texts.aktivitaet}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="mitglieder" className="mt-6">
@@ -69,9 +76,13 @@ const FamilieModule = () => {
         <TabsContent value="shared" className="mt-6">
           <FamilieSharedView sharedOwners={sharedOwners} />
         </TabsContent>
+        <TabsContent value="aktivitaet" className="mt-6">
+          <FamilieAktivitaet onNavigate={onNavigate} />
+        </TabsContent>
       </Tabs>
     </div>
   );
 };
 
 export default FamilieModule;
+
