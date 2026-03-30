@@ -54,7 +54,11 @@ interface SavedPflegegrad {
 
 const PFLEGE_SECTION_KEY_BASE = '_pflege_pflegegrad';
 
-const PflegegradTab = () => {
+interface PflegegradTabProps {
+  activePersonName?: string;
+}
+
+const PflegegradTab = ({ activePersonName = '' }: PflegegradTabProps) => {
   const { language } = useLanguage();
   const { user } = useAuth();
   const isDE = language === 'de';
@@ -62,7 +66,7 @@ const PflegegradTab = () => {
   const [savedGrad, setSavedGrad] = useState<SavedPflegegrad | null>(null);
   const [loading, setLoading] = useState(true);
   const [mode, setMode] = useState<'overview' | 'manual' | 'rechner' | null>(null);
-  const [selectedPerson, setSelectedPerson] = useState('');
+  const selectedPerson = activePersonName;
 
   const sectionKey = selectedPerson
     ? `${PFLEGE_SECTION_KEY_BASE}_${selectedPerson.replace(/[^a-zA-Z0-9äöüÄÖÜß_-]/g, '_')}`

@@ -31,7 +31,11 @@ interface PflegeEintrag {
   created_at: string;
 }
 
-const PflegeTagebuch = () => {
+interface PflegeTagebuchProps {
+  activePersonName?: string;
+}
+
+const PflegeTagebuch = ({ activePersonName = '' }: PflegeTagebuchProps) => {
   const { user } = useAuth();
   const { language } = useLanguage();
   const queryClient = useQueryClient();
@@ -39,7 +43,7 @@ const PflegeTagebuch = () => {
   const [editingEntry, setEditingEntry] = useState<PflegeEintrag | null>(null);
   const [expandedEntry, setExpandedEntry] = useState<string | null>(null);
   const [showReferral, setShowReferral] = useState(false);
-  const [selectedPerson, setSelectedPerson] = useState('');
+  const selectedPerson = activePersonName;
   // Form state
   const [personName, setPersonName] = useState('');
   const [stimmung, setStimmung] = useState(3);

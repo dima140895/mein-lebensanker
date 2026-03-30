@@ -19,12 +19,16 @@ const PERIOD_OPTIONS = [
   { weeks: 8, de: 'Letzte 8 Wochen', en: 'Last 8 weeks' },
 ];
 
-const MdkBericht = () => {
+interface MdkBerichtProps {
+  activePersonName?: string;
+}
+
+const MdkBericht = ({ activePersonName = '' }: MdkBerichtProps) => {
   const { user } = useAuth();
   const { language } = useLanguage();
   const printRef = useRef<HTMLDivElement>(null);
   const [periodWeeks, setPeriodWeeks] = useState(4);
-  const [selectedPerson, setSelectedPerson] = useState('');
+  const selectedPerson = activePersonName;
 
   const startDate = useMemo(() => format(subWeeks(new Date(), periodWeeks), 'yyyy-MM-dd'), [periodWeeks]);
   const endDate = format(new Date(), 'yyyy-MM-dd');

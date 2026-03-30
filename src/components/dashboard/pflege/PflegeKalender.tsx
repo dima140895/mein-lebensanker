@@ -22,9 +22,10 @@ interface CalendarEntry {
 
 interface PflegeKalenderProps {
   onSelectDate?: (date: string) => void;
+  activePersonName?: string;
 }
 
-const PflegeKalender = ({ onSelectDate }: PflegeKalenderProps) => {
+const PflegeKalender = ({ onSelectDate, activePersonName = '' }: PflegeKalenderProps) => {
   const { user } = useAuth();
   const { language } = useLanguage();
   const [currentMonth, setCurrentMonth] = useState(new Date());
