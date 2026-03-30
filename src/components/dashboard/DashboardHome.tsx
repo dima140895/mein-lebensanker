@@ -196,6 +196,10 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
       upgrade: 'Jetzt upgraden',
       locked: 'In Anker Plus enthalten',
       sectionOf: 'von',
+      discover: 'Entdecken →',
+      pflegePassive: 'Pflegeeinträge und Verlauf dokumentieren.',
+      krankheitPassive: 'Symptome und Verlauf dokumentieren.',
+      vorsorgePassive: 'Vorsorge-Dokumente ausfüllen und sichern.',
     },
     en: {
       subtitle: 'Here\'s your current status.',
@@ -217,6 +221,10 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
       upgrade: 'Upgrade now',
       locked: 'Included in Anker Plus',
       sectionOf: 'of',
+      discover: 'Discover →',
+      pflegePassive: 'Document care entries and progress.',
+      krankheitPassive: 'Document symptoms and progress.',
+      vorsorgePassive: 'Fill out and secure planning documents.',
     },
   };
   const tx = t[language];
@@ -229,150 +237,207 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
     return cards;
   }, [onboardingFocus]);
 
-  const renderVorsorgeCard = (delay: number) => (
-    <motion.div key="vorsorge" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay }}>
-      <Card className="border-l-4 border-l-primary bg-card rounded-2xl shadow-card hover:-translate-y-0.5 hover:shadow-soft transition-all duration-200 cursor-pointer h-full" onClick={() => onNavigate('vorsorge')}>
-        <CardHeader className="pb-2">
-          <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
-              <ClipboardList className="h-5 w-5 text-primary" />
-            </div>
-            <div className="flex-1">
-               <CardTitle className="text-base font-semibold font-body text-forest">{tx.vorsorge}</CardTitle>
-              <span className="text-xs text-charcoal-light font-body">
-                {statusLoading ? '...' : isComplete ? tx.complete : `${filledCount} ${tx.sectionOf} ${totalCount}`}
-              </span>
-            </div>
-            {isComplete && <CheckCircle2 className="h-5 w-5 text-primary" />}
-          </div>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          <Progress value={statusLoading ? 0 : progressPercent} className="h-2" />
-          {!isComplete && (
-             <Button variant="ghost" size="sm" className="w-full text-primary hover:text-primary hover:bg-primary/5 gap-1.5 min-h-[44px]">
-               {tx.continueBtn} <ArrowRight className="h-3.5 w-3.5" />
-             </Button>
-          )}
-        </CardContent>
-      </Card>
-    </motion.div>
-  );
+  const isPassive = (module: string) => {
+    if (!onboardingFocus || onboardingFocus === 'vorsorge') return false;
+    return module !== onboardingFocus;
+  };
 
-  const renderPflegeCard = (delay: number) => (
-    <motion.div key="pflege" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay }}>
-      {isPlusOrHigher ? (
-        <Card className="border-l-4 border-l-accent bg-card rounded-2xl shadow-card hover:-translate-y-0.5 hover:shadow-soft transition-all duration-200 cursor-pointer h-full" onClick={() => onNavigate('pflege')}>
+  const renderVorsorgeCard = (delay: number) => {
+    const passive = isPassive('vorsorge');
+    return (
+      <motion.div key="vorsorge" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay }}>
+        <Card
+          className={`rounded-2xl shadow-card hover:-translate-y-0.5 hover:shadow-soft transition-all duration-200 cursor-pointer h-full ${
+            passive ? 'border border-[#E5E0D8] bg-card' : 'border-l-4 border-l-primary bg-card'
+          }`}
+          onClick={() => onNavigate('vorsorge')}
+        >
           <CardHeader className="pb-2">
             <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-lg bg-accent/10 flex items-center justify-center">
-                <HeartHandshake className="h-5 w-5 text-accent" />
+              <div className={`h-10 w-10 rounded-lg flex items-center justify-center ${passive ? 'bg-muted' : 'bg-primary/10'}`}>
+                <ClipboardList className={`h-5 w-5 ${passive ? 'text-muted-foreground' : 'text-primary'}`} />
               </div>
-              <CardTitle className="text-base font-semibold font-body text-forest">{tx.pflege}</CardTitle>
+              <div className="flex-1">
+                <CardTitle className={`text-base font-semibold font-body ${passive ? 'text-foreground' : 'text-forest'}`}>{tx.vorsorge}</CardTitle>
+                {passive ? (
+                  <span className="text-sm text-muted-foreground mt-1">{tx.vorsorgePassive}</span>
+                ) : (
+                  <span className="text-xs text-charcoal-light font-body">
+                    {statusLoading ? '...' : isComplete ? tx.complete : `${filledCount} ${tx.sectionOf} ${totalCount}`}
+                  </span>
+                )}
+              </div>
+              {!passive && isComplete && <CheckCircle2 className="h-5 w-5 text-primary" />}
             </div>
           </CardHeader>
           <CardContent className="space-y-3">
-            {dataLoading ? (
-              <p className="text-sm text-muted-foreground">...</p>
-            ) : lastPflege ? (
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-xs text-muted-foreground">{tx.pflegeLastEntry}</p>
-                  <p className="text-sm font-medium">{new Date(lastPflege.eintrags_datum).toLocaleDateString(language === 'de' ? 'de-DE' : 'en-US')}</p>
-                </div>
-                <span className="text-2xl">{STIMMUNG_EMOJI[lastPflege.stimmung] || '😐'}</span>
-              </div>
+            {passive ? (
+              <span className="text-xs text-muted-foreground hover:text-foreground transition-colors">{tx.discover}</span>
             ) : (
-              <p className="text-sm text-muted-foreground">{tx.pflegeEmpty}</p>
+              <>
+                <Progress value={statusLoading ? 0 : progressPercent} className="h-2" />
+                {!isComplete && (
+                  <Button variant="ghost" size="sm" className="w-full text-primary hover:text-primary hover:bg-primary/5 gap-1.5 min-h-[44px]">
+                    {tx.continueBtn} <ArrowRight className="h-3.5 w-3.5" />
+                  </Button>
+                )}
+              </>
             )}
-            <Button variant="ghost" size="sm" className="w-full text-accent hover:text-accent hover:bg-accent/5 gap-1.5 min-h-[44px]">
-              {tx.pflegeAdd} <ArrowRight className="h-3.5 w-3.5" />
-            </Button>
           </CardContent>
         </Card>
-      ) : (
-        <Card className="border-l-4 border-l-accent/30 bg-card rounded-2xl shadow-card h-full opacity-80 cursor-pointer" onClick={() => onLockedClick('pflege')}>
-          <CardHeader className="pb-2">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-lg bg-muted flex items-center justify-center">
-                  <HeartHandshake className="h-5 w-5 text-muted-foreground/50" />
-                </div>
-                <CardTitle className="text-base font-semibold font-body text-charcoal-light/60">{tx.pflege}</CardTitle>
-              </div>
-              <Lock className="h-4 w-4 text-muted-foreground/40" />
-            </div>
-          </CardHeader>
-          <CardContent>
-            <p className="text-xs text-muted-foreground/60 mb-2">{tx.locked}</p>
-            <Button variant="outline" size="sm" className="text-xs h-7 gap-1 border-accent/30 text-accent">
-              {tx.pflegeUnlock} <ArrowRight className="h-3 w-3" />
-            </Button>
-          </CardContent>
-        </Card>
-      )}
-    </motion.div>
-  );
+      </motion.div>
+    );
+  };
 
-  const renderKrankheitCard = (delay: number) => (
-    <motion.div key="krankheit" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay }}>
-      {isPlusOrHigher ? (
-        <Card className="border-l-4 border-l-sage bg-card rounded-2xl shadow-card hover:-translate-y-0.5 hover:shadow-soft transition-all duration-200 cursor-pointer h-full" onClick={() => onNavigate('krankheit')}>
-          <CardHeader className="pb-2">
-             <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-lg bg-sage-light flex items-center justify-center">
-                <Stethoscope className="h-5 w-5 text-sage-dark" />
-              </div>
-              <CardTitle className="text-base font-semibold font-body text-forest">{tx.krankheit}</CardTitle>
-            </div>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            {dataLoading ? (
-              <p className="text-sm text-muted-foreground">...</p>
-            ) : todayCheckin ? (
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="h-4 w-4 text-primary" />
-                  <span className="text-sm font-medium">{tx.krankheitDone}</span>
-                </div>
-                <div className="flex items-center gap-1.5 text-sm">
-                  <Zap className="h-3.5 w-3.5 text-accent" />
-                  <span className="font-medium">{todayCheckin.energie}/10</span>
-                </div>
-              </div>
-            ) : (
-              <div className="flex items-center gap-2">
-                <Circle className="h-4 w-4 text-muted-foreground/40" />
-                <span className="text-sm text-muted-foreground">{tx.krankheitPending}</span>
-              </div>
-            )}
-             <Button variant="ghost" size="sm" className="w-full text-sage-dark hover:text-sage-dark hover:bg-sage-light/50 gap-1.5 min-h-[44px] font-body">
-              {todayCheckin ? tx.krankheit : tx.krankheitStart} <ArrowRight className="h-3.5 w-3.5" />
-             </Button>
-          </CardContent>
-        </Card>
-      ) : (
-        <Card className="border-l-4 border-l-sage/30 bg-card rounded-2xl shadow-card h-full opacity-80 cursor-pointer" onClick={() => onLockedClick('krankheit')}>
-          <CardHeader className="pb-2">
-            <div className="flex items-center justify-between">
+  const renderPflegeCard = (delay: number) => {
+    const passive = isPassive('pflege');
+    return (
+      <motion.div key="pflege" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay }}>
+        {isPlusOrHigher ? (
+          <Card
+            className={`rounded-2xl shadow-card hover:-translate-y-0.5 hover:shadow-soft transition-all duration-200 cursor-pointer h-full ${
+              passive ? 'border border-[#E5E0D8] bg-card' : 'border-l-4 border-l-accent bg-card'
+            }`}
+            onClick={() => onNavigate('pflege')}
+          >
+            <CardHeader className="pb-2">
               <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-lg bg-muted flex items-center justify-center">
-                  <Stethoscope className="h-5 w-5 text-muted-foreground/50" />
+                <div className={`h-10 w-10 rounded-lg flex items-center justify-center ${passive ? 'bg-muted' : 'bg-accent/10'}`}>
+                  <HeartHandshake className={`h-5 w-5 ${passive ? 'text-muted-foreground' : 'text-accent'}`} />
                 </div>
-                <CardTitle className="text-base font-semibold font-body text-charcoal-light/60">{tx.krankheit}</CardTitle>
+                <div>
+                  <CardTitle className={`text-base font-semibold font-body ${passive ? 'text-foreground' : 'text-forest'}`}>{tx.pflege}</CardTitle>
+                  {passive && <p className="text-sm text-muted-foreground mt-1">{tx.pflegePassive}</p>}
+                </div>
               </div>
-              <Lock className="h-4 w-4 text-muted-foreground/40" />
-            </div>
-          </CardHeader>
-          <CardContent>
-            <p className="text-xs text-muted-foreground/60 mb-2">{tx.locked}</p>
-             <Button variant="outline" size="sm" className="text-xs h-7 gap-1 border-sage/30 text-sage-dark font-body min-h-[44px]">
-               {tx.krankheitUnlock} <ArrowRight className="h-3 w-3" />
-            </Button>
-          </CardContent>
-        </Card>
-      )}
-    </motion.div>
-  );
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {passive ? (
+                <span className="text-xs text-muted-foreground hover:text-foreground transition-colors">{tx.discover}</span>
+              ) : (
+                <>
+                  {dataLoading ? (
+                    <p className="text-sm text-muted-foreground">...</p>
+                  ) : lastPflege ? (
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-xs text-muted-foreground">{tx.pflegeLastEntry}</p>
+                        <p className="text-sm font-medium">{new Date(lastPflege.eintrags_datum).toLocaleDateString(language === 'de' ? 'de-DE' : 'en-US')}</p>
+                      </div>
+                      <span className="text-2xl">{STIMMUNG_EMOJI[lastPflege.stimmung] || '😐'}</span>
+                    </div>
+                  ) : (
+                    <p className="text-sm text-muted-foreground">{tx.pflegeEmpty}</p>
+                  )}
+                  <Button variant="ghost" size="sm" className="w-full text-accent hover:text-accent hover:bg-accent/5 gap-1.5 min-h-[44px]">
+                    {tx.pflegeAdd} <ArrowRight className="h-3.5 w-3.5" />
+                  </Button>
+                </>
+              )}
+            </CardContent>
+          </Card>
+        ) : (
+          <Card className="border-l-4 border-l-accent/30 bg-card rounded-2xl shadow-card h-full opacity-80 cursor-pointer" onClick={() => onLockedClick('pflege')}>
+            <CardHeader className="pb-2">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="h-10 w-10 rounded-lg bg-muted flex items-center justify-center">
+                    <HeartHandshake className="h-5 w-5 text-muted-foreground/50" />
+                  </div>
+                  <CardTitle className="text-base font-semibold font-body text-charcoal-light/60">{tx.pflege}</CardTitle>
+                </div>
+                <Lock className="h-4 w-4 text-muted-foreground/40" />
+              </div>
+            </CardHeader>
+            <CardContent>
+              <p className="text-xs text-muted-foreground/60 mb-2">{tx.locked}</p>
+              <Button variant="outline" size="sm" className="text-xs h-7 gap-1 border-accent/30 text-accent">
+                {tx.pflegeUnlock} <ArrowRight className="h-3 w-3" />
+              </Button>
+            </CardContent>
+          </Card>
+        )}
+      </motion.div>
+    );
+  };
+
+  const renderKrankheitCard = (delay: number) => {
+    const passive = isPassive('krankheit');
+    return (
+      <motion.div key="krankheit" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay }}>
+        {isPlusOrHigher ? (
+          <Card
+            className={`rounded-2xl shadow-card hover:-translate-y-0.5 hover:shadow-soft transition-all duration-200 cursor-pointer h-full ${
+              passive ? 'border border-[#E5E0D8] bg-card' : 'border-l-4 border-l-sage bg-card'
+            }`}
+            onClick={() => onNavigate('krankheit')}
+          >
+            <CardHeader className="pb-2">
+              <div className="flex items-center gap-3">
+                <div className={`h-10 w-10 rounded-lg flex items-center justify-center ${passive ? 'bg-muted' : 'bg-sage-light'}`}>
+                  <Stethoscope className={`h-5 w-5 ${passive ? 'text-muted-foreground' : 'text-sage-dark'}`} />
+                </div>
+                <div>
+                  <CardTitle className={`text-base font-semibold font-body ${passive ? 'text-foreground' : 'text-forest'}`}>{tx.krankheit}</CardTitle>
+                  {passive && <p className="text-sm text-muted-foreground mt-1">{tx.krankheitPassive}</p>}
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {passive ? (
+                <span className="text-xs text-muted-foreground hover:text-foreground transition-colors">{tx.discover}</span>
+              ) : (
+                <>
+                  {dataLoading ? (
+                    <p className="text-sm text-muted-foreground">...</p>
+                  ) : todayCheckin ? (
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <CheckCircle2 className="h-4 w-4 text-primary" />
+                        <span className="text-sm font-medium">{tx.krankheitDone}</span>
+                      </div>
+                      <div className="flex items-center gap-1.5 text-sm">
+                        <Zap className="h-3.5 w-3.5 text-accent" />
+                        <span className="font-medium">{todayCheckin.energie}/10</span>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-2">
+                      <Circle className="h-4 w-4 text-muted-foreground/40" />
+                      <span className="text-sm text-muted-foreground">{tx.krankheitPending}</span>
+                    </div>
+                  )}
+                  <Button variant="ghost" size="sm" className="w-full text-sage-dark hover:text-sage-dark hover:bg-sage-light/50 gap-1.5 min-h-[44px] font-body">
+                    {todayCheckin ? tx.krankheit : tx.krankheitStart} <ArrowRight className="h-3.5 w-3.5" />
+                  </Button>
+                </>
+              )}
+            </CardContent>
+          </Card>
+        ) : (
+          <Card className="border-l-4 border-l-sage/30 bg-card rounded-2xl shadow-card h-full opacity-80 cursor-pointer" onClick={() => onLockedClick('krankheit')}>
+            <CardHeader className="pb-2">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="h-10 w-10 rounded-lg bg-muted flex items-center justify-center">
+                    <Stethoscope className="h-5 w-5 text-muted-foreground/50" />
+                  </div>
+                  <CardTitle className="text-base font-semibold font-body text-charcoal-light/60">{tx.krankheit}</CardTitle>
+                </div>
+                <Lock className="h-4 w-4 text-muted-foreground/40" />
+              </div>
+            </CardHeader>
+            <CardContent>
+              <p className="text-xs text-muted-foreground/60 mb-2">{tx.locked}</p>
+              <Button variant="outline" size="sm" className="text-xs h-7 gap-1 border-sage/30 text-sage-dark font-body min-h-[44px]">
+                {tx.krankheitUnlock} <ArrowRight className="h-3 w-3" />
+              </Button>
+            </CardContent>
+          </Card>
+        )}
+      </motion.div>
+    );
+  };
 
   const cardRenderers: Record<string, (d: number) => JSX.Element> = {
     vorsorge: renderVorsorgeCard,
