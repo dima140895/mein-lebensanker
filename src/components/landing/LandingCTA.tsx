@@ -5,7 +5,7 @@ const LandingCTA = () => {
   const navigate = useNavigate();
 
   return (
-    <section className="bg-[#2C4A3E] py-28 px-6 text-center">
+    <section className="bg-forest py-28 px-6 text-center">
       {/* Urgency label */}
       <div className="inline-flex items-center gap-2 border border-white/20 rounded-full px-3 py-1.5 mb-8">
         <Clock className="h-3 w-3 text-white/40" />
@@ -18,7 +18,7 @@ const LandingCTA = () => {
       <div className="max-w-2xl mx-auto">
         <h2 className="text-4xl md:text-5xl font-extrabold tracking-[-0.03em] leading-[1.1]">
           <span className="text-white block">Warte nicht bis</span>
-          <span className="text-[#86efac] block">jemand anderes entscheidet.</span>
+          <span className="text-emerald-300 block">jemand anderes entscheidet.</span>
         </h2>
       </div>
 
@@ -28,7 +28,7 @@ const LandingCTA = () => {
 
       <button
         onClick={() => navigate('/dashboard?register=true')}
-        className="mt-10 inline-block bg-white text-[#2C4A3E] font-semibold px-8 py-4 rounded-full text-base hover:bg-white/90 transition-all"
+        className="mt-10 inline-block bg-white text-forest font-semibold px-8 py-4 rounded-full text-base hover:bg-white/90 transition-all"
       >
         Jetzt vorbereiten
       </button>
