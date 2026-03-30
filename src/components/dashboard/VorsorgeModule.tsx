@@ -59,6 +59,13 @@ const VorsorgeModule = () => {
     user ? shouldShowModuleIntro('vorsorge', user.id, profile?.onboarding_focus) : false
   );
   const isMobile = useIsMobile();
+
+  // Listen for share dialog event from SectionNavigation
+  useEffect(() => {
+    const handler = () => setShareDialogOpen(true);
+    window.addEventListener('openShareDialog', handler);
+    return () => window.removeEventListener('openShareDialog', handler);
+  }, []);
   const { sectionStatus, sectionCompletion, progressPercent, filledCount, totalCount, isComplete, refetch, loading: statusLoading } = useSectionStatus();
   const previousProfileId = useRef<string | null>(null);
 

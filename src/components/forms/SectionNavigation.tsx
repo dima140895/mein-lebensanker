@@ -9,10 +9,9 @@ type SectionKey = typeof sectionOrder[number];
 
 interface SectionNavigationProps {
   currentSection: SectionKey;
-  onShareClick?: () => void;
 }
 
-const SectionNavigation = ({ currentSection, onShareClick }: SectionNavigationProps) => {
+const SectionNavigation = ({ currentSection }: SectionNavigationProps) => {
   const { language } = useLanguage();
   const [, setSearchParams] = useSearchParams();
 
@@ -60,18 +59,16 @@ const SectionNavigation = ({ currentSection, onShareClick }: SectionNavigationPr
   return (
     <div className="space-y-4 pt-6 mt-6 border-t border-border">
       {/* Share button — always visible */}
-      {onShareClick && (
-        <div className="flex justify-end">
-          <button
-            onClick={onShareClick}
-            className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"
-            title={language === 'de' ? 'Daten teilen' : 'Share data'}
-          >
-            <Share2 className="h-4 w-4" />
-            {language === 'de' ? 'Teilen' : 'Share'}
-          </button>
-        </div>
-      )}
+      <div className="flex justify-end">
+        <button
+          onClick={() => window.dispatchEvent(new CustomEvent('openShareDialog'))}
+          className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"
+          title={language === 'de' ? 'Daten teilen' : 'Share data'}
+        >
+          <Share2 className="h-4 w-4" />
+          {language === 'de' ? 'Teilen' : 'Share'}
+        </button>
+      </div>
 
       {/* Share CTA for last section */}
       {isLastSection && (
