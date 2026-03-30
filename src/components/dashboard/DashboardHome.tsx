@@ -83,16 +83,18 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
       const shareTokenRes = await supabase.from('share_tokens').select('id').eq('user_id', user.id).eq('is_active', true).limit(1);
       setHasShareToken((shareTokenRes.data?.length ?? 0) > 0);
       if (isPlusOrHigher) {
-        const [pflegeRes, checkinRes, checkinCountRes, pflegePersonenRes] = await Promise.all([
+        const [pflegeRes, checkinRes, checkinCountRes, pflegePersonenRes, lastCheckinRes] = await Promise.all([
           supabase.from('pflege_eintraege').select('eintrags_datum,stimmung,person_name').eq('user_id', user.id).order('eintrags_datum', { ascending: false }).limit(1),
           supabase.from('symptom_checkins').select('energie,stimmung,checkin_datum').eq('user_id', user.id).eq('checkin_datum', new Date().toISOString().split('T')[0]).limit(1),
           supabase.from('symptom_checkins').select('id', { count: 'exact', head: true }).eq('user_id', user.id),
           (supabase as any).from('pflege_personen').select('name').eq('user_id', user.id).order('created_at', { ascending: true }),
+          supabase.from('symptom_checkins').select('checkin_datum,energie').eq('user_id', user.id).order('checkin_datum', { ascending: false }).limit(1),
         ]);
         setLastPflege(pflegeRes.data?.[0] || null);
         setTodayCheckin(checkinRes.data?.[0] || null);
         setCheckinCount(checkinCountRes.count ?? 0);
         setPflegePersonenNames((pflegePersonenRes.data || []).map((p: any) => p.name));
+        setLastCheckin(lastCheckinRes.data?.[0] || null);
       }
       setDataLoading(false);
     };
