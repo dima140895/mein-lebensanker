@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Plus, ChevronDown, ChevronUp, Trash2, Loader2, BookHeart, Pencil } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -6,7 +6,6 @@ import { supabase } from '@/integrations/supabase/client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { queryKeys } from '@/lib/queryKeys';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -15,6 +14,7 @@ import { format } from 'date-fns';
 import { de as deLocale } from 'date-fns/locale';
 import { trackEvent } from '@/lib/analytics';
 import ReferralCard from '@/components/ReferralCard';
+import PflegePersonSelector from '@/components/dashboard/pflege/PflegePersonSelector';
 
 const MOODS = ['😢', '😕', '😐', '🙂', '😊'];
 
@@ -38,6 +38,7 @@ const PflegeTagebuch = () => {
   const [editingEntry, setEditingEntry] = useState<PflegeEintrag | null>(null);
   const [expandedEntry, setExpandedEntry] = useState<string | null>(null);
   const [showReferral, setShowReferral] = useState(false);
+  const [selectedPerson, setSelectedPerson] = useState('');
   // Form state
   const [personName, setPersonName] = useState('');
   const [stimmung, setStimmung] = useState(3);
@@ -119,12 +120,19 @@ const PflegeTagebuch = () => {
 
   const today = format(new Date(), 'yyyy-MM-dd');
 
-  // Pre-fill person name from most recent entry
+  // Filter entries by selected person
+  const filteredEntries = useMemo(() => {
+    if (!selectedPerson || selectedPerson === '__all__') return entries;
+    return entries.filter(e => e.person_name === selectedPerson);
+  }, [entries, selectedPerson]);
+
+  // Pre-fill person name from selected person or most recent entry
   useEffect(() => {
     if (entries.length > 0 && !personName) {
-      setPersonName(entries[0].person_name || '');
+      const prefill = (selectedPerson && selectedPerson !== '__all__') ? selectedPerson : entries[0].person_name || '';
+      setPersonName(prefill);
     }
-  }, [entries]);
+  }, [entries, selectedPerson]);
 
   const createMutation = useMutation({
     mutationFn: async (newEintrag: {
@@ -167,6 +175,7 @@ const PflegeTagebuch = () => {
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.pflegeEintraege(user!.id) });
+      queryClient.invalidateQueries({ queryKey: ['pflege-personen', user!.id] });
     },
   });
 
@@ -191,6 +200,7 @@ const PflegeTagebuch = () => {
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.pflegeEintraege(user!.id) });
+      queryClient.invalidateQueries({ queryKey: ['pflege-personen', user!.id] });
     },
   });
 
@@ -209,6 +219,7 @@ const PflegeTagebuch = () => {
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.pflegeEintraege(user!.id) });
+      queryClient.invalidateQueries({ queryKey: ['pflege-personen', user!.id] });
     },
   });
 
@@ -278,10 +289,26 @@ const PflegeTagebuch = () => {
 
   return (
     <div className="space-y-4">
+      {/* Person Filter */}
+      {entries.length > 0 && !showForm && (
+        <PflegePersonSelector
+          value={selectedPerson}
+          onChange={(val) => {
+            setSelectedPerson(val);
+            if (val && val !== '__all__') setPersonName(val);
+          }}
+          showAllOption
+          className="mb-2"
+        />
+      )}
+
       {/* Add Entry Button */}
       {!showForm && (
         <Button
-          onClick={() => setShowForm(true)}
+          onClick={() => {
+            if (selectedPerson && selectedPerson !== '__all__') setPersonName(selectedPerson);
+            setShowForm(true);
+          }}
           className="w-full sm:w-auto"
         >
           <Plus className="h-4 w-4 mr-2" />
@@ -295,7 +322,7 @@ const PflegeTagebuch = () => {
           <CardContent className="pt-6 space-y-4">
             <div className="space-y-2">
               <Label>{texts.personName} *</Label>
-              <Input value={personName} onChange={(e) => setPersonName(e.target.value)} />
+              <PflegePersonSelector value={personName} onChange={setPersonName} />
             </div>
 
             <div className="space-y-2">
@@ -357,7 +384,7 @@ const PflegeTagebuch = () => {
       )}
 
       {/* Entry List */}
-      {entries.length === 0 && !showForm ? (
+      {filteredEntries.length === 0 && !showForm ? (
         <div className="flex flex-col items-center justify-center py-16 text-center">
           <BookHeart className="h-12 w-12 text-muted-foreground mb-4" />
           <h3 className="font-sans text-xl text-foreground mb-2">{language === 'de' ? 'Noch kein Eintrag' : 'No entries yet'}</h3>
@@ -369,7 +396,7 @@ const PflegeTagebuch = () => {
         </div>
       ) : (
         <div className="space-y-3">
-          {entries.map((entry) => {
+          {filteredEntries.map((entry) => {
             const isExpanded = expandedEntry === entry.id;
             return (
               <Card key={entry.id} className="border-border">

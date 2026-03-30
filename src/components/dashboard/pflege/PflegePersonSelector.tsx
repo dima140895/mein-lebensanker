@@ -12,9 +12,10 @@ interface PflegePersonSelectorProps {
   value: string;
   onChange: (value: string) => void;
   className?: string;
+  showAllOption?: boolean;
 }
 
-const PflegePersonSelector = ({ value, onChange, className = '' }: PflegePersonSelectorProps) => {
+const PflegePersonSelector = ({ value, onChange, className = '', showAllOption = false }: PflegePersonSelectorProps) => {
   const { user } = useAuth();
   const { language } = useLanguage();
   const isDE = language === 'de';
@@ -95,6 +96,9 @@ const PflegePersonSelector = ({ value, onChange, className = '' }: PflegePersonS
             <SelectValue placeholder={isDE ? 'Person auswählen' : 'Select person'} />
           </SelectTrigger>
           <SelectContent>
+            {showAllOption && (
+              <SelectItem value="__all__">{isDE ? 'Alle Personen' : 'All persons'}</SelectItem>
+            )}
             {personNames.map(name => (
               <SelectItem key={name} value={name}>{name}</SelectItem>
             ))}
