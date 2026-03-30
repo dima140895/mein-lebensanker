@@ -122,14 +122,15 @@ const PflegeTagebuch = () => {
 
   // Filter entries by selected person
   const filteredEntries = useMemo(() => {
-    if (!selectedPerson) return entries;
+    if (!selectedPerson || selectedPerson === '__all__') return entries;
     return entries.filter(e => e.person_name === selectedPerson);
   }, [entries, selectedPerson]);
 
   // Pre-fill person name from selected person or most recent entry
   useEffect(() => {
     if (entries.length > 0 && !personName) {
-      setPersonName(selectedPerson || entries[0].person_name || '');
+      const prefill = (selectedPerson && selectedPerson !== '__all__') ? selectedPerson : entries[0].person_name || '';
+      setPersonName(prefill);
     }
   }, [entries, selectedPerson]);
 
