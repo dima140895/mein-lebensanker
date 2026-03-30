@@ -7,8 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, getDay, addMonths, subMonths, isSameDay, isToday } from 'date-fns';
 import { de as deLocale } from 'date-fns/locale';
-
-const MOODS = ['😢', '😕', '😐', '🙂', '😊'];
+import { getMoodColor, getMoodLabel } from './pflegeMoodConfig';
 
 interface CalendarEntry {
   eintrags_datum: string;
