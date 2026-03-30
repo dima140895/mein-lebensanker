@@ -242,7 +242,7 @@ const LandingHero = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
-            className="relative rounded-t-2xl border border-border border-b-0 bg-card shadow-2xl shadow-primary/10 overflow-hidden"
+            className="relative rounded-t-2xl border border-border border-b-0 bg-card shadow-2xl shadow-black/30 overflow-hidden"
           >
             {/* Browser bar */}
             <div className="bg-muted border-b border-border px-4 py-3 flex items-center gap-3">
