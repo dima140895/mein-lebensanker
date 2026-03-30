@@ -168,7 +168,7 @@ const PflegeKalender = ({ onSelectDate, activePersonName = '' }: PflegeKalenderP
                     {format(day, 'd')}
                   </span>
                   {entry && (
-                    <span className="text-xs sm:text-sm leading-none">{MOODS[entry.stimmung - 1]}</span>
+                    <span className={`w-3 h-3 rounded-full ${getMoodColor(entry.stimmung)}`} />
                   )}
                 </button>
               );
