@@ -3,6 +3,18 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, Printer, TrendingUp, TrendingDown, Minus, CheckCircle } from 'lucide-react';
 
+const useIsDesktop = () => {
+  const [isDesktop, setIsDesktop] = useState(false);
+  useEffect(() => {
+    const mql = window.matchMedia('(min-width: 1024px)');
+    const onChange = () => setIsDesktop(mql.matches);
+    mql.addEventListener('change', onChange);
+    setIsDesktop(mql.matches);
+    return () => mql.removeEventListener('change', onChange);
+  }, []);
+  return isDesktop;
+};
+
 /* ── Panel 0: Dashboard ── */
 const PanelDashboard = ({ visible }: { visible: boolean }) => (
   <div>
