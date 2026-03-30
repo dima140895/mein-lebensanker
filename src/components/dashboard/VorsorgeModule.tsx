@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { User, Wallet, Globe, Heart, FileText, ArrowLeft, Phone, Info, Compass, Link2, Download, CheckCircle, HelpCircle, ShieldCheck, Check, Share2 } from 'lucide-react';
+import { User, Wallet, Globe, Heart, FileText, ArrowLeft, Phone, Info, Compass, Link2, Download, CheckCircle, HelpCircle, ShieldCheck, Check, Share2, Anchor } from 'lucide-react';
 import ModuleIntroScreen, { shouldShowModuleIntro, markModuleIntroSeen } from '@/components/dashboard/ModuleIntroScreen';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
