@@ -234,10 +234,10 @@ const Dashboard = () => {
 
   return (
     <div className={`flex min-h-screen flex-col bg-background ${!showDashboardChrome ? 'pt-16' : ''}`}>
-      {showDashboardChrome ? <Header /> : <StaticNav minimal />}
+      {!showDashboardChrome && <StaticNav minimal />}
       <main className="flex-1 flex flex-col"><DashboardContent /></main>
-      {!showDashboardChrome && <Disclaimer />}
-      {showDashboardChrome ? <Footer /> : <LandingFooter />}
+      <Disclaimer />
+      <LandingFooter />
     </div>
   );
 };
