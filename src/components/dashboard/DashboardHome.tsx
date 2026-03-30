@@ -368,22 +368,23 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
                   {dataLoading ? (
                     <p className="text-sm text-muted-foreground">...</p>
                   ) : lastPflege ? (
-                    <div>
-                      {pflegePersonenNames.length > 1 ? (
-                        <div className="mb-2">
-                          <p className="text-xs text-muted-foreground">{pflegePersonenNames.join(' · ')}</p>
-                          <p className="text-xs text-muted-foreground">{pflegePersonenNames.length} {language === 'de' ? 'Personen werden gepflegt' : 'persons being cared for'}</p>
-                        </div>
-                      ) : pflegePersonenNames.length === 1 ? (
-                        <p className="text-xs text-muted-foreground mb-1">{pflegePersonenNames[0]} · {language === 'de' ? 'letzter Eintrag' : 'last entry'}: {new Date(lastPflege.eintrags_datum).toLocaleDateString(language === 'de' ? 'de-DE' : 'en-US')}</p>
-                      ) : null}
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="text-xs text-muted-foreground">{tx.pflegeLastEntry}</p>
-                          <p className="text-sm font-medium">{new Date(lastPflege.eintrags_datum).toLocaleDateString(language === 'de' ? 'de-DE' : 'en-US')}</p>
-                        </div>
-                        <span className={`w-3 h-3 rounded-full ${getMoodColor(lastPflege.stimmung)}`} />
+                    <div className="space-y-1.5">
+                      {/* Last entry info with person name */}
+                      <div className="flex items-center gap-2">
+                        <span className={`w-2.5 h-2.5 rounded-full shrink-0 ${getMoodColor(lastPflege.stimmung)}`} />
+                        <p className="text-sm font-medium text-foreground">
+                          {lastPflege.person_name} · {getMoodLabel(lastPflege.stimmung, language)}
+                        </p>
                       </div>
+                      <p className="text-xs text-muted-foreground">
+                        {relativesDatum(lastPflege.eintrags_datum, language)}
+                      </p>
+                      {/* Person count */}
+                      {pflegePersonenNames.length > 1 && (
+                        <p className="text-xs text-muted-foreground">
+                          {pflegePersonenNames.join(' · ')}
+                        </p>
+                      )}
                     </div>
                   ) : (
                     <p className="text-sm text-muted-foreground">
