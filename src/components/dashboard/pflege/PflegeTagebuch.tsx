@@ -421,9 +421,14 @@ const PflegeTagebuch = () => {
                         <p className="text-muted-foreground whitespace-pre-wrap">{entry.naechste_schritte}</p>
                       </div>
                     )}
-                    <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive hover:bg-destructive/10 mt-2" onClick={() => deleteMutation.mutate(entry.id)} aria-label={`${texts.delete} ${entry.person_name} ${formatDate(entry.eintrags_datum)}`}>
-                      <Trash2 className="h-3.5 w-3.5 mr-1.5" />{texts.delete}
-                    </Button>
+                    <div className="flex gap-2 mt-2">
+                      <Button variant="ghost" size="sm" className="hover:bg-muted" onClick={() => startEdit(entry)}>
+                        <Pencil className="h-3.5 w-3.5 mr-1.5" />{texts.edit}
+                      </Button>
+                      <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive hover:bg-destructive/10" onClick={() => deleteMutation.mutate(entry.id)} aria-label={`${texts.delete} ${entry.person_name} ${formatDate(entry.eintrags_datum)}`}>
+                        <Trash2 className="h-3.5 w-3.5 mr-1.5" />{texts.delete}
+                      </Button>
+                    </div>
                   </CardContent>
                 )}
               </Card>
