@@ -680,12 +680,12 @@ const ShareLinkManager = () => {
         </div>
         
         {/* Important note */}
-        <div className="rounded-lg bg-amber-light/30 border border-amber/20 p-4 flex items-start gap-3">
-          <Shield className="h-5 w-5 text-amber flex-shrink-0 mt-0.5" />
-          <div>
-            <h4 className="font-medium text-amber">{texts.importantNote}</h4>
-            <p className="text-sm text-amber/80">{texts.importantNoteDesc}</p>
-          </div>
+          <div className="rounded-xl bg-accent/10 border border-accent/20 p-4 flex items-start gap-3">
+            <Shield className="h-5 w-5 text-accent flex-shrink-0 mt-0.5" />
+            <div>
+              <h4 className="font-medium text-accent">{texts.importantNote}</h4>
+              <p className="text-sm text-accent/80">{texts.importantNoteDesc}</p>
+            </div>
         </div>
       </div>
 
