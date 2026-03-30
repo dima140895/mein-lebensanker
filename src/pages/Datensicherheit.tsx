@@ -18,7 +18,7 @@ const Datensicherheit = () => {
     de: {
       back: 'Zurück',
       title: 'Datensicherheit bei Mein Lebensanker',
-      intro: 'Der Schutz Ihrer persönlichen und sensiblen Daten hat für uns höchste Priorität. Deshalb basiert Mein Lebensanker auf einer sogenannten Zero-Knowledge-Architektur mit clientseitiger Verschlüsselung.',
+      intro: 'Mein Lebensanker schützt Ihre Daten auf mehreren Ebenen. Optional können Sie eine Ende-zu-Ende-Verschlüsselung aktivieren — dann sind Ihre Daten selbst für uns nicht lesbar.',
       sections: [
         {
           icon: 'lock',
@@ -74,7 +74,7 @@ Ohne Passwort und ohne Ersatzschlüssel sind Ihre verschlüsselten Daten nach ak
     en: {
       back: 'Back',
       title: 'Data Security at Mein Lebensanker',
-      intro: 'The protection of your personal and sensitive data is our highest priority. That is why Mein Lebensanker is based on a so-called zero-knowledge architecture with client-side encryption.',
+      intro: 'Mein Lebensanker protects your data on multiple levels. You can optionally enable end-to-end encryption — making your data unreadable even to us.',
       sections: [
         {
           icon: 'lock',

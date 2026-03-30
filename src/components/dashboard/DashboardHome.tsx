@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ClipboardList, HeartHandshake, Stethoscope, ArrowRight, Lock, Zap, CheckCircle2, Circle, Anchor, ShieldAlert, Shield, Link2, CheckCircle, Heart, Activity, Plus, User, FileText, X, Share2 } from 'lucide-react';
+import { ClipboardList, HeartHandshake, Stethoscope, ArrowRight, Lock, Zap, CheckCircle2, Circle, Anchor, ShieldCheck, Shield, Link2, CheckCircle, Heart, Activity, Plus, User, FileText, X, Share2 } from 'lucide-react';
 import { useEncryption } from '@/contexts/EncryptionContext';
 import { EncryptionPasswordDialog } from '@/components/EncryptionPasswordDialog';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -745,21 +745,26 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
         </motion.div>
       )}
 
-      {/* Encryption reminder — gentle hint when not encrypted */}
+      {/* Encryption — positive hint in settings style */}
       {!encryptionLoading && !isEncryptionEnabled && (
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
-          <div className="flex items-center gap-3 p-4 rounded-xl border border-amber/30 bg-amber-light/30">
-            <ShieldAlert className="h-4 w-4 text-amber flex-shrink-0" />
-            <p className="text-sm text-foreground font-body flex-1">
-              {language === 'de'
-                ? 'Deine Daten sind noch nicht verschlüsselt.'
-                : 'Your data is not yet encrypted.'}
-            </p>
+          <div className="flex items-center gap-3 p-4 rounded-xl border border-border bg-card">
+            <ShieldCheck className="h-5 w-5 text-primary flex-shrink-0" />
+            <div className="flex-1">
+              <p className="text-sm font-medium text-foreground font-body">
+                {language === 'de' ? 'Persönlicher Datenschutz' : 'Personal Data Protection'}
+              </p>
+              <p className="text-xs text-muted-foreground font-body mt-0.5">
+                {language === 'de'
+                  ? 'Mit einem eigenen Passwort verschlüsselst du deine Daten so, dass selbst wir keinen Zugriff haben.'
+                  : 'With your own password, you encrypt your data so that even we cannot access it.'}
+              </p>
+            </div>
             <button
               onClick={() => setShowEncryptionSetup(true)}
               className="text-sm font-medium text-primary hover:text-primary/80 transition-colors whitespace-nowrap font-body"
             >
-              {language === 'de' ? 'Jetzt aktivieren →' : 'Enable now →'}
+              {language === 'de' ? 'Jetzt einrichten →' : 'Set up now →'}
             </button>
           </div>
         </motion.div>

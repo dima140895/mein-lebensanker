@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
+import { useEncryption } from '@/contexts/EncryptionContext';
 import { supabase } from '@/integrations/supabase/client';
+import { EncryptionPasswordDialog } from '@/components/EncryptionPasswordDialog';
 import PackageManagement from '@/components/PackageManagement';
 import DataExport from '@/components/DataExport';
 import ShareLinkManager from '@/components/ShareLinkManager';
@@ -23,7 +25,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import { Package, Download, Link2, Bell, Heart, Shield, LogOut, Loader2, Keyboard } from 'lucide-react';
+import { Package, Download, Link2, Bell, Heart, Shield, LogOut, Loader2, Keyboard, ShieldCheck } from 'lucide-react';
 import { toast } from 'sonner';
 import { logger } from '@/lib/logger';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -31,8 +33,10 @@ import { useIsMobile } from '@/hooks/use-mobile';
 const SettingsModule = () => {
   const { language } = useLanguage();
   const { user } = useAuth();
+  const { isEncryptionEnabled } = useEncryption();
   const [conversions, setConversions] = useState<number | null>(null);
   const [signingOut, setSigningOut] = useState(false);
+  const [showEncryptionSetup, setShowEncryptionSetup] = useState(false);
   const isMobile = useIsMobile();
 
   const t = {
@@ -132,6 +136,39 @@ const SettingsModule = () => {
           <PackageManagement />
         </TabsContent>
         <TabsContent value="security" className="mt-6 space-y-6">
+          {/* Encryption Status Card */}
+          <div className="rounded-2xl border bg-card p-6 shadow-sm">
+            <div className="flex items-start gap-4">
+              <ShieldCheck className={`h-8 w-8 shrink-0 mt-0.5 ${isEncryptionEnabled ? 'text-primary' : 'text-primary'}`} />
+              <div className="flex-1">
+                {isEncryptionEnabled ? (
+                  <>
+                    <h3 className="font-sans text-lg font-semibold text-foreground mb-1">
+                      {language === 'de' ? 'Deine Daten sind verschlüsselt' : 'Your data is encrypted'}
+                    </h3>
+                    <p className="text-sm text-muted-foreground font-body">
+                      {language === 'de' ? 'Ende-zu-Ende mit AES-256-GCM' : 'End-to-end with AES-256-GCM'}
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <h3 className="font-sans text-lg font-semibold text-foreground mb-1">
+                      {language === 'de' ? 'Persönlicher Datenschutz' : 'Personal Data Protection'}
+                    </h3>
+                    <p className="text-sm text-muted-foreground font-body mb-4">
+                      {language === 'de'
+                        ? 'Mit einem eigenen Passwort verschlüsselst du deine Daten so, dass selbst wir keinen Zugriff haben.'
+                        : 'With your own password, you encrypt your data so that even we cannot access it.'}
+                    </p>
+                    <Button onClick={() => setShowEncryptionSetup(true)}>
+                      {language === 'de' ? 'Jetzt einrichten →' : 'Set up now →'}
+                    </Button>
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+
           {/* MFA Settings */}
           <MFASettings />
 
@@ -227,6 +264,12 @@ const SettingsModule = () => {
           </p>
         </div>
       )}
+
+      <EncryptionPasswordDialog
+        open={showEncryptionSetup}
+        onOpenChange={setShowEncryptionSetup}
+        mode="setup"
+      />
     </div>
   );
 };

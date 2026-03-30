@@ -341,53 +341,31 @@ const OnboardingFlow = ({ onComplete }: OnboardingFlowProps) => {
                   <div className="w-14 h-14 rounded-full bg-primary/10 mx-auto mb-4 flex items-center justify-center">
                     <ShieldCheck className="h-7 w-7 text-primary" />
                   </div>
-                  <h2 className="font-sans text-xl sm:text-2xl font-bold text-foreground mb-1">
-                    {language === 'de' ? 'Möchtest du deine Daten verschlüsseln?' : 'Want to encrypt your data?'}
+                  <h2 className="font-sans text-xl sm:text-2xl font-bold text-foreground mb-2">
+                    {language === 'de' ? 'Richte dein persönliches Schutzpasswort ein.' : 'Set up your personal protection password.'}
                   </h2>
+                  <p className="text-sm text-muted-foreground font-body leading-relaxed max-w-sm mx-auto">
+                    {language === 'de'
+                      ? 'Mein Lebensanker verschlüsselt deine Daten so, dass nur du sie lesen kannst — nicht einmal wir.'
+                      : 'Mein Lebensanker encrypts your data so that only you can read it — not even us.'}
+                  </p>
                 </div>
 
-                {/* Two option cards */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {/* Card A — Recommended */}
-                  <button
-                    onClick={handleEncryptionSetup}
-                    className="text-left p-4 rounded-xl border-2 border-primary bg-primary/5 hover:bg-primary/10 transition-all group"
-                  >
-                    <div className="flex items-center gap-2 mb-2">
-                      <ShieldCheck className="h-5 w-5 text-primary" />
-                      <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20 text-[10px]">
-                        {language === 'de' ? 'Empfohlen' : 'Recommended'}
-                      </Badge>
-                    </div>
-                    <p className="font-body font-semibold text-foreground text-sm mb-1">
-                      {language === 'de' ? 'Ende-zu-Ende-Verschlüsselung' : 'End-to-End Encryption'}
-                    </p>
-                    <p className="text-xs text-muted-foreground font-body">
-                      {language === 'de'
-                        ? 'Nur du kannst deine Daten lesen. Selbst wir nicht.'
-                        : 'Only you can read your data. Not even us.'}
-                    </p>
-                  </button>
+                {/* Setup button */}
+                <Button
+                  onClick={handleEncryptionSetup}
+                  className="w-full rounded-full h-11 font-body text-sm"
+                >
+                  {language === 'de' ? 'Schutz aktivieren →' : 'Enable protection →'}
+                </Button>
 
-                  {/* Card B — Skip */}
-                  <button
-                    onClick={handleEncryptionLater}
-                    disabled={saving}
-                    className="text-left p-4 rounded-xl border border-border bg-card hover:bg-muted/50 transition-all group"
-                  >
-                    <div className="flex items-center gap-2 mb-2">
-                      <Shield className="h-5 w-5 text-muted-foreground" />
-                    </div>
-                    <p className="font-body font-semibold text-foreground text-sm mb-1">
-                      {language === 'de' ? 'Erst einmal überspringen' : 'Skip for now'}
-                    </p>
-                    <p className="text-xs text-muted-foreground font-body">
-                      {language === 'de'
-                        ? 'Du kannst Verschlüsselung jederzeit in den Einstellungen aktivieren.'
-                        : 'You can enable encryption anytime in settings.'}
-                    </p>
-                  </button>
-                </div>
+                <button
+                  onClick={handleEncryptionLater}
+                  disabled={saving}
+                  className="w-full text-center text-xs text-muted-foreground hover:text-foreground/50 mt-4 font-body transition-colors"
+                >
+                  {language === 'de' ? 'Überspringen — ich richte das später ein' : 'Skip — I\'ll set this up later'}
+                </button>
               </motion.div>
             )}
           </AnimatePresence>
