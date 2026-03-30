@@ -140,7 +140,7 @@ const PflegeFirstEntryFlow = ({ onSave, isSaving }: PflegeFirstEntryFlowProps) =
                   onChange={(e) => setMahlzeiten(e.target.value)}
                   placeholder={texts.mealsPlaceholder}
                   rows={2}
-                  className="border-2 border-primary rounded-xl"
+                  className="border-2 border-primary"
                 />
               </div>
 
