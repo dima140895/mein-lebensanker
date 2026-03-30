@@ -264,6 +264,12 @@ const SettingsModule = () => {
           </p>
         </div>
       )}
+
+      <EncryptionPasswordDialog
+        open={showEncryptionSetup}
+        onOpenChange={setShowEncryptionSetup}
+        mode="setup"
+      />
     </div>
   );
 };
