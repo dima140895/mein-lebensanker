@@ -337,10 +337,16 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
                       <span className="text-2xl">{STIMMUNG_EMOJI[lastPflege.stimmung] || '😐'}</span>
                     </div>
                   ) : (
-                    <p className="text-sm text-muted-foreground">{tx.pflegeEmpty}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {activeProfile?.name
+                        ? (language === 'de' ? `Noch kein Eintrag für ${activeProfile.name}` : `No entry yet for ${activeProfile.name}`)
+                        : tx.pflegeEmpty}
+                    </p>
                   )}
                   <Button variant="ghost" size="sm" className="w-full text-accent hover:text-accent hover:bg-accent/5 gap-1.5 min-h-[44px]">
-                    {tx.pflegeAdd} <ArrowRight className="h-3.5 w-3.5" />
+                    {activeProfile?.name
+                      ? (language === 'de' ? `Wie geht es ${activeProfile.name} heute? →` : `How is ${activeProfile.name} today? →`)
+                      : (language === 'de' ? 'Wie geht es deinem Angehörigen heute? →' : 'How is your loved one today? →')}
                   </Button>
                 </>
               )}
