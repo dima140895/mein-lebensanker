@@ -126,15 +126,15 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
         titel: { de: 'Freigabe-Link erstellen', en: 'Create sharing link' },
         beschreibung: { de: 'Damit Angehörige im Ernstfall Zugriff haben', en: 'So relatives have access in an emergency' },
         done: hasShareToken,
-        module: 'einstellungen' as DashboardModule,
-        section: null,
+        module: 'vorsorge' as DashboardModule,
+        section: 'share',
       },
       {
         id: 'encryption',
         titel: { de: 'Verschlüsselung aktivieren', en: 'Enable encryption' },
         beschreibung: { de: 'Schütze deine Daten mit einem eigenen Passwort', en: 'Protect your data with your own password' },
         done: isEncryptionEnabled,
-        module: 'einstellungen' as DashboardModule,
+        module: 'settings' as DashboardModule,
         section: null,
       },
     ];
@@ -389,7 +389,7 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
             {greetingLine}
           </h1>
           {isMultiProfile && !isOwnProfile && (
-            <span className="text-xs px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 font-medium">
+            <span className="text-xs px-2 py-0.5 rounded-full bg-amber-light text-amber font-medium">
               {language === 'de' ? 'Familienprofil' : 'Family profile'}
             </span>
           )}
@@ -661,8 +661,8 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
       {/* Encryption reminder — gentle hint when not encrypted */}
       {!encryptionLoading && !isEncryptionEnabled && (
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
-          <div className="flex items-center gap-3 p-4 rounded-xl border border-amber-200 bg-amber-50/30">
-            <ShieldAlert className="h-4 w-4 text-amber-600 flex-shrink-0" />
+          <div className="flex items-center gap-3 p-4 rounded-xl border border-amber/30 bg-amber-light/30">
+            <ShieldAlert className="h-4 w-4 text-amber flex-shrink-0" />
             <p className="text-sm text-foreground font-body flex-1">
               {language === 'de'
                 ? 'Deine Daten sind noch nicht verschlüsselt.'

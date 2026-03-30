@@ -55,7 +55,7 @@ const ArztBericht = () => {
     p3m: 'Letzte 3 Monate',
     summary: 'Zusammenfassung',
     trend: 'Verlaufsgrafik',
-    scale: 'Skala 1 (sehr schlecht) bis 5 (sehr gut)',
+    scale: 'Skala 1 (sehr schlecht) bis 10 (sehr gut)',
     findings: 'Auffälligkeiten',
     worstDay: 'Schlechtester Tag',
     bestDay: 'Bester Tag',
@@ -89,7 +89,7 @@ const ArztBericht = () => {
     p3m: 'Last 3 months',
     summary: 'Summary',
     trend: 'Progress Chart',
-    scale: 'Scale 1 (very poor) to 5 (very good)',
+    scale: 'Scale 1 (very poor) to 10 (very good)',
     findings: 'Notable Findings',
     worstDay: 'Worst day',
     bestDay: 'Best day',
@@ -329,7 +329,7 @@ const ArztBericht = () => {
                   <LineChart data={chartData}>
                     <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                     <XAxis dataKey="date" tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }} />
-                    <YAxis domain={[1, 5]} tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }} />
+                    <YAxis domain={[1, 10]} tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }} />
                     <Tooltip
                       contentStyle={{
                         backgroundColor: 'hsl(var(--card))',

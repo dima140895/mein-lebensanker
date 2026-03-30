@@ -150,7 +150,7 @@ const FamilieAktivitaet = ({ onNavigate }: FamilieAktivitaetProps) => {
       const text = item.besonderheiten?.trim().slice(0, 40) || '';
       return `${mood}${text ? ` ${text}${(item.besonderheiten?.length ?? 0) > 40 ? '…' : ''}` : ''}`;
     }
-    return `${texts.energie} ${item.energie}/5 · ${texts.schmerz} ${item.schmerz}/5`;
+    return `${texts.energie} ${item.energie}/10 · ${texts.schmerz} ${item.schmerz}/10`;
   };
 
   return (
