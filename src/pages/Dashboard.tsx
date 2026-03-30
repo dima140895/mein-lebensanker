@@ -116,15 +116,6 @@ const DashboardContent = () => {
       >
         <div className="w-full max-w-5xl mx-auto">
           <PaymentOptions />
-          <p className="text-center text-sm text-muted-foreground mt-6">
-            {language === 'de' ? 'Falsches Konto?' : 'Wrong account?'}{' '}
-            <button
-              onClick={() => signOut()}
-              className="underline hover:text-foreground transition-colors"
-            >
-              {language === 'de' ? 'Abmelden' : 'Sign out'}
-            </button>
-          </p>
         </div>
       </div>
     );
