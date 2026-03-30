@@ -1,10 +1,11 @@
-import { useState, useEffect, lazy, Suspense } from 'react';
+import { useState, useEffect, useRef, lazy, Suspense } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useEncryption } from '@/contexts/EncryptionContext';
+import { FormProvider } from '@/contexts/FormContext';
 import Header from '@/components/Header';
 import StaticNav from '@/components/StaticNav';
 import Footer from '@/components/Footer';
@@ -233,12 +234,14 @@ const Dashboard = () => {
   const showDashboardChrome = user && profile?.has_paid;
 
   return (
-    <div className={`flex min-h-screen flex-col bg-background ${!showDashboardChrome ? 'pt-16' : ''}`}>
-      {showDashboardChrome ? <Header /> : <StaticNav minimal />}
-      <main className="flex-1 flex flex-col"><DashboardContent /></main>
-      {!showDashboardChrome && <Disclaimer />}
-      {showDashboardChrome ? <Footer /> : <LandingFooter />}
-    </div>
+    <FormProvider>
+        <div className={`flex min-h-screen flex-col bg-background ${!showDashboardChrome ? 'pt-16' : ''}`}>
+          {showDashboardChrome ? <Header /> : <StaticNav minimal />}
+          <main className="flex-1 flex flex-col"><DashboardContent /></main>
+          {!showDashboardChrome && <Disclaimer />}
+          {showDashboardChrome ? <Footer /> : <LandingFooter />}
+      </div>
+    </FormProvider>
   );
 };
 
