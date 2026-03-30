@@ -32,6 +32,7 @@ const PflegeMedikamente = () => {
   const queryClient = useQueryClient();
   const [showForm, setShowForm] = useState(false);
   const [showInactive, setShowInactive] = useState(false);
+  const [selectedPerson, setSelectedPerson] = useState('');
 
   // Form state
   const [name, setName] = useState('');
