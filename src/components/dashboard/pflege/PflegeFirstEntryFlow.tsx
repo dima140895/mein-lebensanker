@@ -177,6 +177,7 @@ const PflegeFirstEntryFlow = ({ onSave, isSaving }: PflegeFirstEntryFlowProps) =
                         onChange={(e) => setAktivitaeten(e.target.value)}
                         placeholder={texts.activitiesPlaceholder}
                         rows={2}
+                        className="border-2 border-primary/30 focus-visible:ring-primary"
                       />
                     </div>
                     <div className="space-y-2">
@@ -186,6 +187,7 @@ const PflegeFirstEntryFlow = ({ onSave, isSaving }: PflegeFirstEntryFlowProps) =
                         onChange={(e) => setNaechsteSchritte(e.target.value)}
                         placeholder={texts.nextStepsPlaceholder}
                         rows={2}
+                        className="border-2 border-primary/30 focus-visible:ring-primary"
                       />
                     </div>
                   </motion.div>
