@@ -126,15 +126,15 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
         titel: { de: 'Freigabe-Link erstellen', en: 'Create sharing link' },
         beschreibung: { de: 'Damit Angehörige im Ernstfall Zugriff haben', en: 'So relatives have access in an emergency' },
         done: hasShareToken,
-        module: 'einstellungen' as DashboardModule,
-        section: null,
+        module: 'vorsorge' as DashboardModule,
+        section: 'share',
       },
       {
         id: 'encryption',
         titel: { de: 'Verschlüsselung aktivieren', en: 'Enable encryption' },
         beschreibung: { de: 'Schütze deine Daten mit einem eigenen Passwort', en: 'Protect your data with your own password' },
         done: isEncryptionEnabled,
-        module: 'einstellungen' as DashboardModule,
+        module: 'settings' as DashboardModule,
         section: null,
       },
     ];
