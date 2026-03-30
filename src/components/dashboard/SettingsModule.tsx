@@ -107,10 +107,14 @@ const SettingsModule = () => {
     <div className="space-y-6">
       <SubscriptionManagement />
       <Tabs defaultValue="plan" className="w-full">
-        <TabsList className="w-full grid grid-cols-6">
+        <TabsList className="w-full grid grid-cols-7">
           <TabsTrigger value="plan" className="gap-1.5 text-xs sm:text-sm">
             <Package className="h-3.5 w-3.5" />
             <span className="hidden sm:inline">{texts.plan}</span>
+          </TabsTrigger>
+          <TabsTrigger value="pflege" className="gap-1.5 text-xs sm:text-sm">
+            <HeartHandshake className="h-3.5 w-3.5" />
+            <span className="hidden sm:inline">{language === 'de' ? 'Pflege' : 'Care'}</span>
           </TabsTrigger>
           <TabsTrigger value="security" className="gap-1.5 text-xs sm:text-sm">
             <Shield className="h-3.5 w-3.5" />
@@ -135,6 +139,9 @@ const SettingsModule = () => {
         </TabsList>
         <TabsContent value="plan" className="mt-6">
           <PackageManagement />
+        </TabsContent>
+        <TabsContent value="pflege" className="mt-6">
+          <PflegePersonenManagement />
         </TabsContent>
         <TabsContent value="security" className="mt-6 space-y-6">
           {/* Encryption Status Card */}
