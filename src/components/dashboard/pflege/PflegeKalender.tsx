@@ -7,8 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, getDay, addMonths, subMonths, isSameDay, isToday } from 'date-fns';
 import { de as deLocale } from 'date-fns/locale';
-
-const MOODS = ['😢', '😕', '😐', '🙂', '😊'];
+import { getMoodColor, getMoodLabel } from './pflegeMoodConfig';
 
 interface CalendarEntry {
   eintrags_datum: string;
@@ -169,7 +168,7 @@ const PflegeKalender = ({ onSelectDate, activePersonName = '' }: PflegeKalenderP
                     {format(day, 'd')}
                   </span>
                   {entry && (
-                    <span className="text-xs sm:text-sm leading-none">{MOODS[entry.stimmung - 1]}</span>
+                    <span className={`w-3 h-3 rounded-full ${getMoodColor(entry.stimmung)}`} />
                   )}
                 </button>
               );
@@ -197,7 +196,7 @@ const PflegeKalender = ({ onSelectDate, activePersonName = '' }: PflegeKalenderP
         <Card className="border-primary/20 bg-primary/5">
           <CardHeader className="pb-2">
             <div className="flex items-center gap-2">
-              <span className="text-2xl">{MOODS[selectedEntry.stimmung - 1]}</span>
+              <span className={`w-3 h-3 rounded-full shrink-0 ${getMoodColor(selectedEntry.stimmung)}`} />
               <div>
                 <CardTitle className="text-sm font-semibold">{selectedEntry.person_name}</CardTitle>
                 <p className="text-xs text-muted-foreground">

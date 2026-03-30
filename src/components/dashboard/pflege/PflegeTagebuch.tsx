@@ -16,8 +16,7 @@ import { de as deLocale } from 'date-fns/locale';
 import { trackEvent } from '@/lib/analytics';
 import ReferralCard from '@/components/ReferralCard';
 import PflegePersonSelector from '@/components/dashboard/pflege/PflegePersonSelector';
-
-const MOODS = ['😢', '😕', '😐', '🙂', '😊'];
+import { MOOD_CONFIG, getMoodLabel, getMoodColor, getMoodPill } from './pflegeMoodConfig';
 
 interface PflegeEintrag {
   id: string;
@@ -324,29 +323,25 @@ const PflegeTagebuch = ({ activePersonName = '' }: PflegeTagebuchProps) => {
 
             <div className="space-y-2">
               <Label>{texts.mood}</Label>
-              <div className="flex gap-2" role="radiogroup" aria-label={texts.mood}>
-                {MOODS.map((emoji, i) => {
-                  const moodLabels = language === 'de'
-                    ? ['Sehr schlecht', 'Schlecht', 'Neutral', 'Gut', 'Sehr gut']
-                    : ['Very bad', 'Bad', 'Neutral', 'Good', 'Very good'];
-                  return (
-                    <button
-                      key={i}
-                      type="button"
-                      role="radio"
-                      aria-checked={stimmung === i + 1}
-                      aria-label={`${moodLabels[i]}`}
-                      onClick={() => setStimmung(i + 1)}
-                      className={`text-2xl sm:text-3xl p-2 rounded-lg transition-all ${
-                        stimmung === i + 1
-                          ? 'bg-primary/10 ring-2 ring-primary scale-110'
-                          : 'hover:bg-muted'
-                      }`}
-                    >
-                      {emoji}
-                    </button>
-                  );
-                })}
+              <div className="flex gap-2 flex-wrap" role="radiogroup" aria-label={texts.mood}>
+                {MOOD_CONFIG.map((mood) => (
+                  <button
+                    key={mood.value}
+                    type="button"
+                    role="radio"
+                    aria-checked={stimmung === mood.value}
+                    aria-label={mood[language]}
+                    onClick={() => setStimmung(mood.value)}
+                    className={`border rounded-lg px-4 py-2 text-sm flex items-center gap-2 transition-all min-h-[44px] ${
+                      stimmung === mood.value
+                        ? 'border-[#437059] bg-[#E8F0EC] text-[#262E38] ring-2 ring-primary/30'
+                        : 'border-[#E5E0D8] text-[#262E38] hover:border-[#437059] hover:bg-[#E8F0EC]'
+                    }`}
+                  >
+                    <span className={`w-2 h-2 rounded-full ${mood.color}`} />
+                    {mood[language]}
+                  </button>
+                ))}
               </div>
             </div>
 
@@ -424,14 +419,17 @@ const PflegeTagebuch = ({ activePersonName = '' }: PflegeTagebuchProps) => {
                   tabIndex={0}
                   onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setExpandedEntry(isExpanded ? null : entry.id); } }}
                 >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <span className="text-xl" aria-hidden="true">{MOODS[entry.stimmung - 1]}</span>
-                      <div>
-                        <CardTitle className="text-sm font-medium">{entry.person_name}</CardTitle>
-                        <p className="text-xs text-muted-foreground">{formatDate(entry.eintrags_datum)}</p>
-                      </div>
-                    </div>
+                    <div className="flex items-center justify-between">
+                     <div className="flex items-center gap-3">
+                       <span className={`w-3 h-3 rounded-full shrink-0 ${getMoodColor(entry.stimmung)}`} aria-hidden="true" />
+                       <div>
+                         <div className="flex items-center gap-2">
+                           <CardTitle className="text-sm font-medium">{entry.person_name}</CardTitle>
+                           <span className="text-xs text-muted-foreground">· {getMoodLabel(entry.stimmung, language)}</span>
+                         </div>
+                         <p className="text-xs text-muted-foreground">{formatDate(entry.eintrags_datum)}</p>
+                       </div>
+                     </div>
                     {isExpanded ? <ChevronUp className="h-4 w-4 text-muted-foreground" aria-hidden="true" /> : <ChevronDown className="h-4 w-4 text-muted-foreground" aria-hidden="true" />}
                   </div>
                 </CardHeader>
