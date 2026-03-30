@@ -86,7 +86,10 @@ const PanelPflege = () => (
     <div className="mx-5 mt-4 bg-background rounded-2xl border border-border p-4">
       <div className="flex justify-between items-center mb-3">
         <span className="text-xs font-medium text-foreground">Heute, 28. März</span>
-        <span className="text-xs text-primary bg-primary/10 px-2 py-0.5 rounded-full">😊 Gut</span>
+        <span className="text-xs text-primary bg-primary/10 px-2 py-0.5 rounded-full flex items-center gap-1.5">
+          <span className="w-2 h-2 rounded-full bg-green-500" />
+          Ausgeglichen
+        </span>
       </div>
       <div>
         <span className="text-[10px] uppercase text-muted-foreground tracking-wide mb-1 block">🍽 Mahlzeiten</span>
