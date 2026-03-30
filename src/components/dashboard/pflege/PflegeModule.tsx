@@ -63,9 +63,10 @@ const PflegeModule = () => {
         .upsert({
           user_id: user.id,
           section_key: 'personal',
+          person_profile_id: null,
           data: updatedData,
           updated_at: new Date().toISOString(),
-        }, { onConflict: 'user_id,section_key' });
+        }, { onConflict: 'user_id,section_key,person_profile_id' });
 
       if (error) throw error;
       toast.success(texts.saved);
