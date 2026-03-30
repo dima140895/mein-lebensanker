@@ -18,7 +18,7 @@ const Datensicherheit = () => {
     de: {
       back: 'Zurück',
       title: 'Datensicherheit bei Mein Lebensanker',
-      intro: 'Der Schutz Ihrer persönlichen und sensiblen Daten hat für uns höchste Priorität. Deshalb basiert Mein Lebensanker auf einer sogenannten Zero-Knowledge-Architektur mit clientseitiger Verschlüsselung.',
+      intro: 'Mein Lebensanker schützt Ihre Daten auf mehreren Ebenen. Optional können Sie eine Ende-zu-Ende-Verschlüsselung aktivieren — dann sind Ihre Daten selbst für uns nicht lesbar.',
       sections: [
         {
           icon: 'lock',
