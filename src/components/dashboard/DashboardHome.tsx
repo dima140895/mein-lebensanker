@@ -192,8 +192,8 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
   // Card order based on onboarding focus
   const cardOrder = useMemo(() => {
     const cards: ('vorsorge' | 'pflege' | 'krankheit')[] = ['vorsorge', 'pflege', 'krankheit'];
-    if (onboardingFocus === 'pflege') return ['pflege', 'vorsorge', 'krankheit'] as typeof cards;
-    if (onboardingFocus === 'krankheit') return ['krankheit', 'vorsorge', 'pflege'] as typeof cards;
+    if (onboardingFocus === 'pflege') return ['pflege', 'krankheit', 'vorsorge'] as typeof cards;
+    if (onboardingFocus === 'krankheit') return ['krankheit', 'pflege', 'vorsorge'] as typeof cards;
     return cards;
   }, [onboardingFocus]);
 
