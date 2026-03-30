@@ -293,7 +293,7 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
     const badgeBg = stateC ? 'bg-[#E8F0EC]' : stateA ? 'bg-muted' : 'bg-primary/10';
 
     return (
-      <motion.div key="vorsorge" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay }}>
+      <motion.div key="vorsorge" className="h-full" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay }}>
         <Card
           className={`rounded-2xl shadow-card hover:-translate-y-0.5 hover:shadow-soft transition-all duration-200 cursor-pointer h-full min-h-[120px] flex flex-col ${cardBorder} bg-card ${stateC ? '!bg-[#F8FBF9]' : ''}`}
           onClick={() => onNavigate('vorsorge')}
@@ -478,7 +478,7 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
     const badgeBg = stateC ? 'bg-[#E8F0EC]' : stateA ? 'bg-muted' : 'bg-sage-light';
 
     return (
-      <motion.div key="krankheit" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay }}>
+      <motion.div key="krankheit" className="h-full" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay }}>
         {isPlusOrHigher ? (
           <Card
             className={`rounded-2xl shadow-card hover:-translate-y-0.5 hover:shadow-soft transition-all duration-200 cursor-pointer h-full min-h-[120px] ${cardBorder} ${stateC ? '!bg-[#F8FBF9]' : 'bg-card'}`}
