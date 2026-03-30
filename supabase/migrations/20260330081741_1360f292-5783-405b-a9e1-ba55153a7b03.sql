@@ -1,0 +1,1 @@
+ALTER TABLE public.pflege_eintraege DROP CONSTRAINT IF EXISTS pflege_eintraege_user_id_eintrags_datum_key;
