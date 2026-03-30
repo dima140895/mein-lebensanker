@@ -372,11 +372,54 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
     <div className="space-y-6">
       {/* Greeting */}
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-         <h1 className="font-sans text-2xl sm:text-3xl font-semibold text-forest tracking-[-0.02em]">
-          {greeting}{userName ? `, ${userName}` : ''}.
-         </h1>
-        <p className="text-sm text-charcoal-light mt-1 font-body">{tx.subtitle}</p>
+        <div className="flex items-center gap-3 flex-wrap">
+          <h1 className="font-sans text-2xl sm:text-3xl font-semibold text-foreground tracking-[-0.02em]">
+            {greetingLine}
+          </h1>
+          {isMultiProfile && !isOwnProfile && (
+            <span className="text-xs px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 font-medium">
+              {language === 'de' ? 'Familienprofil' : 'Family profile'}
+            </span>
+          )}
+        </div>
+        <p className="text-sm text-muted-foreground mt-1 font-body">{tx.subtitle}</p>
       </motion.div>
+
+      {/* Profile Switcher — prominent horizontal pills */}
+      {isMultiProfile && (
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.03 }}>
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-xs text-muted-foreground mr-1">
+              {language === 'de' ? 'Profil:' : 'Profile:'}
+            </span>
+            {personProfiles.map((p) => {
+              const isActive = p.id === activeProfileId;
+              return (
+                <button
+                  key={p.id}
+                  onClick={() => setActiveProfileId(p.id)}
+                  className={`rounded-full px-3 py-1 text-sm font-medium transition-all min-h-[32px] ${
+                    isActive
+                      ? 'bg-primary text-primary-foreground'
+                      : 'bg-muted/30 border border-border text-foreground hover:border-primary'
+                  }`}
+                >
+                  {p.name}
+                </button>
+              );
+            })}
+            {canAddProfile && (
+              <button
+                onClick={() => onNavigate('settings')}
+                className="flex items-center gap-1 text-xs text-primary hover:text-primary/80 transition-colors"
+              >
+                <Plus className="h-3 w-3" />
+                {language === 'de' ? 'Profil hinzufügen' : 'Add profile'}
+              </button>
+            )}
+          </div>
+        </motion.div>
+      )}
 
       {/* Start prompt — adapted to onboarding focus */}
       {!statusLoading && !dataLoading && (() => {
