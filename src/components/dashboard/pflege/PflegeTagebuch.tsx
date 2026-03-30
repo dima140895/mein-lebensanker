@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Plus, ChevronDown, ChevronUp, Trash2, Loader2, BookHeart } from 'lucide-react';
+import { Plus, ChevronDown, ChevronUp, Trash2, Loader2, BookHeart, Pencil } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -35,6 +35,7 @@ const PflegeTagebuch = () => {
   const { language } = useLanguage();
   const queryClient = useQueryClient();
   const [showForm, setShowForm] = useState(false);
+  const [editingEntry, setEditingEntry] = useState<PflegeEintrag | null>(null);
   const [expandedEntry, setExpandedEntry] = useState<string | null>(null);
   const [showReferral, setShowReferral] = useState(false);
   // Form state
@@ -62,6 +63,9 @@ const PflegeTagebuch = () => {
       save: 'Eintrag speichern',
       saving: 'Speichern...',
       cancel: 'Abbrechen',
+      edit: 'Bearbeiten',
+      editTitle: 'Eintrag bearbeiten',
+      updated: 'Eintrag aktualisiert',
       noEntries: 'Noch keine Einträge vorhanden',
       noEntriesDesc: 'Starte mit Deinem ersten Pflege-Tagebucheintrag.',
       delete: 'Löschen',
@@ -85,6 +89,9 @@ const PflegeTagebuch = () => {
       save: 'Save entry',
       saving: 'Saving...',
       cancel: 'Cancel',
+      edit: 'Edit',
+      editTitle: 'Edit entry',
+      updated: 'Entry updated',
       noEntries: 'No entries yet',
       noEntriesDesc: 'Start with your first care journal entry.',
       delete: 'Delete',
@@ -157,12 +164,7 @@ const PflegeTagebuch = () => {
         setShowReferral(true);
       }
       toast.success(texts.saved);
-      setShowForm(false);
-      setMahlzeiten('');
-      setAktivitaeten('');
-      setBesonderheiten('');
-      setNaechsteSchritte('');
-      setStimmung(3);
+      resetForm();
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.pflegeEintraege(user!.id) });
@@ -193,18 +195,71 @@ const PflegeTagebuch = () => {
     },
   });
 
+  const updateMutation = useMutation({
+    mutationFn: async (updated: { id: string; person_name: string; stimmung: number; mahlzeiten: string | null; aktivitaeten: string | null; besonderheiten: string | null; naechste_schritte: string | null }) => {
+      const { id, ...fields } = updated;
+      const { error } = await supabase.from('pflege_eintraege').update(fields).eq('id', id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success(texts.updated);
+      resetForm();
+    },
+    onError: () => {
+      toast.error(texts.error);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.pflegeEintraege(user!.id) });
+    },
+  });
+
+  const resetForm = () => {
+    setShowForm(false);
+    setEditingEntry(null);
+    setMahlzeiten('');
+    setAktivitaeten('');
+    setBesonderheiten('');
+    setNaechsteSchritte('');
+    setStimmung(3);
+  };
+
+  const startEdit = (entry: PflegeEintrag) => {
+    setEditingEntry(entry);
+    setPersonName(entry.person_name);
+    setStimmung(entry.stimmung);
+    setMahlzeiten(entry.mahlzeiten || '');
+    setAktivitaeten(entry.aktivitaeten || '');
+    setBesonderheiten(entry.besonderheiten || '');
+    setNaechsteSchritte(entry.naechste_schritte || '');
+    setShowForm(true);
+    setExpandedEntry(null);
+  };
+
   const handleSave = () => {
     if (!user || !personName.trim()) return;
-    createMutation.mutate({
-      user_id: user.id,
-      person_name: personName.trim(),
-      stimmung,
-      mahlzeiten: mahlzeiten.trim() || null,
-      aktivitaeten: aktivitaeten.trim() || null,
-      besonderheiten: besonderheiten.trim() || null,
-      naechste_schritte: naechsteSchritte.trim() || null,
-      eintrags_datum: format(new Date(), 'yyyy-MM-dd'),
-    });
+
+    if (editingEntry) {
+      updateMutation.mutate({
+        id: editingEntry.id,
+        person_name: personName.trim(),
+        stimmung,
+        mahlzeiten: mahlzeiten.trim() || null,
+        aktivitaeten: aktivitaeten.trim() || null,
+        besonderheiten: besonderheiten.trim() || null,
+        naechste_schritte: naechsteSchritte.trim() || null,
+      });
+    } else {
+      createMutation.mutate({
+        user_id: user.id,
+        person_name: personName.trim(),
+        stimmung,
+        mahlzeiten: mahlzeiten.trim() || null,
+        aktivitaeten: aktivitaeten.trim() || null,
+        besonderheiten: besonderheiten.trim() || null,
+        naechste_schritte: naechsteSchritte.trim() || null,
+        eintrags_datum: format(new Date(), 'yyyy-MM-dd'),
+      });
+    }
   };
 
   const formatDate = (dateStr: string) => {
@@ -294,10 +349,10 @@ const PflegeTagebuch = () => {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-2 pt-2">
-              <Button onClick={handleSave} disabled={createMutation.isPending || !personName.trim()} className="w-full sm:w-auto min-h-[44px]">
-                {createMutation.isPending ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" />{texts.saving}</> : texts.save}
+              <Button onClick={handleSave} disabled={(createMutation.isPending || updateMutation.isPending) || !personName.trim()} className="w-full sm:w-auto min-h-[44px]">
+                {(createMutation.isPending || updateMutation.isPending) ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" />{texts.saving}</> : texts.save}
               </Button>
-              <Button variant="outline" onClick={() => setShowForm(false)} className="w-full sm:w-auto min-h-[44px]">{texts.cancel}</Button>
+              <Button variant="outline" onClick={resetForm} className="w-full sm:w-auto min-h-[44px]">{texts.cancel}</Button>
             </div>
           </CardContent>
         </Card>
@@ -366,9 +421,14 @@ const PflegeTagebuch = () => {
                         <p className="text-muted-foreground whitespace-pre-wrap">{entry.naechste_schritte}</p>
                       </div>
                     )}
-                    <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive hover:bg-destructive/10 mt-2" onClick={() => deleteMutation.mutate(entry.id)} aria-label={`${texts.delete} ${entry.person_name} ${formatDate(entry.eintrags_datum)}`}>
-                      <Trash2 className="h-3.5 w-3.5 mr-1.5" />{texts.delete}
-                    </Button>
+                    <div className="flex gap-2 mt-2">
+                      <Button variant="ghost" size="sm" className="hover:bg-muted" onClick={() => startEdit(entry)}>
+                        <Pencil className="h-3.5 w-3.5 mr-1.5" />{texts.edit}
+                      </Button>
+                      <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive hover:bg-destructive/10" onClick={() => deleteMutation.mutate(entry.id)} aria-label={`${texts.delete} ${entry.person_name} ${formatDate(entry.eintrags_datum)}`}>
+                        <Trash2 className="h-3.5 w-3.5 mr-1.5" />{texts.delete}
+                      </Button>
+                    </div>
                   </CardContent>
                 )}
               </Card>
