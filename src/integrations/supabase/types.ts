@@ -167,6 +167,39 @@ export type Database = {
         }
         Relationships: []
       }
+      pflege_personen: {
+        Row: {
+          beziehung: string | null
+          created_at: string
+          geburtsjahr: number | null
+          id: string
+          name: string
+          notizen: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          beziehung?: string | null
+          created_at?: string
+          geburtsjahr?: number | null
+          id?: string
+          name: string
+          notizen?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          beziehung?: string | null
+          created_at?: string
+          geburtsjahr?: number | null
+          id?: string
+          name?: string
+          notizen?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
