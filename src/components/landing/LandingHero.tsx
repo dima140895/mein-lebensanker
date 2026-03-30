@@ -157,7 +157,7 @@ const PanelArzt = () => (
 );
 
 /* ── Main Hero ── */
-const LandingHero = () => {
+/* v2 */ const LandingHero = () => {
   const isDesktop = useIsDesktop();
   const navigate = useNavigate();
   const [activePanel, setActivePanel] = useState(0);
