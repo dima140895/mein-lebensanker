@@ -64,16 +64,23 @@ const PflegegradTab = () => {
   const [mode, setMode] = useState<'overview' | 'manual' | 'rechner' | null>(null);
   const [selectedPerson, setSelectedPerson] = useState('');
 
+  const sectionKey = selectedPerson
+    ? `${PFLEGE_SECTION_KEY_BASE}_${selectedPerson.replace(/[^a-zA-Z0-9äöüÄÖÜß_-]/g, '_')}`
+    : PFLEGE_SECTION_KEY_BASE;
+
   // Load saved pflegegrad
   useEffect(() => {
     const load = async () => {
       if (!user) return;
+      setLoading(true);
+      setSavedGrad(null);
+      setMode(null);
       try {
         const { data, error } = await supabase
           .from('vorsorge_data')
           .select('data')
           .eq('user_id', user.id)
-          .eq('section_key', PFLEGE_SECTION_KEY)
+          .eq('section_key', sectionKey)
           .is('person_profile_id', null)
           .maybeSingle();
 
@@ -88,7 +95,7 @@ const PflegegradTab = () => {
       }
     };
     load();
-  }, [user]);
+  }, [user, sectionKey]);
 
   const savePflegegrad = async (grad: SavedPflegegrad) => {
     if (!user) return;
