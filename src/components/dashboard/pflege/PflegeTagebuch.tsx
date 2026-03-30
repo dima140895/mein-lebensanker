@@ -285,10 +285,25 @@ const PflegeTagebuch = () => {
 
   return (
     <div className="space-y-4">
+      {/* Person Filter */}
+      {entries.length > 0 && !showForm && (
+        <PflegePersonSelector
+          value={selectedPerson}
+          onChange={(val) => {
+            setSelectedPerson(val);
+            setPersonName(val);
+          }}
+          className="mb-2"
+        />
+      )}
+
       {/* Add Entry Button */}
       {!showForm && (
         <Button
-          onClick={() => setShowForm(true)}
+          onClick={() => {
+            if (selectedPerson) setPersonName(selectedPerson);
+            setShowForm(true);
+          }}
           className="w-full sm:w-auto"
         >
           <Plus className="h-4 w-4 mr-2" />
