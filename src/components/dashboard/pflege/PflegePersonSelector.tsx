@@ -12,6 +12,7 @@ interface PflegePersonSelectorProps {
   value: string;
   onChange: (value: string) => void;
   className?: string;
+  showAllOption?: boolean;
 }
 
 const PflegePersonSelector = ({ value, onChange, className = '' }: PflegePersonSelectorProps) => {
