@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ClipboardList, HeartHandshake, Stethoscope, ArrowRight, Lock, Zap, CheckCircle2, Circle, Anchor, ShieldAlert, Shield, Link2, CheckCircle, Heart, Activity, Plus, User, FileText, X } from 'lucide-react';
+import { ClipboardList, HeartHandshake, Stethoscope, ArrowRight, Lock, Zap, CheckCircle2, Circle, Anchor, ShieldAlert, Shield, Link2, CheckCircle, Heart, Activity, Plus, User, FileText, X, Share2 } from 'lucide-react';
 import { useEncryption } from '@/contexts/EncryptionContext';
 import { EncryptionPasswordDialog } from '@/components/EncryptionPasswordDialog';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -61,9 +61,12 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
   const [dataLoading, setDataLoading] = useState(true);
   const [showEncryptionSetup, setShowEncryptionSetup] = useState(false);
   const [hasShareToken, setHasShareToken] = useState(false);
+  const [shareReminderDismissed, setShareReminderDismissed] = useState(() =>
+    typeof window !== 'undefined' && sessionStorage.getItem('share_reminder_dismissed') === 'true'
+  );
   const [arztberichtHintDismissed, setArztberichtHintDismissed] = useState(() => {
     if (typeof window === 'undefined') return true;
-    return false; // Will be set properly once user is loaded
+    return false;
   });
 
   const isPlusOrHigher = userPlan === 'plus' || userPlan === 'familie';
@@ -494,6 +497,52 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
           </motion.div>
         );
       })()}
+
+      {/* Share Reminder Banner — when progress >= 80% and no share token */}
+      {progressPercent >= 80 && !hasShareToken && !shareReminderDismissed && !dataLoading && (
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+          <div className="bg-amber-light/60 border border-amber/30 rounded-2xl p-4 flex items-start gap-3">
+            <Share2 className="h-5 w-5 text-amber flex-shrink-0 mt-0.5" />
+            <div className="flex-1">
+              <p className="text-sm font-semibold text-foreground">
+                {language === 'de' ? 'Deine Familie kann noch nicht zugreifen.' : 'Your family can\'t access your data yet.'}
+              </p>
+              <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
+                {language === 'de'
+                  ? 'Du hast deine Vorsorge ausgefüllt — aber noch keinen Freigabe-Link erstellt. Im Ernstfall weiß deine Familie sonst nicht wo alles ist.'
+                  : 'You\'ve filled out your planning — but haven\'t created a sharing link yet. In an emergency, your family won\'t know where everything is.'}
+              </p>
+              <div className="mt-3 flex flex-col sm:flex-row gap-2">
+                <Button
+                  size="sm"
+                  onClick={() => {
+                    onNavigate('vorsorge');
+                    setTimeout(() => {
+                      const params = new URLSearchParams(window.location.search);
+                      params.set('module', 'vorsorge');
+                      params.set('section', 'share');
+                      window.history.replaceState(null, '', '?' + params.toString());
+                      window.dispatchEvent(new PopStateEvent('popstate'));
+                    }, 100);
+                  }}
+                  className="bg-amber hover:bg-amber/90 text-white text-xs px-3 py-1.5 rounded-lg min-h-[32px]"
+                >
+                  {language === 'de' ? 'Link jetzt erstellen →' : 'Create link now →'}
+                </Button>
+                <button
+                  onClick={() => {
+                    sessionStorage.setItem('share_reminder_dismissed', 'true');
+                    setShareReminderDismissed(true);
+                  }}
+                  className="text-muted-foreground text-xs hover:text-foreground transition-colors"
+                >
+                  {language === 'de' ? 'Später' : 'Later'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+      )}
 
       {/* Status Cards */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

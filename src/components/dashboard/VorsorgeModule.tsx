@@ -118,7 +118,7 @@ const VorsorgeModule = () => {
     const sectionFromUrl = searchParams.get('section');
     if (sectionFromUrl && allSections.some(s => s.key === sectionFromUrl)) {
       setActiveSection(sectionFromUrl);
-    } else if (sectionFromUrl === 'upgrade' || sectionFromUrl === 'payment') {
+    } else if (sectionFromUrl === 'upgrade' || sectionFromUrl === 'payment' || sectionFromUrl === 'share') {
       setActiveSection(sectionFromUrl);
     } else {
       setActiveSection(null);
@@ -208,6 +208,7 @@ const VorsorgeModule = () => {
   const renderContent = () => {
     switch (activeSection) {
       case 'advisors': return <AdvisorFinderSection />;
+      case 'share': return <ShareLinkManager />;
       case 'upgrade': return <PackageManagement />;
       case 'payment': return <PackageManagement />;
       case 'personal': return <PersonalForm />;
