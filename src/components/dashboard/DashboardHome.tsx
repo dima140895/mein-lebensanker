@@ -299,7 +299,7 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
             {passive ? (
               <>
                 <p className="text-sm text-muted-foreground">{tx.vorsorgePassive}</p>
-                <span className="text-xs text-muted-foreground hover:text-foreground transition-colors">{tx.discover} →</span>
+                <span className="text-xs text-muted-foreground hover:text-foreground transition-colors">{tx.discover} <ChevronRight className="inline h-3.5 w-3.5 ml-0.5" /></span>
               </>
             ) : statusLoading ? (
               <p className="text-sm text-muted-foreground">...</p>
