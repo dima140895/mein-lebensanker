@@ -355,7 +355,7 @@ const ArztBericht = () => {
                 <ul className="space-y-1.5 text-sm text-foreground">
                   <li className="flex items-start gap-2">
                     <span className="text-muted-foreground">•</span>
-                    <span>{t.worstDay}: {formatDateLong(findings.worst.checkin_datum)} — {t.energie} {findings.worst.energie}/5, {t.schmerz} {findings.worst.schmerz}/5</span>
+                    <span>{t.worstDay}: {formatDateLong(findings.worst.checkin_datum)} — {t.energie} {findings.worst.energie}/10, {t.schmerz} {findings.worst.schmerz}/10</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-muted-foreground">•</span>
