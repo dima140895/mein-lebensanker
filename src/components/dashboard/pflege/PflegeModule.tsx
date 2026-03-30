@@ -6,14 +6,10 @@ import PflegeTagebuch from './PflegeTagebuch';
 import PflegeMedikamente from './PflegeMedikamente';
 import PflegeKalender from './PflegeKalender';
 import PflegeDokumente from './PflegeDokumente';
-import PflegegradRechner from '@/components/PflegegradRechner';
-import { useAuth } from '@/contexts/AuthContext';
-import { supabase } from '@/integrations/supabase/client';
-import { toast } from 'sonner';
+import PflegegradTab from './PflegegradTab';
 
 const PflegeModule = () => {
   const { language } = useLanguage();
-  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState('tagebuch');
 
   const t = {
@@ -24,8 +20,6 @@ const PflegeModule = () => {
       kalender: 'Kalender',
       dokumente: 'Dokumente',
       pflegegrad: 'Pflegegrad',
-      saved: 'Pflegegrad gespeichert',
-      saveError: 'Fehler beim Speichern',
     },
     en: {
       title: 'Care Companion',
@@ -34,46 +28,10 @@ const PflegeModule = () => {
       kalender: 'Calendar',
       dokumente: 'Documents',
       pflegegrad: 'Care Level',
-      saved: 'Care level saved',
-      saveError: 'Error saving',
     },
   };
 
   const texts = t[language];
-
-  const handleSavePflegegrad = async (result: { grad: number; datum: string; punkte: number }) => {
-    if (!user) return;
-    try {
-      // Load existing personal data, merge pflegegrad result
-      const { data: existing } = await supabase
-        .from('vorsorge_data')
-        .select('data')
-        .eq('user_id', user.id)
-        .eq('section_key', 'personal')
-        .maybeSingle();
-
-      const currentData = (existing?.data as Record<string, unknown>) || {};
-      const updatedData = {
-        ...currentData,
-        pflegegrad_selbsteinschaetzung: result,
-      };
-
-      const { error } = await supabase
-        .from('vorsorge_data')
-        .upsert({
-          user_id: user.id,
-          section_key: 'personal',
-          person_profile_id: null,
-          data: updatedData,
-          updated_at: new Date().toISOString(),
-        }, { onConflict: 'user_id,section_key,person_profile_id' });
-
-      if (error) throw error;
-      toast.success(texts.saved);
-    } catch {
-      toast.error(texts.saveError);
-    }
-  };
 
   return (
     <div className="space-y-6">
@@ -108,10 +66,7 @@ const PflegeModule = () => {
           <PflegeDokumente />
         </TabsContent>
         <TabsContent value="pflegegrad" className="mt-6">
-          <PflegegradRechner
-            showCTA="dashboard"
-            onSave={handleSavePflegegrad}
-          />
+          <PflegegradTab />
         </TabsContent>
       </Tabs>
     </div>
