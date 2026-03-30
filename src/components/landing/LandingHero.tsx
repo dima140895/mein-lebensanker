@@ -92,7 +92,7 @@ const PanelPflege = () => (
         </span>
       </div>
       <div>
-        <span className="text-[10px] uppercase text-muted-foreground tracking-wide mb-1 block">🍽 Mahlzeiten</span>
+        <span className="text-[10px] uppercase text-muted-foreground tracking-wide mb-1 block">Mahlzeiten</span>
         <p className="text-xs text-foreground">Frühstück gut, Mittagessen halb aufgegessen</p>
       </div>
       <div className="mt-3">
