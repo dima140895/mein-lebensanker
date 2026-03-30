@@ -208,17 +208,26 @@ const PflegeKalender = ({ onSelectDate, activePersonName = '' }: PflegeKalenderP
             </div>
           </CardHeader>
           <CardContent className="space-y-2 text-sm">
+            <div>
+              <span className="font-medium text-foreground">{texts.mood}:</span>{' '}
+              <span className="text-muted-foreground">{getMoodLabel(selectedEntry.stimmung, language)}</span>
+            </div>
             {selectedEntry.mahlzeiten && (
-              <div><span className="font-medium text-foreground">{texts.meals}:</span> <span className="text-muted-foreground">{selectedEntry.mahlzeiten}</span></div>
+              <div><span className="font-medium text-foreground">{texts.meals}:</span> <span className="text-muted-foreground whitespace-pre-wrap">{selectedEntry.mahlzeiten}</span></div>
             )}
             {selectedEntry.aktivitaeten && (
-              <div><span className="font-medium text-foreground">{texts.activities}:</span> <span className="text-muted-foreground">{selectedEntry.aktivitaeten}</span></div>
+              <div><span className="font-medium text-foreground">{texts.activities}:</span> <span className="text-muted-foreground whitespace-pre-wrap">{selectedEntry.aktivitaeten}</span></div>
             )}
             {selectedEntry.besonderheiten && (
-              <div><span className="font-medium text-foreground">{texts.incidents}:</span> <span className="text-muted-foreground">{selectedEntry.besonderheiten}</span></div>
+              <div><span className="font-medium text-foreground">{texts.incidents}:</span> <span className="text-muted-foreground whitespace-pre-wrap">{selectedEntry.besonderheiten}</span></div>
             )}
             {selectedEntry.naechste_schritte && (
-              <div><span className="font-medium text-foreground">{texts.nextSteps}:</span> <span className="text-muted-foreground">{selectedEntry.naechste_schritte}</span></div>
+              <div><span className="font-medium text-foreground">{texts.nextSteps}:</span> <span className="text-muted-foreground whitespace-pre-wrap">{selectedEntry.naechste_schritte}</span></div>
+            )}
+            {!selectedEntry.mahlzeiten && !selectedEntry.aktivitaeten && !selectedEntry.besonderheiten && !selectedEntry.naechste_schritte && (
+              <p className="text-xs text-muted-foreground italic">
+                {language === 'de' ? 'Nur Stimmung dokumentiert, keine weiteren Details.' : 'Only mood documented, no further details.'}
+              </p>
             )}
           </CardContent>
         </Card>
