@@ -2,16 +2,22 @@ import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Stethoscope } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useAuth } from '@/contexts/AuthContext';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import TagesCheckin from './TagesCheckin';
 import MeinVerlauf from './MeinVerlauf';
 import ArztBericht from './ArztBericht';
 import PflegeMedikamente from '@/components/dashboard/pflege/PflegeMedikamente';
+import ModuleIntroScreen, { shouldShowModuleIntro } from '@/components/dashboard/ModuleIntroScreen';
 
 const KrankheitModule = () => {
   const { language } = useLanguage();
+  const { user, profile } = useAuth();
   const [searchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState('checkin');
+  const [showIntro, setShowIntro] = useState(() =>
+    user ? shouldShowModuleIntro('krankheit', user.id, profile?.onboarding_focus) : false
+  );
 
   // Sync tab from URL param (e.g. ?module=krankheit&tab=arztbericht)
   useEffect(() => {

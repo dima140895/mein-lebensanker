@@ -271,6 +271,13 @@ const VorsorgeModule = () => {
   // Overview / tile grid
   return (
     <>
+      {showIntro && (
+        <ModuleIntroScreen
+          module="vorsorge"
+          onStart={() => setShowIntro(false)}
+          onDismiss={() => setShowIntro(false)}
+        />
+      )}
       <div className="text-center mb-3 md:mb-4">
         <h1 className="font-sans text-2xl md:text-3xl font-bold text-foreground">{texts.title}</h1>
         <p className="mt-1 md:mt-2 text-sm md:text-base text-muted-foreground">{texts.subtitle}</p>
