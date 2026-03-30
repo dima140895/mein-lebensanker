@@ -156,10 +156,17 @@ const DashboardContent = () => {
       );
     }
 
+    if (activeModule === 'familie') {
+      return (
+        <Suspense fallback={<ModuleLoadingFallback />}>
+          <FamilieModule onNavigate={handleModuleChange} />
+        </Suspense>
+      );
+    }
+
     // All other modules are lazy-loaded
     const ModuleMap: Record<string, React.LazyExoticComponent<React.ComponentType>> = {
       vorsorge: VorsorgeModule,
-      familie: FamilieModule,
       settings: SettingsModule,
     };
     const Module = ModuleMap[activeModule];
