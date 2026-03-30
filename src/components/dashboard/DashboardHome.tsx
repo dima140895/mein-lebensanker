@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ClipboardList, HeartHandshake, Stethoscope, ArrowRight, Lock, Zap, CheckCircle2, Circle, Anchor, ShieldAlert, Shield, Link2, CheckCircle } from 'lucide-react';
+import { ClipboardList, HeartHandshake, Stethoscope, ArrowRight, Lock, Zap, CheckCircle2, Circle, Anchor, ShieldAlert, Shield, Link2, CheckCircle, Heart, Activity } from 'lucide-react';
 import { useEncryption } from '@/contexts/EncryptionContext';
 import { EncryptionPasswordDialog } from '@/components/EncryptionPasswordDialog';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -192,8 +192,8 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
   // Card order based on onboarding focus
   const cardOrder = useMemo(() => {
     const cards: ('vorsorge' | 'pflege' | 'krankheit')[] = ['vorsorge', 'pflege', 'krankheit'];
-    if (onboardingFocus === 'pflege') return ['pflege', 'vorsorge', 'krankheit'] as typeof cards;
-    if (onboardingFocus === 'krankheit') return ['krankheit', 'vorsorge', 'pflege'] as typeof cards;
+    if (onboardingFocus === 'pflege') return ['pflege', 'krankheit', 'vorsorge'] as typeof cards;
+    if (onboardingFocus === 'krankheit') return ['krankheit', 'pflege', 'vorsorge'] as typeof cards;
     return cards;
   }, [onboardingFocus]);
 
@@ -358,25 +358,70 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
         <p className="text-sm text-charcoal-light mt-1 font-body">{tx.subtitle}</p>
       </motion.div>
 
-      {/* Start prompt when Vorsorge is 0% */}
-      {!statusLoading && progressPercent === 0 && (
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }}>
-          <Card className="bg-primary/5 border-primary/20 rounded-2xl shadow-card">
-            <CardContent className="flex flex-col items-center text-center py-8 px-6">
-              <Anchor className="h-12 w-12 text-muted-foreground mb-4" />
-              <h3 className="font-sans text-xl text-foreground mb-2">{language === 'de' ? 'Bereit? Lass uns beginnen.' : 'Ready? Let\'s begin.'}</h3>
-              <p className="text-sm text-muted-foreground max-w-xs font-body">
-                {language === 'de'
-                  ? 'Deine Vorsorge-Dokumentation dauert etwa 20 Minuten und gibt dir und deiner Familie echte Sicherheit.'
-                  : 'Your planning documentation takes about 20 minutes and gives you and your family real peace of mind.'}
-              </p>
-              <Button onClick={() => onNavigate('vorsorge')} className="mt-6 rounded-lg min-h-[44px]">
-                {language === 'de' ? 'Vorsorge jetzt starten →' : 'Start planning now →'}
-              </Button>
-            </CardContent>
-          </Card>
-        </motion.div>
-      )}
+      {/* Start prompt — adapted to onboarding focus */}
+      {!statusLoading && !dataLoading && (() => {
+        // Determine what to show based on focus
+        const focus = onboardingFocus || 'vorsorge';
+        
+        // For vorsorge: show only when 0%
+        if (focus === 'vorsorge' && progressPercent > 0) return null;
+        // For pflege: show only when no entries yet
+        if (focus === 'pflege' && lastPflege) return null;
+        // For krankheit: show only when no checkin today
+        if (focus === 'krankheit' && todayCheckin) return null;
+
+        const configs = {
+          vorsorge: {
+            icon: <Anchor className="h-12 w-12 text-muted-foreground mb-4" />,
+            title: { de: 'Bereit? Lass uns beginnen.', en: 'Ready? Let\'s begin.' },
+            desc: { de: 'Deine Vorsorge-Dokumentation dauert etwa 20 Minuten und gibt dir und deiner Familie echte Sicherheit.', en: 'Your planning documentation takes about 20 minutes and gives you and your family real peace of mind.' },
+            cta: { de: 'Vorsorge jetzt starten →', en: 'Start planning now →' },
+            module: 'vorsorge' as DashboardModule,
+            note: null as { de: string; en: string; module: DashboardModule } | null,
+          },
+          pflege: {
+            icon: <Heart className="h-12 w-12 text-accent mb-4" />,
+            title: { de: 'Dokumentiere den ersten Tag.', en: 'Document the first day.' },
+            desc: { de: 'Stimmung, Mahlzeiten, Medikamente — in 3 Minuten.', en: 'Mood, meals, medications — in 3 minutes.' },
+            cta: { de: 'Ersten Pflegeeintrag erstellen →', en: 'Create first care entry →' },
+            module: 'pflege' as DashboardModule,
+            note: { de: 'Vorsorge kannst du jederzeit nachholen →', en: 'You can always catch up on planning →', module: 'vorsorge' as DashboardModule },
+          },
+          krankheit: {
+            icon: <Activity className="h-12 w-12 text-sage-dark mb-4" />,
+            title: { de: 'Wie geht es dir heute?', en: 'How are you today?' },
+            desc: { de: '60 Sekunden. 4 Fragen. Danach siehst du deinen Verlauf.', en: '60 seconds. 4 questions. Then you\'ll see your trend.' },
+            cta: { de: 'Ersten Check-in starten →', en: 'Start first check-in →' },
+            module: 'krankheit' as DashboardModule,
+            note: { de: 'Vorsorge kannst du jederzeit nachholen →', en: 'You can always catch up on planning →', module: 'vorsorge' as DashboardModule },
+          },
+        };
+
+        const cfg = configs[focus as keyof typeof configs] || configs.vorsorge;
+
+        return (
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }}>
+            <Card className="bg-primary/5 border-primary/20 rounded-2xl shadow-card">
+              <CardContent className="flex flex-col items-center text-center py-8 px-6">
+                {cfg.icon}
+                <h3 className="font-sans text-xl text-foreground mb-2">{cfg.title[language]}</h3>
+                <p className="text-sm text-muted-foreground max-w-xs font-body">{cfg.desc[language]}</p>
+                <Button onClick={() => onNavigate(cfg.module)} className="mt-6 rounded-lg min-h-[44px]">
+                  {cfg.cta[language]}
+                </Button>
+                {cfg.note && (
+                  <button
+                    onClick={() => onNavigate(cfg.note!.module)}
+                    className="mt-3 text-xs text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    {cfg.note[language]}
+                  </button>
+                )}
+              </CardContent>
+            </Card>
+          </motion.div>
+        );
+      })()}
 
       {/* Status Cards */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
