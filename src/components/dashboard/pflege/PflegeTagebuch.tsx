@@ -349,10 +349,10 @@ const PflegeTagebuch = () => {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-2 pt-2">
-              <Button onClick={handleSave} disabled={createMutation.isPending || !personName.trim()} className="w-full sm:w-auto min-h-[44px]">
-                {createMutation.isPending ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" />{texts.saving}</> : texts.save}
+              <Button onClick={handleSave} disabled={(createMutation.isPending || updateMutation.isPending) || !personName.trim()} className="w-full sm:w-auto min-h-[44px]">
+                {(createMutation.isPending || updateMutation.isPending) ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" />{texts.saving}</> : texts.save}
               </Button>
-              <Button variant="outline" onClick={() => setShowForm(false)} className="w-full sm:w-auto min-h-[44px]">{texts.cancel}</Button>
+              <Button variant="outline" onClick={resetForm} className="w-full sm:w-auto min-h-[44px]">{texts.cancel}</Button>
             </div>
           </CardContent>
         </Card>
