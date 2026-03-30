@@ -282,11 +282,10 @@ const PflegeTagebuch = () => {
       {!showForm && (
         <Button
           onClick={() => setShowForm(true)}
-          disabled={todayExists}
           className="w-full sm:w-auto"
         >
           <Plus className="h-4 w-4 mr-2" />
-          {todayExists ? texts.alreadyExists : texts.addEntry}
+          {texts.addEntry}
         </Button>
       )}
 
