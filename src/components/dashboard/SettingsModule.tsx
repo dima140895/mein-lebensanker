@@ -25,7 +25,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import { Package, Download, Link2, Bell, Heart, Shield, LogOut, Loader2, Keyboard } from 'lucide-react';
+import { Package, Download, Link2, Bell, Heart, Shield, LogOut, Loader2, Keyboard, ShieldCheck } from 'lucide-react';
 import { toast } from 'sonner';
 import { logger } from '@/lib/logger';
 import { useIsMobile } from '@/hooks/use-mobile';
