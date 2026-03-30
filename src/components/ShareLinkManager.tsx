@@ -674,7 +674,7 @@ const ShareLinkManager = () => {
         </div>
         
         {/* What they see */}
-        <div className="rounded-lg bg-cream-dark/50 p-4 space-y-2">
+        <div className="rounded-xl bg-secondary/60 p-4 space-y-2">
           <h4 className="font-medium text-foreground">{texts.whatTheySeeTile}</h4>
           <p className="text-sm text-muted-foreground">{texts.whatTheySeeDesc}</p>
         </div>
