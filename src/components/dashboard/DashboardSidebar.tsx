@@ -1,4 +1,4 @@
-import { Home, ClipboardList, HeartHandshake, Stethoscope, Users, Settings, Lock, Anchor } from 'lucide-react';
+import { Home, ClipboardList, HeartHandshake, Stethoscope, Users, Settings, Lock, Anchor, LogOut } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useQueryClient } from '@tanstack/react-query';
