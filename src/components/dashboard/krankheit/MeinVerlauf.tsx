@@ -179,9 +179,11 @@ const MeinVerlauf = () => {
             ? `Ab 3 Check-ins siehst du hier deinen Verlauf.${entries.length > 0 ? ` Du hast bereits ${entries.length}.` : ''} Du bist auf dem richtigen Weg.`
             : `You need at least 3 check-ins to see your trend.${entries.length > 0 ? ` You have ${entries.length} so far.` : ''} You're on the right track.`}
         </p>
-        <button onClick={() => {}} className="inline-flex items-center gap-1.5 text-sm text-primary font-medium font-body mt-4 hover:underline">
-          {language === 'de' ? 'Mache heute deinen Check-in' : 'Do your check-in today'} <ArrowRight className="h-3.5 w-3.5" />
-        </button>
+        {!entries.some(e => e.checkin_datum === format(new Date(), 'yyyy-MM-dd')) && (
+          <button onClick={() => {}} className="inline-flex items-center gap-1.5 text-sm text-primary font-medium font-body mt-4 hover:underline">
+            {language === 'de' ? 'Mache heute deinen Check-in' : 'Do your check-in today'} <ArrowRight className="h-3.5 w-3.5" />
+          </button>
+        )}
       </div>
     );
   }
