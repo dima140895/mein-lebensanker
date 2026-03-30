@@ -563,14 +563,8 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
               <Button
                 size="sm"
                 onClick={() => {
+                  setSearchParams({ module: 'krankheit', tab: 'arztbericht' });
                   onNavigate('krankheit');
-                  // Navigate to arztbericht tab via URL params
-                  setTimeout(() => {
-                    const params = new URLSearchParams(window.location.search);
-                    params.set('module', 'krankheit');
-                    params.set('tab', 'arztbericht');
-                    window.history.replaceState(null, '', '?' + params.toString());
-                  }, 100);
                 }}
                 className="mt-3 text-xs px-3 py-1.5 rounded-lg min-h-[32px]"
               >
