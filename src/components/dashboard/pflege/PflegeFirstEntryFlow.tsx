@@ -189,7 +189,7 @@ const PflegeFirstEntryFlow = ({ onSave, isSaving }: PflegeFirstEntryFlowProps) =
                         onChange={(e) => setNaechsteSchritte(e.target.value)}
                         placeholder={texts.nextStepsPlaceholder}
                         rows={2}
-                        className="border-2 border-primary/30 focus-visible:ring-primary"
+                        className="border-2 border-primary rounded-xl"
                       />
                     </div>
                   </motion.div>
