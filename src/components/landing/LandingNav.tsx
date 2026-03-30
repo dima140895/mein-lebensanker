@@ -67,7 +67,7 @@ const LandingNav = () => {
 
       {/* Mobile menu */}
       {mobileOpen && (
-        <div className="md:hidden bg-background/95 backdrop-blur-sm border-t border-border/60 px-6 py-4 space-y-3">
+        <div className="md:hidden bg-background border-t border-border px-6 py-4 space-y-3">
           {navLinks.map((link) => (
             <button key={link.id} onClick={() => scrollTo(link.id)} className="block w-full text-left py-2 text-sm font-medium text-foreground">
               {link.label}
