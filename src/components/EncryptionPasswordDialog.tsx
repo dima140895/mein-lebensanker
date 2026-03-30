@@ -244,7 +244,7 @@ export const EncryptionPasswordDialog: React.FC<EncryptionPasswordDialogProps> =
               {/* How it works - collapsed by default */}
               <button
                 type="button"
-                onClick={() => setShowVisualGuide(true)}
+                onClick={() => { setError(null); setShowVisualGuide(true); }}
                 className="text-xs text-primary hover:underline flex items-center gap-1"
               >
                 <PlayCircle className="h-3.5 w-3.5" />
