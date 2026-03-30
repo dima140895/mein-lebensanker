@@ -48,6 +48,13 @@ const KrankheitModule = () => {
 
   return (
     <div className="space-y-6">
+      {showIntro && (
+        <ModuleIntroScreen
+          module="krankheit"
+          onStart={() => setShowIntro(false)}
+          onDismiss={() => setShowIntro(false)}
+        />
+      )}
       <div className="flex items-center gap-3">
         <div className="h-10 w-10 rounded-lg bg-sage-light flex items-center justify-center">
           <Stethoscope className="h-5 w-5 text-sage-dark" />
