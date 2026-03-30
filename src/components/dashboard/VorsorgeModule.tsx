@@ -423,28 +423,106 @@ const VorsorgeModule = () => {
       {/* Info sections */}
       <div>
         <div className="grid gap-2.5 md:gap-4 grid-cols-2">
-          {infoSections.map((section, i) => {
-            const Icon = section.icon;
-            return (
-              <motion.button
-                key={section.key}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 + i * 0.05 }}
-                onClick={() => handleSectionChange(section.key)}
-                className="flex flex-col md:flex-row items-center gap-1.5 md:gap-2 p-2.5 md:p-3 rounded-xl border border-border bg-card/50 hover:bg-card shadow-sm hover:shadow-card transition-all text-center md:text-left min-w-0"
-              >
-                <div className={`h-6 w-6 md:h-7 md:w-7 rounded-lg flex items-center justify-center flex-shrink-0 ${section.color}`}>
-                  <Icon className="h-3 w-3" />
-                </div>
-                <span className="font-medium text-[10px] md:text-xs text-foreground leading-tight">
-                  {texts[section.key as keyof typeof texts]}
-                </span>
-              </motion.button>
-            );
-          })}
+          {/* "Was ist das?" — opens modal */}
+          <motion.button
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            onClick={() => setWasIstDasOpen(true)}
+            className="flex flex-col md:flex-row items-center gap-1.5 md:gap-2 p-2.5 md:p-3 rounded-xl border border-border bg-card/50 hover:bg-card shadow-sm hover:shadow-card transition-all text-center md:text-left min-w-0"
+          >
+            <div className="h-6 w-6 md:h-7 md:w-7 rounded-lg flex items-center justify-center flex-shrink-0 bg-sage-light text-sage-dark">
+              <Info className="h-3 w-3" />
+            </div>
+            <span className="font-medium text-[10px] md:text-xs text-foreground leading-tight">
+              {texts.about}
+            </span>
+          </motion.button>
+
+          {/* "Beratung finden" — still navigates */}
+          <motion.button
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.35 }}
+            onClick={() => handleSectionChange('advisors')}
+            className="flex flex-col md:flex-row items-center gap-1.5 md:gap-2 p-2.5 md:p-3 rounded-xl border border-border bg-card/50 hover:bg-card shadow-sm hover:shadow-card transition-all text-center md:text-left min-w-0"
+          >
+            <div className="h-6 w-6 md:h-7 md:w-7 rounded-lg flex items-center justify-center flex-shrink-0 bg-sage-light text-sage-dark">
+              <Compass className="h-3 w-3" />
+            </div>
+            <span className="font-medium text-[10px] md:text-xs text-foreground leading-tight">
+              {texts.advisors}
+            </span>
+          </motion.button>
         </div>
       </div>
+
+      {/* Was ist Vorsorge? Modal */}
+      <Dialog open={wasIstDasOpen} onOpenChange={setWasIstDasOpen}>
+        <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
+          <div className="text-center">
+            <div className="mx-auto mb-3 h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
+              <Anchor className="h-6 w-6 text-primary" />
+            </div>
+            <h2 className="font-semibold text-xl text-foreground">
+              {language === 'de' ? 'Was ist Vorsorge?' : 'What is advance planning?'}
+            </h2>
+            <p className="text-sm text-muted-foreground mt-1 mb-5">
+              {language === 'de'
+                ? 'Was passiert mit deinen Daten, Wünschen und Vollmachten — wenn du nicht mehr entscheiden kannst?'
+                : 'What happens to your data, wishes and powers of attorney — when you can no longer decide?'}
+            </p>
+          </div>
+
+          <div className="space-y-4">
+            {[
+              {
+                num: '01',
+                title: { de: 'Vollmachten & Testament', en: 'Powers of attorney & will' },
+                desc: { de: 'Wer darf für dich entscheiden wenn du es nicht mehr kannst? Wer erbt was?', en: 'Who can decide for you when you can\'t? Who inherits what?' },
+              },
+              {
+                num: '02',
+                title: { de: 'Digitaler Nachlass', en: 'Digital legacy' },
+                desc: { de: 'E-Mail-Konten, Social Media, Abonnements — was soll damit passieren?', en: 'Email accounts, social media, subscriptions — what should happen to them?' },
+              },
+              {
+                num: '03',
+                title: { de: 'Notfallinformationen', en: 'Emergency information' },
+                desc: { de: 'Medikamente, Kontakte, Dokumente — alles an einem Ort für deine Familie.', en: 'Medications, contacts, documents — everything in one place for your family.' },
+              },
+            ].map((block) => (
+              <div key={block.num} className="flex gap-3 items-start">
+                <span className="text-xs font-bold text-primary bg-primary/10 w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                  {block.num}
+                </span>
+                <div>
+                  <p className="text-sm font-semibold text-foreground">{block.title[language]}</p>
+                  <p className="text-xs text-muted-foreground mt-1">{block.desc[language]}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="border-t border-border mt-5 pt-4">
+            <div className="bg-accent/10 rounded-xl p-3 flex gap-2">
+              <Info className="h-3.5 w-3.5 text-muted-foreground flex-shrink-0 mt-0.5" />
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                {language === 'de'
+                  ? 'Lebensanker ersetzt keinen Notar oder Anwalt. Wir helfen dir alles zu organisieren und griffbereit zu haben — die rechtliche Beratung bleibt beim Experten.'
+                  : 'Lebensanker does not replace a notary or lawyer. We help you organize everything — legal advice remains with the expert.'}
+              </p>
+            </div>
+          </div>
+
+          <Button
+            onClick={() => setWasIstDasOpen(false)}
+            className="w-full rounded-xl py-2.5 font-medium text-sm mt-4"
+          >
+            {language === 'de' ? 'Verstanden — starten →' : 'Got it — start →'}
+          </Button>
+        </DialogContent>
+      </Dialog>
 
       <DashboardOnboardingTour key={tourKey} />
 
