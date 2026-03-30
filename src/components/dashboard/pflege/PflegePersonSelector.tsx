@@ -24,7 +24,7 @@ const PflegePersonSelector = ({ value, onChange, className = '', showAllOption =
 
   // Gather unique person names from pflege_eintraege and medikamente
   const { data: personNames = [] } = useQuery({
-    queryKey: ['pflege-personen', user?.id],
+    queryKey: ['pflege-person-names', user?.id],
     queryFn: async () => {
       if (!user) return [];
       const namesSet = new Set<string>();
