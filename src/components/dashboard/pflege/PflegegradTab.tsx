@@ -146,7 +146,7 @@ const PflegegradTab = () => {
         .from('vorsorge_data')
         .delete()
         .eq('user_id', user.id)
-        .eq('section_key', PFLEGE_SECTION_KEY)
+        .eq('section_key', sectionKey)
         .is('person_profile_id', null);
 
       if (error) throw error;
