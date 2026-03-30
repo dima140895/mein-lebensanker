@@ -379,7 +379,7 @@ const PflegeTagebuch = () => {
       )}
 
       {/* Entry List */}
-      {entries.length === 0 && !showForm ? (
+      {filteredEntries.length === 0 && !showForm ? (
         <div className="flex flex-col items-center justify-center py-16 text-center">
           <BookHeart className="h-12 w-12 text-muted-foreground mb-4" />
           <h3 className="font-sans text-xl text-foreground mb-2">{language === 'de' ? 'Noch kein Eintrag' : 'No entries yet'}</h3>
@@ -391,7 +391,7 @@ const PflegeTagebuch = () => {
         </div>
       ) : (
         <div className="space-y-3">
-          {entries.map((entry) => {
+          {filteredEntries.map((entry) => {
             const isExpanded = expandedEntry === entry.id;
             return (
               <Card key={entry.id} className="border-border">
