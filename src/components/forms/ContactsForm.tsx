@@ -210,7 +210,7 @@ const ContactsForm = () => {
     typeLabel: string,
     options: Record<string, string>
   ) => (
-    <div key={index} className="p-4 rounded-lg border border-border bg-card/50 space-y-3">
+    <div key={index} className="p-4 rounded-xl border border-border bg-card space-y-3">
       <div className="flex justify-between items-start">
         <div className="flex-1 grid gap-3 md:grid-cols-2">
           <Select
@@ -277,9 +277,9 @@ const ContactsForm = () => {
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-8">
-      <div className="rounded-lg bg-sage-light/50 p-4 flex items-start gap-3">
-        <Info className="h-5 w-5 text-sage-dark flex-shrink-0 mt-0.5" />
-        <p className="text-sm text-sage-dark">{texts.disclaimer}</p>
+      <div className="rounded-xl bg-primary/5 border border-primary/10 p-4 flex items-start gap-3">
+        <Info className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+        <p className="text-sm text-foreground/70">{texts.disclaimer}</p>
       </div>
 
       {/* Doctors Section */}
