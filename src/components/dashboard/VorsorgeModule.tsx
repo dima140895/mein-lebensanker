@@ -21,6 +21,7 @@ import PackageManagement from '@/components/PackageManagement';
 import ShareLinkManager from '@/components/ShareLinkManager';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useSectionStatus } from '@/hooks/useSectionStatus';
 import { DashboardOnboardingTour, triggerDashboardTour } from '@/components/DashboardOnboardingTour';
