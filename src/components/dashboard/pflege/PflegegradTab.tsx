@@ -104,18 +104,19 @@ const PflegegradTab = () => {
         ({ error } = await supabase
           .from('vorsorge_data')
           .update({
-            data: grad as unknown as Record<string, unknown>,
+            data: grad as unknown as Json,
             updated_at: new Date().toISOString(),
           })
           .eq('id', existing.id));
       } else {
+        const insertRow: { user_id: string; section_key: string; data: Json } = {
+          user_id: user.id,
+          section_key: PFLEGE_SECTION_KEY,
+          data: grad as unknown as Json,
+        };
         ({ error } = await supabase
           .from('vorsorge_data')
-          .insert({
-            user_id: user.id,
-            section_key: PFLEGE_SECTION_KEY,
-            data: grad as unknown as Record<string, unknown>,
-          }));
+          .insert(insertRow));
       }
 
       if (error) throw error;
