@@ -29,7 +29,16 @@ const PflegePersonSelector = ({ value, onChange, className = '', showAllOption =
       if (!user) return [];
       const namesSet = new Set<string>();
 
-      // From pflege_eintraege
+      // From pflege_personen (primary source)
+      const { data: personen } = await (supabase as any)
+        .from('pflege_personen')
+        .select('name')
+        .eq('user_id', user.id);
+      personen?.forEach((p: any) => {
+        if (p.name?.trim()) namesSet.add(p.name.trim());
+      });
+
+      // From pflege_eintraege (legacy entries that might not have a pflege_person)
       const { data: eintraege } = await supabase
         .from('pflege_eintraege')
         .select('person_name')
