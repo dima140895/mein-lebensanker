@@ -254,9 +254,14 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
     return cards;
   }, [onboardingFocus]);
 
+  // Only show passive state if module has NO data yet AND is not the user's focus
   const isPassive = (module: string) => {
     if (!onboardingFocus || onboardingFocus === 'vorsorge') return false;
-    return module !== onboardingFocus;
+    if (module === onboardingFocus) return false;
+    // If user has started using the module, don't show passive
+    if (module === 'vorsorge' && filledCount > 0) return false;
+    if (module === 'krankheit' && checkinCount > 0) return false;
+    return true;
   };
 
   const renderVorsorgeCard = (delay: number) => {
