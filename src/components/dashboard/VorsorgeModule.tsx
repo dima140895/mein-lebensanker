@@ -68,6 +68,9 @@ const VorsorgeModule = () => {
     }
   }, [isComplete, user, statusLoading]);
 
+  const isAnkerOnly = profile?.purchased_tier === 'anker' || (!profile?.purchased_tier && profile?.has_paid);
+  const upgradeKey = user ? `upgrade_trigger_shown_${user.id}` : '';
+
   const dismissCelebration = (openShare?: boolean) => {
     if (user) {
       localStorage.setItem(`vorsorge_complete_celebrated_${user.id}`, 'true');
@@ -75,6 +78,30 @@ const VorsorgeModule = () => {
     setShowCelebration(false);
     if (openShare) {
       setShowShareManager(true);
+    }
+    // Show upgrade modal after celebration for Anker-only users
+    if (isAnkerOnly && user && !localStorage.getItem(upgradeKey)) {
+      setTimeout(() => setShowUpgradeModal(true), 1500);
+    }
+  };
+
+  const dismissUpgradeModal = () => {
+    if (user) localStorage.setItem(upgradeKey, 'true');
+    setShowUpgradeModal(false);
+  };
+
+  const handleUpgradeClick = async () => {
+    setUpgradeLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('create-payment', {
+        body: { plan: 'plus' },
+      });
+      if (error) throw error;
+      if (data?.url) window.location.href = data.url;
+    } catch (e) {
+      toast.error(language === 'de' ? 'Fehler beim Starten des Checkouts' : 'Error starting checkout');
+    } finally {
+      setUpgradeLoading(false);
     }
   };
 
