@@ -23,6 +23,7 @@ interface Medikament {
   notizen: string | null;
   erinnerung_aktiv: boolean;
   erinnerung_zeiten: string[] | null;
+  person_name: string | null;
 }
 
 const PflegeMedikamente = () => {
