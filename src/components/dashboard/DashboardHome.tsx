@@ -59,6 +59,7 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
   const [lastPflege, setLastPflege] = useState<any>(null);
   const [pflegePersonenNames, setPflegePersonenNames] = useState<string[]>([]);
   const [todayCheckin, setTodayCheckin] = useState<any>(null);
+  const [lastCheckin, setLastCheckin] = useState<any>(null);
   const [checkinCount, setCheckinCount] = useState(0);
   const [dataLoading, setDataLoading] = useState(true);
   const [showEncryptionSetup, setShowEncryptionSetup] = useState(false);
