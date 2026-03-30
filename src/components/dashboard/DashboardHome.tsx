@@ -327,7 +327,7 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
                   <span className="text-sm text-[#437059] font-medium">{language === 'de' ? 'Vollständig' : 'Complete'}</span>
                 </div>
                 <span className="text-sm text-muted-foreground mt-2 inline-block cursor-pointer">
-                  {language === 'de' ? 'Ansehen →' : 'View →'}
+                  {language === 'de' ? 'Ansehen' : 'View'} <ChevronRight className="inline h-3.5 w-3.5 ml-0.5" />
                 </span>
               </>
             )}
