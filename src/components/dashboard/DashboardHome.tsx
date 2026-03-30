@@ -392,11 +392,17 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
                         : tx.pflegeEmpty}
                     </p>
                   )}
-                  <Button variant="ghost" size="sm" className="w-full text-accent hover:text-accent hover:bg-accent/5 gap-1.5 min-h-[44px]">
-                    {pflegePersonenNames.length > 0
-                      ? (language === 'de' ? `Wie geht es ${pflegePersonenNames[0]} heute?` : `How is ${pflegePersonenNames[0]} today?`)
-                      : (language === 'de' ? 'Wie geht es deinem Angehörigen heute?' : 'How is your loved one today?')}
-                  </Button>
+                  {todayPflegeExists ? (
+                    <Button variant="ghost" size="sm" className="w-full text-muted-foreground hover:text-accent hover:bg-accent/5 gap-1.5 min-h-[44px]">
+                      {language === 'de' ? 'Tagebuch öffnen' : 'Open diary'} <ChevronRight className="inline h-3.5 w-3.5 ml-0.5" />
+                    </Button>
+                  ) : (
+                    <Button variant="ghost" size="sm" className="w-full text-accent hover:text-accent hover:bg-accent/5 gap-1.5 min-h-[44px]">
+                      {pflegePersonenNames.length > 0
+                        ? (language === 'de' ? `Wie geht es ${pflegePersonenNames[0]} heute?` : `How is ${pflegePersonenNames[0]} today?`)
+                        : (language === 'de' ? 'Wie geht es deinem Angehörigen heute?' : 'How is your loved one today?')}
+                    </Button>
+                  )}
                 </>
               )}
             </CardContent>
