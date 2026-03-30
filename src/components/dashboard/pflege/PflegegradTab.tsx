@@ -52,7 +52,7 @@ interface SavedPflegegrad {
   person_name?: string;
 }
 
-const PFLEGE_SECTION_KEY = '_pflege_pflegegrad';
+const PFLEGE_SECTION_KEY_BASE = '_pflege_pflegegrad';
 
 const PflegegradTab = () => {
   const { language } = useLanguage();
