@@ -377,7 +377,7 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
                         </p>
                       </div>
                       <p className="text-xs text-muted-foreground">
-                        {relativesDatum(lastPflege.eintrags_datum, language)}
+                        {relativesDatum(lastPflege.eintrags_datum)}
                       </p>
                       {/* Person count */}
                       {pflegePersonenNames.length > 1 && (
