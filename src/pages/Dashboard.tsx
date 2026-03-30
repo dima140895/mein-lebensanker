@@ -5,9 +5,7 @@ import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useEncryption } from '@/contexts/EncryptionContext';
-import Header from '@/components/Header';
 import StaticNav from '@/components/StaticNav';
-import Footer from '@/components/Footer';
 import LandingFooter from '@/components/landing/LandingFooter';
 import Disclaimer from '@/components/Disclaimer';
 import AuthForm from '@/components/AuthForm';
@@ -234,10 +232,10 @@ const Dashboard = () => {
 
   return (
     <div className={`flex min-h-screen flex-col bg-background ${!showDashboardChrome ? 'pt-16' : ''}`}>
-      {showDashboardChrome ? <Header /> : <StaticNav minimal />}
+      {!showDashboardChrome && <StaticNav minimal />}
       <main className="flex-1 flex flex-col"><DashboardContent /></main>
-      {!showDashboardChrome && <Disclaimer />}
-      {showDashboardChrome ? <Footer /> : <LandingFooter />}
+      <Disclaimer />
+      <LandingFooter />
     </div>
   );
 };
