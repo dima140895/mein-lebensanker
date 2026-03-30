@@ -45,7 +45,7 @@ const PflegeTagebuch = ({ activePersonName = '' }: PflegeTagebuchProps) => {
   const [showReferral, setShowReferral] = useState(false);
   const selectedPerson = activePersonName;
   // Form state
-  const [personName, setPersonName] = useState('');
+  const [personName, setPersonName] = useState(activePersonName || '');
   const [stimmung, setStimmung] = useState(3);
   const [mahlzeiten, setMahlzeiten] = useState('');
   const [aktivitaeten, setAktivitaeten] = useState('');
