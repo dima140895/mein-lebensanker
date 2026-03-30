@@ -89,15 +89,33 @@ const PflegegradTab = () => {
   const savePflegegrad = async (grad: SavedPflegegrad) => {
     if (!user) return;
     try {
-      const { error } = await supabase
+      // Try update first, then insert if not exists
+      const { data: existing } = await supabase
         .from('vorsorge_data')
-        .upsert({
-          user_id: user.id,
-          section_key: PFLEGE_SECTION_KEY,
-          person_profile_id: null,
-          data: grad as unknown as Record<string, unknown>,
-          updated_at: new Date().toISOString(),
-        }, { onConflict: 'user_id,section_key,person_profile_id' });
+        .select('id')
+        .eq('user_id', user.id)
+        .eq('section_key', PFLEGE_SECTION_KEY)
+        .is('person_profile_id', null)
+        .maybeSingle();
+
+      let error;
+      if (existing) {
+        ({ error } = await supabase
+          .from('vorsorge_data')
+          .update({
+            data: grad as unknown as Record<string, unknown>,
+            updated_at: new Date().toISOString(),
+          })
+          .eq('id', existing.id));
+      } else {
+        ({ error } = await supabase
+          .from('vorsorge_data')
+          .insert({
+            user_id: user.id,
+            section_key: PFLEGE_SECTION_KEY,
+            data: grad as unknown as Record<string, unknown>,
+          }));
+      }
 
       if (error) throw error;
       setSavedGrad(grad);
