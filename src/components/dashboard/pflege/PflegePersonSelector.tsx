@@ -15,7 +15,7 @@ interface PflegePersonSelectorProps {
   showAllOption?: boolean;
 }
 
-const PflegePersonSelector = ({ value, onChange, className = '' }: PflegePersonSelectorProps) => {
+const PflegePersonSelector = ({ value, onChange, className = '', showAllOption = false }: PflegePersonSelectorProps) => {
   const { user } = useAuth();
   const { language } = useLanguage();
   const isDE = language === 'de';
