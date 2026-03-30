@@ -118,7 +118,6 @@ const PflegeTagebuch = () => {
   });
 
   const today = format(new Date(), 'yyyy-MM-dd');
-  const todayExists = entries.some((e) => e.eintrags_datum === today);
 
   // Pre-fill person name from most recent entry
   useEffect(() => {
