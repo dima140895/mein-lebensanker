@@ -389,7 +389,7 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
             {greetingLine}
           </h1>
           {isMultiProfile && !isOwnProfile && (
-            <span className="text-xs px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 font-medium">
+            <span className="text-xs px-2 py-0.5 rounded-full bg-amber-light text-amber font-medium">
               {language === 'de' ? 'Familienprofil' : 'Family profile'}
             </span>
           )}
