@@ -26,7 +26,7 @@ const LandingNav = () => {
   ];
 
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-background/90 backdrop-blur-sm shadow-sm' : 'bg-transparent'} border-b border-border/60`}>
+    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-background ${scrolled ? 'shadow-sm' : ''} border-b border-border`}>
       <div className="max-w-7xl mx-auto px-6 flex items-center justify-between py-4">
         {/* Logo */}
         <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="flex items-center gap-2 group">
@@ -67,7 +67,7 @@ const LandingNav = () => {
 
       {/* Mobile menu */}
       {mobileOpen && (
-        <div className="md:hidden bg-background/95 backdrop-blur-sm border-t border-border/60 px-6 py-4 space-y-3">
+        <div className="md:hidden bg-background border-t border-border px-6 py-4 space-y-3">
           {navLinks.map((link) => (
             <button key={link.id} onClick={() => scrollTo(link.id)} className="block w-full text-left py-2 text-sm font-medium text-foreground">
               {link.label}
