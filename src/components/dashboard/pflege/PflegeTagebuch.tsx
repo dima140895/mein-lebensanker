@@ -296,7 +296,7 @@ const PflegeTagebuch = () => {
           <CardContent className="pt-6 space-y-4">
             <div className="space-y-2">
               <Label>{texts.personName} *</Label>
-              <Input value={personName} onChange={(e) => setPersonName(e.target.value)} />
+              <PflegePersonSelector value={personName} onChange={setPersonName} />
             </div>
 
             <div className="space-y-2">
