@@ -405,7 +405,12 @@ const PflegeMedikamente = () => {
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-2">
                     <Pill className="h-4 w-4 text-primary flex-shrink-0" />
-                    <CardTitle className="text-sm font-semibold">{med.name}</CardTitle>
+                    <div>
+                      <CardTitle className="text-sm font-semibold">{med.name}</CardTitle>
+                      {(med as any).person_name && !selectedPerson && (
+                        <p className="text-xs text-muted-foreground">{(med as any).person_name}</p>
+                      )}
+                    </div>
                   </div>
                   <div className="flex items-center gap-1.5">
                     {med.erinnerung_aktiv && (
