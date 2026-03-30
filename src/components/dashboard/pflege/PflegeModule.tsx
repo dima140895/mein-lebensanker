@@ -12,6 +12,7 @@ import MdkBericht from './MdkBericht';
 
 const PflegeModule = () => {
   const { language } = useLanguage();
+  const { activeProfile } = useProfiles();
   const [activeTab, setActiveTab] = useState('tagebuch');
 
   const t = {
