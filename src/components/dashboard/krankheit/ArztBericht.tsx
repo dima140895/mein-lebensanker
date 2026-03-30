@@ -55,7 +55,7 @@ const ArztBericht = () => {
     p3m: 'Letzte 3 Monate',
     summary: 'Zusammenfassung',
     trend: 'Verlaufsgrafik',
-    scale: 'Skala 1 (sehr schlecht) bis 5 (sehr gut)',
+    scale: 'Skala 1 (sehr schlecht) bis 10 (sehr gut)',
     findings: 'Auffälligkeiten',
     worstDay: 'Schlechtester Tag',
     bestDay: 'Bester Tag',
