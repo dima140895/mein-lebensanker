@@ -6,8 +6,6 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useEncryption } from '@/contexts/EncryptionContext';
 import StaticNav from '@/components/StaticNav';
-import StaticNav from '@/components/StaticNav';
-import LandingFooter from '@/components/landing/LandingFooter';
 import LandingFooter from '@/components/landing/LandingFooter';
 import Disclaimer from '@/components/Disclaimer';
 import AuthForm from '@/components/AuthForm';
