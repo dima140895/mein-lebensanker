@@ -49,7 +49,7 @@ const krankheitContent = {
   en: {
     label: 'New for you',
     title: 'Your own progress',
-    text: 'So far you've been documenting care for someone else. Here you track your own symptoms — energy, pain, sleep and mood. For your next doctor's appointment.',
+    text: 'So far you\'ve been documenting care for someone else. Here you track your own symptoms \u2014 energy, pain, sleep and mood. For your next doctor\'s appointment.',
     features: ['Daily check-in in 60 seconds', 'Progress charts over weeks', 'Printable doctor report'],
     startBtn: 'Start first check-in',
     laterBtn: 'Later',
