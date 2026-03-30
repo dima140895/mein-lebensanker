@@ -61,6 +61,7 @@ const PflegegradTab = () => {
   const [savedGrad, setSavedGrad] = useState<SavedPflegegrad | null>(null);
   const [loading, setLoading] = useState(true);
   const [mode, setMode] = useState<'overview' | 'manual' | 'rechner' | null>(null);
+  const [selectedPerson, setSelectedPerson] = useState('');
 
   // Load saved pflegegrad
   useEffect(() => {
