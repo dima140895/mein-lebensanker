@@ -481,7 +481,7 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
       <motion.div key="krankheit" className="h-full" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay }}>
         {isPlusOrHigher ? (
           <Card
-            className={`rounded-2xl shadow-card hover:-translate-y-0.5 hover:shadow-soft transition-all duration-200 cursor-pointer h-full min-h-[120px] ${cardBorder} ${stateC ? '!bg-[#F8FBF9]' : 'bg-card'}`}
+            className={`rounded-2xl shadow-card hover:-translate-y-0.5 hover:shadow-soft transition-all duration-200 cursor-pointer h-full min-h-[120px] flex flex-col ${cardBorder} ${stateC ? '!bg-[#F8FBF9]' : 'bg-card'}`}
             onClick={() => {
               if (stateC) {
                 setSearchParams({ module: 'krankheit', tab: 'verlauf' });
