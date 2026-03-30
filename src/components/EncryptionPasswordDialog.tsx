@@ -320,7 +320,7 @@ export const EncryptionPasswordDialog: React.FC<EncryptionPasswordDialogProps> =
             </>
           )}
 
-          {error && (
+          {error && !showVisualGuide && (
             <Alert variant="destructive">
               <AlertDescription className="text-sm">{error}</AlertDescription>
             </Alert>
