@@ -50,8 +50,10 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
   const { user, profile } = useAuth();
   const { isEncryptionEnabled, isLoading: encryptionLoading } = useEncryption();
   const { sectionCompletion, sectionStatus, progressPercent, filledCount, totalCount, isComplete, loading: statusLoading } = useSectionStatus();
+  const { personProfiles, activeProfileId, activeProfile, setActiveProfileId, canAddProfile } = useProfiles();
   const [, setSearchParams] = useSearchParams();
   const isMobile = useIsMobile();
+  const [showProfileWizard, setShowProfileWizard] = useState(false);
 
   const [lastPflege, setLastPflege] = useState<any>(null);
   const [todayCheckin, setTodayCheckin] = useState<any>(null);
