@@ -604,7 +604,7 @@ const ShareLinkManager = () => {
               </div>
               
               {/* PIN Protection - Now mandatory */}
-              <div className="rounded-lg border border-primary/30 bg-primary/5 p-4 space-y-4">
+              <div className="rounded-xl border border-primary/30 bg-primary/5 p-4 space-y-4">
                 <div className="space-y-0.5">
                   <Label className="flex items-center gap-2">
                     <Lock className="h-4 w-4 text-primary" />
