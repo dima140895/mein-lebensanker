@@ -36,9 +36,15 @@ const PanelDashboard = ({ visible }: { visible: boolean }) => (
       </div>
       <div className="bg-background rounded-xl p-3 border border-border">
         <span className="text-[10px] text-muted-foreground uppercase tracking-wide">Mutter</span>
-        <div className="mt-2 flex gap-0.5">
-          {['😊', '😊', '😐', '😊', '😊'].map((e, i) => (
-            <span key={i} className="text-sm">{e}</span>
+        <div className="mt-2 flex gap-1">
+          {[
+            'bg-green-700', // Sehr gut
+            'bg-green-500', // Ausgeglichen
+            'bg-yellow-400', // Ruhig
+            'bg-green-500', // Ausgeglichen
+            'bg-green-700', // Sehr gut
+          ].map((color, i) => (
+            <span key={i} className={`w-2.5 h-2.5 rounded-full ${color}`} />
           ))}
         </div>
         <span className="text-[10px] text-primary mt-1 block">Gut diese Woche</span>
@@ -80,14 +86,17 @@ const PanelPflege = () => (
     <div className="mx-5 mt-4 bg-background rounded-2xl border border-border p-4">
       <div className="flex justify-between items-center mb-3">
         <span className="text-xs font-medium text-foreground">Heute, 28. März</span>
-        <span className="text-xs text-primary bg-primary/10 px-2 py-0.5 rounded-full">😊 Gut</span>
+        <span className="text-xs text-primary bg-primary/10 px-2 py-0.5 rounded-full flex items-center gap-1.5">
+          <span className="w-2 h-2 rounded-full bg-green-500" />
+          Ausgeglichen
+        </span>
       </div>
       <div>
-        <span className="text-[10px] uppercase text-muted-foreground tracking-wide mb-1 block">🍽 Mahlzeiten</span>
+        <span className="text-[10px] uppercase text-muted-foreground tracking-wide mb-1 block">Mahlzeiten</span>
         <p className="text-xs text-foreground">Frühstück gut, Mittagessen halb aufgegessen</p>
       </div>
       <div className="mt-3">
-        <span className="text-[10px] uppercase text-muted-foreground tracking-wide mb-1 block">✨ Besonderheiten</span>
+        <span className="text-[10px] uppercase text-muted-foreground tracking-wide mb-1 block">Besonderheiten</span>
         <p className="text-xs text-foreground leading-relaxed">
           Hat heute 20 Minuten im Garten gesessen. Sehr gute Stimmung, über früher erzählt.
         </p>
