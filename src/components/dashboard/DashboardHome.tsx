@@ -57,6 +57,7 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
   const [showProfileWizard, setShowProfileWizard] = useState(false);
 
   const [lastPflege, setLastPflege] = useState<any>(null);
+  const [lastPflegePerPerson, setLastPflegePerPerson] = useState<any[]>([]);
   const [pflegePersonenNames, setPflegePersonenNames] = useState<string[]>([]);
   const [todayPflegeExists, setTodayPflegeExists] = useState(false);
   const [todayCheckin, setTodayCheckin] = useState<any>(null);
@@ -85,15 +86,24 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
       setHasShareToken((shareTokenRes.data?.length ?? 0) > 0);
       if (isPlusOrHigher) {
         const [pflegeRes, checkinRes, checkinCountRes, pflegePersonenRes, lastCheckinRes] = await Promise.all([
-          supabase.from('pflege_eintraege').select('eintrags_datum,stimmung,person_name').eq('user_id', user.id).order('eintrags_datum', { ascending: false }).limit(1),
+          supabase.from('pflege_eintraege').select('eintrags_datum,stimmung,person_name').eq('user_id', user.id).order('eintrags_datum', { ascending: false }).limit(20),
           supabase.from('symptom_checkins').select('energie,stimmung,checkin_datum').eq('user_id', user.id).eq('checkin_datum', new Date().toISOString().split('T')[0]).limit(1),
           supabase.from('symptom_checkins').select('id', { count: 'exact', head: true }).eq('user_id', user.id),
           (supabase as any).from('pflege_personen').select('name').eq('user_id', user.id).order('created_at', { ascending: true }),
           supabase.from('symptom_checkins').select('checkin_datum,energie').eq('user_id', user.id).order('checkin_datum', { ascending: false }).limit(1),
         ]);
-        setLastPflege(pflegeRes.data?.[0] || null);
+        const allPflegeEntries = pflegeRes.data || [];
+        setLastPflege(allPflegeEntries[0] || null);
+        // Build last entry per person (deduplicated, ordered by most recent)
+        const perPersonMap = new Map<string, any>();
+        for (const entry of allPflegeEntries) {
+          if (entry.person_name && !perPersonMap.has(entry.person_name)) {
+            perPersonMap.set(entry.person_name, entry);
+          }
+        }
+        setLastPflegePerPerson(Array.from(perPersonMap.values()));
         const todayStr = new Date().toISOString().split('T')[0];
-        setTodayPflegeExists(pflegeRes.data?.[0]?.eintrags_datum === todayStr);
+        setTodayPflegeExists(allPflegeEntries[0]?.eintrags_datum === todayStr);
         setTodayCheckin(checkinRes.data?.[0] || null);
         setCheckinCount(checkinCountRes.count ?? 0);
         setPflegePersonenNames((pflegePersonenRes.data || []).map((p: any) => p.name));
@@ -367,24 +377,21 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
                 <>
                   {dataLoading ? (
                     <p className="text-sm text-muted-foreground">...</p>
-                  ) : lastPflege ? (
-                    <div className="space-y-1.5">
-                      {/* Last entry info with person name */}
-                      <div className="flex items-center gap-2">
-                        <span className={`w-2.5 h-2.5 rounded-full shrink-0 ${getMoodColor(lastPflege.stimmung)}`} />
-                        <p className="text-sm font-medium text-foreground">
-                          {lastPflege.person_name} · {getMoodLabel(lastPflege.stimmung, language)}
-                        </p>
-                      </div>
-                      <p className="text-xs text-muted-foreground">
-                        {relativesDatum(lastPflege.eintrags_datum)}
-                      </p>
-                      {/* Person count */}
-                      {pflegePersonenNames.length > 1 && (
-                        <p className="text-xs text-muted-foreground">
-                          {pflegePersonenNames.join(' · ')}
-                        </p>
-                      )}
+                  ) : lastPflegePerPerson.length > 0 ? (
+                    <div className="space-y-2">
+                      {lastPflegePerPerson.map((entry: any) => (
+                        <div key={entry.person_name} className="flex items-center gap-2">
+                          <span className={`w-2.5 h-2.5 rounded-full shrink-0 ${getMoodColor(entry.stimmung)}`} />
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium text-foreground truncate">
+                              {entry.person_name} · {getMoodLabel(entry.stimmung, language)}
+                            </p>
+                            <p className="text-xs text-muted-foreground">
+                              {relativesDatum(entry.eintrags_datum)}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
                     </div>
                   ) : (
                     <p className="text-sm text-muted-foreground">
