@@ -323,16 +323,37 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
               </>
             ) : stateB ? (
               <>
-                <p className="text-sm text-muted-foreground">
-                  {filledCount} {tx.sectionOf} {totalCount} {language === 'de' ? 'Sektionen ausgefüllt' : 'sections completed'}
-                </p>
-                <div className="mt-3 bg-[#E5E0D8] h-1.5 rounded-full overflow-hidden">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-sm font-medium text-foreground">{percent}%</span>
+                  <span className="text-xs text-muted-foreground">
+                    — {filledCount} {tx.sectionOf} {totalCount} {language === 'de' ? 'Sektionen' : 'sections'}
+                  </span>
+                </div>
+                <div className="bg-[#E5E0D8] h-1.5 rounded-full overflow-hidden">
                   <div className="bg-[#437059] h-1.5 rounded-full transition-all duration-500" style={{ width: `${percent}%` }} />
                 </div>
-                <span className="text-sm text-[#437059] font-medium mt-3 inline-block cursor-pointer">
+                <div className="flex flex-wrap gap-1.5 mt-2">
+                  {[
+                    { key: 'personal', de: 'Persönliches', en: 'Personal' },
+                    { key: 'assets', de: 'Vermögen', en: 'Assets' },
+                    { key: 'contacts', de: 'Kontakte', en: 'Contacts' },
+                    { key: 'wishes', de: 'Wünsche', en: 'Wishes' },
+                    { key: 'digital', de: 'Digitales', en: 'Digital' },
+                    { key: 'documents', de: 'Dokumente', en: 'Documents' },
+                  ].map(s => {
+                    const done = sectionStatus[s.key];
+                    return (
+                      <span key={s.key} className={`text-[10px] px-1.5 py-0.5 rounded-full ${done ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground'}`}>
+                        {done ? '✓ ' : ''}{language === 'de' ? s.de : s.en}
+                      </span>
+                    );
+                  })}
+                </div>
+                <span className="text-sm text-[#437059] font-medium mt-2 inline-block cursor-pointer">
                   {language === 'de' ? 'Weiter ausfüllen' : 'Continue'} <ChevronRight className="inline h-3.5 w-3.5 ml-0.5" />
                 </span>
               </>
+
             ) : (
               <>
                 <div className="flex items-center gap-1.5">
