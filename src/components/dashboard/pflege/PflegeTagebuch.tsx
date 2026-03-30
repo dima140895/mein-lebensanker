@@ -16,8 +16,7 @@ import { de as deLocale } from 'date-fns/locale';
 import { trackEvent } from '@/lib/analytics';
 import ReferralCard from '@/components/ReferralCard';
 import PflegePersonSelector from '@/components/dashboard/pflege/PflegePersonSelector';
-
-const MOODS = ['😢', '😕', '😐', '🙂', '😊'];
+import { MOOD_CONFIG, getMoodLabel, getMoodColor, getMoodPill } from './pflegeMoodConfig';
 
 interface PflegeEintrag {
   id: string;
