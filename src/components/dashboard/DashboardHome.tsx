@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ClipboardList, HeartHandshake, Stethoscope, ArrowRight, Lock, Zap, CheckCircle2, Circle, Anchor, ShieldCheck, Shield, Link2, CheckCircle, Heart, Activity, Plus, User, FileText, X, Share2 } from 'lucide-react';
+import { ClipboardList, HeartHandshake, Stethoscope, ArrowRight, Lock, Zap, CheckCircle2, Circle, Anchor, ShieldCheck, Shield, Link2, CheckCircle, Heart, Activity, Plus, User, FileText, X, Share2, ChevronRight } from 'lucide-react';
 import { useEncryption } from '@/contexts/EncryptionContext';
 import { EncryptionPasswordDialog } from '@/components/EncryptionPasswordDialog';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -299,14 +299,14 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
             {passive ? (
               <>
                 <p className="text-sm text-muted-foreground">{tx.vorsorgePassive}</p>
-                <span className="text-xs text-muted-foreground hover:text-foreground transition-colors">{tx.discover} →</span>
+                <span className="text-xs text-muted-foreground hover:text-foreground transition-colors">{tx.discover} <ChevronRight className="inline h-3.5 w-3.5 ml-0.5" /></span>
               </>
             ) : statusLoading ? (
               <p className="text-sm text-muted-foreground">...</p>
             ) : stateA ? (
               <>
                 <p className="text-sm text-muted-foreground">{tx.vorsorgePassive}</p>
-                <span className="text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer">{tx.discover} →</span>
+                <span className="text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer">{tx.discover} <ChevronRight className="inline h-3.5 w-3.5 ml-0.5" /></span>
               </>
             ) : stateB ? (
               <>
@@ -317,7 +317,7 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
                   <div className="bg-[#437059] h-1.5 rounded-full transition-all duration-500" style={{ width: `${percent}%` }} />
                 </div>
                 <span className="text-sm text-[#437059] font-medium mt-3 inline-block cursor-pointer">
-                  {language === 'de' ? 'Weiter ausfüllen →' : 'Continue →'}
+                  {language === 'de' ? 'Weiter ausfüllen' : 'Continue'} <ChevronRight className="inline h-3.5 w-3.5 ml-0.5" />
                 </span>
               </>
             ) : (
@@ -327,7 +327,7 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
                   <span className="text-sm text-[#437059] font-medium">{language === 'de' ? 'Vollständig' : 'Complete'}</span>
                 </div>
                 <span className="text-sm text-muted-foreground mt-2 inline-block cursor-pointer">
-                  {language === 'de' ? 'Ansehen →' : 'View →'}
+                  {language === 'de' ? 'Ansehen' : 'View'} <ChevronRight className="inline h-3.5 w-3.5 ml-0.5" />
                 </span>
               </>
             )}
@@ -464,14 +464,14 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
               {passive ? (
                 <>
                   <p className="text-sm text-muted-foreground">{tx.krankheitPassive}</p>
-                  <span className="text-xs text-muted-foreground hover:text-foreground transition-colors">{tx.discover} →</span>
+                  <span className="text-xs text-muted-foreground hover:text-foreground transition-colors">{tx.discover} <ChevronRight className="inline h-3.5 w-3.5 ml-0.5" /></span>
                 </>
               ) : dataLoading ? (
                 <p className="text-sm text-muted-foreground">...</p>
               ) : stateA ? (
                 <>
                   <p className="text-sm text-muted-foreground">{tx.krankheitPassive}</p>
-                  <span className="text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer">{tx.discover} →</span>
+                  <span className="text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer">{tx.discover} <ChevronRight className="inline h-3.5 w-3.5 ml-0.5" /></span>
                 </>
               ) : stateB ? (
                 <>
@@ -484,7 +484,7 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
                     </p>
                   )}
                   <span className="text-sm text-[#437059] font-medium mt-2 inline-block cursor-pointer">
-                    {language === 'de' ? 'Check-in starten →' : 'Start check-in →'}
+                    {language === 'de' ? 'Check-in starten' : 'Start check-in'} <ChevronRight className="inline h-3.5 w-3.5 ml-0.5" />
                   </span>
                 </>
               ) : (
@@ -499,7 +499,7 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
                     {language === 'de' ? 'Energie' : 'Energy'} {todayCheckin.energie}/5
                   </p>
                   <span className="text-sm text-muted-foreground mt-2 inline-block cursor-pointer">
-                    {language === 'de' ? 'Verlauf ansehen →' : 'View history →'}
+                    {language === 'de' ? 'Verlauf ansehen' : 'View history'} <ChevronRight className="inline h-3.5 w-3.5 ml-0.5" />
                   </span>
                 </>
               )}
