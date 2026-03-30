@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { User, Wallet, Globe, Heart, FileText, ArrowLeft, Phone, Info, Compass, Link2, Download, CheckCircle, HelpCircle, ShieldCheck, Check } from 'lucide-react';
+import ModuleIntroScreen, { shouldShowModuleIntro, markModuleIntroSeen } from '@/components/dashboard/ModuleIntroScreen';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import ReferralCard from '@/components/ReferralCard';
@@ -53,6 +54,9 @@ const VorsorgeModule = () => {
   const [showShareManager, setShowShareManager] = useState(false);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [upgradeLoading, setUpgradeLoading] = useState(false);
+  const [showIntro, setShowIntro] = useState(() =>
+    user ? shouldShowModuleIntro('vorsorge', user.id, profile?.onboarding_focus) : false
+  );
   const isMobile = useIsMobile();
   const { sectionStatus, sectionCompletion, progressPercent, filledCount, totalCount, isComplete, refetch, loading: statusLoading } = useSectionStatus();
   const previousProfileId = useRef<string | null>(null);
@@ -267,6 +271,13 @@ const VorsorgeModule = () => {
   // Overview / tile grid
   return (
     <>
+      {showIntro && (
+        <ModuleIntroScreen
+          module="vorsorge"
+          onStart={() => setShowIntro(false)}
+          onDismiss={() => setShowIntro(false)}
+        />
+      )}
       <div className="text-center mb-3 md:mb-4">
         <h1 className="font-sans text-2xl md:text-3xl font-bold text-foreground">{texts.title}</h1>
         <p className="mt-1 md:mt-2 text-sm md:text-base text-muted-foreground">{texts.subtitle}</p>
