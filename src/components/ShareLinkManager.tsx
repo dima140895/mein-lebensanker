@@ -664,7 +664,7 @@ const ShareLinkManager = () => {
           </div>
           
           {/* Step 3 */}
-          <div className="flex flex-col items-center text-center p-4 rounded-lg bg-sage-light/30">
+          <div className="flex flex-col items-center text-center p-4 rounded-xl bg-secondary/50">
             <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center mb-3">
               <Eye className="h-5 w-5 text-primary" />
             </div>
