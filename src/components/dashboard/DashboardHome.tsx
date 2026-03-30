@@ -319,7 +319,9 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
             ) : stateA ? (
               <>
                 <p className="text-sm text-muted-foreground">{tx.vorsorgePassive}</p>
-                <span className="text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer">{tx.discover} <ChevronRight className="inline h-3.5 w-3.5 ml-0.5" /></span>
+                <Button variant="ghost" size="sm" className="w-full text-primary hover:text-primary hover:bg-primary/5 gap-1.5 min-h-[44px]">
+                  {tx.discover} <ChevronRight className="inline h-3.5 w-3.5 ml-0.5" />
+                </Button>
               </>
             ) : stateB ? (
               <>
@@ -349,9 +351,9 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
                     );
                   })}
                 </div>
-                <span className="text-sm text-[#437059] font-medium mt-2 inline-block cursor-pointer">
+                <Button variant="ghost" size="sm" className="w-full text-primary hover:text-primary hover:bg-primary/5 gap-1.5 min-h-[44px] mt-1">
                   {language === 'de' ? 'Weiter ausfüllen' : 'Continue'} <ChevronRight className="inline h-3.5 w-3.5 ml-0.5" />
-                </span>
+                </Button>
               </>
 
             ) : (
@@ -360,9 +362,9 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
                   <CheckCircle className="h-4 w-4 text-[#437059]" />
                   <span className="text-sm text-[#437059] font-medium">{language === 'de' ? 'Vollständig' : 'Complete'}</span>
                 </div>
-                <span className="text-sm text-muted-foreground mt-2 inline-block cursor-pointer">
+                <Button variant="ghost" size="sm" className="w-full text-muted-foreground hover:text-primary hover:bg-primary/5 gap-1.5 min-h-[44px]">
                   {language === 'de' ? 'Ansehen' : 'View'} <ChevronRight className="inline h-3.5 w-3.5 ml-0.5" />
-                </span>
+                </Button>
               </>
             )}
           </CardContent>
@@ -521,9 +523,9 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
                       {language === 'de' ? 'Zuletzt' : 'Last'}: {relativesDatum(lastCheckin.checkin_datum)}
                     </p>
                   )}
-                  <span className="text-sm text-[#437059] font-medium mt-2 inline-block cursor-pointer">
+                  <Button variant="ghost" size="sm" className="w-full text-primary hover:text-primary hover:bg-primary/5 gap-1.5 min-h-[44px]">
                     {language === 'de' ? 'Check-in starten' : 'Start check-in'} <ChevronRight className="inline h-3.5 w-3.5 ml-0.5" />
-                  </span>
+                  </Button>
                 </>
               ) : (
                 <>
@@ -547,9 +549,9 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
                       {language === 'de' ? 'Stimmung' : 'Mood'} {todayCheckin.stimmung}/10
                     </p>
                   </div>
-                  <span className="text-sm text-muted-foreground mt-2 inline-block cursor-pointer">
+                  <Button variant="ghost" size="sm" className="w-full text-muted-foreground hover:text-primary hover:bg-primary/5 gap-1.5 min-h-[44px]">
                     {language === 'de' ? 'Verlauf ansehen' : 'View history'} <ChevronRight className="inline h-3.5 w-3.5 ml-0.5" />
-                  </span>
+                  </Button>
                 </>
               )}
             </CardContent>
