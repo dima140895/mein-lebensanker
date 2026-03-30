@@ -56,6 +56,7 @@ const validateFileExtension = (filename: string, mimeType: string): boolean => {
 const PflegeDokumente = () => {
   const { language } = useLanguage();
   const { user } = useAuth();
+  const [selectedPerson, setSelectedPerson] = useState('');
 
   const t = {
     de: {
