@@ -22,7 +22,7 @@ interface DashboardHomeProps {
   onLockedClick: (module: DashboardModule) => void;
 }
 
-const STIMMUNG_EMOJI = ['', '😢', '😕', '😐', '🙂', '😊'];
+import { getMoodColor, getMoodLabel } from '@/components/dashboard/pflege/pflegeMoodConfig';
 
 const getGreeting = (lang: 'de' | 'en') => {
   const h = new Date().getHours();
