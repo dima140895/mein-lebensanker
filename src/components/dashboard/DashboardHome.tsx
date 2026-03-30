@@ -61,9 +61,12 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
   const [dataLoading, setDataLoading] = useState(true);
   const [showEncryptionSetup, setShowEncryptionSetup] = useState(false);
   const [hasShareToken, setHasShareToken] = useState(false);
+  const [shareReminderDismissed, setShareReminderDismissed] = useState(() =>
+    typeof window !== 'undefined' && sessionStorage.getItem('share_reminder_dismissed') === 'true'
+  );
   const [arztberichtHintDismissed, setArztberichtHintDismissed] = useState(() => {
     if (typeof window === 'undefined') return true;
-    return false; // Will be set properly once user is loaded
+    return false;
   });
 
   const isPlusOrHigher = userPlan === 'plus' || userPlan === 'familie';
