@@ -103,7 +103,42 @@ const DashboardSidebar = ({ activeModule, onModuleChange, userPlan, onLockedClic
       )}
 
       <nav className="flex-1 py-4 px-3 space-y-1">
-        {navItems.map((item) => {
+        {/* Gruppe 1: Übersicht, Meine Vorsorge, Mein Verlauf */}
+        {navItems.filter(i => ['home', 'vorsorge', 'krankheit'].includes(i.key)).map((item) => {
+          const Icon = item.icon;
+          const label = item.key === 'krankheit'
+            ? (language === 'de' ? 'Mein Verlauf' : 'My Progress')
+            : (language === 'de' ? item.labelDe : item.labelEn);
+          const locked = isModuleLocked(item, userPlan);
+          const isActive = activeModule === item.key;
+
+          return (
+            <button
+              key={item.key}
+              onClick={() => locked ? onLockedClick(item.key) : onModuleChange(item.key)}
+              onMouseEnter={() => !locked && handlePrefetch(item.key)}
+              className={cn(
+                'w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all text-left font-body',
+                isActive && !locked
+                  ? 'bg-white/15 text-white border-l-[3px] border-accent'
+                  : locked
+                    ? 'text-white/30 cursor-not-allowed hover:bg-white/5'
+                    : 'text-white/70 hover:bg-white/10 hover:text-white'
+              )}
+            >
+              <Icon className={cn('h-5 w-5 flex-shrink-0', locked && 'opacity-40')} />
+              <span className={cn('flex-1 truncate', locked && 'opacity-40')}>{label}</span>
+              {locked && <Lock className="h-3.5 w-3.5 opacity-40" />}
+            </button>
+          );
+        })}
+
+        {/* Trennlinie + Pflege-Gruppe */}
+        <div className="border-t border-white/10 my-2" />
+        <span className="text-[10px] text-white/40 uppercase tracking-widest px-3 mb-1 block">
+          {language === 'de' ? 'Pflege' : 'Care'}
+        </span>
+        {navItems.filter(i => ['pflege', 'familie'].includes(i.key)).map((item) => {
           const Icon = item.icon;
           const label = language === 'de' ? item.labelDe : item.labelEn;
           const locked = isModuleLocked(item, userPlan);
@@ -130,7 +165,31 @@ const DashboardSidebar = ({ activeModule, onModuleChange, userPlan, onLockedClic
           );
         })}
 
-        {/* Abmelden – unter Einstellungen, abgetrennt */}
+        {/* Trennlinie + Einstellungen */}
+        <div className="border-t border-white/10 my-2" />
+        {navItems.filter(i => i.key === 'settings').map((item) => {
+          const Icon = item.icon;
+          const label = language === 'de' ? item.labelDe : item.labelEn;
+          const isActive = activeModule === item.key;
+
+          return (
+            <button
+              key={item.key}
+              onClick={() => onModuleChange(item.key)}
+              className={cn(
+                'w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all text-left font-body',
+                isActive
+                  ? 'bg-white/15 text-white border-l-[3px] border-accent'
+                  : 'text-white/70 hover:bg-white/10 hover:text-white'
+              )}
+            >
+              <Icon className="h-5 w-5 flex-shrink-0" />
+              <span className="flex-1 truncate">{label}</span>
+            </button>
+          );
+        })}
+
+        {/* Abmelden */}
         <div className="mt-4 pt-3 border-t border-white/10 mx-0">
           <button
             onClick={() => signOut()}

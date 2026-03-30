@@ -256,10 +256,8 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
     const passive = isPassive('vorsorge');
     return (
       <motion.div key="vorsorge" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay }}>
-        <Card
-          className={`rounded-2xl shadow-card hover:-translate-y-0.5 hover:shadow-soft transition-all duration-200 cursor-pointer h-full ${
-            passive ? 'border border-[#E5E0D8] bg-card' : 'border-l-4 border-l-primary bg-card'
-          }`}
+          <Card
+          className={`rounded-2xl shadow-card hover:-translate-y-0.5 hover:shadow-soft transition-all duration-200 cursor-pointer h-full border border-[#E5E0D8] bg-card`}
           onClick={() => onNavigate('vorsorge')}
         >
           <CardHeader className="pb-2">

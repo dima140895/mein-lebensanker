@@ -44,7 +44,16 @@ const PflegeModule = () => {
         <div className="h-10 w-10 rounded-lg bg-amber-light flex items-center justify-center">
           <HeartHandshake className="h-5 w-5 text-accent" />
         </div>
-        <h1 className="font-sans text-2xl sm:text-3xl font-semibold text-foreground tracking-[-0.02em]">{texts.title}</h1>
+        <div>
+          <h1 className="font-sans text-xl font-semibold text-foreground tracking-[-0.02em]">
+            {activeProfile ? `${language === 'de' ? 'Pflege' : 'Care'} · ${activeProfile.name}` : texts.title}
+          </h1>
+          {activeProfile && (
+            <span className="inline-block mt-1 bg-[#F5E8D4] text-[#8B5A1A] text-xs px-2 py-0.5 rounded-full">
+              {language === 'de' ? `Du pflegst ${activeProfile.name}` : `You care for ${activeProfile.name}`}
+            </span>
+          )}
+        </div>
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
