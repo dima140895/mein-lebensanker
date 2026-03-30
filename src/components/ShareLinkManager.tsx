@@ -738,7 +738,7 @@ const ShareLinkManager = () => {
                         {texts.inactive}
                       </span>
                     ) : token.pin_hash ? (
-                      <span className="inline-flex items-center gap-1 rounded-full bg-sage-light px-2 py-0.5 text-xs font-medium text-sage-dark">
+                      <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
                         <Lock className="h-3 w-3" />
                         {texts.protected}
                       </span>
