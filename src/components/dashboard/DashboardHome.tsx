@@ -196,6 +196,10 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
       upgrade: 'Jetzt upgraden',
       locked: 'In Anker Plus enthalten',
       sectionOf: 'von',
+      discover: 'Entdecken →',
+      pflegePassive: 'Pflegeeinträge und Verlauf dokumentieren.',
+      krankheitPassive: 'Symptome und Verlauf dokumentieren.',
+      vorsorgePassive: 'Vorsorge-Dokumente ausfüllen und sichern.',
     },
     en: {
       subtitle: 'Here\'s your current status.',
@@ -217,6 +221,10 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
       upgrade: 'Upgrade now',
       locked: 'Included in Anker Plus',
       sectionOf: 'of',
+      discover: 'Discover →',
+      pflegePassive: 'Document care entries and progress.',
+      krankheitPassive: 'Document symptoms and progress.',
+      vorsorgePassive: 'Fill out and secure planning documents.',
     },
   };
   const tx = t[language];
