@@ -323,29 +323,25 @@ const PflegeTagebuch = ({ activePersonName = '' }: PflegeTagebuchProps) => {
 
             <div className="space-y-2">
               <Label>{texts.mood}</Label>
-              <div className="flex gap-2" role="radiogroup" aria-label={texts.mood}>
-                {MOODS.map((emoji, i) => {
-                  const moodLabels = language === 'de'
-                    ? ['Sehr schlecht', 'Schlecht', 'Neutral', 'Gut', 'Sehr gut']
-                    : ['Very bad', 'Bad', 'Neutral', 'Good', 'Very good'];
-                  return (
-                    <button
-                      key={i}
-                      type="button"
-                      role="radio"
-                      aria-checked={stimmung === i + 1}
-                      aria-label={`${moodLabels[i]}`}
-                      onClick={() => setStimmung(i + 1)}
-                      className={`text-2xl sm:text-3xl p-2 rounded-lg transition-all ${
-                        stimmung === i + 1
-                          ? 'bg-primary/10 ring-2 ring-primary scale-110'
-                          : 'hover:bg-muted'
-                      }`}
-                    >
-                      {emoji}
-                    </button>
-                  );
-                })}
+              <div className="flex gap-2 flex-wrap" role="radiogroup" aria-label={texts.mood}>
+                {MOOD_CONFIG.map((mood) => (
+                  <button
+                    key={mood.value}
+                    type="button"
+                    role="radio"
+                    aria-checked={stimmung === mood.value}
+                    aria-label={mood[language]}
+                    onClick={() => setStimmung(mood.value)}
+                    className={`border rounded-lg px-4 py-2 text-sm flex items-center gap-2 transition-all min-h-[44px] ${
+                      stimmung === mood.value
+                        ? 'border-[#437059] bg-[#E8F0EC] text-[#262E38] ring-2 ring-primary/30'
+                        : 'border-[#E5E0D8] text-[#262E38] hover:border-[#437059] hover:bg-[#E8F0EC]'
+                    }`}
+                  >
+                    <span className={`w-2 h-2 rounded-full ${mood.color}`} />
+                    {mood[language]}
+                  </button>
+                ))}
               </div>
             </div>
 
