@@ -29,9 +29,10 @@ interface Medikament {
 
 interface PflegeMedikamenteProps {
   activePersonName?: string;
+  selfOnly?: boolean;
 }
 
-const PflegeMedikamente = ({ activePersonName = '' }: PflegeMedikamenteProps) => {
+const PflegeMedikamente = ({ activePersonName = '', selfOnly = false }: PflegeMedikamenteProps) => {
   const { user } = useAuth();
   const { language } = useLanguage();
   const queryClient = useQueryClient();
