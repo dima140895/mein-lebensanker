@@ -71,16 +71,20 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
 
   useEffect(() => {
     if (!user) { setDataLoading(false); return; }
+    // Check localStorage for arztbericht hint
+    setArztberichtHintDismissed(localStorage.getItem('arztbericht_hint_shown_' + user.id) === 'true');
     const load = async () => {
       const shareTokenRes = await supabase.from('share_tokens').select('id').eq('user_id', user.id).eq('is_active', true).limit(1);
       setHasShareToken((shareTokenRes.data?.length ?? 0) > 0);
       if (isPlusOrHigher) {
-        const [pflegeRes, checkinRes] = await Promise.all([
+        const [pflegeRes, checkinRes, checkinCountRes] = await Promise.all([
           supabase.from('pflege_eintraege').select('eintrags_datum,stimmung').eq('user_id', user.id).order('eintrags_datum', { ascending: false }).limit(1),
           supabase.from('symptom_checkins').select('energie,stimmung,checkin_datum').eq('user_id', user.id).eq('checkin_datum', new Date().toISOString().split('T')[0]).limit(1),
+          supabase.from('symptom_checkins').select('id', { count: 'exact', head: true }).eq('user_id', user.id),
         ]);
         setLastPflege(pflegeRes.data?.[0] || null);
         setTodayCheckin(checkinRes.data?.[0] || null);
+        setCheckinCount(checkinCountRes.count ?? 0);
       }
       setDataLoading(false);
     };
