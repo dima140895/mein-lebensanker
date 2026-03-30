@@ -131,13 +131,14 @@ const PflegeTagebuch = ({ activePersonName = '' }: PflegeTagebuchProps) => {
     return entries.filter(e => e.person_name === selectedPerson);
   }, [entries, selectedPerson]);
 
-  // Pre-fill person name from selected person or most recent entry
+  // Pre-fill person name from active person
   useEffect(() => {
-    if (entries.length > 0 && !personName) {
-      const prefill = (selectedPerson && selectedPerson !== '__all__') ? selectedPerson : entries[0].person_name || '';
-      setPersonName(prefill);
+    if (activePersonName) {
+      setPersonName(activePersonName);
+    } else if (entries.length > 0 && !personName) {
+      setPersonName(entries[0].person_name || '');
     }
-  }, [entries, selectedPerson]);
+  }, [entries, activePersonName]);
 
   const createMutation = useMutation({
     mutationFn: async (newEintrag: {
