@@ -155,7 +155,7 @@ const PflegeDokumente = () => {
 
   useEffect(() => {
     loadAllDocuments();
-  }, [loadAllDocuments]);
+  }, [loadAllDocuments, selectedPerson]);
 
   const handleUpload = async (file: File, category: PflegeDocCategory) => {
     if (!user) return;
