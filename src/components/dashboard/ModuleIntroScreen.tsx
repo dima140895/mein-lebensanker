@@ -22,7 +22,7 @@ const vorsorgeContent = {
   en: {
     label: 'New for you',
     title: 'Your own provisions',
-    text: 'So far you've been documenting care for someone else. This is about you — powers of attorney, will and emergency information for your own family.',
+    text: 'So far you\'ve been documenting care for someone else. This is about you \u2014 powers of attorney, will and emergency information for your own family.',
     features: ['Powers of attorney & will', 'Digital estate', 'Share link for relatives'],
     startBtn: 'Get started',
     laterBtn: 'Later',
