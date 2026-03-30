@@ -516,14 +516,8 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
                 <Button
                   size="sm"
                   onClick={() => {
+                    setSearchParams({ module: 'vorsorge', section: 'share' });
                     onNavigate('vorsorge');
-                    setTimeout(() => {
-                      const params = new URLSearchParams(window.location.search);
-                      params.set('module', 'vorsorge');
-                      params.set('section', 'share');
-                      window.history.replaceState(null, '', '?' + params.toString());
-                      window.dispatchEvent(new PopStateEvent('popstate'));
-                    }, 100);
                   }}
                   className="bg-amber hover:bg-amber/90 text-white text-xs px-3 py-1.5 rounded-lg min-h-[32px]"
                 >

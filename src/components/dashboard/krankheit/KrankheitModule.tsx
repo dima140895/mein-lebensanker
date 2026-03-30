@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Stethoscope } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -9,7 +10,16 @@ import PflegeMedikamente from '@/components/dashboard/pflege/PflegeMedikamente';
 
 const KrankheitModule = () => {
   const { language } = useLanguage();
+  const [searchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState('checkin');
+
+  // Sync tab from URL param (e.g. ?module=krankheit&tab=arztbericht)
+  useEffect(() => {
+    const tabParam = searchParams.get('tab');
+    if (tabParam && ['checkin', 'verlauf', 'medikamente', 'arztbericht'].includes(tabParam)) {
+      setActiveTab(tabParam);
+    }
+  }, [searchParams]);
 
   const t = {
     de: {
