@@ -191,6 +191,7 @@ const PflegegradTab = () => {
   if (savedGrad && mode !== 'manual' && mode !== 'rechner') {
     return (
       <div className="space-y-6">
+        <PflegePersonSelector value={selectedPerson} onChange={setSelectedPerson} />
         {/* Saved Pflegegrad Display */}
         <Card className="border-primary/20 overflow-hidden">
           <div className="bg-primary/5 p-6 sm:p-8 text-center">
