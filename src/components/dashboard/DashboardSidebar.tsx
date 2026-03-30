@@ -41,8 +41,12 @@ interface DashboardSidebarProps {
 
 const DashboardSidebar = ({ activeModule, onModuleChange, userPlan, onLockedClick }: DashboardSidebarProps) => {
   const { language } = useLanguage();
-  const { user, signOut } = useAuth();
+  const { user, profile, signOut } = useAuth();
+  const { personProfiles, activeProfile, activeProfileId, setActiveProfileId } = useProfiles();
   const queryClient = useQueryClient();
+  const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
+
+  const isMultiProfile = (profile?.max_profiles || 1) > 1 && personProfiles.length >= 2;
 
   const handlePrefetch = (moduleKey: DashboardModule) => {
     if (!user) return;
