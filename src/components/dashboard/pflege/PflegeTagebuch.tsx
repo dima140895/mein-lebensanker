@@ -120,12 +120,18 @@ const PflegeTagebuch = () => {
 
   const today = format(new Date(), 'yyyy-MM-dd');
 
-  // Pre-fill person name from most recent entry
+  // Filter entries by selected person
+  const filteredEntries = useMemo(() => {
+    if (!selectedPerson) return entries;
+    return entries.filter(e => e.person_name === selectedPerson);
+  }, [entries, selectedPerson]);
+
+  // Pre-fill person name from selected person or most recent entry
   useEffect(() => {
     if (entries.length > 0 && !personName) {
-      setPersonName(entries[0].person_name || '');
+      setPersonName(selectedPerson || entries[0].person_name || '');
     }
-  }, [entries]);
+  }, [entries, selectedPerson]);
 
   const createMutation = useMutation({
     mutationFn: async (newEintrag: {
