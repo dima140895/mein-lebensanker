@@ -179,7 +179,7 @@ const PflegeFirstEntryFlow = ({ onSave, isSaving }: PflegeFirstEntryFlowProps) =
                         onChange={(e) => setAktivitaeten(e.target.value)}
                         placeholder={texts.activitiesPlaceholder}
                         rows={2}
-                        className="border-2 border-primary/30 focus-visible:ring-primary"
+                        className="border-2 border-primary rounded-xl"
                       />
                     </div>
                     <div className="space-y-2">
