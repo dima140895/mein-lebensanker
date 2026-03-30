@@ -35,6 +35,7 @@ const PflegeTagebuch = () => {
   const { language } = useLanguage();
   const queryClient = useQueryClient();
   const [showForm, setShowForm] = useState(false);
+  const [editingEntry, setEditingEntry] = useState<PflegeEintrag | null>(null);
   const [expandedEntry, setExpandedEntry] = useState<string | null>(null);
   const [showReferral, setShowReferral] = useState(false);
   // Form state
