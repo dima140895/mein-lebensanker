@@ -456,7 +456,7 @@ const ShareLinkManager = () => {
               {texts.create}
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-h-[90vh] overflow-y-auto">
+          <DialogContent className="max-h-[90vh] overflow-y-auto rounded-xl">
             <DialogHeader>
               <DialogTitle>{texts.create}</DialogTitle>
               <DialogDescription>
@@ -474,7 +474,7 @@ const ShareLinkManager = () => {
               </div>
 
               {/* Per-Profile Section Selection */}
-              <div className="rounded-lg border border-border p-4 space-y-4">
+              <div className="rounded-xl border border-border p-4 space-y-4">
                 <div className="space-y-1">
                   <Label className="flex items-center gap-2">
                     <UserCircle className="h-4 w-4" />
@@ -604,7 +604,7 @@ const ShareLinkManager = () => {
               </div>
               
               {/* PIN Protection - Now mandatory */}
-              <div className="rounded-lg border border-primary/30 bg-primary/5 p-4 space-y-4">
+              <div className="rounded-xl border border-primary/30 bg-primary/5 p-4 space-y-4">
                 <div className="space-y-0.5">
                   <Label className="flex items-center gap-2">
                     <Lock className="h-4 w-4 text-primary" />
@@ -646,7 +646,7 @@ const ShareLinkManager = () => {
         
         <div className="grid gap-4 md:grid-cols-3">
           {/* Step 1 */}
-          <div className="flex flex-col items-center text-center p-4 rounded-lg bg-sage-light/30">
+            <div className="flex flex-col items-center text-center p-4 rounded-xl bg-secondary/50">
             <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center mb-3">
               <Plus className="h-5 w-5 text-primary" />
             </div>
@@ -655,7 +655,7 @@ const ShareLinkManager = () => {
           </div>
           
           {/* Step 2 */}
-          <div className="flex flex-col items-center text-center p-4 rounded-lg bg-sage-light/30">
+            <div className="flex flex-col items-center text-center p-4 rounded-xl bg-secondary/50">
             <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center mb-3">
               <Share2 className="h-5 w-5 text-primary" />
             </div>
@@ -664,7 +664,7 @@ const ShareLinkManager = () => {
           </div>
           
           {/* Step 3 */}
-          <div className="flex flex-col items-center text-center p-4 rounded-lg bg-sage-light/30">
+          <div className="flex flex-col items-center text-center p-4 rounded-xl bg-secondary/50">
             <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center mb-3">
               <Eye className="h-5 w-5 text-primary" />
             </div>
@@ -674,24 +674,24 @@ const ShareLinkManager = () => {
         </div>
         
         {/* What they see */}
-        <div className="rounded-lg bg-cream-dark/50 p-4 space-y-2">
+        <div className="rounded-xl bg-secondary/60 p-4 space-y-2">
           <h4 className="font-medium text-foreground">{texts.whatTheySeeTile}</h4>
           <p className="text-sm text-muted-foreground">{texts.whatTheySeeDesc}</p>
         </div>
         
         {/* Important note */}
-        <div className="rounded-lg bg-amber-light/30 border border-amber/20 p-4 flex items-start gap-3">
-          <Shield className="h-5 w-5 text-amber flex-shrink-0 mt-0.5" />
-          <div>
-            <h4 className="font-medium text-amber">{texts.importantNote}</h4>
-            <p className="text-sm text-amber/80">{texts.importantNoteDesc}</p>
-          </div>
+          <div className="rounded-xl bg-accent/10 border border-accent/20 p-4 flex items-start gap-3">
+            <Shield className="h-5 w-5 text-accent flex-shrink-0 mt-0.5" />
+            <div>
+              <h4 className="font-medium text-accent">{texts.importantNote}</h4>
+              <p className="text-sm text-accent/80">{texts.importantNoteDesc}</p>
+            </div>
         </div>
       </div>
 
-      <div className="rounded-xl bg-amber-light/30 border border-amber/20 p-4 flex items-start gap-3">
-        <Shield className="h-5 w-5 text-amber flex-shrink-0 mt-0.5" />
-        <p className="text-sm text-amber">{texts.securityNote}</p>
+      <div className="rounded-xl bg-accent/10 border border-accent/20 p-4 flex items-start gap-3">
+        <Shield className="h-5 w-5 text-accent flex-shrink-0 mt-0.5" />
+        <p className="text-sm text-accent">{texts.securityNote}</p>
       </div>
 
       {loading ? (
@@ -738,7 +738,7 @@ const ShareLinkManager = () => {
                         {texts.inactive}
                       </span>
                     ) : token.pin_hash ? (
-                      <span className="inline-flex items-center gap-1 rounded-full bg-sage-light px-2 py-0.5 text-xs font-medium text-sage-dark">
+                      <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
                         <Lock className="h-3 w-3" />
                         {texts.protected}
                       </span>
@@ -818,7 +818,7 @@ const ShareLinkManager = () => {
                     disabled={isBlocked}
                   >
                     {copiedId === token.id ? (
-                      <Check className="h-4 w-4 text-green-600" />
+                      <Check className="h-4 w-4 text-primary" />
                     ) : (
                       <Copy className="h-4 w-4" />
                     )}
