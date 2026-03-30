@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Check, Pencil, Loader2 } from 'lucide-react';
+import { useState, useEffect, useMemo } from 'react';
+import { Check, Pencil, Loader2, Clock, Zap, AlertCircle, Moon, Smile, CheckCircle } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -11,7 +11,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
 import { toast } from 'sonner';
-import { format } from 'date-fns';
+import { format, subDays } from 'date-fns';
 import { motion } from 'framer-motion';
 import { trackEvent } from '@/lib/analytics';
 
@@ -31,6 +31,7 @@ const TagesCheckin = () => {
   const queryClient = useQueryClient();
   const [editing, setEditing] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [streakMessage, setStreakMessage] = useState('');
 
   // Form state
   const [energie, setEnergie] = useState(5);
@@ -43,50 +44,74 @@ const TagesCheckin = () => {
 
   const t = {
     de: {
+      timer: 'Dauert ca. 60 Sekunden',
       greeting: 'Wie geht es Dir heute?',
-      greetingSub: 'Dein täglicher Check-in dauert nur 60 Sekunden.',
-      energie: 'Energie heute',
+      greetingSub: 'Dein täglicher Check-in — schnell und unkompliziert.',
+      energie: 'Energie',
+      energieLow: 'Erschöpft',
+      energieHigh: 'Energiegeladen',
       energieLabel: (v: number) => v <= 3 ? 'Erschöpft' : v <= 6 ? 'Ok' : 'Energiegeladen',
-      schmerz: 'Schmerzniveau',
-      schmerzLabel: (v: number) => v <= 3 ? 'Starke Schmerzen' : v <= 6 ? 'Leichte Schmerzen' : 'Kaum/Keine',
-      schlaf: 'Schlafqualität letzte Nacht',
+      schmerz: 'Schmerz',
+      schmerzLow: 'Kein Schmerz',
+      schmerzHigh: 'Starker Schmerz',
+      schmerzLabel: (v: number) => v <= 3 ? 'Kaum/Keine' : v <= 6 ? 'Leichte Schmerzen' : 'Starke Schmerzen',
+      schlaf: 'Schlaf',
+      schlafLow: 'Sehr schlecht',
+      schlafHigh: 'Sehr gut',
       schlafLabel: (v: number) => v <= 3 ? 'Schlecht' : v <= 6 ? 'Ok' : 'Sehr gut',
-      stimmung: 'Stimmung heute',
+      stimmung: 'Stimmung',
+      stimmungLow: 'Niedergeschlagen',
+      stimmungHigh: 'Sehr gut',
       stimmungLabel: (v: number) => v <= 3 ? 'Niedrig' : v <= 6 ? 'Neutral' : 'Gut',
-      notiz: 'Notiz für heute',
-      notizPlaceholder: 'Optional: Was beschäftigt Dich heute?',
+      notizPlaceholder: 'Etwas Besonderes heute? (optional)',
+      notizHint: 'Diese Notiz erscheint später im Arztbericht.',
       save: 'Check-in speichern',
       saving: 'Speichern...',
-      edit: 'Bearbeiten',
-      done: 'Check-in erledigt ✓',
-      doneSub: 'Du hast heute bereits eingecheckt. Hier sind Deine Werte:',
+      edit: 'Eintrag bearbeiten',
+      done: 'Heute bereits eingecheckt ✓',
+      doneSub: 'Hier sind Deine heutigen Werte:',
+      notiz: 'Notiz',
       saved: 'Check-in gespeichert!',
       updated: 'Check-in aktualisiert!',
       error: 'Fehler beim Speichern',
       successMessage: 'Gut gemacht! 💪',
+      firstCheckin: 'Erster Check-in gespeichert! Der Verlauf beginnt jetzt.',
+      streak: (n: number) => `${n} Tage in Folge — weiter so!`,
     },
     en: {
+      timer: 'Takes about 60 seconds',
       greeting: 'How are you feeling today?',
-      greetingSub: 'Your daily check-in takes only 60 seconds.',
-      energie: 'Energy today',
+      greetingSub: 'Your daily check-in — quick and simple.',
+      energie: 'Energy',
+      energieLow: 'Exhausted',
+      energieHigh: 'Energized',
       energieLabel: (v: number) => v <= 3 ? 'Exhausted' : v <= 6 ? 'Ok' : 'Energized',
-      schmerz: 'Pain level',
-      schmerzLabel: (v: number) => v <= 3 ? 'Severe pain' : v <= 6 ? 'Mild pain' : 'Little/None',
-      schlaf: 'Sleep quality last night',
+      schmerz: 'Pain',
+      schmerzLow: 'No pain',
+      schmerzHigh: 'Severe pain',
+      schmerzLabel: (v: number) => v <= 3 ? 'Little/None' : v <= 6 ? 'Mild pain' : 'Severe pain',
+      schlaf: 'Sleep',
+      schlafLow: 'Very poor',
+      schlafHigh: 'Very good',
       schlafLabel: (v: number) => v <= 3 ? 'Poor' : v <= 6 ? 'Ok' : 'Very good',
-      stimmung: 'Mood today',
+      stimmung: 'Mood',
+      stimmungLow: 'Low',
+      stimmungHigh: 'Very good',
       stimmungLabel: (v: number) => v <= 3 ? 'Low' : v <= 6 ? 'Neutral' : 'Good',
-      notiz: 'Note for today',
-      notizPlaceholder: 'Optional: What\'s on your mind today?',
+      notizPlaceholder: 'Anything special today? (optional)',
+      notizHint: 'This note will appear in your doctor report later.',
       save: 'Save check-in',
       saving: 'Saving...',
-      edit: 'Edit',
-      done: 'Check-in done ✓',
-      doneSub: 'You already checked in today. Here are your values:',
+      edit: 'Edit entry',
+      done: 'Already checked in today ✓',
+      doneSub: 'Here are your values for today:',
+      notiz: 'Note',
       saved: 'Check-in saved!',
       updated: 'Check-in updated!',
       error: 'Error saving',
       successMessage: 'Well done! 💪',
+      firstCheckin: 'First check-in saved! Your trend starts now.',
+      streak: (n: number) => `${n} days in a row — keep it up!`,
     },
   };
 
@@ -105,6 +130,40 @@ const TagesCheckin = () => {
     },
     enabled: !!user,
   });
+
+  // Fetch recent checkins for streak calculation
+  const { data: recentCheckins = [] } = useQuery({
+    queryKey: [...queryKeys.symptomCheckins(user?.id ?? ''), 'recent'],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from('symptom_checkins')
+        .select('checkin_datum')
+        .eq('user_id', user!.id)
+        .order('checkin_datum', { ascending: false })
+        .limit(60);
+      return (data || []).map(d => d.checkin_datum);
+    },
+    enabled: !!user,
+  });
+
+  // Calculate streak
+  const streak = useMemo(() => {
+    if (recentCheckins.length === 0) return 0;
+    let count = 0;
+    // Start from today or yesterday depending on whether today is checked in
+    const dates = new Set(recentCheckins);
+    let checkDate = today;
+    if (!dates.has(checkDate)) {
+      // If saving just happened, today might not be in cache yet — count from yesterday
+      checkDate = format(subDays(new Date(), 1), 'yyyy-MM-dd');
+      if (!dates.has(checkDate)) return 0;
+    }
+    while (dates.has(checkDate)) {
+      count++;
+      checkDate = format(subDays(new Date(checkDate + 'T00:00:00'), 1), 'yyyy-MM-dd');
+    }
+    return count;
+  }, [recentCheckins, today]);
 
   // Sync form state when data loads
   useEffect(() => {
@@ -147,13 +206,24 @@ const TagesCheckin = () => {
       }
     },
     onSuccess: () => {
+      // Determine streak message
+      const isFirst = !todayCheckin && recentCheckins.length === 0;
+      const newStreak = streak + (todayCheckin ? 0 : 1); // Adding today
+      if (isFirst) {
+        setStreakMessage(texts.firstCheckin);
+      } else if (newStreak >= 2) {
+        setStreakMessage(texts.streak(newStreak));
+      } else {
+        setStreakMessage('');
+      }
+
       setShowSuccess(true);
       setTimeout(() => {
         setShowSuccess(false);
         toast.success(todayCheckin ? texts.updated : texts.saved);
         setEditing(false);
         queryClient.invalidateQueries({ queryKey: queryKeys.symptomCheckins(user!.id) });
-      }, 1500);
+      }, 2000);
     },
     onError: () => {
       toast.error(texts.error);
@@ -192,35 +262,50 @@ const TagesCheckin = () => {
         >
           {texts.successMessage}
         </motion.p>
+        {streakMessage && (
+          <motion.p
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
+            className="text-sm text-primary font-medium"
+          >
+            {streakMessage}
+          </motion.p>
+        )}
       </motion.div>
     );
   }
 
-  // Already checked in today - show summary
+  // Already checked in today - show read-only summary
   if (todayCheckin && !editing) {
+    const metrics = [
+      { icon: <Zap className="h-5 w-5 text-primary" />, label: texts.energie, value: todayCheckin.energie, desc: texts.energieLabel(todayCheckin.energie) },
+      { icon: <AlertCircle className="h-5 w-5 text-destructive" />, label: texts.schmerz, value: todayCheckin.schmerz, desc: texts.schmerzLabel(todayCheckin.schmerz) },
+      { icon: <Moon className="h-5 w-5 text-accent" />, label: texts.schlaf, value: todayCheckin.schlaf, desc: texts.schlafLabel(todayCheckin.schlaf) },
+      { icon: <Smile className="h-5 w-5 text-primary" />, label: texts.stimmung, value: todayCheckin.stimmung, desc: texts.stimmungLabel(todayCheckin.stimmung) },
+    ];
+
     return (
       <div className="space-y-6">
         <div className="text-center space-y-2">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary font-medium text-sm">
-            <Check className="h-4 w-4" />
+            <CheckCircle className="h-4 w-4" />
             {texts.done}
           </div>
           <p className="text-sm text-muted-foreground">{texts.doneSub}</p>
+          {streak >= 2 && (
+            <p className="text-xs text-primary font-medium">{texts.streak(streak)}</p>
+          )}
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {[
-            { icon: '⚡', label: texts.energie, value: todayCheckin.energie, labelFn: texts.energieLabel },
-            { icon: '😣', label: texts.schmerz, value: todayCheckin.schmerz, labelFn: texts.schmerzLabel },
-            { icon: '😴', label: texts.schlaf, value: todayCheckin.schlaf, labelFn: texts.schlafLabel },
-            { icon: '😊', label: texts.stimmung, value: todayCheckin.stimmung, labelFn: texts.stimmungLabel },
-          ].map((item) => (
-             <Card key={item.label} className="border-border bg-card rounded-2xl shadow-card">
-              <CardContent className="py-4 px-4 text-center">
-                <span className="text-2xl">{item.icon}</span>
-                <p className="text-xs text-charcoal-light mt-1 font-body">{item.label}</p>
-                <p className="text-2xl font-bold text-forest mt-1">{item.value}<span className="text-sm font-normal text-charcoal-light">/10</span></p>
-                <p className="text-xs text-charcoal-light font-body">{item.labelFn(item.value)}</p>
+        <div className="grid grid-cols-2 gap-3">
+          {metrics.map((item) => (
+            <Card key={item.label} className="border-border bg-card rounded-2xl">
+              <CardContent className="py-4 px-4 flex flex-col items-center text-center">
+                {item.icon}
+                <p className="text-xs text-muted-foreground mt-1.5 font-body">{item.label}</p>
+                <p className="text-2xl font-bold text-foreground mt-1">{item.value}<span className="text-sm font-normal text-muted-foreground">/10</span></p>
+                <p className="text-xs text-muted-foreground font-body">{item.desc}</p>
               </CardContent>
             </Card>
           ))}
@@ -236,7 +321,7 @@ const TagesCheckin = () => {
         )}
 
         <div className="text-center">
-          <Button variant="outline" onClick={() => setEditing(true)}>
+          <Button variant="outline" size="sm" onClick={() => setEditing(true)} className="min-h-[44px]">
             <Pencil className="h-4 w-4 mr-2" />
             {texts.edit}
           </Button>
@@ -246,32 +331,44 @@ const TagesCheckin = () => {
   }
 
   // Check-in form
+  const sliderFields: SliderFieldProps[] = [
+    { icon: <Zap className="h-5 w-5 text-primary" />, label: texts.energie, value: energie, onChange: setEnergie, lowLabel: texts.energieLow, highLabel: texts.energieHigh },
+    { icon: <AlertCircle className="h-5 w-5 text-destructive" />, label: texts.schmerz, value: schmerz, onChange: setSchmerz, lowLabel: texts.schmerzLow, highLabel: texts.schmerzHigh, isSchmerz: true },
+    { icon: <Moon className="h-5 w-5 text-accent" />, label: texts.schlaf, value: schlaf, onChange: setSchlaf, lowLabel: texts.schlafLow, highLabel: texts.schlafHigh },
+    { icon: <Smile className="h-5 w-5 text-primary" />, label: texts.stimmung, value: stimmung, onChange: setStimmung, lowLabel: texts.stimmungLow, highLabel: texts.stimmungHigh },
+  ];
+
   return (
     <div className="space-y-8 max-w-lg mx-auto">
+      {/* Timer hint */}
+      <div className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
+        <Clock className="h-3 w-3" />
+        {texts.timer}
+      </div>
+
       <div className="text-center space-y-2">
-      <h2 className="font-sans text-2xl font-semibold text-forest">{texts.greeting}</h2>
-        <p className="text-sm text-charcoal-light font-body">{texts.greetingSub}</p>
+        <h2 className="font-sans text-2xl font-semibold text-foreground">{texts.greeting}</h2>
+        <p className="text-sm text-muted-foreground font-body">{texts.greetingSub}</p>
       </div>
 
       <div className="space-y-8">
-        <SliderField icon="⚡" label={texts.energie} value={energie} onChange={setEnergie} description={texts.energieLabel(energie)} />
-        <SliderField icon="😣" label={texts.schmerz} value={schmerz} onChange={setSchmerz} description={texts.schmerzLabel(schmerz)} />
-        <SliderField icon="😴" label={texts.schlaf} value={schlaf} onChange={setSchlaf} description={texts.schlafLabel(schlaf)} />
-        <SliderField icon="😊" label={texts.stimmung} value={stimmung} onChange={setStimmung} description={texts.stimmungLabel(stimmung)} />
+        {sliderFields.map((field) => (
+          <SliderField key={field.label} {...field} />
+        ))}
 
+        {/* Note field */}
         <div className="space-y-2">
-          <Label className="text-sm text-muted-foreground">{texts.notiz}</Label>
           <Textarea
             value={notiz}
             onChange={(e) => setNotiz(e.target.value)}
             placeholder={texts.notizPlaceholder}
-            rows={3}
-            className="resize-none"
+            className="resize-none min-h-[80px] max-h-[120px] text-sm rounded-xl border-border"
           />
+          <p className="text-xs text-muted-foreground">{texts.notizHint}</p>
         </div>
       </div>
 
-      <Button onClick={() => saveMutation.mutate()} disabled={saveMutation.isPending} className="w-full h-12 text-base min-h-[44px]">
+      <Button onClick={() => saveMutation.mutate()} disabled={saveMutation.isPending} className="w-full h-12 text-base min-h-[44px] rounded-xl">
         {saveMutation.isPending ? (
           <><Loader2 className="h-4 w-4 mr-2 animate-spin" />{texts.saving}</>
         ) : (
@@ -283,40 +380,48 @@ const TagesCheckin = () => {
 };
 
 // Slider field subcomponent
-const SliderField = ({
-  icon,
-  label,
-  value,
-  onChange,
-  description,
-}: {
-  icon: string;
+interface SliderFieldProps {
+  icon: React.ReactNode;
   label: string;
   value: number;
   onChange: (v: number) => void;
-  description: string;
-}) => (
-  <div className="space-y-3">
-    <div className="flex items-center justify-between">
-      <div className="flex items-center gap-2">
-        <span className="text-xl">{icon}</span>
-        <Label className="text-sm font-medium font-body text-forest">{label}</Label>
+  lowLabel: string;
+  highLabel: string;
+  isSchmerz?: boolean;
+}
+
+const SliderField = ({ icon, label, value, onChange, lowLabel, highLabel, isSchmerz }: SliderFieldProps) => {
+  // Dynamic color for pain: low=good (green), high=bad (red)
+  const getValueColor = () => {
+    if (!isSchmerz) return 'text-primary';
+    if (value <= 3) return 'text-green-600';
+    if (value <= 6) return 'text-amber-500';
+    return 'text-red-500';
+  };
+
+  return (
+    <div className="space-y-3">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          {icon}
+          <Label className="text-sm font-medium font-body text-foreground">{label}</Label>
+        </div>
+        <span className={`text-2xl font-bold ${getValueColor()}`}>{value}</span>
       </div>
-      <div className="text-right">
-         <span className="text-xl font-bold text-forest">{value}</span>
-        <span className="text-sm text-charcoal-light">/10</span>
+      <Slider
+        value={[value]}
+        onValueChange={([v]) => onChange(v)}
+        min={1}
+        max={10}
+        step={1}
+        className="py-2 min-h-[44px]"
+      />
+      <div className="flex justify-between">
+        <span className="text-xs text-muted-foreground">{lowLabel}</span>
+        <span className="text-xs text-muted-foreground">{highLabel}</span>
       </div>
     </div>
-    <Slider
-      value={[value]}
-      onValueChange={([v]) => onChange(v)}
-      min={1}
-      max={10}
-      step={1}
-      className="py-2"
-    />
-    <p className="text-xs text-charcoal-light text-center font-body">{description}</p>
-  </div>
-);
+  );
+};
 
 export default TagesCheckin;
