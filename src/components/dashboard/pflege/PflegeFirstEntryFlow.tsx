@@ -151,7 +151,7 @@ const PflegeFirstEntryFlow = ({ onSave, isSaving }: PflegeFirstEntryFlowProps) =
                   onChange={(e) => setBesonderheiten(e.target.value)}
                   placeholder={texts.incidentsPlaceholder}
                   rows={2}
-                  className="border-2 border-primary rounded-xl"
+                  className="border-2 border-primary"
                 />
               </div>
 
