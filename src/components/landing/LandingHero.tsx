@@ -198,9 +198,9 @@ const LandingHero = () => {
 
           <motion.div {...stagger(0.4)} className="mt-8 max-w-md text-muted-foreground text-base md:text-lg font-light leading-relaxed mx-auto lg:mx-0">
             <p>
-              Kein Notar weiß wo Deine Vollmacht liegt.<br />
+Kein Notar weiß, wo Deine Vollmacht liegt.<br />
               Kein Arzt kennt Deinen Symptomverlauf.<br />
-              Kein Angehöriger weiß was Du Dir wünschst.
+              Kein Angehöriger weiß, was Du Dir wünschst.
             </p>
             <p className="mt-4 text-primary font-medium text-base">
               Mein Lebensanker ändert das.
