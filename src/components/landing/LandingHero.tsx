@@ -180,9 +180,9 @@ const PanelArzt = () => (
   return (
     <section
       className="min-h-screen flex items-center pt-20 pb-0 overflow-hidden bg-background border-b border-border"
-      style={isDesktop ? { background: 'linear-gradient(to right, hsl(var(--background)) 52%, #2C4A3E 52%)' } : {}}
+      style={isDesktop ? { background: 'linear-gradient(to right, hsl(var(--background)) 58%, #2C4A3E 58%)' } : {}}
     >
-      <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center w-full">
+      <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr] gap-12 lg:gap-16 items-center w-full">
         {/* ── Left: Text ── */}
         <div className="max-w-lg mx-auto lg:mx-0 text-center lg:text-left">
           <motion.div {...stagger(0.1)} className="inline-flex items-center gap-2 border border-primary/30 rounded-full px-3 py-1.5 bg-primary/5 mb-8">
