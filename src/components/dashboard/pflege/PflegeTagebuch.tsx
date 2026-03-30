@@ -169,9 +169,11 @@ const PflegeTagebuch = () => {
     onSuccess: () => {
       if (entries.length === 0) {
         trackEvent('Erster_Pflegeeintrag');
+        toast.success(language === 'de' ? 'Erster Eintrag gespeichert. Gut gemacht. 🎉' : 'First entry saved. Well done. 🎉');
         setShowReferral(true);
+      } else {
+        toast.success(texts.saved);
       }
-      toast.success(texts.saved);
       resetForm();
     },
     onSettled: () => {
