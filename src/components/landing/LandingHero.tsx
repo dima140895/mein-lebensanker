@@ -185,7 +185,7 @@ const PanelArzt = () => (
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-12 lg:gap-16 items-center w-full">
         {/* ── Left: Text ── */}
         <div className="max-w-lg mx-auto lg:mx-0 text-center lg:text-left">
-          <motion.div {...stagger(0.1)} className="inline-flex items-center gap-2 border border-primary/30 rounded-full px-3 py-1.5 bg-primary/5 mb-8">
+          <motion.div {...stagger(0.1)} className="inline-flex items-center gap-2 border border-primary/30 rounded-full px-3 py-1.5 bg-primary/5 mb-8 mt-4">
             <span className="text-xs font-medium text-primary uppercase tracking-widest">
               Vorsorge · Pflege · Gesundheit — an einem Ort
             </span>
