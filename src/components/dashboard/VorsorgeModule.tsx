@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { User, Wallet, Globe, Heart, FileText, ArrowLeft, Phone, Info, Compass, Link2, Download, CheckCircle, HelpCircle, ShieldCheck, Check } from 'lucide-react';
+import { User, Wallet, Globe, Heart, FileText, ArrowLeft, Phone, Info, Compass, Link2, Download, CheckCircle, HelpCircle, ShieldCheck, Check, Share2 } from 'lucide-react';
 import ModuleIntroScreen, { shouldShowModuleIntro, markModuleIntroSeen } from '@/components/dashboard/ModuleIntroScreen';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -52,12 +52,20 @@ const VorsorgeModule = () => {
   const [tourKey, setTourKey] = useState(0);
   const [showCelebration, setShowCelebration] = useState(false);
   const [showShareManager, setShowShareManager] = useState(false);
+  const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [upgradeLoading, setUpgradeLoading] = useState(false);
   const [showIntro, setShowIntro] = useState(() =>
     user ? shouldShowModuleIntro('vorsorge', user.id, profile?.onboarding_focus) : false
   );
   const isMobile = useIsMobile();
+
+  // Listen for share dialog event from SectionNavigation
+  useEffect(() => {
+    const handler = () => setShareDialogOpen(true);
+    window.addEventListener('openShareDialog', handler);
+    return () => window.removeEventListener('openShareDialog', handler);
+  }, []);
   const { sectionStatus, sectionCompletion, progressPercent, filledCount, totalCount, isComplete, refetch, loading: statusLoading } = useSectionStatus();
   const previousProfileId = useRef<string | null>(null);
 
@@ -81,7 +89,7 @@ const VorsorgeModule = () => {
     }
     setShowCelebration(false);
     if (openShare) {
-      setShowShareManager(true);
+      setShareDialogOpen(true);
     }
     // Show upgrade modal after celebration for Anker-only users
     if (isAnkerOnly && user && !localStorage.getItem(upgradeKey)) {
@@ -326,6 +334,41 @@ const VorsorgeModule = () => {
         </div>
       </div>
 
+      {/* Share button row */}
+      <div className="flex items-center justify-between mb-4 md:mb-6 -mt-1">
+        <span className="text-xs text-muted-foreground">
+          {statusLoading ? '' : `${progressPercent}% ${texts.progressPercent}`}
+        </span>
+        <button
+          onClick={() => setShareDialogOpen(true)}
+          className="flex items-center gap-2 border border-[#E5E0D8] rounded-lg px-4 py-2 text-sm text-foreground font-medium hover:border-primary hover:bg-primary/5 transition-all"
+          title={language === 'de' ? 'Freigabe-Link für Angehörige erstellen' : 'Create sharing link for relatives'}
+        >
+          <Share2 className="h-4 w-4" />
+          {language === 'de' ? 'Teilen' : 'Share'}
+        </button>
+      </div>
+
+      {/* Share Dialog */}
+      <Dialog open={shareDialogOpen} onOpenChange={setShareDialogOpen}>
+        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>{language === 'de' ? 'Daten teilen' : 'Share data'}</DialogTitle>
+          </DialogHeader>
+          {!statusLoading && progressPercent < 20 && (
+            <div className="bg-[#F5E8D4]/60 border border-[#E8C99A]/60 rounded-xl p-3 mb-4 flex gap-2">
+              <Info className="h-3.5 w-3.5 text-[#C4813A] flex-shrink-0 mt-0.5" />
+              <p className="text-sm text-foreground">
+                {language === 'de'
+                  ? `Du hast bisher ${progressPercent}% ausgefüllt. Angehörige sehen nur die Bereiche die du bereits ausgefüllt hast. Du kannst den Link jetzt erstellen und später weitere Daten ergänzen.`
+                  : `You have filled out ${progressPercent}% so far. Relatives will only see the sections you have already completed. You can create the link now and add more data later.`}
+              </p>
+            </div>
+          )}
+          <ShareLinkManager />
+        </DialogContent>
+      </Dialog>
+
       {/* Data section tiles */}
       <div className="mb-4 md:mb-6">
         <div className="grid gap-2.5 md:gap-4 grid-cols-2 lg:grid-cols-3" data-tour="dashboard-tiles">
@@ -436,12 +479,7 @@ const VorsorgeModule = () => {
         </div>
       )}
 
-      {/* Share Link Manager dialog triggered from celebration */}
-      {showShareManager && (
-        <div className="mt-6">
-          <ShareLinkManager />
-        </div>
-      )}
+
 
       {/* Contextual Upgrade Modal for Anker users after 100% */}
       <Dialog open={showUpgradeModal} onOpenChange={(open) => { if (!open) dismissUpgradeModal(); }}>
