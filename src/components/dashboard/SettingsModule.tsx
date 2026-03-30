@@ -33,8 +33,10 @@ import { useIsMobile } from '@/hooks/use-mobile';
 const SettingsModule = () => {
   const { language } = useLanguage();
   const { user } = useAuth();
+  const { isEncryptionEnabled } = useEncryption();
   const [conversions, setConversions] = useState<number | null>(null);
   const [signingOut, setSigningOut] = useState(false);
+  const [showEncryptionSetup, setShowEncryptionSetup] = useState(false);
   const isMobile = useIsMobile();
 
   const t = {
