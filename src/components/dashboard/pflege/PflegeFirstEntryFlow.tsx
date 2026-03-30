@@ -140,7 +140,7 @@ const PflegeFirstEntryFlow = ({ onSave, isSaving }: PflegeFirstEntryFlowProps) =
                   onChange={(e) => setMahlzeiten(e.target.value)}
                   placeholder={texts.mealsPlaceholder}
                   rows={2}
-                  className="border-2 border-primary rounded-xl"
+                  className="border-2 border-primary"
                 />
               </div>
 
@@ -151,7 +151,7 @@ const PflegeFirstEntryFlow = ({ onSave, isSaving }: PflegeFirstEntryFlowProps) =
                   onChange={(e) => setBesonderheiten(e.target.value)}
                   placeholder={texts.incidentsPlaceholder}
                   rows={2}
-                  className="border-2 border-primary rounded-xl"
+                  className="border-2 border-primary"
                 />
               </div>
 
@@ -179,7 +179,7 @@ const PflegeFirstEntryFlow = ({ onSave, isSaving }: PflegeFirstEntryFlowProps) =
                         onChange={(e) => setAktivitaeten(e.target.value)}
                         placeholder={texts.activitiesPlaceholder}
                         rows={2}
-                        className="border-2 border-primary rounded-xl"
+                        className="border-2 border-primary"
                       />
                     </div>
                     <div className="space-y-2">
@@ -189,7 +189,7 @@ const PflegeFirstEntryFlow = ({ onSave, isSaving }: PflegeFirstEntryFlowProps) =
                         onChange={(e) => setNaechsteSchritte(e.target.value)}
                         placeholder={texts.nextStepsPlaceholder}
                         rows={2}
-                        className="border-2 border-primary rounded-xl"
+                        className="border-2 border-primary"
                       />
                     </div>
                   </motion.div>
