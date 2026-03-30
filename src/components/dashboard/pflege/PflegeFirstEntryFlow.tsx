@@ -39,7 +39,7 @@ const PflegeFirstEntryFlow = ({ onSave, isSaving, activePersonName = '' }: Pfleg
   });
 
   const pName = activePersonName || '';
-  const pFallbackDe = pName || 'die Person die du pflegst';
+  const pFallbackDe = pName || 'die Person, die du pflegst';
   const pFallbackEn = pName || 'the person you care for';
 
   const t = {
