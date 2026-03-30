@@ -5,7 +5,7 @@ import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useEncryption } from '@/contexts/EncryptionContext';
-import Header from '@/components/Header';
+import StaticNav from '@/components/StaticNav';
 import StaticNav from '@/components/StaticNav';
 import Footer from '@/components/Footer';
 import LandingFooter from '@/components/landing/LandingFooter';
