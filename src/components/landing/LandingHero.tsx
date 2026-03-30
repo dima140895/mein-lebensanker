@@ -215,20 +215,20 @@ const LandingHero = () => {
       <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center w-full">
         {/* ── Left: Text ── */}
         <div className="max-w-lg mx-auto lg:mx-0 text-center lg:text-left">
-          <motion.div {...stagger(0.1)} className="inline-flex items-center gap-2 border border-accent/40 rounded-full px-3 py-1.5 bg-accent/10 mb-8">
-            <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
-            <span className="text-xs font-medium text-accent uppercase tracking-widest">
+          <motion.div {...stagger(0.1)} className="inline-flex items-center gap-2 border border-primary/20 rounded-full px-3 py-1.5 bg-primary/5 mb-8">
+            <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+            <span className="text-xs font-medium text-primary uppercase tracking-widest">
               Noch nicht vorbereitet? Du bist nicht allein.
             </span>
           </motion.div>
 
-          <h1 className="text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-[-0.03em]">
-            <motion.span {...stagger(0.1)} className="text-muted-foreground/50 font-light block">Irgendwann</motion.span>
-            <motion.span {...stagger(0.2)} className="text-muted-foreground/50 font-light block">wird jemand fragen,</motion.span>
+          <h1 className="text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-[-0.03em] font-sans">
+            <motion.span {...stagger(0.1)} className="text-muted-foreground font-light block">Irgendwann</motion.span>
+            <motion.span {...stagger(0.2)} className="text-muted-foreground font-light block">wird jemand fragen,</motion.span>
             <motion.span {...stagger(0.3)} className="text-foreground font-extrabold block">ob du vorbereitet bist.</motion.span>
           </h1>
 
-          <motion.p {...stagger(0.4)} className="mt-6 max-w-md text-muted-foreground text-lg font-light leading-relaxed mx-auto lg:mx-0">
+          <motion.p {...stagger(0.4)} className="mt-6 max-w-md text-foreground/70 text-lg font-light leading-relaxed mx-auto lg:mx-0">
             Mein Lebensanker hilft dir Vollmachten, Pflege und Gesundheit zu organisieren — bevor der Ernstfall kommt.
           </motion.p>
 
