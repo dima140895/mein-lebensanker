@@ -284,6 +284,7 @@ const PflegegradTab = () => {
   if (mode === 'manual') {
     return (
       <div className="space-y-6">
+        <PflegePersonSelector value={selectedPerson} onChange={setSelectedPerson} />
         <div className="text-center space-y-2">
           <h3 className="font-sans text-xl font-semibold text-foreground">
             {isDE ? 'Pflegegrad eintragen' : 'Enter Care Level'}
