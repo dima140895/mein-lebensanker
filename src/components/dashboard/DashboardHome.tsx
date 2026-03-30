@@ -57,9 +57,14 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
 
   const [lastPflege, setLastPflege] = useState<any>(null);
   const [todayCheckin, setTodayCheckin] = useState<any>(null);
+  const [checkinCount, setCheckinCount] = useState(0);
   const [dataLoading, setDataLoading] = useState(true);
   const [showEncryptionSetup, setShowEncryptionSetup] = useState(false);
   const [hasShareToken, setHasShareToken] = useState(false);
+  const [arztberichtHintDismissed, setArztberichtHintDismissed] = useState(() => {
+    if (typeof window === 'undefined') return true;
+    return false; // Will be set properly once user is loaded
+  });
 
   const isPlusOrHigher = userPlan === 'plus' || userPlan === 'familie';
   const onboardingFocus = profile?.onboarding_focus;
