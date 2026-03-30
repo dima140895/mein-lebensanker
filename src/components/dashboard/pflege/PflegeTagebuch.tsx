@@ -164,12 +164,7 @@ const PflegeTagebuch = () => {
         setShowReferral(true);
       }
       toast.success(texts.saved);
-      setShowForm(false);
-      setMahlzeiten('');
-      setAktivitaeten('');
-      setBesonderheiten('');
-      setNaechsteSchritte('');
-      setStimmung(3);
+      resetForm();
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.pflegeEintraege(user!.id) });
