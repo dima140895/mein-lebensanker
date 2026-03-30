@@ -398,6 +398,7 @@ const PflegeTagebuch = ({ activePersonName = '' }: PflegeTagebuchProps) => {
               });
             }}
             isSaving={createMutation.isPending}
+            activePersonName={activePersonName}
           />
         ) : (
           <div className="flex flex-col items-center justify-center py-16 text-center">
