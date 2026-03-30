@@ -92,6 +92,8 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
           supabase.from('symptom_checkins').select('checkin_datum,energie').eq('user_id', user.id).order('checkin_datum', { ascending: false }).limit(1),
         ]);
         setLastPflege(pflegeRes.data?.[0] || null);
+        const todayStr = new Date().toISOString().split('T')[0];
+        setTodayPflegeExists(pflegeRes.data?.[0]?.eintrags_datum === todayStr);
         setTodayCheckin(checkinRes.data?.[0] || null);
         setCheckinCount(checkinCountRes.count ?? 0);
         setPflegePersonenNames((pflegePersonenRes.data || []).map((p: any) => p.name));
