@@ -12,6 +12,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { toast } from 'sonner';
+import PflegePersonSelector from './PflegePersonSelector';
 
 interface Medikament {
   id: string;
@@ -23,6 +24,7 @@ interface Medikament {
   notizen: string | null;
   erinnerung_aktiv: boolean;
   erinnerung_zeiten: string[] | null;
+  person_name: string | null;
 }
 
 const PflegeMedikamente = () => {
@@ -31,6 +33,7 @@ const PflegeMedikamente = () => {
   const queryClient = useQueryClient();
   const [showForm, setShowForm] = useState(false);
   const [showInactive, setShowInactive] = useState(false);
+  const [selectedPerson, setSelectedPerson] = useState('');
 
   // Form state
   const [name, setName] = useState('');
@@ -230,7 +233,8 @@ const PflegeMedikamente = () => {
       arzt: arzt.trim() || null,
       erinnerung_aktiv: hasPlusAccess ? erinnerungAktiv : false,
       erinnerung_zeiten: hasPlusAccess ? erinnerungZeiten : [],
-    });
+      person_name: selectedPerson || null,
+    } as any);
   };
 
   const addReminderTime = () => {
@@ -249,8 +253,11 @@ const PflegeMedikamente = () => {
     setErinnerungZeiten(erinnerungZeiten.filter((_, i) => i !== index));
   };
 
-  const activeMeds = meds.filter((m) => m.aktiv);
-  const inactiveMeds = meds.filter((m) => !m.aktiv);
+  const filteredMeds = selectedPerson
+    ? meds.filter(m => (m as any).person_name === selectedPerson)
+    : meds;
+  const activeMeds = filteredMeds.filter((m) => m.aktiv);
+  const inactiveMeds = filteredMeds.filter((m) => !m.aktiv);
 
   if (loading) {
     return (
@@ -262,6 +269,9 @@ const PflegeMedikamente = () => {
 
   return (
     <div className="space-y-4">
+      {/* Person selector */}
+      <PflegePersonSelector value={selectedPerson} onChange={setSelectedPerson} />
+
       {/* Top actions */}
       <div className="flex flex-wrap gap-2">
         {!showForm && (
@@ -395,7 +405,12 @@ const PflegeMedikamente = () => {
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-2">
                     <Pill className="h-4 w-4 text-primary flex-shrink-0" />
-                    <CardTitle className="text-sm font-semibold">{med.name}</CardTitle>
+                    <div>
+                      <CardTitle className="text-sm font-semibold">{med.name}</CardTitle>
+                      {(med as any).person_name && !selectedPerson && (
+                        <p className="text-xs text-muted-foreground">{(med as any).person_name}</p>
+                      )}
+                    </div>
                   </div>
                   <div className="flex items-center gap-1.5">
                     {med.erinnerung_aktiv && (

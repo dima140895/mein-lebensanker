@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { logger } from '@/lib/logger';
 import PflegegradRechner from '@/components/PflegegradRechner';
+import PflegePersonSelector from './PflegePersonSelector';
 
 const pflegegradInfo: Record<number, { de: string; en: string; leistungDe: string; leistungEn: string }> = {
   1: {
@@ -47,10 +48,11 @@ interface SavedPflegegrad {
   grad: number;
   datum: string;
   punkte?: number;
-  quelle: 'manuell' | 'rechner'; // manual or calculator
+  quelle: 'manuell' | 'rechner';
+  person_name?: string;
 }
 
-const PFLEGE_SECTION_KEY = '_pflege_pflegegrad';
+const PFLEGE_SECTION_KEY_BASE = '_pflege_pflegegrad';
 
 const PflegegradTab = () => {
   const { language } = useLanguage();
@@ -60,17 +62,25 @@ const PflegegradTab = () => {
   const [savedGrad, setSavedGrad] = useState<SavedPflegegrad | null>(null);
   const [loading, setLoading] = useState(true);
   const [mode, setMode] = useState<'overview' | 'manual' | 'rechner' | null>(null);
+  const [selectedPerson, setSelectedPerson] = useState('');
+
+  const sectionKey = selectedPerson
+    ? `${PFLEGE_SECTION_KEY_BASE}_${selectedPerson.replace(/[^a-zA-Z0-9äöüÄÖÜß_-]/g, '_')}`
+    : PFLEGE_SECTION_KEY_BASE;
 
   // Load saved pflegegrad
   useEffect(() => {
     const load = async () => {
       if (!user) return;
+      setLoading(true);
+      setSavedGrad(null);
+      setMode(null);
       try {
         const { data, error } = await supabase
           .from('vorsorge_data')
           .select('data')
           .eq('user_id', user.id)
-          .eq('section_key', PFLEGE_SECTION_KEY)
+          .eq('section_key', sectionKey)
           .is('person_profile_id', null)
           .maybeSingle();
 
@@ -85,7 +95,7 @@ const PflegegradTab = () => {
       }
     };
     load();
-  }, [user]);
+  }, [user, sectionKey]);
 
   const savePflegegrad = async (grad: SavedPflegegrad) => {
     if (!user) return;
@@ -95,7 +105,7 @@ const PflegegradTab = () => {
         .from('vorsorge_data')
         .select('id')
         .eq('user_id', user.id)
-        .eq('section_key', PFLEGE_SECTION_KEY)
+        .eq('section_key', sectionKey)
         .is('person_profile_id', null)
         .maybeSingle();
 
@@ -111,7 +121,7 @@ const PflegegradTab = () => {
       } else {
         const insertRow: { user_id: string; section_key: string; data: Json } = {
           user_id: user.id,
-          section_key: PFLEGE_SECTION_KEY,
+          section_key: sectionKey,
           data: grad as unknown as Json,
         };
         ({ error } = await supabase
@@ -136,7 +146,7 @@ const PflegegradTab = () => {
         .from('vorsorge_data')
         .delete()
         .eq('user_id', user.id)
-        .eq('section_key', PFLEGE_SECTION_KEY)
+        .eq('section_key', sectionKey)
         .is('person_profile_id', null);
 
       if (error) throw error;
@@ -168,8 +178,11 @@ const PflegegradTab = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-12">
-        <div className="h-6 w-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+      <div className="space-y-6">
+        <PflegePersonSelector value={selectedPerson} onChange={setSelectedPerson} />
+        <div className="flex items-center justify-center py-12">
+          <div className="h-6 w-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+        </div>
       </div>
     );
   }
@@ -178,6 +191,7 @@ const PflegegradTab = () => {
   if (savedGrad && mode !== 'manual' && mode !== 'rechner') {
     return (
       <div className="space-y-6">
+        <PflegePersonSelector value={selectedPerson} onChange={setSelectedPerson} />
         {/* Saved Pflegegrad Display */}
         <Card className="border-primary/20 overflow-hidden">
           <div className="bg-primary/5 p-6 sm:p-8 text-center">
@@ -255,11 +269,14 @@ const PflegegradTab = () => {
   // Rechner mode
   if (mode === 'rechner') {
     return (
-      <PflegegradRechner
-        showCTA="dashboard"
-        onSave={handleRechnerSave}
-        onClose={() => setMode(savedGrad ? 'overview' : null)}
-      />
+      <div className="space-y-6">
+        <PflegePersonSelector value={selectedPerson} onChange={setSelectedPerson} />
+        <PflegegradRechner
+          showCTA="dashboard"
+          onSave={handleRechnerSave}
+          onClose={() => setMode(savedGrad ? 'overview' : null)}
+        />
+      </div>
     );
   }
 
@@ -267,6 +284,7 @@ const PflegegradTab = () => {
   if (mode === 'manual') {
     return (
       <div className="space-y-6">
+        <PflegePersonSelector value={selectedPerson} onChange={setSelectedPerson} />
         <div className="text-center space-y-2">
           <h3 className="font-sans text-xl font-semibold text-foreground">
             {isDE ? 'Pflegegrad eintragen' : 'Enter Care Level'}
@@ -317,6 +335,7 @@ const PflegegradTab = () => {
   // Initial choice: no pflegegrad saved yet
   return (
     <div className="space-y-6">
+      <PflegePersonSelector value={selectedPerson} onChange={setSelectedPerson} />
       <div className="text-center space-y-2">
         <h3 className="font-sans text-xl font-semibold text-foreground">
           {isDE ? 'Pflegegrad' : 'Care Level'}

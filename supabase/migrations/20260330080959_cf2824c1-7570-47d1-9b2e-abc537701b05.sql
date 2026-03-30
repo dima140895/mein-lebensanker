@@ -1,0 +1,1 @@
+ALTER TABLE public.medikamente ADD COLUMN person_name text DEFAULT NULL;

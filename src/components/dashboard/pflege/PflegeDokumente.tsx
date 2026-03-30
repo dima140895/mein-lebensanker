@@ -7,6 +7,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 import { logger } from '@/lib/logger';
+import PflegePersonSelector from './PflegePersonSelector';
 
 interface UploadedDoc {
   name: string;
@@ -56,6 +57,7 @@ const validateFileExtension = (filename: string, mimeType: string): boolean => {
 const PflegeDokumente = () => {
   const { language } = useLanguage();
   const { user } = useAuth();
+  const [selectedPerson, setSelectedPerson] = useState('');
 
   const t = {
     de: {
@@ -115,8 +117,9 @@ const PflegeDokumente = () => {
 
   const getStoragePath = useCallback((category: string) => {
     if (!user) return '';
-    return `${user.id}/pflege/${category}`;
-  }, [user]);
+    const personSegment = selectedPerson ? `/${selectedPerson.replace(/[^a-zA-Z0-9äöüÄÖÜß_-]/g, '_')}` : '';
+    return `${user.id}/pflege${personSegment}/${category}`;
+  }, [user, selectedPerson]);
 
   const loadAllDocuments = useCallback(async () => {
     if (!user) return;
@@ -153,7 +156,7 @@ const PflegeDokumente = () => {
 
   useEffect(() => {
     loadAllDocuments();
-  }, [loadAllDocuments]);
+  }, [loadAllDocuments, selectedPerson]);
 
   const handleUpload = async (file: File, category: PflegeDocCategory) => {
     if (!user) return;
@@ -290,6 +293,9 @@ const PflegeDokumente = () => {
 
   return (
     <div className="space-y-6">
+      {/* Person selector */}
+      <PflegePersonSelector value={selectedPerson} onChange={setSelectedPerson} />
+
       {/* Header */}
       <Card className="border-primary/20 bg-primary/5">
         <CardContent className="py-5 text-center space-y-2">
