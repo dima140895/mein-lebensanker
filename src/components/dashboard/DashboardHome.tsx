@@ -342,7 +342,7 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
                           <p className="text-xs text-muted-foreground">{tx.pflegeLastEntry}</p>
                           <p className="text-sm font-medium">{new Date(lastPflege.eintrags_datum).toLocaleDateString(language === 'de' ? 'de-DE' : 'en-US')}</p>
                         </div>
-                        <span className="text-2xl">{STIMMUNG_EMOJI[lastPflege.stimmung] || '😐'}</span>
+                        <span className={`w-3 h-3 rounded-full ${getMoodColor(lastPflege.stimmung)}`} />
                       </div>
                     </div>
                   ) : (
