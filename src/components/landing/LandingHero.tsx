@@ -96,7 +96,7 @@ const PanelPflege = () => (
         <p className="text-xs text-foreground">Frühstück gut, Mittagessen halb aufgegessen</p>
       </div>
       <div className="mt-3">
-        <span className="text-[10px] uppercase text-muted-foreground tracking-wide mb-1 block">✨ Besonderheiten</span>
+        <span className="text-[10px] uppercase text-muted-foreground tracking-wide mb-1 block">Besonderheiten</span>
         <p className="text-xs text-foreground leading-relaxed">
           Hat heute 20 Minuten im Garten gesessen. Sehr gute Stimmung, über früher erzählt.
         </p>
