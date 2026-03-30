@@ -646,7 +646,7 @@ const ShareLinkManager = () => {
         
         <div className="grid gap-4 md:grid-cols-3">
           {/* Step 1 */}
-          <div className="flex flex-col items-center text-center p-4 rounded-lg bg-sage-light/30">
+            <div className="flex flex-col items-center text-center p-4 rounded-xl bg-secondary/50">
             <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center mb-3">
               <Plus className="h-5 w-5 text-primary" />
             </div>
