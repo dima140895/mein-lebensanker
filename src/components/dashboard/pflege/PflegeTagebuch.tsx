@@ -174,6 +174,7 @@ const PflegeTagebuch = () => {
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.pflegeEintraege(user!.id) });
+      queryClient.invalidateQueries({ queryKey: ['pflege-personen', user!.id] });
     },
   });
 
