@@ -153,7 +153,7 @@ const MdkBericht = ({ activePersonName = '' }: MdkBerichtProps) => {
     <div className="space-y-4">
       {/* Controls */}
       <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center print:hidden">
-        <PflegePersonSelector value={selectedPerson} onChange={setSelectedPerson} showAllOption className="w-full sm:w-auto" />
+        {/* Person controlled by parent */}
         <div className="flex gap-2">
           {PERIOD_OPTIONS.map(opt => (
             <button

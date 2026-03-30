@@ -297,8 +297,7 @@ const PflegeDokumente = ({ activePersonName = '' }: PflegeDokumenteProps) => {
 
   return (
     <div className="space-y-6">
-      {/* Person selector */}
-      <PflegePersonSelector value={selectedPerson} onChange={setSelectedPerson} />
+      {/* Person controlled by parent */}
 
       {/* Header */}
       <Card className="border-primary/20 bg-primary/5">

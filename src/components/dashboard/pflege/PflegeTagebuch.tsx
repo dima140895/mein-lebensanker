@@ -296,18 +296,7 @@ const PflegeTagebuch = ({ activePersonName = '' }: PflegeTagebuchProps) => {
 
   return (
     <div className="space-y-4">
-      {/* Person Filter */}
-      {entries.length > 0 && !showForm && (
-        <PflegePersonSelector
-          value={selectedPerson}
-          onChange={(val) => {
-            setSelectedPerson(val);
-            if (val && val !== '__all__') setPersonName(val);
-          }}
-          showAllOption
-          className="mb-2"
-        />
-      )}
+      {/* Person info - controlled by parent */}
 
       {/* Add Entry Button */}
       {!showForm && (
