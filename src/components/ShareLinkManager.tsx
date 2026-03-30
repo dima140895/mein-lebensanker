@@ -474,7 +474,7 @@ const ShareLinkManager = () => {
               </div>
 
               {/* Per-Profile Section Selection */}
-              <div className="rounded-lg border border-border p-4 space-y-4">
+              <div className="rounded-xl border border-border p-4 space-y-4">
                 <div className="space-y-1">
                   <Label className="flex items-center gap-2">
                     <UserCircle className="h-4 w-4" />
