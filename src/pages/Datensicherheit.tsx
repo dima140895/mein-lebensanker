@@ -74,7 +74,7 @@ Ohne Passwort und ohne Ersatzschlüssel sind Ihre verschlüsselten Daten nach ak
     en: {
       back: 'Back',
       title: 'Data Security at Mein Lebensanker',
-      intro: 'The protection of your personal and sensitive data is our highest priority. That is why Mein Lebensanker is based on a so-called zero-knowledge architecture with client-side encryption.',
+      intro: 'Mein Lebensanker protects your data on multiple levels. You can optionally enable end-to-end encryption — making your data unreadable even to us.',
       sections: [
         {
           icon: 'lock',

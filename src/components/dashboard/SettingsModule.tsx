@@ -136,6 +136,39 @@ const SettingsModule = () => {
           <PackageManagement />
         </TabsContent>
         <TabsContent value="security" className="mt-6 space-y-6">
+          {/* Encryption Status Card */}
+          <div className="rounded-2xl border bg-card p-6 shadow-sm">
+            <div className="flex items-start gap-4">
+              <ShieldCheck className={`h-8 w-8 shrink-0 mt-0.5 ${isEncryptionEnabled ? 'text-primary' : 'text-primary'}`} />
+              <div className="flex-1">
+                {isEncryptionEnabled ? (
+                  <>
+                    <h3 className="font-sans text-lg font-semibold text-foreground mb-1">
+                      {language === 'de' ? 'Deine Daten sind verschlüsselt' : 'Your data is encrypted'}
+                    </h3>
+                    <p className="text-sm text-muted-foreground font-body">
+                      {language === 'de' ? 'Ende-zu-Ende mit AES-256-GCM' : 'End-to-end with AES-256-GCM'}
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <h3 className="font-sans text-lg font-semibold text-foreground mb-1">
+                      {language === 'de' ? 'Persönlicher Datenschutz' : 'Personal Data Protection'}
+                    </h3>
+                    <p className="text-sm text-muted-foreground font-body mb-4">
+                      {language === 'de'
+                        ? 'Mit einem eigenen Passwort verschlüsselst du deine Daten so, dass selbst wir keinen Zugriff haben.'
+                        : 'With your own password, you encrypt your data so that even we cannot access it.'}
+                    </p>
+                    <Button onClick={() => setShowEncryptionSetup(true)}>
+                      {language === 'de' ? 'Jetzt einrichten →' : 'Set up now →'}
+                    </Button>
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+
           {/* MFA Settings */}
           <MFASettings />
 
