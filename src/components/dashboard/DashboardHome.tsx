@@ -237,34 +237,57 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
     return cards;
   }, [onboardingFocus]);
 
-  const renderVorsorgeCard = (delay: number) => (
-    <motion.div key="vorsorge" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay }}>
-      <Card className="border-l-4 border-l-primary bg-card rounded-2xl shadow-card hover:-translate-y-0.5 hover:shadow-soft transition-all duration-200 cursor-pointer h-full" onClick={() => onNavigate('vorsorge')}>
-        <CardHeader className="pb-2">
-          <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
-              <ClipboardList className="h-5 w-5 text-primary" />
+  const isPassive = (module: string) => {
+    if (!onboardingFocus || onboardingFocus === 'vorsorge') return false;
+    return module !== onboardingFocus;
+  };
+
+  const renderVorsorgeCard = (delay: number) => {
+    const passive = isPassive('vorsorge');
+    return (
+      <motion.div key="vorsorge" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay }}>
+        <Card
+          className={`rounded-2xl shadow-card hover:-translate-y-0.5 hover:shadow-soft transition-all duration-200 cursor-pointer h-full ${
+            passive ? 'border border-[#E5E0D8] bg-card' : 'border-l-4 border-l-primary bg-card'
+          }`}
+          onClick={() => onNavigate('vorsorge')}
+        >
+          <CardHeader className="pb-2">
+            <div className="flex items-center gap-3">
+              <div className={`h-10 w-10 rounded-lg flex items-center justify-center ${passive ? 'bg-muted' : 'bg-primary/10'}`}>
+                <ClipboardList className={`h-5 w-5 ${passive ? 'text-muted-foreground' : 'text-primary'}`} />
+              </div>
+              <div className="flex-1">
+                <CardTitle className={`text-base font-semibold font-body ${passive ? 'text-foreground' : 'text-forest'}`}>{tx.vorsorge}</CardTitle>
+                {passive ? (
+                  <span className="text-sm text-muted-foreground mt-1">{tx.vorsorgePassive}</span>
+                ) : (
+                  <span className="text-xs text-charcoal-light font-body">
+                    {statusLoading ? '...' : isComplete ? tx.complete : `${filledCount} ${tx.sectionOf} ${totalCount}`}
+                  </span>
+                )}
+              </div>
+              {!passive && isComplete && <CheckCircle2 className="h-5 w-5 text-primary" />}
             </div>
-            <div className="flex-1">
-               <CardTitle className="text-base font-semibold font-body text-forest">{tx.vorsorge}</CardTitle>
-              <span className="text-xs text-charcoal-light font-body">
-                {statusLoading ? '...' : isComplete ? tx.complete : `${filledCount} ${tx.sectionOf} ${totalCount}`}
-              </span>
-            </div>
-            {isComplete && <CheckCircle2 className="h-5 w-5 text-primary" />}
-          </div>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          <Progress value={statusLoading ? 0 : progressPercent} className="h-2" />
-          {!isComplete && (
-             <Button variant="ghost" size="sm" className="w-full text-primary hover:text-primary hover:bg-primary/5 gap-1.5 min-h-[44px]">
-               {tx.continueBtn} <ArrowRight className="h-3.5 w-3.5" />
-             </Button>
-          )}
-        </CardContent>
-      </Card>
-    </motion.div>
-  );
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {passive ? (
+              <span className="text-xs text-muted-foreground hover:text-foreground transition-colors">{tx.discover}</span>
+            ) : (
+              <>
+                <Progress value={statusLoading ? 0 : progressPercent} className="h-2" />
+                {!isComplete && (
+                  <Button variant="ghost" size="sm" className="w-full text-primary hover:text-primary hover:bg-primary/5 gap-1.5 min-h-[44px]">
+                    {tx.continueBtn} <ArrowRight className="h-3.5 w-3.5" />
+                  </Button>
+                )}
+              </>
+            )}
+          </CardContent>
+        </Card>
+      </motion.div>
+    );
+  };
 
   const renderPflegeCard = (delay: number) => (
     <motion.div key="pflege" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay }}>
