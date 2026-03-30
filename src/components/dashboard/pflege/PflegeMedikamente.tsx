@@ -258,7 +258,9 @@ const PflegeMedikamente = ({ activePersonName = '', selfOnly = false }: PflegeMe
     setErinnerungZeiten(erinnerungZeiten.filter((_, i) => i !== index));
   };
 
-  const filteredMeds = selectedPerson
+  const filteredMeds = selfOnly
+    ? meds.filter(m => !(m as any).person_name)
+    : selectedPerson
     ? meds.filter(m => (m as any).person_name === selectedPerson)
     : meds;
   const activeMeds = filteredMeds.filter((m) => m.aktiv);
