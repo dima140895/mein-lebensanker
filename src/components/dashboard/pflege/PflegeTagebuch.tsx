@@ -419,14 +419,17 @@ const PflegeTagebuch = ({ activePersonName = '' }: PflegeTagebuchProps) => {
                   tabIndex={0}
                   onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setExpandedEntry(isExpanded ? null : entry.id); } }}
                 >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <span className="text-xl" aria-hidden="true">{MOODS[entry.stimmung - 1]}</span>
-                      <div>
-                        <CardTitle className="text-sm font-medium">{entry.person_name}</CardTitle>
-                        <p className="text-xs text-muted-foreground">{formatDate(entry.eintrags_datum)}</p>
-                      </div>
-                    </div>
+                    <div className="flex items-center justify-between">
+                     <div className="flex items-center gap-3">
+                       <span className={`w-3 h-3 rounded-full shrink-0 ${getMoodColor(entry.stimmung)}`} aria-hidden="true" />
+                       <div>
+                         <div className="flex items-center gap-2">
+                           <CardTitle className="text-sm font-medium">{entry.person_name}</CardTitle>
+                           <span className="text-xs text-muted-foreground">· {getMoodLabel(entry.stimmung, language)}</span>
+                         </div>
+                         <p className="text-xs text-muted-foreground">{formatDate(entry.eintrags_datum)}</p>
+                       </div>
+                     </div>
                     {isExpanded ? <ChevronUp className="h-4 w-4 text-muted-foreground" aria-hidden="true" /> : <ChevronDown className="h-4 w-4 text-muted-foreground" aria-hidden="true" />}
                   </div>
                 </CardHeader>

@@ -196,7 +196,7 @@ const PflegeKalender = ({ onSelectDate, activePersonName = '' }: PflegeKalenderP
         <Card className="border-primary/20 bg-primary/5">
           <CardHeader className="pb-2">
             <div className="flex items-center gap-2">
-              <span className="text-2xl">{MOODS[selectedEntry.stimmung - 1]}</span>
+              <span className={`w-3 h-3 rounded-full shrink-0 ${getMoodColor(selectedEntry.stimmung)}`} />
               <div>
                 <CardTitle className="text-sm font-semibold">{selectedEntry.person_name}</CardTitle>
                 <p className="text-xs text-muted-foreground">
