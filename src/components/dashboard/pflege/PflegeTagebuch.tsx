@@ -31,7 +31,11 @@ interface PflegeEintrag {
   created_at: string;
 }
 
-const PflegeTagebuch = () => {
+interface PflegeTagebuchProps {
+  activePersonName?: string;
+}
+
+const PflegeTagebuch = ({ activePersonName = '' }: PflegeTagebuchProps) => {
   const { user } = useAuth();
   const { language } = useLanguage();
   const queryClient = useQueryClient();
@@ -39,9 +43,9 @@ const PflegeTagebuch = () => {
   const [editingEntry, setEditingEntry] = useState<PflegeEintrag | null>(null);
   const [expandedEntry, setExpandedEntry] = useState<string | null>(null);
   const [showReferral, setShowReferral] = useState(false);
-  const [selectedPerson, setSelectedPerson] = useState('');
+  const selectedPerson = activePersonName;
   // Form state
-  const [personName, setPersonName] = useState('');
+  const [personName, setPersonName] = useState(activePersonName || '');
   const [stimmung, setStimmung] = useState(3);
   const [mahlzeiten, setMahlzeiten] = useState('');
   const [aktivitaeten, setAktivitaeten] = useState('');
@@ -127,13 +131,14 @@ const PflegeTagebuch = () => {
     return entries.filter(e => e.person_name === selectedPerson);
   }, [entries, selectedPerson]);
 
-  // Pre-fill person name from selected person or most recent entry
+  // Pre-fill person name from active person
   useEffect(() => {
-    if (entries.length > 0 && !personName) {
-      const prefill = (selectedPerson && selectedPerson !== '__all__') ? selectedPerson : entries[0].person_name || '';
-      setPersonName(prefill);
+    if (activePersonName) {
+      setPersonName(activePersonName);
+    } else if (entries.length > 0 && !personName) {
+      setPersonName(entries[0].person_name || '');
     }
-  }, [entries, selectedPerson]);
+  }, [entries, activePersonName]);
 
   const createMutation = useMutation({
     mutationFn: async (newEintrag: {
@@ -292,18 +297,7 @@ const PflegeTagebuch = () => {
 
   return (
     <div className="space-y-4">
-      {/* Person Filter */}
-      {entries.length > 0 && !showForm && (
-        <PflegePersonSelector
-          value={selectedPerson}
-          onChange={(val) => {
-            setSelectedPerson(val);
-            if (val && val !== '__all__') setPersonName(val);
-          }}
-          showAllOption
-          className="mb-2"
-        />
-      )}
+      {/* Person info - controlled by parent */}
 
       {/* Add Entry Button */}
       {!showForm && (

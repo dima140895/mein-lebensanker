@@ -54,10 +54,14 @@ const validateFileExtension = (filename: string, mimeType: string): boolean => {
   return allowedExts.includes(ext);
 };
 
-const PflegeDokumente = () => {
+interface PflegeDokumenteProps {
+  activePersonName?: string;
+}
+
+const PflegeDokumente = ({ activePersonName = '' }: PflegeDokumenteProps) => {
   const { language } = useLanguage();
   const { user } = useAuth();
-  const [selectedPerson, setSelectedPerson] = useState('');
+  const selectedPerson = activePersonName;
 
   const t = {
     de: {
@@ -293,8 +297,7 @@ const PflegeDokumente = () => {
 
   return (
     <div className="space-y-6">
-      {/* Person selector */}
-      <PflegePersonSelector value={selectedPerson} onChange={setSelectedPerson} />
+      {/* Person controlled by parent */}
 
       {/* Header */}
       <Card className="border-primary/20 bg-primary/5">

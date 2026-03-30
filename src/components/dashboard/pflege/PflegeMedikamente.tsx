@@ -27,13 +27,17 @@ interface Medikament {
   person_name: string | null;
 }
 
-const PflegeMedikamente = () => {
+interface PflegeMedikamenteProps {
+  activePersonName?: string;
+}
+
+const PflegeMedikamente = ({ activePersonName = '' }: PflegeMedikamenteProps) => {
   const { user } = useAuth();
   const { language } = useLanguage();
   const queryClient = useQueryClient();
   const [showForm, setShowForm] = useState(false);
   const [showInactive, setShowInactive] = useState(false);
-  const [selectedPerson, setSelectedPerson] = useState('');
+  const selectedPerson = activePersonName;
 
   // Form state
   const [name, setName] = useState('');
@@ -269,8 +273,7 @@ const PflegeMedikamente = () => {
 
   return (
     <div className="space-y-4">
-      {/* Person selector */}
-      <PflegePersonSelector value={selectedPerson} onChange={setSelectedPerson} />
+      {/* Person controlled by parent */}
 
       {/* Top actions */}
       <div className="flex flex-wrap gap-2">

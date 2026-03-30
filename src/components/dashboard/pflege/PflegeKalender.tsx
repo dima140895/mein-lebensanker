@@ -22,9 +22,10 @@ interface CalendarEntry {
 
 interface PflegeKalenderProps {
   onSelectDate?: (date: string) => void;
+  activePersonName?: string;
 }
 
-const PflegeKalender = ({ onSelectDate }: PflegeKalenderProps) => {
+const PflegeKalender = ({ onSelectDate, activePersonName = '' }: PflegeKalenderProps) => {
   const { user } = useAuth();
   const { language } = useLanguage();
   const [currentMonth, setCurrentMonth] = useState(new Date());
@@ -64,7 +65,7 @@ const PflegeKalender = ({ onSelectDate }: PflegeKalenderProps) => {
       const start = format(startOfMonth(currentMonth), 'yyyy-MM-dd');
       const end = format(endOfMonth(currentMonth), 'yyyy-MM-dd');
 
-      const { data } = await supabase
+      let query = supabase
         .from('pflege_eintraege')
         .select('eintrags_datum, stimmung, person_name, mahlzeiten, aktivitaeten, besonderheiten, naechste_schritte')
         .eq('user_id', user.id)
@@ -72,12 +73,18 @@ const PflegeKalender = ({ onSelectDate }: PflegeKalenderProps) => {
         .lte('eintrags_datum', end)
         .order('eintrags_datum', { ascending: true });
 
+      if (activePersonName) {
+        query = query.eq('person_name', activePersonName);
+      }
+
+      const { data } = await query;
+
       if (data) setEntries(data as CalendarEntry[]);
       setLoading(false);
     };
 
     fetchMonthEntries();
-  }, [user, currentMonth]);
+  }, [user, currentMonth, activePersonName]);
 
   const entryMap = useMemo(() => {
     const map: Record<string, CalendarEntry> = {};

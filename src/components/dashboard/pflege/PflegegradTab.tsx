@@ -54,7 +54,11 @@ interface SavedPflegegrad {
 
 const PFLEGE_SECTION_KEY_BASE = '_pflege_pflegegrad';
 
-const PflegegradTab = () => {
+interface PflegegradTabProps {
+  activePersonName?: string;
+}
+
+const PflegegradTab = ({ activePersonName = '' }: PflegegradTabProps) => {
   const { language } = useLanguage();
   const { user } = useAuth();
   const isDE = language === 'de';
@@ -62,7 +66,7 @@ const PflegegradTab = () => {
   const [savedGrad, setSavedGrad] = useState<SavedPflegegrad | null>(null);
   const [loading, setLoading] = useState(true);
   const [mode, setMode] = useState<'overview' | 'manual' | 'rechner' | null>(null);
-  const [selectedPerson, setSelectedPerson] = useState('');
+  const selectedPerson = activePersonName;
 
   const sectionKey = selectedPerson
     ? `${PFLEGE_SECTION_KEY_BASE}_${selectedPerson.replace(/[^a-zA-Z0-9äöüÄÖÜß_-]/g, '_')}`
@@ -179,7 +183,7 @@ const PflegegradTab = () => {
   if (loading) {
     return (
       <div className="space-y-6">
-        <PflegePersonSelector value={selectedPerson} onChange={setSelectedPerson} />
+        {/* Person controlled by parent */}
         <div className="flex items-center justify-center py-12">
           <div className="h-6 w-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
         </div>
@@ -191,7 +195,7 @@ const PflegegradTab = () => {
   if (savedGrad && mode !== 'manual' && mode !== 'rechner') {
     return (
       <div className="space-y-6">
-        <PflegePersonSelector value={selectedPerson} onChange={setSelectedPerson} />
+        {/* Person controlled by parent */}
         {/* Saved Pflegegrad Display */}
         <Card className="border-primary/20 overflow-hidden">
           <div className="bg-primary/5 p-6 sm:p-8 text-center">
@@ -270,7 +274,7 @@ const PflegegradTab = () => {
   if (mode === 'rechner') {
     return (
       <div className="space-y-6">
-        <PflegePersonSelector value={selectedPerson} onChange={setSelectedPerson} />
+        {/* Person controlled by parent */}
         <PflegegradRechner
           showCTA="dashboard"
           onSave={handleRechnerSave}
@@ -284,7 +288,7 @@ const PflegegradTab = () => {
   if (mode === 'manual') {
     return (
       <div className="space-y-6">
-        <PflegePersonSelector value={selectedPerson} onChange={setSelectedPerson} />
+        {/* Person controlled by parent */}
         <div className="text-center space-y-2">
           <h3 className="font-sans text-xl font-semibold text-foreground">
             {isDE ? 'Pflegegrad eintragen' : 'Enter Care Level'}
@@ -335,7 +339,7 @@ const PflegegradTab = () => {
   // Initial choice: no pflegegrad saved yet
   return (
     <div className="space-y-6">
-      <PflegePersonSelector value={selectedPerson} onChange={setSelectedPerson} />
+      {/* Person controlled by parent */}
       <div className="text-center space-y-2">
         <h3 className="font-sans text-xl font-semibold text-foreground">
           {isDE ? 'Pflegegrad' : 'Care Level'}

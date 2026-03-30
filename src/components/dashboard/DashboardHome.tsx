@@ -56,6 +56,7 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
   const [showProfileWizard, setShowProfileWizard] = useState(false);
 
   const [lastPflege, setLastPflege] = useState<any>(null);
+  const [pflegePersonenNames, setPflegePersonenNames] = useState<string[]>([]);
   const [todayCheckin, setTodayCheckin] = useState<any>(null);
   const [checkinCount, setCheckinCount] = useState(0);
   const [dataLoading, setDataLoading] = useState(true);
@@ -80,14 +81,16 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
       const shareTokenRes = await supabase.from('share_tokens').select('id').eq('user_id', user.id).eq('is_active', true).limit(1);
       setHasShareToken((shareTokenRes.data?.length ?? 0) > 0);
       if (isPlusOrHigher) {
-        const [pflegeRes, checkinRes, checkinCountRes] = await Promise.all([
-          supabase.from('pflege_eintraege').select('eintrags_datum,stimmung').eq('user_id', user.id).order('eintrags_datum', { ascending: false }).limit(1),
+        const [pflegeRes, checkinRes, checkinCountRes, pflegePersonenRes] = await Promise.all([
+          supabase.from('pflege_eintraege').select('eintrags_datum,stimmung,person_name').eq('user_id', user.id).order('eintrags_datum', { ascending: false }).limit(1),
           supabase.from('symptom_checkins').select('energie,stimmung,checkin_datum').eq('user_id', user.id).eq('checkin_datum', new Date().toISOString().split('T')[0]).limit(1),
           supabase.from('symptom_checkins').select('id', { count: 'exact', head: true }).eq('user_id', user.id),
+          (supabase as any).from('pflege_personen').select('name').eq('user_id', user.id).order('created_at', { ascending: true }),
         ]);
         setLastPflege(pflegeRes.data?.[0] || null);
         setTodayCheckin(checkinRes.data?.[0] || null);
         setCheckinCount(checkinCountRes.count ?? 0);
+        setPflegePersonenNames((pflegePersonenRes.data || []).map((p: any) => p.name));
       }
       setDataLoading(false);
     };
@@ -325,23 +328,33 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
                   {dataLoading ? (
                     <p className="text-sm text-muted-foreground">...</p>
                   ) : lastPflege ? (
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-xs text-muted-foreground">{tx.pflegeLastEntry}</p>
-                        <p className="text-sm font-medium">{new Date(lastPflege.eintrags_datum).toLocaleDateString(language === 'de' ? 'de-DE' : 'en-US')}</p>
+                    <div>
+                      {pflegePersonenNames.length > 1 ? (
+                        <div className="mb-2">
+                          <p className="text-xs text-muted-foreground">{pflegePersonenNames.join(' · ')}</p>
+                          <p className="text-xs text-muted-foreground">{pflegePersonenNames.length} {language === 'de' ? 'Personen werden gepflegt' : 'persons being cared for'}</p>
+                        </div>
+                      ) : pflegePersonenNames.length === 1 ? (
+                        <p className="text-xs text-muted-foreground mb-1">{pflegePersonenNames[0]} · {language === 'de' ? 'letzter Eintrag' : 'last entry'}: {new Date(lastPflege.eintrags_datum).toLocaleDateString(language === 'de' ? 'de-DE' : 'en-US')}</p>
+                      ) : null}
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-xs text-muted-foreground">{tx.pflegeLastEntry}</p>
+                          <p className="text-sm font-medium">{new Date(lastPflege.eintrags_datum).toLocaleDateString(language === 'de' ? 'de-DE' : 'en-US')}</p>
+                        </div>
+                        <span className="text-2xl">{STIMMUNG_EMOJI[lastPflege.stimmung] || '😐'}</span>
                       </div>
-                      <span className="text-2xl">{STIMMUNG_EMOJI[lastPflege.stimmung] || '😐'}</span>
                     </div>
                   ) : (
                     <p className="text-sm text-muted-foreground">
-                      {activeProfile?.name
-                        ? (language === 'de' ? `Noch kein Eintrag für ${activeProfile.name}` : `No entry yet for ${activeProfile.name}`)
+                      {pflegePersonenNames.length > 0
+                        ? (language === 'de' ? `Noch kein Eintrag für ${pflegePersonenNames[0]}` : `No entry yet for ${pflegePersonenNames[0]}`)
                         : tx.pflegeEmpty}
                     </p>
                   )}
                   <Button variant="ghost" size="sm" className="w-full text-accent hover:text-accent hover:bg-accent/5 gap-1.5 min-h-[44px]">
-                    {activeProfile?.name
-                      ? (language === 'de' ? `Wie geht es ${activeProfile.name} heute? →` : `How is ${activeProfile.name} today? →`)
+                    {pflegePersonenNames.length > 0
+                      ? (language === 'de' ? `Wie geht es ${pflegePersonenNames[0]} heute? →` : `How is ${pflegePersonenNames[0]} today? →`)
                       : (language === 'de' ? 'Wie geht es deinem Angehörigen heute? →' : 'How is your loved one today? →')}
                   </Button>
                 </>

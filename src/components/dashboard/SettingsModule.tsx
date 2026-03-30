@@ -12,6 +12,7 @@ import SubscriptionManagement from '@/components/dashboard/SubscriptionManagemen
 import MFASettings from '@/components/dashboard/MFASettings';
 import ConsentManagement from '@/components/dashboard/ConsentManagement';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import PflegePersonenManagement from '@/components/dashboard/PflegePersonenManagement';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -25,7 +26,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import { Package, Download, Link2, Bell, Heart, Shield, LogOut, Loader2, Keyboard, ShieldCheck } from 'lucide-react';
+import { Package, Download, Link2, Bell, Heart, Shield, LogOut, Loader2, Keyboard, ShieldCheck, HeartHandshake } from 'lucide-react';
 import { toast } from 'sonner';
 import { logger } from '@/lib/logger';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -106,10 +107,14 @@ const SettingsModule = () => {
     <div className="space-y-6">
       <SubscriptionManagement />
       <Tabs defaultValue="plan" className="w-full">
-        <TabsList className="w-full grid grid-cols-6">
+        <TabsList className="w-full grid grid-cols-7">
           <TabsTrigger value="plan" className="gap-1.5 text-xs sm:text-sm">
             <Package className="h-3.5 w-3.5" />
             <span className="hidden sm:inline">{texts.plan}</span>
+          </TabsTrigger>
+          <TabsTrigger value="pflege" className="gap-1.5 text-xs sm:text-sm">
+            <HeartHandshake className="h-3.5 w-3.5" />
+            <span className="hidden sm:inline">{language === 'de' ? 'Pflege' : 'Care'}</span>
           </TabsTrigger>
           <TabsTrigger value="security" className="gap-1.5 text-xs sm:text-sm">
             <Shield className="h-3.5 w-3.5" />
@@ -134,6 +139,9 @@ const SettingsModule = () => {
         </TabsList>
         <TabsContent value="plan" className="mt-6">
           <PackageManagement />
+        </TabsContent>
+        <TabsContent value="pflege" className="mt-6">
+          <PflegePersonenManagement />
         </TabsContent>
         <TabsContent value="security" className="mt-6 space-y-6">
           {/* Encryption Status Card */}
