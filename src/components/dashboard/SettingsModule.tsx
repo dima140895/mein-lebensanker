@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
+import { useEncryption } from '@/contexts/EncryptionContext';
 import { supabase } from '@/integrations/supabase/client';
+import { EncryptionPasswordDialog } from '@/components/EncryptionPasswordDialog';
 import PackageManagement from '@/components/PackageManagement';
 import DataExport from '@/components/DataExport';
 import ShareLinkManager from '@/components/ShareLinkManager';
