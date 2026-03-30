@@ -284,7 +284,7 @@ const LandingHero = () => {
                 key={i}
                 onClick={() => setActivePanel(i)}
                 className={`rounded-full transition-all duration-300 ${
-                  activePanel === i ? 'w-6 h-1.5 bg-primary' : 'w-1.5 h-1.5 bg-border'
+                  activePanel === i ? 'w-6 h-1.5 bg-white' : 'w-1.5 h-1.5 bg-white/30'
                 }`}
               />
             ))}
