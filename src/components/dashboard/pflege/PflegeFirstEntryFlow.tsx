@@ -1,19 +1,14 @@
 import { useState } from 'react';
-import { Heart, ChevronDown, ChevronUp } from 'lucide-react';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
 import { motion, AnimatePresence } from 'framer-motion';
-import PflegePersonSelector from './PflegePersonSelector';
-
-const MOOD_OPTIONS = [
-  { emoji: '😞', de: 'Schwer', en: 'Hard', value: 1 },
-  { emoji: '😕', de: 'Anstrengend', en: 'Tough', value: 2 },
-  { emoji: '😐', de: 'Okay', en: 'Okay', value: 3 },
-  { emoji: '😊', de: 'Gut', en: 'Good', value: 4 },
-  { emoji: '😄', de: 'Sehr gut', en: 'Great', value: 5 },
-];
+import { format } from 'date-fns';
+import { de as deLocale } from 'date-fns/locale';
+import { MOOD_CONFIG, getMoodPill } from './pflegeMoodConfig';
 
 interface PflegeFirstEntryFlowProps {
   onSave: (data: {
@@ -25,24 +20,30 @@ interface PflegeFirstEntryFlowProps {
     naechsteSchritte: string;
   }) => void;
   isSaving: boolean;
+  activePersonName?: string;
 }
 
-const PflegeFirstEntryFlow = ({ onSave, isSaving }: PflegeFirstEntryFlowProps) => {
+const PflegeFirstEntryFlow = ({ onSave, isSaving, activePersonName = '' }: PflegeFirstEntryFlowProps) => {
   const { language } = useLanguage();
   const [selectedMood, setSelectedMood] = useState<number | null>(null);
-  const [personName, setPersonName] = useState('');
+  const [personName, setPersonName] = useState(activePersonName);
   const [mahlzeiten, setMahlzeiten] = useState('');
   const [besonderheiten, setBesonderheiten] = useState('');
   const [aktivitaeten, setAktivitaeten] = useState('');
   const [naechsteSchritte, setNaechsteSchritte] = useState('');
   const [showMore, setShowMore] = useState(false);
 
+  const isDE = language === 'de';
+  const todayLabel = format(new Date(), isDE ? 'EEEE, dd. MMMM yyyy' : 'EEEE, MMMM dd, yyyy', {
+    locale: isDE ? deLocale : undefined,
+  });
+
   const t = {
     de: {
-      headline: 'Wie war heute?',
-      desc: 'Dein erster Pflegeeintrag dauert 3 Minuten.\nDu kannst so viel oder so wenig eingeben wie du möchtest.',
-      hint: 'Klick auf eine Stimmung um zu starten',
+      question: personName ? `Wie war heute für ${personName}?` : 'Wie war heute?',
+      hint: 'Wähle eine Stimmung um den Eintrag zu starten.\nDu kannst danach weitere Details hinzufügen.',
       person: 'Für wen ist der Eintrag?',
+      personPlaceholder: 'z.B. Walter oder Mutter',
       meals: 'Mahlzeiten',
       mealsPlaceholder: 'Was wurde gegessen?',
       incidents: 'Besonderheiten',
@@ -57,10 +58,10 @@ const PflegeFirstEntryFlow = ({ onSave, isSaving }: PflegeFirstEntryFlowProps) =
       saving: 'Speichern...',
     },
     en: {
-      headline: 'How was today?',
-      desc: 'Your first care entry takes 3 minutes.\nYou can add as much or as little as you like.',
-      hint: 'Click a mood to get started',
+      question: personName ? `How was today for ${personName}?` : 'How was today?',
+      hint: 'Select a mood to start the entry.\nYou can add more details afterwards.',
       person: 'Who is this entry for?',
+      personPlaceholder: 'e.g. Walter or Mother',
       meals: 'Meals',
       mealsPlaceholder: 'What was eaten today?',
       incidents: 'Notable events',
@@ -90,36 +91,49 @@ const PflegeFirstEntryFlow = ({ onSave, isSaving }: PflegeFirstEntryFlowProps) =
     });
   };
 
+  const selectedMoodConfig = selectedMood !== null ? getMoodPill(selectedMood) : null;
+
   return (
-    <div className="max-w-md mx-auto mt-8">
-      <div className="bg-card rounded-2xl border border-border p-8 text-center">
-        <Heart className="h-10 w-10 text-primary mx-auto mb-4" />
-        <h3 className="font-semibold text-xl text-foreground">{texts.headline}</h3>
-        <p className="text-sm text-muted-foreground mt-2 mb-6 whitespace-pre-line">{texts.desc}</p>
+    <div className="max-w-lg mx-auto mt-6">
+      <div className="bg-white rounded-2xl border border-[#E5E0D8] p-8">
+        {/* Date */}
+        <p className="text-sm font-medium text-[#262E38] capitalize">{todayLabel}</p>
+        <div className="border-b border-[#E5E0D8] pb-4 mb-5" />
 
-        {/* Mood quick-select */}
-        <div className="flex gap-2 justify-center flex-wrap">
-          {MOOD_OPTIONS.map((mood) => (
+        {/* Question */}
+        <p className="text-base text-[#262E38] font-medium">{texts.question}</p>
+
+        {/* Mood buttons */}
+        {selectedMood === null ? (
+          <>
+            <div className="flex gap-2 mt-3 flex-wrap">
+              {MOOD_CONFIG.map((mood) => (
+                <button
+                  key={mood.value}
+                  onClick={() => setSelectedMood(mood.value)}
+                  className="border border-[#E5E0D8] rounded-lg px-4 py-2 text-sm text-[#262E38] hover:border-[#437059] hover:bg-[#E8F0EC] transition-all cursor-pointer flex items-center gap-2 min-h-[44px]"
+                >
+                  <span className={`w-2 h-2 rounded-full ${mood.color}`} />
+                  {mood[language]}
+                </button>
+              ))}
+            </div>
+            <p className="text-xs text-muted-foreground mt-3 whitespace-pre-line">{texts.hint}</p>
+          </>
+        ) : (
+          /* Selected mood pill */
+          <div className="mt-3">
             <button
-              key={mood.value}
-              onClick={() => setSelectedMood(mood.value)}
-              className={`rounded-xl px-3 py-2 text-sm border transition-all cursor-pointer ${
-                selectedMood === mood.value
-                  ? 'border-primary bg-primary/10 ring-2 ring-primary/30'
-                  : 'bg-muted/30 border-border hover:border-primary hover:bg-accent'
-              }`}
+              onClick={() => setSelectedMood(null)}
+              className={`inline-flex items-center gap-1.5 ${selectedMoodConfig!.pillBg} ${selectedMoodConfig!.pillText} text-xs px-2.5 py-1 rounded-full cursor-pointer hover:opacity-80 transition-opacity`}
             >
-              <span className="text-lg mr-1">{mood.emoji}</span>
-              {mood[language]}
+              <span className={`w-2 h-2 rounded-full ${selectedMoodConfig!.color}`} />
+              {selectedMoodConfig![language]}
             </button>
-          ))}
-        </div>
-
-        {selectedMood === null && (
-          <p className="text-xs text-muted-foreground mt-3">{texts.hint}</p>
+          </div>
         )}
 
-        {/* Form slides in after mood selection */}
+        {/* Form after mood selection */}
         <AnimatePresence>
           {selectedMood !== null && (
             <motion.div
@@ -128,10 +142,16 @@ const PflegeFirstEntryFlow = ({ onSave, isSaving }: PflegeFirstEntryFlowProps) =
               transition={{ duration: 0.3 }}
               className="mt-6 space-y-4 text-left"
             >
-              <div className="space-y-2">
-                <Label>{texts.person} *</Label>
-                <PflegePersonSelector value={personName} onChange={setPersonName} />
-              </div>
+              {!activePersonName && (
+                <div className="space-y-2">
+                  <Label>{texts.person} *</Label>
+                  <Input
+                    value={personName}
+                    onChange={(e) => setPersonName(e.target.value)}
+                    placeholder={texts.personPlaceholder}
+                  />
+                </div>
+              )}
 
               <div className="space-y-2">
                 <Label>{texts.meals}</Label>
@@ -155,7 +175,6 @@ const PflegeFirstEntryFlow = ({ onSave, isSaving }: PflegeFirstEntryFlowProps) =
                 />
               </div>
 
-              {/* Collapsible extra fields */}
               <button
                 onClick={() => setShowMore(!showMore)}
                 className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
