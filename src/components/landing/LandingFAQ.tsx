@@ -30,19 +30,19 @@ const faqs = [
 
 const LandingFAQ = () => {
   return (
-    <section id="faq" className="bg-[#FDFAF5] py-24 px-6">
+    <section id="faq" className="bg-background py-24 px-6">
       <div className="max-w-2xl mx-auto">
-        <h2 className="text-3xl font-bold text-[#262E38] text-center mb-12 tracking-[-0.025em]">
+        <h2 className="text-3xl font-bold text-foreground text-center mb-12 tracking-[-0.025em]">
           Häufige Fragen
         </h2>
 
-        <Accordion type="single" collapsible className="divide-y divide-[#E5E0D8]">
+        <Accordion type="single" collapsible className="divide-y divide-border">
           {faqs.map((faq, i) => (
             <AccordionItem key={i} value={`faq-${i}`} className="border-none">
-              <AccordionTrigger className="text-[#262E38] font-medium text-base py-5 hover:no-underline">
+              <AccordionTrigger className="text-foreground font-medium text-base py-5 hover:no-underline">
                 {faq.q}
               </AccordionTrigger>
-              <AccordionContent className="text-[#5C6570] text-sm leading-relaxed pb-5">
+              <AccordionContent className="text-muted-foreground text-sm leading-relaxed pb-5">
                 {faq.a}
               </AccordionContent>
             </AccordionItem>

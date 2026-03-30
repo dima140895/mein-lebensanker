@@ -25,10 +25,10 @@ const personas = [
 
 const LandingPersonas = () => {
   return (
-    <section id="fuer-wen" className="py-24 sm:py-32 bg-[hsl(var(--forest))]">
+    <section id="fuer-wen" className="py-24 sm:py-32 bg-forest">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
         <div className="text-center mb-16">
-          <span className="text-xs font-semibold text-[hsl(var(--amber))] tracking-widest uppercase">Für wen</span>
+          <span className="text-xs font-semibold text-accent tracking-widest uppercase">Für wen</span>
           <h2 className="font-sans text-3xl sm:text-4xl lg:text-5xl font-bold text-white mt-3 mb-4">
             Lebensanker ist für dich wenn...
           </h2>

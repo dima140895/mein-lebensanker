@@ -23,17 +23,17 @@ const scenarios = [
 
 const LandingJourney = () => {
   return (
-    <section id="warum" className="bg-white py-28 px-6">
+    <section id="warum" className="bg-card py-28 px-6">
       {/* Header */}
       <div className="max-w-2xl mx-auto text-center mb-16">
-        <span className="text-xs uppercase tracking-widest font-medium text-[#C4813A] mb-3 block">
+        <span className="text-xs uppercase tracking-widest font-medium text-accent mb-3 block">
           Warum heute und nicht morgen
         </span>
-        <h2 className="font-bold text-3xl md:text-4xl text-[#262E38] tracking-[-0.025em]">
+        <h2 className="font-bold text-3xl md:text-4xl text-foreground tracking-[-0.025em]">
           Die meisten warten zu lang.
         </h2>
-        <p className="text-[#5C6570] text-lg mt-3 max-w-md mx-auto">
-          Ein Unfall, eine Diagnose, ein Todesfall — niemand plant diese Momente. Aber du kannst vorbereitet sein wenn sie kommen.
+        <p className="text-muted-foreground text-lg mt-3 max-w-md mx-auto">
+          Ein Unfall, eine Diagnose oder ein Todesfall kündigt sich nicht an. Aber du kannst vorbereitet sein wenn sie kommen.
         </p>
       </div>
 
@@ -44,16 +44,16 @@ const LandingJourney = () => {
           return (
             <div
               key={i}
-              className="bg-[#FDFAF5] rounded-2xl p-6 border border-[#E5E0D8] hover:border-[#437059]/30 hover:-translate-y-0.5 transition-all duration-200"
+              className="bg-background rounded-2xl p-6 border border-border hover:border-primary/30 hover:-translate-y-0.5 transition-all duration-200"
             >
-              <div className="w-10 h-10 rounded-xl bg-[#E8F0EC] flex items-center justify-center mb-4">
-                <Icon className="h-5 w-5 text-[#437059]" />
+              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
+                <Icon className="h-5 w-5 text-primary" />
               </div>
-              <span className="text-xs uppercase tracking-widest font-medium text-[#5C6570] mb-2 block">
+              <span className="text-xs uppercase tracking-widest font-medium text-muted-foreground mb-2 block">
                 {s.label}
               </span>
-              <h3 className="text-base font-semibold text-[#262E38] tracking-[-0.01em]">{s.title}</h3>
-              <p className="text-sm text-[#5C6570] leading-relaxed mt-2">{s.text}</p>
+              <h3 className="text-base font-semibold text-foreground tracking-[-0.01em]">{s.title}</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed mt-2">{s.text}</p>
             </div>
           );
         })}
