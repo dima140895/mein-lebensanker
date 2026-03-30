@@ -166,6 +166,7 @@ export const EncryptionPasswordDialog: React.FC<EncryptionPasswordDialogProps> =
     setPassword('');
     setConfirmPassword('');
     setError(null);
+    setShowVisualGuide(false);
     onOpenChange(false);
   };
   
