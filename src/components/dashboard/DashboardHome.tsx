@@ -697,66 +697,7 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
         </motion.div>
       )}
 
-      {/* Guided Onboarding Tasks */}
-      {showOnboardingTasks && nextTask && (
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}>
-          <Card className="bg-card border border-primary/20 rounded-2xl shadow-card">
-            <CardContent className="p-5">
-              {/* Progress header */}
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-xs font-medium text-muted-foreground font-body">
-                  {doneCount} {language === 'de' ? 'von' : 'of'} {onboardingTasks.length} {language === 'de' ? 'erledigt' : 'done'}
-                </span>
-              </div>
-              <Progress value={(doneCount / onboardingTasks.length) * 100} className="h-1.5 mb-4" />
 
-              {/* Next task */}
-              <p className="text-xs uppercase tracking-wider text-muted-foreground font-body mb-1">
-                {language === 'de' ? 'Nächster Schritt:' : 'Next step:'}
-              </p>
-              <h3 className="font-sans text-lg text-forest font-semibold">{nextTask.titel[language]}</h3>
-              <p className="text-sm text-muted-foreground font-body mt-0.5 mb-4">{nextTask.beschreibung[language]}</p>
-              <Button
-                onClick={() => {
-                  if (nextTask.section) {
-                    setSearchParams({ module: nextTask.module, section: nextTask.section });
-                  }
-                  onNavigate(nextTask.module);
-                }}
-                className="min-h-[44px]"
-              >
-                {language === 'de' ? 'Jetzt erledigen' : 'Do it now'}
-              </Button>
-
-              {/* Task checklist — desktop only */}
-              {!isMobile && (
-                <div className="mt-5 pt-4 border-t border-border space-y-1.5">
-                  {onboardingTasks.map((task) => (
-                    <div key={task.id} className="flex items-center gap-2.5 text-sm">
-                      {task.done ? (
-                        <CheckCircle className="h-4 w-4 text-primary flex-shrink-0" />
-                      ) : task.id === nextTask.id ? (
-                        <Circle className="h-4 w-4 text-forest flex-shrink-0" />
-                      ) : (
-                        <Circle className="h-4 w-4 text-muted-foreground/30 flex-shrink-0" />
-                      )}
-                      <span className={
-                        task.done
-                          ? 'line-through text-muted-foreground'
-                          : task.id === nextTask.id
-                            ? 'text-forest font-medium'
-                            : 'text-muted-foreground'
-                      }>
-                        {task.titel[language]}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </motion.div>
-      )}
 
       {/* Encryption — positive hint in settings style */}
       {!encryptionLoading && !isEncryptionEnabled && (
