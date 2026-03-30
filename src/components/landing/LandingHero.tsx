@@ -228,7 +228,7 @@ const LandingHero = () => {
               onClick={() => navigate('/dashboard?register=true')}
               className="bg-[#437059] text-white font-semibold px-7 py-3.5 rounded-full text-base hover:bg-[#2C5742] transition-all shadow-sm"
             >
-              Jetzt vorbereiten →
+              Jetzt vorbereiten
             </button>
             <button
               onClick={() => scrollTo('warum')}

@@ -465,7 +465,7 @@ const VorsorgeModule = () => {
           <Button onClick={handleUpgradeClick} disabled={upgradeLoading} className="w-full rounded-xl py-3 font-medium mt-2">
             {upgradeLoading
               ? (language === 'de' ? 'Wird geladen…' : 'Loading…')
-              : (language === 'de' ? '14 Tage kostenlos testen →' : '14-day free trial →')}
+              : (language === 'de' ? '14 Tage kostenlos testen' : '14-day free trial')}
           </Button>
           <button onClick={dismissUpgradeModal} className="text-muted-foreground text-sm text-center w-full mt-1 hover:text-foreground transition-colors">
             {language === 'de' ? 'Vielleicht später' : 'Maybe later'}

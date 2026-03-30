@@ -169,7 +169,7 @@ const SettingsModule = () => {
                         : 'With your own password, you encrypt your data so that even we cannot access it.'}
                     </p>
                     <Button onClick={() => setShowEncryptionSetup(true)}>
-                      {language === 'de' ? 'Jetzt einrichten →' : 'Set up now →'}
+                      {language === 'de' ? 'Jetzt einrichten' : 'Set up now'}
                     </Button>
                   </>
                 )}

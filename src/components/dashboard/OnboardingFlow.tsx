@@ -47,17 +47,17 @@ const introSlides: Record<Focus, { title: string; body: string; action: string }
   vorsorge: [
     { title: 'Dein digitaler Lebensordner', body: 'Hier sammelst du alles an einem sicheren Ort — Vollmachten, Versicherungen, Zugangsdaten und mehr.', action: 'Weiter' },
     { title: 'Starte mit dem Wichtigsten', body: 'Beginne mit deinen persönlichen Daten und Kontaktpersonen. Alles andere kommt Schritt für Schritt.', action: 'Weiter' },
-    { title: 'Bereit? Los geht\'s!', body: 'Du kannst jederzeit pausieren und später weitermachen. Deine Daten werden automatisch gespeichert.', action: 'Los geht\'s →' },
+    { title: 'Bereit? Los geht\'s!', body: 'Du kannst jederzeit pausieren und später weitermachen. Deine Daten werden automatisch gespeichert.', action: 'Los geht\'s' },
   ],
   pflege: [
     { title: 'Dein Pflege-Begleiter', body: 'Dokumentiere den Pflegealltag — Stimmung, Mahlzeiten, Besonderheiten. Jeden Tag in unter 2 Minuten.', action: 'Weiter' },
     { title: 'Medikamente im Blick', body: 'Erfasse Medikamente, Dosierungen und Einnahmezeiten. Nie wieder etwas vergessen.', action: 'Weiter' },
-    { title: 'Bereit? Los geht\'s!', body: 'Erstelle deinen ersten Pflege-Eintrag. Du wirst sehen — es fühlt sich gut an, den Überblick zu haben.', action: 'Los geht\'s →' },
+    { title: 'Bereit? Los geht\'s!', body: 'Erstelle deinen ersten Pflege-Eintrag. Du wirst sehen — es fühlt sich gut an, den Überblick zu haben.', action: 'Los geht\'s' },
   ],
   krankheit: [
     { title: 'Dein Krankheits-Begleiter', body: 'Tracke Energie, Schmerz, Schlaf und Stimmung — in 60 Sekunden pro Tag.', action: 'Weiter' },
     { title: 'Muster erkennen', body: 'Nach ein paar Tagen siehst du Trends in deinem Verlauf. Das hilft dir und deinem Arzt.', action: 'Weiter' },
-    { title: 'Bereit? Los geht\'s!', body: 'Mach jetzt deinen ersten Check-in. Vier Schieberegler, eine Notiz — fertig.', action: 'Los geht\'s →' },
+    { title: 'Bereit? Los geht\'s!', body: 'Mach jetzt deinen ersten Check-in. Vier Schieberegler, eine Notiz — fertig.', action: 'Los geht\'s' },
   ],
 };
 
@@ -356,7 +356,7 @@ const OnboardingFlow = ({ onComplete }: OnboardingFlowProps) => {
                   onClick={handleEncryptionSetup}
                   className="w-full rounded-full h-11 font-body text-sm"
                 >
-                  {language === 'de' ? 'Schutz aktivieren →' : 'Enable protection →'}
+                  {language === 'de' ? 'Schutz aktivieren' : 'Enable protection'}
                 </Button>
 
                 <button

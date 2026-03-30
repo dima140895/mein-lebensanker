@@ -30,7 +30,7 @@ const LandingCTA = () => {
         onClick={() => navigate('/dashboard?register=true')}
         className="mt-10 inline-block bg-white text-[#2C4A3E] font-semibold px-8 py-4 rounded-full text-base hover:bg-white/90 transition-all"
       >
-        Jetzt vorbereiten →
+        Jetzt vorbereiten
       </button>
 
       <p className="mt-4 text-white/30 text-xs">

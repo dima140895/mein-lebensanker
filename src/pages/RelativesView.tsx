@@ -496,7 +496,7 @@ const RelativesViewContent = () => {
                 rel="noopener noreferrer"
                 className="inline-block mt-4 bg-primary text-primary-foreground rounded-lg px-5 py-2.5 font-body font-medium text-sm hover:bg-primary/90 transition-colors"
               >
-                {language === 'de' ? 'Kostenlos starten →' : 'Get started for free →'}
+                {language === 'de' ? 'Kostenlos starten' : 'Get started for free'}
               </a>
               <p className="font-body text-xs text-muted-foreground mt-2">
                 {language === 'de' ? 'Einmalig 49\u00A0€ — kein Abo-Zwang.' : 'One-time €49 — no subscription required.'}
