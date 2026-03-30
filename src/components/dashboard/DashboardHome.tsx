@@ -289,8 +289,6 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
     );
   };
 
-  const renderPflegeCard = (delay: number) => (
-    <motion.div key="pflege" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay }}>
   const renderPflegeCard = (delay: number) => {
     const passive = isPassive('pflege');
     return (
