@@ -43,7 +43,7 @@ const infoSections = [
 const allSections = [...dataSections, ...infoSections];
 
 const VorsorgeModule = () => {
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const { language } = useLanguage();
   const { activeProfile } = useProfiles();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -51,6 +51,8 @@ const VorsorgeModule = () => {
   const [tourKey, setTourKey] = useState(0);
   const [showCelebration, setShowCelebration] = useState(false);
   const [showShareManager, setShowShareManager] = useState(false);
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const [upgradeLoading, setUpgradeLoading] = useState(false);
   const isMobile = useIsMobile();
   const { sectionStatus, sectionCompletion, progressPercent, filledCount, totalCount, isComplete, refetch, loading: statusLoading } = useSectionStatus();
   const previousProfileId = useRef<string | null>(null);
