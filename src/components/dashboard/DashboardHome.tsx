@@ -503,6 +503,51 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
       {/* Weekly Summary — Plus/Familie only */}
       {isPlusOrHigher && <WeeklySummary />}
 
+      {/* Arztbericht Hint — after 14 check-ins */}
+      {isPlusOrHigher && checkinCount >= 14 && !arztberichtHintDismissed && (
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
+          <div className="bg-primary/5 border border-primary/20 rounded-2xl p-4 flex items-start gap-3 relative">
+            <FileText className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+            <div className="flex-1">
+              <p className="text-sm font-semibold text-foreground">
+                {language === 'de' ? 'Du hast genug Daten für einen Arztbericht.' : 'You have enough data for a doctor report.'}
+              </p>
+              <p className="text-xs text-muted-foreground mt-1">
+                {language === 'de'
+                  ? `${checkinCount} Check-ins dokumentiert — dein Arzt sieht jetzt deinen vollständigen Verlauf.`
+                  : `${checkinCount} check-ins documented — your doctor can now see your complete progress.`}
+              </p>
+              <Button
+                size="sm"
+                onClick={() => {
+                  onNavigate('krankheit');
+                  // Navigate to arztbericht tab via URL params
+                  setTimeout(() => {
+                    const params = new URLSearchParams(window.location.search);
+                    params.set('module', 'krankheit');
+                    params.set('tab', 'arztbericht');
+                    window.history.replaceState(null, '', '?' + params.toString());
+                  }, 100);
+                }}
+                className="mt-3 text-xs px-3 py-1.5 rounded-lg min-h-[32px]"
+              >
+                {language === 'de' ? 'Bericht erstellen →' : 'Create report →'}
+              </Button>
+            </div>
+            <button
+              onClick={() => {
+                localStorage.setItem('arztbericht_hint_shown_' + user!.id, 'true');
+                setArztberichtHintDismissed(true);
+              }}
+              className="text-muted-foreground hover:text-foreground transition-colors p-1"
+              aria-label="Close"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+        </motion.div>
+      )}
+
       {/* Guided Onboarding Tasks */}
       {showOnboardingTasks && nextTask && (
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}>
