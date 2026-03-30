@@ -317,7 +317,7 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
                   <div className="bg-[#437059] h-1.5 rounded-full transition-all duration-500" style={{ width: `${percent}%` }} />
                 </div>
                 <span className="text-sm text-[#437059] font-medium mt-3 inline-block cursor-pointer">
-                  {language === 'de' ? 'Weiter ausfüllen →' : 'Continue →'}
+                  {language === 'de' ? 'Weiter ausfüllen' : 'Continue'} <ChevronRight className="inline h-3.5 w-3.5 ml-0.5" />
                 </span>
               </>
             ) : (
