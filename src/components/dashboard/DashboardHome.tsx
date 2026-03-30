@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ClipboardList, HeartHandshake, Stethoscope, ArrowRight, Lock, Zap, CheckCircle2, Circle, Anchor, ShieldAlert, Shield, Link2, CheckCircle, Heart, Activity, Plus, User } from 'lucide-react';
+import { ClipboardList, HeartHandshake, Stethoscope, ArrowRight, Lock, Zap, CheckCircle2, Circle, Anchor, ShieldAlert, Shield, Link2, CheckCircle, Heart, Activity, Plus, User, FileText, X } from 'lucide-react';
 import { useEncryption } from '@/contexts/EncryptionContext';
 import { EncryptionPasswordDialog } from '@/components/EncryptionPasswordDialog';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -57,25 +57,34 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
 
   const [lastPflege, setLastPflege] = useState<any>(null);
   const [todayCheckin, setTodayCheckin] = useState<any>(null);
+  const [checkinCount, setCheckinCount] = useState(0);
   const [dataLoading, setDataLoading] = useState(true);
   const [showEncryptionSetup, setShowEncryptionSetup] = useState(false);
   const [hasShareToken, setHasShareToken] = useState(false);
+  const [arztberichtHintDismissed, setArztberichtHintDismissed] = useState(() => {
+    if (typeof window === 'undefined') return true;
+    return false; // Will be set properly once user is loaded
+  });
 
   const isPlusOrHigher = userPlan === 'plus' || userPlan === 'familie';
   const onboardingFocus = profile?.onboarding_focus;
 
   useEffect(() => {
     if (!user) { setDataLoading(false); return; }
+    // Check localStorage for arztbericht hint
+    setArztberichtHintDismissed(localStorage.getItem('arztbericht_hint_shown_' + user.id) === 'true');
     const load = async () => {
       const shareTokenRes = await supabase.from('share_tokens').select('id').eq('user_id', user.id).eq('is_active', true).limit(1);
       setHasShareToken((shareTokenRes.data?.length ?? 0) > 0);
       if (isPlusOrHigher) {
-        const [pflegeRes, checkinRes] = await Promise.all([
+        const [pflegeRes, checkinRes, checkinCountRes] = await Promise.all([
           supabase.from('pflege_eintraege').select('eintrags_datum,stimmung').eq('user_id', user.id).order('eintrags_datum', { ascending: false }).limit(1),
           supabase.from('symptom_checkins').select('energie,stimmung,checkin_datum').eq('user_id', user.id).eq('checkin_datum', new Date().toISOString().split('T')[0]).limit(1),
+          supabase.from('symptom_checkins').select('id', { count: 'exact', head: true }).eq('user_id', user.id),
         ]);
         setLastPflege(pflegeRes.data?.[0] || null);
         setTodayCheckin(checkinRes.data?.[0] || null);
+        setCheckinCount(checkinCountRes.count ?? 0);
       }
       setDataLoading(false);
     };
@@ -493,6 +502,51 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
 
       {/* Weekly Summary — Plus/Familie only */}
       {isPlusOrHigher && <WeeklySummary />}
+
+      {/* Arztbericht Hint — after 14 check-ins */}
+      {isPlusOrHigher && checkinCount >= 14 && !arztberichtHintDismissed && (
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
+          <div className="bg-primary/5 border border-primary/20 rounded-2xl p-4 flex items-start gap-3 relative">
+            <FileText className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+            <div className="flex-1">
+              <p className="text-sm font-semibold text-foreground">
+                {language === 'de' ? 'Du hast genug Daten für einen Arztbericht.' : 'You have enough data for a doctor report.'}
+              </p>
+              <p className="text-xs text-muted-foreground mt-1">
+                {language === 'de'
+                  ? `${checkinCount} Check-ins dokumentiert — dein Arzt sieht jetzt deinen vollständigen Verlauf.`
+                  : `${checkinCount} check-ins documented — your doctor can now see your complete progress.`}
+              </p>
+              <Button
+                size="sm"
+                onClick={() => {
+                  onNavigate('krankheit');
+                  // Navigate to arztbericht tab via URL params
+                  setTimeout(() => {
+                    const params = new URLSearchParams(window.location.search);
+                    params.set('module', 'krankheit');
+                    params.set('tab', 'arztbericht');
+                    window.history.replaceState(null, '', '?' + params.toString());
+                  }, 100);
+                }}
+                className="mt-3 text-xs px-3 py-1.5 rounded-lg min-h-[32px]"
+              >
+                {language === 'de' ? 'Bericht erstellen →' : 'Create report →'}
+              </Button>
+            </div>
+            <button
+              onClick={() => {
+                localStorage.setItem('arztbericht_hint_shown_' + user!.id, 'true');
+                setArztberichtHintDismissed(true);
+              }}
+              className="text-muted-foreground hover:text-foreground transition-colors p-1"
+              aria-label="Close"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+        </motion.div>
+      )}
 
       {/* Guided Onboarding Tasks */}
       {showOnboardingTasks && nextTask && (
