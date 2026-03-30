@@ -36,9 +36,15 @@ const PanelDashboard = ({ visible }: { visible: boolean }) => (
       </div>
       <div className="bg-background rounded-xl p-3 border border-border">
         <span className="text-[10px] text-muted-foreground uppercase tracking-wide">Mutter</span>
-        <div className="mt-2 flex gap-0.5">
-          {['😊', '😊', '😐', '😊', '😊'].map((e, i) => (
-            <span key={i} className="text-sm">{e}</span>
+        <div className="mt-2 flex gap-1">
+          {[
+            'bg-green-700', // Sehr gut
+            'bg-green-500', // Ausgeglichen
+            'bg-yellow-400', // Ruhig
+            'bg-green-500', // Ausgeglichen
+            'bg-green-700', // Sehr gut
+          ].map((color, i) => (
+            <span key={i} className={`w-2.5 h-2.5 rounded-full ${color}`} />
           ))}
         </div>
         <span className="text-[10px] text-primary mt-1 block">Gut diese Woche</span>
