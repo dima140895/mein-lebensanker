@@ -3,6 +3,18 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, Printer, TrendingUp, TrendingDown, Minus, CheckCircle } from 'lucide-react';
 
+const useIsDesktop = () => {
+  const [isDesktop, setIsDesktop] = useState(false);
+  useEffect(() => {
+    const mql = window.matchMedia('(min-width: 1024px)');
+    const onChange = () => setIsDesktop(mql.matches);
+    mql.addEventListener('change', onChange);
+    setIsDesktop(mql.matches);
+    return () => mql.removeEventListener('change', onChange);
+  }, []);
+  return isDesktop;
+};
+
 /* ── Panel 0: Dashboard ── */
 const PanelDashboard = ({ visible }: { visible: boolean }) => (
   <div>
@@ -146,6 +158,7 @@ const PanelArzt = () => (
 
 /* ── Main Hero ── */
 const LandingHero = () => {
+  const isDesktop = useIsDesktop();
   const navigate = useNavigate();
   const [activePanel, setActivePanel] = useState(0);
 
@@ -165,7 +178,10 @@ const LandingHero = () => {
   });
 
   return (
-    <section className="bg-background min-h-screen flex items-center pt-20 pb-0 overflow-hidden">
+    <section
+      className="min-h-screen flex items-center pt-20 pb-0 overflow-hidden bg-background border-b border-border"
+      style={isDesktop ? { background: 'linear-gradient(to right, hsl(var(--background)) 52%, #2C4A3E 52%)' } : {}}
+    >
       <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center w-full">
         {/* ── Left: Text ── */}
         <div className="max-w-lg mx-auto lg:mx-0 text-center lg:text-left">
@@ -221,12 +237,12 @@ const LandingHero = () => {
         </div>
 
         {/* ── Right: App Preview ── */}
-        <div className="hidden lg:block relative">
+        <div className="hidden lg:block relative pl-10 xl:pl-16">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
-            className="relative rounded-t-2xl border border-border border-b-0 bg-card shadow-2xl shadow-primary/10 overflow-hidden"
+            className="relative rounded-t-2xl border border-border border-b-0 bg-card shadow-2xl shadow-black/30 overflow-hidden"
           >
             {/* Browser bar */}
             <div className="bg-muted border-b border-border px-4 py-3 flex items-center gap-3">
@@ -258,7 +274,7 @@ const LandingHero = () => {
             </div>
 
             {/* Fade-out bottom */}
-            <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent pointer-events-none z-10" />
+            <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#2C4A3E] to-transparent pointer-events-none z-10" />
           </motion.div>
 
           {/* Panel indicators */}
@@ -268,7 +284,7 @@ const LandingHero = () => {
                 key={i}
                 onClick={() => setActivePanel(i)}
                 className={`rounded-full transition-all duration-300 ${
-                  activePanel === i ? 'w-6 h-1.5 bg-primary' : 'w-1.5 h-1.5 bg-border'
+                  activePanel === i ? 'w-6 h-1.5 bg-white' : 'w-1.5 h-1.5 bg-white/30'
                 }`}
               />
             ))}
