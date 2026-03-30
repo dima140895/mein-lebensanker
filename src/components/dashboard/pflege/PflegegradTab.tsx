@@ -121,7 +121,7 @@ const PflegegradTab = () => {
       } else {
         const insertRow: { user_id: string; section_key: string; data: Json } = {
           user_id: user.id,
-          section_key: PFLEGE_SECTION_KEY,
+          section_key: sectionKey,
           data: grad as unknown as Json,
         };
         ({ error } = await supabase
