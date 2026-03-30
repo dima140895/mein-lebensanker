@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { logger } from '@/lib/logger';
 import PflegegradRechner from '@/components/PflegegradRechner';
+import PflegePersonSelector from './PflegePersonSelector';
 
 const pflegegradInfo: Record<number, { de: string; en: string; leistungDe: string; leistungEn: string }> = {
   1: {
