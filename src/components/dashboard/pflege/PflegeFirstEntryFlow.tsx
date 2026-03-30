@@ -44,8 +44,8 @@ const PflegeFirstEntryFlow = ({ onSave, isSaving, activePersonName = '' }: Pfleg
 
   const t = {
     de: {
-      question: pName ? `Wie war ${pName} heute?` : `Wie war heute für ${pFallbackDe}?`,
-      hint: pName ? `Wie war ${pName}s Stimmung heute?` : `Wie war die Stimmung von ${pFallbackDe} heute?`,
+      question: pName ? `Wie war ${pName}s Stimmung heute?` : `Wie war die Stimmung von ${pFallbackDe} heute?`,
+      hint: pName ? `Wähle ${pName}s Stimmung, um den Eintrag zu starten.` : 'Wähle eine Stimmung, um den Eintrag zu starten.',
       person: 'Für wen ist der Eintrag?',
       personPlaceholder: 'z.B. Walter oder Mutter',
       meals: 'Mahlzeiten',
@@ -62,8 +62,8 @@ const PflegeFirstEntryFlow = ({ onSave, isSaving, activePersonName = '' }: Pfleg
       saving: 'Speichern...',
     },
     en: {
-      question: pName ? `How was ${pName} today?` : `How was ${pFallbackEn} today?`,
-      hint: pName ? `How was ${pName}'s mood today?` : `How was ${pFallbackEn}'s mood today?`,
+      question: pName ? `How was ${pName}'s mood today?` : `How was ${pFallbackEn}'s mood today?`,
+      hint: pName ? `Select ${pName}'s mood to start the entry.` : 'Select a mood to start the entry.',
       person: 'Who is this entry for?',
       personPlaceholder: 'e.g. Walter or Mother',
       meals: 'Meals',
