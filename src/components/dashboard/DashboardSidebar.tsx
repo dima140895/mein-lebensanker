@@ -59,7 +59,7 @@ const DashboardSidebar = ({ activeModule, onModuleChange, userPlan, onLockedClic
   };
 
   return (
-    <aside className="hidden md:flex flex-col w-56 lg:w-60 bg-forest text-white sticky top-0 h-screen overflow-y-auto">
+    <aside className="hidden md:flex flex-col w-56 lg:w-60 bg-forest text-white min-h-0 flex-shrink-0">
       {/* Logo */}
       <div className="px-4 py-5 border-b border-white/10">
         <div className="flex items-center gap-2">
