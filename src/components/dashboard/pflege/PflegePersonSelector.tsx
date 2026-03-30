@@ -96,6 +96,9 @@ const PflegePersonSelector = ({ value, onChange, className = '', showAllOption =
             <SelectValue placeholder={isDE ? 'Person auswählen' : 'Select person'} />
           </SelectTrigger>
           <SelectContent>
+            {showAllOption && (
+              <SelectItem value="__all__">{isDE ? 'Alle Personen' : 'All persons'}</SelectItem>
+            )}
             {personNames.map(name => (
               <SelectItem key={name} value={name}>{name}</SelectItem>
             ))}
