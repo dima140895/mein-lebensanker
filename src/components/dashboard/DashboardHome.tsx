@@ -87,7 +87,7 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
       if (isPlusOrHigher) {
         const [pflegeRes, checkinRes, checkinCountRes, pflegePersonenRes, lastCheckinRes] = await Promise.all([
           supabase.from('pflege_eintraege').select('eintrags_datum,stimmung,person_name').eq('user_id', user.id).order('eintrags_datum', { ascending: false }).limit(20),
-          supabase.from('symptom_checkins').select('energie,stimmung,checkin_datum').eq('user_id', user.id).eq('checkin_datum', new Date().toISOString().split('T')[0]).limit(1),
+          supabase.from('symptom_checkins').select('energie,schmerz,schlaf,stimmung,checkin_datum').eq('user_id', user.id).eq('checkin_datum', new Date().toISOString().split('T')[0]).limit(1),
           supabase.from('symptom_checkins').select('id', { count: 'exact', head: true }).eq('user_id', user.id),
           (supabase as any).from('pflege_personen').select('name').eq('user_id', user.id).order('created_at', { ascending: true }),
           supabase.from('symptom_checkins').select('checkin_datum,energie').eq('user_id', user.id).order('checkin_datum', { ascending: false }).limit(1),
