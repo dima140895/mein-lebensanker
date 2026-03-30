@@ -483,6 +483,51 @@ const PflegeTagebuch = ({ activePersonName = '' }: PflegeTagebuchProps) => {
       )}
 
       {showReferral && <ReferralCard />}
+
+      {/* Self check-in hint */}
+      <SelfCheckinHint userId={user?.id} language={language} />
+    </div>
+  );
+};
+
+/** Small hint linking to Krankheits-Begleiter for the caregiver's own check-in */
+const SelfCheckinHint = ({ userId, language }: { userId?: string; language: 'de' | 'en' }) => {
+  const [, setSearchParams] = useSearchParams();
+  const { profile } = useAuth();
+
+  const plan = profile?.purchased_tier;
+  const hasPlanAccess = plan === 'plus' || plan === 'familie';
+
+  const { data: todayCheckins } = useQuery({
+    queryKey: ['symptom-checkins-today', userId],
+    queryFn: async () => {
+      const today = format(new Date(), 'yyyy-MM-dd');
+      const { data } = await supabase
+        .from('symptom_checkins')
+        .select('id')
+        .eq('user_id', userId!)
+        .eq('checkin_datum', today)
+        .limit(1);
+      return data || [];
+    },
+    enabled: !!userId && hasPlanAccess,
+    staleTime: 5 * 60 * 1000,
+  });
+
+  if (!hasPlanAccess || !todayCheckins || todayCheckins.length > 0) return null;
+
+  return (
+    <div className="border-t border-[hsl(var(--border))] mt-6 pt-4">
+      <button
+        onClick={() => setSearchParams({ module: 'krankheit' })}
+        className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors"
+      >
+        <Activity className="h-3 w-3" />
+        {language === 'de' ? 'Wie geht es dir selbst heute?' : 'How are you doing today?'}
+        <span className="text-primary ml-0.5">
+          {language === 'de' ? 'Eigenen Check-in starten' : 'Start your own check-in'}
+        </span>
+      </button>
     </div>
   );
 };
