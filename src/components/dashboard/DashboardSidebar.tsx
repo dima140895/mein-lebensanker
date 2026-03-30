@@ -1,6 +1,8 @@
-import { Home, ClipboardList, HeartHandshake, Stethoscope, Users, Settings, Lock, Anchor, LogOut } from 'lucide-react';
+import { useState } from 'react';
+import { Home, ClipboardList, HeartHandshake, Stethoscope, Users, Settings, Lock, Anchor, LogOut, User, ChevronDown } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
+import { useProfiles } from '@/contexts/ProfileContext';
 import { useQueryClient } from '@tanstack/react-query';
 import { cn } from '@/lib/utils';
 import { prefetchPflegeEintraege, prefetchMedikamente, prefetchSymptomCheckins } from '@/lib/prefetchQueries';
