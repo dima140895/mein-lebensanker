@@ -178,8 +178,11 @@ const PflegegradTab = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-12">
-        <div className="h-6 w-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+      <div className="space-y-6">
+        <PflegePersonSelector value={selectedPerson} onChange={setSelectedPerson} />
+        <div className="flex items-center justify-center py-12">
+          <div className="h-6 w-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+        </div>
       </div>
     );
   }
