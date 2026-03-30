@@ -46,7 +46,14 @@ const KrankheitModule = () => {
         <div className="h-10 w-10 rounded-lg bg-sage-light flex items-center justify-center">
           <Stethoscope className="h-5 w-5 text-sage-dark" />
         </div>
-        <h1 className="font-sans text-2xl sm:text-3xl font-semibold text-forest tracking-[-0.02em]">{texts.title}</h1>
+        <div>
+          <h1 className="font-sans text-xl font-semibold text-foreground tracking-[-0.02em]">
+            {language === 'de' ? 'Mein Verlauf' : 'My Progress'}
+          </h1>
+          <span className="inline-block mt-1 bg-[#E8F0EC] text-[#2C5742] text-xs px-2 py-0.5 rounded-full">
+            {language === 'de' ? 'Deine eigenen Daten' : 'Your own data'}
+          </span>
+        </div>
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">

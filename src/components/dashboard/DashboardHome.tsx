@@ -186,12 +186,17 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
       pflegeLastEntry: 'Letzter Eintrag',
       pflegeAdd: 'Eintrag hinzufügen',
       pflegeUnlock: 'Pflege-Begleiter freischalten',
-      krankheit: 'Krankheits-Begleiter',
+      krankheit: 'Mein Check-in',
       krankheitDone: 'Heute eingecheckt',
-      krankheitPending: 'Noch kein Check-in heute',
+      krankheitPending: 'Wie geht es mir heute?',
       krankheitEnergy: 'Energie',
       krankheitStart: 'Check-in starten',
       krankheitUnlock: 'Krankheits-Begleiter freischalten',
+      fuerMich: 'Für mich',
+      ichPflege: 'Ich pflege',
+      pflegstDu: 'Pflegst du jemanden?',
+      pflegeInviteDesc: 'Dokumentiere Medikamente, Stimmung und Arzttermine für einen Angehörigen.',
+      pflegeStarten: 'Pflege starten →',
       nextSteps: 'Was als nächstes?',
       upgrade: 'Jetzt upgraden',
       locked: 'In Anker Plus enthalten',
@@ -211,12 +216,17 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
       pflegeLastEntry: 'Last entry',
       pflegeAdd: 'Add entry',
       pflegeUnlock: 'Unlock Care Companion',
-      krankheit: 'Health Companion',
+      krankheit: 'My Check-in',
       krankheitDone: 'Checked in today',
-      krankheitPending: 'No check-in today',
+      krankheitPending: 'How am I feeling today?',
       krankheitEnergy: 'Energy',
       krankheitStart: 'Start check-in',
       krankheitUnlock: 'Unlock Health Companion',
+      fuerMich: 'For me',
+      ichPflege: 'I care for',
+      pflegstDu: 'Caring for someone?',
+      pflegeInviteDesc: 'Document medications, mood and appointments for a loved one.',
+      pflegeStarten: 'Start caring →',
       nextSteps: 'What\'s next?',
       upgrade: 'Upgrade now',
       locked: 'Included in Anker Plus',
@@ -246,10 +256,8 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
     const passive = isPassive('vorsorge');
     return (
       <motion.div key="vorsorge" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay }}>
-        <Card
-          className={`rounded-2xl shadow-card hover:-translate-y-0.5 hover:shadow-soft transition-all duration-200 cursor-pointer h-full ${
-            passive ? 'border border-[#E5E0D8] bg-card' : 'border-l-4 border-l-primary bg-card'
-          }`}
+          <Card
+          className={`rounded-2xl shadow-card hover:-translate-y-0.5 hover:shadow-soft transition-all duration-200 cursor-pointer h-full border border-[#E5E0D8] bg-card`}
           onClick={() => onNavigate('vorsorge')}
         >
           <CardHeader className="pb-2">
@@ -295,9 +303,7 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
       <motion.div key="pflege" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay }}>
         {isPlusOrHigher ? (
           <Card
-            className={`rounded-2xl shadow-card hover:-translate-y-0.5 hover:shadow-soft transition-all duration-200 cursor-pointer h-full ${
-              passive ? 'border border-[#E5E0D8] bg-card' : 'border-l-4 border-l-accent bg-card'
-            }`}
+            className={`rounded-2xl shadow-card hover:-translate-y-0.5 hover:shadow-soft transition-all duration-200 cursor-pointer h-full border border-[#E8C99A]/60 border-l-2 border-l-[#C4813A] bg-card`}
             onClick={() => onNavigate('pflege')}
           >
             <CardHeader className="pb-2">
@@ -327,10 +333,16 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
                       <span className="text-2xl">{STIMMUNG_EMOJI[lastPflege.stimmung] || '😐'}</span>
                     </div>
                   ) : (
-                    <p className="text-sm text-muted-foreground">{tx.pflegeEmpty}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {activeProfile?.name
+                        ? (language === 'de' ? `Noch kein Eintrag für ${activeProfile.name}` : `No entry yet for ${activeProfile.name}`)
+                        : tx.pflegeEmpty}
+                    </p>
                   )}
                   <Button variant="ghost" size="sm" className="w-full text-accent hover:text-accent hover:bg-accent/5 gap-1.5 min-h-[44px]">
-                    {tx.pflegeAdd} <ArrowRight className="h-3.5 w-3.5" />
+                    {activeProfile?.name
+                      ? (language === 'de' ? `Wie geht es ${activeProfile.name} heute? →` : `How is ${activeProfile.name} today? →`)
+                      : (language === 'de' ? 'Wie geht es deinem Angehörigen heute? →' : 'How is your loved one today? →')}
                   </Button>
                 </>
               )}
@@ -367,9 +379,7 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
       <motion.div key="krankheit" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay }}>
         {isPlusOrHigher ? (
           <Card
-            className={`rounded-2xl shadow-card hover:-translate-y-0.5 hover:shadow-soft transition-all duration-200 cursor-pointer h-full ${
-              passive ? 'border border-[#E5E0D8] bg-card' : 'border-l-4 border-l-sage bg-card'
-            }`}
+            className={`rounded-2xl shadow-card hover:-translate-y-0.5 hover:shadow-soft transition-all duration-200 cursor-pointer h-full border border-[#E5E0D8] bg-card`}
             onClick={() => onNavigate('krankheit')}
           >
             <CardHeader className="pb-2">
@@ -603,9 +613,33 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
         </motion.div>
       )}
 
-      {/* Status Cards */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {cardOrder.map((key, i) => cardRenderers[key](0.05 + i * 0.05))}
+      {/* GRUPPE 1 — Für mich */}
+      <div className="space-y-3">
+        <div className="flex items-center gap-1.5">
+          <User className="h-3 w-3 text-[#437059]" />
+          <span className="text-xs font-medium uppercase tracking-widest text-[#437059]">{tx.fuerMich}</span>
+        </div>
+        <div className="grid gap-4 sm:grid-cols-2">
+          {renderVorsorgeCard(0.05)}
+          {renderKrankheitCard(0.1)}
+        </div>
+      </div>
+
+      {/* GRUPPE 2 — Ich pflege */}
+      <div className="space-y-3">
+        <div className="flex items-center gap-1.5">
+          <Heart className="h-3 w-3 text-[#C4813A]" />
+          <span className="text-xs font-medium uppercase tracking-widest text-[#C4813A]">{tx.ichPflege}</span>
+        </div>
+        {isPlusOrHigher || !userPlan ? (
+          <div className="grid gap-4 sm:grid-cols-1 lg:grid-cols-2">
+            {renderPflegeCard(0.15)}
+          </div>
+        ) : (
+          <div className="grid gap-4 sm:grid-cols-1 lg:grid-cols-2">
+            {renderPflegeCard(0.15)}
+          </div>
+        )}
       </div>
 
       {/* Weekly Summary — Plus/Familie only */}
