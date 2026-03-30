@@ -38,6 +38,7 @@ const PflegeTagebuch = () => {
   const [editingEntry, setEditingEntry] = useState<PflegeEintrag | null>(null);
   const [expandedEntry, setExpandedEntry] = useState<string | null>(null);
   const [showReferral, setShowReferral] = useState(false);
+  const [selectedPerson, setSelectedPerson] = useState('');
   // Form state
   const [personName, setPersonName] = useState('');
   const [stimmung, setStimmung] = useState(3);
