@@ -39,7 +39,7 @@ interface DashboardSidebarProps {
 
 const DashboardSidebar = ({ activeModule, onModuleChange, userPlan, onLockedClick }: DashboardSidebarProps) => {
   const { language } = useLanguage();
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
   const queryClient = useQueryClient();
 
   const handlePrefetch = (moduleKey: DashboardModule) => {
