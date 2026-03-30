@@ -89,18 +89,18 @@ const DashboardSidebar = ({ activeModule, onModuleChange, userPlan, onLockedClic
             </button>
           );
         })}
-      </nav>
 
-      {/* Abmelden */}
-      <div className="px-3 py-4 border-t border-white/10">
-        <button
-          onClick={() => signOut()}
-          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-white/60 hover:bg-white/10 hover:text-white transition-all font-body"
-        >
-          <LogOut className="h-5 w-5 flex-shrink-0" />
-          <span>{language === 'de' ? 'Abmelden' : 'Sign out'}</span>
-        </button>
-      </div>
+        {/* Abmelden – unter Einstellungen, abgetrennt */}
+        <div className="mt-4 pt-3 border-t border-white/10 mx-0">
+          <button
+            onClick={() => signOut()}
+            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-white/40 hover:bg-white/10 hover:text-white transition-all font-body"
+          >
+            <LogOut className="h-5 w-5 flex-shrink-0" />
+            <span>{language === 'de' ? 'Abmelden' : 'Sign out'}</span>
+          </button>
+        </div>
+      </nav>
     </aside>
   );
 };
