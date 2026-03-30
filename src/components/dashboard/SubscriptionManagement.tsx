@@ -108,14 +108,14 @@ const SubscriptionManagement = () => {
             <div className="space-y-2">
               <Button onClick={handleManageSubscription} disabled={loading} className="gap-2">
                 {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <ExternalLink className="h-4 w-4" />}
-                {texts.manageSubscription} →
+                {texts.manageSubscription}
               </Button>
               <p className="text-xs text-muted-foreground">{texts.manageHint}</p>
             </div>
           ) : isAnker ? (
             <Button onClick={() => setShowPricing(true)} variant="outline" className="gap-2">
               <ArrowUp className="h-4 w-4" />
-              {texts.upgradeToPlus} →
+              {texts.upgradeToPlus}
             </Button>
           ) : null}
         </CardContent>
