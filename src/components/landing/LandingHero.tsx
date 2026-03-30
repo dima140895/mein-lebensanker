@@ -180,7 +180,7 @@ const PanelArzt = () => (
   return (
     <section
       className="min-h-screen flex items-center pt-20 pb-0 overflow-hidden bg-background border-b border-border"
-      style={isDesktop ? { background: 'linear-gradient(to right, hsl(var(--background)) 52%, #2C4A3E 52%)' } : {}}
+      style={isDesktop ? { background: 'linear-gradient(to right, hsl(var(--background)) 58%, #2C4A3E 58%)' } : {}}
     >
       <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center w-full">
         {/* ── Left: Text ── */}
