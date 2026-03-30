@@ -71,14 +71,14 @@ const WishesForm = () => {
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
-      <div className="rounded-lg bg-sage-light/50 p-4 flex items-start gap-3">
-        <Info className="h-5 w-5 text-sage-dark flex-shrink-0 mt-0.5" />
-        <p className="text-sm text-sage-dark">{texts.disclaimer}</p>
+      <div className="rounded-xl bg-primary/5 border border-primary/10 p-4 flex items-start gap-3">
+        <Info className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+        <p className="text-sm text-foreground/70">{texts.disclaimer}</p>
       </div>
 
-      <div className="rounded-lg bg-amber-light/50 border border-amber/20 p-4 flex items-start gap-3">
-        <Scale className="h-5 w-5 text-amber flex-shrink-0 mt-0.5" />
-        <p className="text-sm text-amber">{texts.legalNote}</p>
+      <div className="rounded-xl bg-accent/10 border border-accent/20 p-4 flex items-start gap-3">
+        <Scale className="h-5 w-5 text-accent flex-shrink-0 mt-0.5" />
+        <p className="text-sm text-accent">{texts.legalNote}</p>
       </div>
 
       <div className="space-y-2">

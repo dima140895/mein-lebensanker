@@ -269,9 +269,9 @@ const PersonalForm = () => {
       animate={{ opacity: 1 }}
       className="space-y-6"
     >
-      <div className="rounded-lg bg-sage-light/50 p-4 flex items-start gap-3">
-        <Info className="h-5 w-5 text-sage-dark flex-shrink-0 mt-0.5" />
-        <p className="text-sm text-sage-dark">{texts.disclaimer}</p>
+      <div className="rounded-xl bg-primary/5 border border-primary/10 p-4 flex items-start gap-3">
+        <Info className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+        <p className="text-sm text-foreground/70">{texts.disclaimer}</p>
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
@@ -308,7 +308,7 @@ const PersonalForm = () => {
       </div>
 
       {/* Housing Type */}
-      <div className="space-y-4 rounded-lg border border-border p-4">
+      <div className="space-y-4 rounded-xl border border-border p-4">
         <div className="flex items-center gap-2">
           <Home className="h-5 w-5 text-primary" />
           <Label className="text-sm font-medium">{texts.housingType}</Label>
@@ -470,7 +470,7 @@ const PersonalForm = () => {
 
         <div className="space-y-4">
           {medications.map((med, index) => (
-            <div key={index} className="p-4 rounded-lg border border-border bg-card space-y-4">
+            <div key={index} className="p-4 rounded-xl border border-border bg-card space-y-4">
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium text-muted-foreground">
                   {texts.medicationName} {index + 1}
@@ -586,7 +586,7 @@ const PersonalForm = () => {
 
         <div className="space-y-4">
           {allergies.map((allergy, index) => (
-            <div key={index} className="p-4 rounded-lg border border-amber/30 bg-amber-light/20 space-y-4">
+            <div key={index} className="p-4 rounded-xl border border-accent/20 bg-accent/5 space-y-4">
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium text-muted-foreground">
                   {texts.allergyName} {index + 1}
@@ -684,7 +684,7 @@ const PersonalForm = () => {
             type="button"
             variant="outline"
             onClick={addAllergy}
-            className="w-full border-amber/50 hover:bg-amber-light/30"
+            className="w-full border-accent/30 hover:bg-accent/10"
           >
             <Plus className="h-4 w-4 mr-2" />
             {texts.addAllergy}
