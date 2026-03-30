@@ -619,9 +619,33 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
         </motion.div>
       )}
 
-      {/* Status Cards */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {cardOrder.map((key, i) => cardRenderers[key](0.05 + i * 0.05))}
+      {/* GRUPPE 1 — Für mich */}
+      <div className="space-y-3">
+        <div className="flex items-center gap-1.5">
+          <User className="h-3 w-3 text-[#437059]" />
+          <span className="text-xs font-medium uppercase tracking-widest text-[#437059]">{tx.fuerMich}</span>
+        </div>
+        <div className="grid gap-4 sm:grid-cols-2">
+          {renderVorsorgeCard(0.05)}
+          {renderKrankheitCard(0.1)}
+        </div>
+      </div>
+
+      {/* GRUPPE 2 — Ich pflege */}
+      <div className="space-y-3">
+        <div className="flex items-center gap-1.5">
+          <Heart className="h-3 w-3 text-[#C4813A]" />
+          <span className="text-xs font-medium uppercase tracking-widest text-[#C4813A]">{tx.ichPflege}</span>
+        </div>
+        {isPlusOrHigher || !userPlan ? (
+          <div className="grid gap-4 sm:grid-cols-1 lg:grid-cols-2">
+            {renderPflegeCard(0.15)}
+          </div>
+        ) : (
+          <div className="grid gap-4 sm:grid-cols-1 lg:grid-cols-2">
+            {renderPflegeCard(0.15)}
+          </div>
+        )}
       </div>
 
       {/* Weekly Summary — Plus/Familie only */}
