@@ -178,12 +178,12 @@ const AdvisorFinderSection = () => {
                         key={j}
                         variant="outline"
                         size="sm"
-                        className="w-full justify-between text-xs h-auto py-2 px-3"
+                        className="w-full justify-between text-xs h-auto py-2.5 px-3 whitespace-normal text-left"
                         asChild
                       >
                         <a href={link.url} target="_blank" rel="noopener noreferrer">
-                          <span className="text-left flex-1">{link.label}</span>
-                          <ExternalLink className="h-3 w-3 flex-shrink-0 ml-2" />
+                          <span className="flex-1 leading-snug break-words">{link.label}</span>
+                          <ExternalLink className="h-3.5 w-3.5 flex-shrink-0 ml-2" />
                         </a>
                       </Button>
                     ))}
