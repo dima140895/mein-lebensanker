@@ -81,7 +81,7 @@ const HealthConsentGate = ({ children }: HealthConsentGateProps) => {
         >
           {loading
             ? (language === 'de' ? 'Wird gespeichert...' : 'Saving...')
-            : (language === 'de' ? 'Einwilligung erteilen →' : 'Grant consent →')}
+            : (language === 'de' ? 'Einwilligung erteilen' : 'Grant consent')}
         </Button>
       </div>
     </div>

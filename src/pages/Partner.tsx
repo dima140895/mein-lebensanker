@@ -240,7 +240,7 @@ const Partner = () => {
 
                   <Button type="submit" disabled={sending} className="w-full gap-2">
                     <Send className="h-4 w-4" />
-                    {sending ? 'Wird gesendet...' : 'Anfrage senden →'}
+                    {sending ? 'Wird gesendet...' : 'Anfrage senden'}
                   </Button>
                 </form>
               </CardContent>

@@ -199,12 +199,12 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
       ichPflege: 'Ich pflege',
       pflegstDu: 'Pflegst du jemanden?',
       pflegeInviteDesc: 'Dokumentiere Medikamente, Stimmung und Arzttermine für einen Angehörigen.',
-      pflegeStarten: 'Pflege starten →',
+      pflegeStarten: 'Pflege starten',
       nextSteps: 'Was als nächstes?',
       upgrade: 'Jetzt upgraden',
       locked: 'In Anker Plus enthalten',
       sectionOf: 'von',
-      discover: 'Entdecken →',
+      discover: 'Entdecken',
       pflegePassive: 'Pflegeeinträge und Verlauf dokumentieren.',
       krankheitPassive: 'Symptome und Verlauf dokumentieren.',
       vorsorgePassive: 'Vorsorge-Dokumente ausfüllen und sichern.',
@@ -229,12 +229,12 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
       ichPflege: 'I care for',
       pflegstDu: 'Caring for someone?',
       pflegeInviteDesc: 'Document medications, mood and appointments for a loved one.',
-      pflegeStarten: 'Start caring →',
+      pflegeStarten: 'Start caring',
       nextSteps: 'What\'s next?',
       upgrade: 'Upgrade now',
       locked: 'Included in Anker Plus',
       sectionOf: 'of',
-      discover: 'Discover →',
+      discover: 'Discover',
       pflegePassive: 'Document care entries and progress.',
       krankheitPassive: 'Document symptoms and progress.',
       vorsorgePassive: 'Fill out and secure planning documents.',
@@ -354,8 +354,8 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
                   )}
                   <Button variant="ghost" size="sm" className="w-full text-accent hover:text-accent hover:bg-accent/5 gap-1.5 min-h-[44px]">
                     {pflegePersonenNames.length > 0
-                      ? (language === 'de' ? `Wie geht es ${pflegePersonenNames[0]} heute? →` : `How is ${pflegePersonenNames[0]} today? →`)
-                      : (language === 'de' ? 'Wie geht es deinem Angehörigen heute? →' : 'How is your loved one today? →')}
+                      ? (language === 'de' ? `Wie geht es ${pflegePersonenNames[0]} heute?` : `How is ${pflegePersonenNames[0]} today?`)
+                      : (language === 'de' ? 'Wie geht es deinem Angehörigen heute?' : 'How is your loved one today?')}
                   </Button>
                 </>
               )}
@@ -538,7 +538,7 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
             icon: <Anchor className="h-12 w-12 text-muted-foreground mb-4" />,
             title: { de: 'Bereit? Lass uns beginnen.', en: 'Ready? Let\'s begin.' },
             desc: { de: 'Deine Vorsorge-Dokumentation dauert etwa 20 Minuten und gibt dir und deiner Familie echte Sicherheit.', en: 'Your planning documentation takes about 20 minutes and gives you and your family real peace of mind.' },
-            cta: { de: 'Vorsorge jetzt starten →', en: 'Start planning now →' },
+            cta: { de: 'Vorsorge jetzt starten', en: 'Start planning now' },
             module: 'vorsorge' as DashboardModule,
             note: null as { de: string; en: string; module: DashboardModule } | null,
           },
@@ -546,17 +546,17 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
             icon: <Heart className="h-12 w-12 text-accent mb-4" />,
             title: { de: 'Dokumentiere den ersten Tag.', en: 'Document the first day.' },
             desc: { de: 'Stimmung, Mahlzeiten, Medikamente — in 3 Minuten.', en: 'Mood, meals, medications — in 3 minutes.' },
-            cta: { de: 'Ersten Pflegeeintrag erstellen →', en: 'Create first care entry →' },
+            cta: { de: 'Ersten Pflegeeintrag erstellen', en: 'Create first care entry' },
             module: 'pflege' as DashboardModule,
-            note: { de: 'Vorsorge kannst du jederzeit nachholen →', en: 'You can always catch up on planning →', module: 'vorsorge' as DashboardModule },
+            note: { de: 'Vorsorge kannst du jederzeit nachholen', en: 'You can always catch up on planning', module: 'vorsorge' as DashboardModule },
           },
           krankheit: {
             icon: <Activity className="h-12 w-12 text-sage-dark mb-4" />,
             title: { de: 'Wie geht es dir heute?', en: 'How are you today?' },
             desc: { de: '60 Sekunden. 4 Fragen. Danach siehst du deinen Verlauf.', en: '60 seconds. 4 questions. Then you\'ll see your trend.' },
-            cta: { de: 'Ersten Check-in starten →', en: 'Start first check-in →' },
+            cta: { de: 'Ersten Check-in starten', en: 'Start first check-in' },
             module: 'krankheit' as DashboardModule,
-            note: { de: 'Vorsorge kannst du jederzeit nachholen →', en: 'You can always catch up on planning →', module: 'vorsorge' as DashboardModule },
+            note: { de: 'Vorsorge kannst du jederzeit nachholen', en: 'You can always catch up on planning', module: 'vorsorge' as DashboardModule },
           },
         };
 
@@ -609,7 +609,7 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
                   }}
                   className="bg-amber hover:bg-amber/90 text-white text-xs px-3 py-1.5 rounded-lg min-h-[32px]"
                 >
-                  {language === 'de' ? 'Link jetzt erstellen →' : 'Create link now →'}
+                  {language === 'de' ? 'Link jetzt erstellen' : 'Create link now'}
                 </Button>
                 <button
                   onClick={() => {
@@ -680,7 +680,7 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
                 }}
                 className="mt-3 text-xs px-3 py-1.5 rounded-lg min-h-[32px]"
               >
-                {language === 'de' ? 'Bericht erstellen →' : 'Create report →'}
+                {language === 'de' ? 'Bericht erstellen' : 'Create report'}
               </Button>
             </div>
             <button
@@ -725,7 +725,7 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
                 }}
                 className="min-h-[44px]"
               >
-                {language === 'de' ? 'Jetzt erledigen →' : 'Do it now →'}
+                {language === 'de' ? 'Jetzt erledigen' : 'Do it now'}
               </Button>
 
               {/* Task checklist — desktop only */}
@@ -777,7 +777,7 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
               onClick={() => setShowEncryptionSetup(true)}
               className="text-sm font-medium text-primary hover:text-primary/80 transition-colors whitespace-nowrap font-body"
             >
-              {language === 'de' ? 'Jetzt einrichten →' : 'Set up now →'}
+              {language === 'de' ? 'Jetzt einrichten' : 'Set up now'}
             </button>
           </div>
         </motion.div>

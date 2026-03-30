@@ -46,7 +46,7 @@ const PflegePersonSwitcher = ({ personen, aktivePerson, onSelect, onAddClick, ca
           className="gap-1.5 min-h-[44px] border-[#C4813A]/40 text-[#8B5A1A] hover:bg-[#F5E8D4]/50"
         >
           <UserPlus className="h-4 w-4" />
-          {isDE ? 'Person anlegen →' : 'Add person →'}
+          {isDE ? 'Person anlegen' : 'Add person'}
         </Button>
       </div>
     );
