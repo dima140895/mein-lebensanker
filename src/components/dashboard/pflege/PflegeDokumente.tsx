@@ -116,8 +116,9 @@ const PflegeDokumente = () => {
 
   const getStoragePath = useCallback((category: string) => {
     if (!user) return '';
-    return `${user.id}/pflege/${category}`;
-  }, [user]);
+    const personSegment = selectedPerson ? `/${selectedPerson.replace(/[^a-zA-Z0-9äöüÄÖÜß_-]/g, '_')}` : '';
+    return `${user.id}/pflege${personSegment}/${category}`;
+  }, [user, selectedPerson]);
 
   const loadAllDocuments = useCallback(async () => {
     if (!user) return;
