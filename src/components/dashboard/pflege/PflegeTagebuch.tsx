@@ -52,20 +52,24 @@ const PflegeTagebuch = ({ activePersonName = '' }: PflegeTagebuchProps) => {
   const [besonderheiten, setBesonderheiten] = useState('');
   const [naechsteSchritte, setNaechsteSchritte] = useState('');
 
+  const pName = activePersonName || '';
+  const pFallbackDe = pName || 'die Person';
+  const pFallbackEn = pName || 'the person';
+
   const t = {
     de: {
-      addEntry: 'Heutigen Eintrag hinzufügen',
+      addEntry: pName ? `Eintrag für ${pName} hinzufügen` : 'Eintrag hinzufügen',
       alreadyExists: 'Heute wurde bereits ein Eintrag erstellt',
       personName: 'Name der pflegebedürftigen Person',
-      mood: 'Stimmung heute',
+      mood: pName ? `${pName}s Stimmung` : 'Stimmung heute',
       meals: 'Mahlzeiten',
-      mealsPlaceholder: 'Was wurde heute gegessen?',
+      mealsPlaceholder: `Was hat ${pFallbackDe} heute gegessen?`,
       activities: 'Aktivitäten',
-      activitiesPlaceholder: 'Spaziergänge, Besuche, Übungen...',
+      activitiesPlaceholder: `Was hat ${pFallbackDe} heute unternommen?`,
       incidents: 'Besonderheiten / Vorfälle',
-      incidentsPlaceholder: 'Auffälligkeiten, Vorfälle...',
+      incidentsPlaceholder: `Was war heute bei ${pFallbackDe} besonders?`,
       nextSteps: 'Nächste Schritte',
-      nextStepsPlaceholder: 'Arzttermine, Anrufe, Erledigungen...',
+      nextStepsPlaceholder: `Was ist als nächstes zu tun für ${pFallbackDe}?`,
       save: 'Eintrag speichern',
       saving: 'Speichern...',
       cancel: 'Abbrechen',
@@ -80,18 +84,18 @@ const PflegeTagebuch = ({ activePersonName = '' }: PflegeTagebuchProps) => {
       error: 'Fehler beim Speichern',
     },
     en: {
-      addEntry: 'Add today\'s entry',
+      addEntry: pName ? `Add entry for ${pName}` : 'Add entry',
       alreadyExists: 'An entry for today already exists',
       personName: 'Name of the person being cared for',
-      mood: 'Mood today',
+      mood: pName ? `${pName}'s mood` : 'Mood today',
       meals: 'Meals',
-      mealsPlaceholder: 'What was eaten today?',
+      mealsPlaceholder: `What did ${pFallbackEn} eat today?`,
       activities: 'Activities',
-      activitiesPlaceholder: 'Walks, visits, exercises...',
+      activitiesPlaceholder: `What did ${pFallbackEn} do today?`,
       incidents: 'Incidents / Notes',
-      incidentsPlaceholder: 'Anything notable...',
+      incidentsPlaceholder: `What was notable about ${pFallbackEn} today?`,
       nextSteps: 'Next Steps',
-      nextStepsPlaceholder: 'Appointments, calls, tasks...',
+      nextStepsPlaceholder: `What needs to be done next for ${pFallbackEn}?`,
       save: 'Save entry',
       saving: 'Saving...',
       cancel: 'Cancel',
