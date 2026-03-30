@@ -295,7 +295,7 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
     return (
       <motion.div key="vorsorge" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay }}>
         <Card
-          className={`rounded-2xl shadow-card hover:-translate-y-0.5 hover:shadow-soft transition-all duration-200 cursor-pointer h-full min-h-[120px] ${cardBorder} bg-card ${stateC ? '!bg-[#F8FBF9]' : ''}`}
+          className={`rounded-2xl shadow-card hover:-translate-y-0.5 hover:shadow-soft transition-all duration-200 cursor-pointer h-full min-h-[120px] flex flex-col ${cardBorder} bg-card ${stateC ? '!bg-[#F8FBF9]' : ''}`}
           onClick={() => onNavigate('vorsorge')}
         >
           <CardHeader className="pb-2">
@@ -308,7 +308,7 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
               </div>
             </div>
           </CardHeader>
-          <CardContent className="space-y-2">
+          <CardContent className="space-y-2 flex-1 flex flex-col">
             {passive ? (
               <>
                 <p className="text-sm text-muted-foreground">{tx.vorsorgePassive}</p>
@@ -319,7 +319,7 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
             ) : stateA ? (
               <>
                 <p className="text-sm text-muted-foreground">{tx.vorsorgePassive}</p>
-                <Button variant="ghost" size="sm" className="w-full text-primary hover:text-primary hover:bg-primary/5 gap-1.5 min-h-[44px]">
+                <Button variant="ghost" size="sm" className="w-full text-primary hover:text-primary hover:bg-primary/5 gap-1.5 min-h-[44px] mt-auto">
                   {tx.discover} <ChevronRight className="inline h-3.5 w-3.5 ml-0.5" />
                 </Button>
               </>
@@ -351,7 +351,7 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
                     );
                   })}
                 </div>
-                <Button variant="ghost" size="sm" className="w-full text-primary hover:text-primary hover:bg-primary/5 gap-1.5 min-h-[44px] mt-1">
+                <Button variant="ghost" size="sm" className="w-full text-primary hover:text-primary hover:bg-primary/5 gap-1.5 min-h-[44px] mt-1 mt-auto">
                   {language === 'de' ? 'Weiter ausfüllen' : 'Continue'} <ChevronRight className="inline h-3.5 w-3.5 ml-0.5" />
                 </Button>
               </>
@@ -362,7 +362,7 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
                   <CheckCircle className="h-4 w-4 text-[#437059]" />
                   <span className="text-sm text-[#437059] font-medium">{language === 'de' ? 'Vollständig' : 'Complete'}</span>
                 </div>
-                <Button variant="ghost" size="sm" className="w-full text-muted-foreground hover:text-primary hover:bg-primary/5 gap-1.5 min-h-[44px]">
+                <Button variant="ghost" size="sm" className="w-full text-muted-foreground hover:text-primary hover:bg-primary/5 gap-1.5 min-h-[44px] mt-auto">
                   {language === 'de' ? 'Ansehen' : 'View'} <ChevronRight className="inline h-3.5 w-3.5 ml-0.5" />
                 </Button>
               </>
@@ -500,7 +500,7 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
                 </div>
               </div>
             </CardHeader>
-            <CardContent className="space-y-2">
+            <CardContent className="space-y-2 flex-1 flex flex-col">
               {passive ? (
                 <>
                   <p className="text-sm text-muted-foreground">{tx.krankheitPassive}</p>
@@ -523,7 +523,7 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
                       {language === 'de' ? 'Zuletzt' : 'Last'}: {relativesDatum(lastCheckin.checkin_datum)}
                     </p>
                   )}
-                  <Button variant="ghost" size="sm" className="w-full text-primary hover:text-primary hover:bg-primary/5 gap-1.5 min-h-[44px]">
+                  <Button variant="ghost" size="sm" className="w-full text-primary hover:text-primary hover:bg-primary/5 gap-1.5 min-h-[44px] mt-auto">
                     {language === 'de' ? 'Check-in starten' : 'Start check-in'} <ChevronRight className="inline h-3.5 w-3.5 ml-0.5" />
                   </Button>
                 </>
@@ -549,7 +549,7 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
                       {language === 'de' ? 'Stimmung' : 'Mood'} {todayCheckin.stimmung}/10
                     </p>
                   </div>
-                  <Button variant="ghost" size="sm" className="w-full text-muted-foreground hover:text-primary hover:bg-primary/5 gap-1.5 min-h-[44px]">
+                  <Button variant="ghost" size="sm" className="w-full text-muted-foreground hover:text-primary hover:bg-primary/5 gap-1.5 min-h-[44px] mt-auto">
                     {language === 'de' ? 'Verlauf ansehen' : 'View history'} <ChevronRight className="inline h-3.5 w-3.5 ml-0.5" />
                   </Button>
                 </>
