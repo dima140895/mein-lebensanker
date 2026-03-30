@@ -291,58 +291,77 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
 
   const renderPflegeCard = (delay: number) => (
     <motion.div key="pflege" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay }}>
-      {isPlusOrHigher ? (
-        <Card className="border-l-4 border-l-accent bg-card rounded-2xl shadow-card hover:-translate-y-0.5 hover:shadow-soft transition-all duration-200 cursor-pointer h-full" onClick={() => onNavigate('pflege')}>
-          <CardHeader className="pb-2">
-            <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-lg bg-accent/10 flex items-center justify-center">
-                <HeartHandshake className="h-5 w-5 text-accent" />
-              </div>
-              <CardTitle className="text-base font-semibold font-body text-forest">{tx.pflege}</CardTitle>
-            </div>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            {dataLoading ? (
-              <p className="text-sm text-muted-foreground">...</p>
-            ) : lastPflege ? (
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-xs text-muted-foreground">{tx.pflegeLastEntry}</p>
-                  <p className="text-sm font-medium">{new Date(lastPflege.eintrags_datum).toLocaleDateString(language === 'de' ? 'de-DE' : 'en-US')}</p>
-                </div>
-                <span className="text-2xl">{STIMMUNG_EMOJI[lastPflege.stimmung] || '😐'}</span>
-              </div>
-            ) : (
-              <p className="text-sm text-muted-foreground">{tx.pflegeEmpty}</p>
-            )}
-            <Button variant="ghost" size="sm" className="w-full text-accent hover:text-accent hover:bg-accent/5 gap-1.5 min-h-[44px]">
-              {tx.pflegeAdd} <ArrowRight className="h-3.5 w-3.5" />
-            </Button>
-          </CardContent>
-        </Card>
-      ) : (
-        <Card className="border-l-4 border-l-accent/30 bg-card rounded-2xl shadow-card h-full opacity-80 cursor-pointer" onClick={() => onLockedClick('pflege')}>
-          <CardHeader className="pb-2">
-            <div className="flex items-center justify-between">
+  const renderPflegeCard = (delay: number) => {
+    const passive = isPassive('pflege');
+    return (
+      <motion.div key="pflege" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay }}>
+        {isPlusOrHigher ? (
+          <Card
+            className={`rounded-2xl shadow-card hover:-translate-y-0.5 hover:shadow-soft transition-all duration-200 cursor-pointer h-full ${
+              passive ? 'border border-[#E5E0D8] bg-card' : 'border-l-4 border-l-accent bg-card'
+            }`}
+            onClick={() => onNavigate('pflege')}
+          >
+            <CardHeader className="pb-2">
               <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-lg bg-muted flex items-center justify-center">
-                  <HeartHandshake className="h-5 w-5 text-muted-foreground/50" />
+                <div className={`h-10 w-10 rounded-lg flex items-center justify-center ${passive ? 'bg-muted' : 'bg-accent/10'}`}>
+                  <HeartHandshake className={`h-5 w-5 ${passive ? 'text-muted-foreground' : 'text-accent'}`} />
                 </div>
-                <CardTitle className="text-base font-semibold font-body text-charcoal-light/60">{tx.pflege}</CardTitle>
+                <div>
+                  <CardTitle className={`text-base font-semibold font-body ${passive ? 'text-foreground' : 'text-forest'}`}>{tx.pflege}</CardTitle>
+                  {passive && <p className="text-sm text-muted-foreground mt-1">{tx.pflegePassive}</p>}
+                </div>
               </div>
-              <Lock className="h-4 w-4 text-muted-foreground/40" />
-            </div>
-          </CardHeader>
-          <CardContent>
-            <p className="text-xs text-muted-foreground/60 mb-2">{tx.locked}</p>
-            <Button variant="outline" size="sm" className="text-xs h-7 gap-1 border-accent/30 text-accent">
-              {tx.pflegeUnlock} <ArrowRight className="h-3 w-3" />
-            </Button>
-          </CardContent>
-        </Card>
-      )}
-    </motion.div>
-  );
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {passive ? (
+                <span className="text-xs text-muted-foreground hover:text-foreground transition-colors">{tx.discover}</span>
+              ) : (
+                <>
+                  {dataLoading ? (
+                    <p className="text-sm text-muted-foreground">...</p>
+                  ) : lastPflege ? (
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-xs text-muted-foreground">{tx.pflegeLastEntry}</p>
+                        <p className="text-sm font-medium">{new Date(lastPflege.eintrags_datum).toLocaleDateString(language === 'de' ? 'de-DE' : 'en-US')}</p>
+                      </div>
+                      <span className="text-2xl">{STIMMUNG_EMOJI[lastPflege.stimmung] || '😐'}</span>
+                    </div>
+                  ) : (
+                    <p className="text-sm text-muted-foreground">{tx.pflegeEmpty}</p>
+                  )}
+                  <Button variant="ghost" size="sm" className="w-full text-accent hover:text-accent hover:bg-accent/5 gap-1.5 min-h-[44px]">
+                    {tx.pflegeAdd} <ArrowRight className="h-3.5 w-3.5" />
+                  </Button>
+                </>
+              )}
+            </CardContent>
+          </Card>
+        ) : (
+          <Card className="border-l-4 border-l-accent/30 bg-card rounded-2xl shadow-card h-full opacity-80 cursor-pointer" onClick={() => onLockedClick('pflege')}>
+            <CardHeader className="pb-2">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="h-10 w-10 rounded-lg bg-muted flex items-center justify-center">
+                    <HeartHandshake className="h-5 w-5 text-muted-foreground/50" />
+                  </div>
+                  <CardTitle className="text-base font-semibold font-body text-charcoal-light/60">{tx.pflege}</CardTitle>
+                </div>
+                <Lock className="h-4 w-4 text-muted-foreground/40" />
+              </div>
+            </CardHeader>
+            <CardContent>
+              <p className="text-xs text-muted-foreground/60 mb-2">{tx.locked}</p>
+              <Button variant="outline" size="sm" className="text-xs h-7 gap-1 border-accent/30 text-accent">
+                {tx.pflegeUnlock} <ArrowRight className="h-3 w-3" />
+              </Button>
+            </CardContent>
+          </Card>
+        )}
+      </motion.div>
+    );
+  };
 
   const renderKrankheitCard = (delay: number) => (
     <motion.div key="krankheit" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay }}>
