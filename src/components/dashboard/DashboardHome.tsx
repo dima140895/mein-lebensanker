@@ -499,7 +499,7 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
                     {language === 'de' ? 'Energie' : 'Energy'} {todayCheckin.energie}/5
                   </p>
                   <span className="text-sm text-muted-foreground mt-2 inline-block cursor-pointer">
-                    {language === 'de' ? 'Verlauf ansehen →' : 'View history →'}
+                    {language === 'de' ? 'Verlauf ansehen' : 'View history'} <ChevronRight className="inline h-3.5 w-3.5 ml-0.5" />
                   </span>
                 </>
               )}
