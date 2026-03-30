@@ -54,6 +54,9 @@ const VorsorgeModule = () => {
   const [showShareManager, setShowShareManager] = useState(false);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [upgradeLoading, setUpgradeLoading] = useState(false);
+  const [showIntro, setShowIntro] = useState(() =>
+    user ? shouldShowModuleIntro('vorsorge', user.id, profile?.onboarding_focus) : false
+  );
   const isMobile = useIsMobile();
   const { sectionStatus, sectionCompletion, progressPercent, filledCount, totalCount, isComplete, refetch, loading: statusLoading } = useSectionStatus();
   const previousProfileId = useRef<string | null>(null);
