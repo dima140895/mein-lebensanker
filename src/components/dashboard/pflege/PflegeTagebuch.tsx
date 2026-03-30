@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Plus, ChevronDown, ChevronUp, Trash2, Loader2, BookHeart, Pencil } from 'lucide-react';
+import { Plus, ChevronDown, ChevronUp, Trash2, Loader2, BookHeart, Pencil, Activity } from 'lucide-react';
+import { useSearchParams } from 'react-router-dom';
 import PflegeFirstEntryFlow from './PflegeFirstEntryFlow';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
