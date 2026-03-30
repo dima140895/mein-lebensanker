@@ -151,10 +151,37 @@ export const ProfileProvider: React.FC<{ children: ReactNode }> = ({ children })
     }
   }, [user, profile?.has_paid]);
 
-  // NOTE: Automatic profile creation has been removed.
-  // The ProfileSetupWizard now handles profile creation after payment.
-  // This prevents the race condition where a default profile was created
-  // before the user could set up all their purchased profiles.
+  // Fallback: auto-create a default profile if paid user has none
+  // The ProfileSetupWizard normally handles this, but if it was skipped
+  // or failed, this ensures the user can still save data.
+  useEffect(() => {
+    const autoCreateDefaultProfile = async () => {
+      if (!user || !profile?.has_paid || loading) return;
+      if (personProfiles.length > 0) return;
+      
+      try {
+        logger.info('Auto-creating default profile for user without profiles');
+        const { data, error } = await supabase
+          .from('person_profiles')
+          .insert({
+            user_id: user.id,
+            name: profile?.full_name || 'Mein Profil',
+          })
+          .select()
+          .single();
+
+        if (error) throw error;
+        if (data) {
+          setPersonProfiles([data]);
+          setActiveProfileId(data.id);
+        }
+      } catch (error) {
+        logger.error('Error auto-creating default profile:', error);
+      }
+    };
+    
+    autoCreateDefaultProfile();
+  }, [user, profile?.has_paid, profile?.full_name, personProfiles.length, loading]);
 
   return (
     <ProfileContext.Provider value={{
