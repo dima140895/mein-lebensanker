@@ -456,7 +456,7 @@ const ShareLinkManager = () => {
               {texts.create}
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-h-[90vh] overflow-y-auto">
+          <DialogContent className="max-h-[90vh] overflow-y-auto rounded-xl">
             <DialogHeader>
               <DialogTitle>{texts.create}</DialogTitle>
               <DialogDescription>
