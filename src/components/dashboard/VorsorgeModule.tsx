@@ -430,6 +430,47 @@ const VorsorgeModule = () => {
           <ShareLinkManager />
         </div>
       )}
+
+      {/* Contextual Upgrade Modal for Anker users after 100% */}
+      <Dialog open={showUpgradeModal} onOpenChange={(open) => { if (!open) dismissUpgradeModal(); }}>
+        <DialogContent className="max-w-md">
+          <DialogHeader className="text-center items-center">
+            <CheckCircle className="h-8 w-8 text-primary mx-auto mb-2" />
+            <DialogTitle className="text-xl text-center">
+              {language === 'de' ? 'Deine Vorsorge ist vollständig.' : 'Your planning is complete.'}
+            </DialogTitle>
+          </DialogHeader>
+          <div className="border-t border-border my-2" />
+          <p className="text-sm text-muted-foreground text-center">
+            {language === 'de'
+              ? 'Was passiert wenn sich etwas ändert? Wenn ein Elternteil Pflege braucht oder du selbst mit einer Diagnose konfrontiert wirst — Lebensanker ist dann mehr als ein Archiv.'
+              : 'What happens when things change? When a parent needs care or you face a diagnosis — Lebensanker becomes more than an archive.'}
+          </p>
+          <div className="space-y-2 mt-4">
+            {[
+              { de: 'Pflegetagebuch für Angehörige', en: 'Care journal for family members' },
+              { de: 'Täglicher Symptom-Check-in für dich', en: 'Daily symptom check-in for you' },
+              { de: 'Arztberichte automatisch erstellt', en: 'Doctor reports created automatically' },
+            ].map((feat, i) => (
+              <div key={i} className="flex items-center gap-2">
+                <Check className="h-3.5 w-3.5 text-primary flex-shrink-0" />
+                <span className="text-sm text-foreground">{feat[language]}</span>
+              </div>
+            ))}
+          </div>
+          <p className="text-center text-sm text-muted-foreground mt-4">
+            {language === 'de' ? 'Ab €9/Monat · 14 Tage kostenlos testen' : 'From €9/month · 14-day free trial'}
+          </p>
+          <Button onClick={handleUpgradeClick} disabled={upgradeLoading} className="w-full rounded-xl py-3 font-medium mt-2">
+            {upgradeLoading
+              ? (language === 'de' ? 'Wird geladen…' : 'Loading…')
+              : (language === 'de' ? '14 Tage kostenlos testen →' : '14-day free trial →')}
+          </Button>
+          <button onClick={dismissUpgradeModal} className="text-muted-foreground text-sm text-center w-full mt-1 hover:text-foreground transition-colors">
+            {language === 'de' ? 'Vielleicht später' : 'Maybe later'}
+          </button>
+        </DialogContent>
+      </Dialog>
     </>
   );
 };
