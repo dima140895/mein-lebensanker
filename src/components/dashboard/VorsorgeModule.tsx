@@ -208,6 +208,7 @@ const VorsorgeModule = () => {
   const renderContent = () => {
     switch (activeSection) {
       case 'advisors': return <AdvisorFinderSection />;
+      case 'share': return <ShareLinkManager />;
       case 'upgrade': return <PackageManagement />;
       case 'payment': return <PackageManagement />;
       case 'personal': return <PersonalForm />;
