@@ -12,6 +12,7 @@ import SubscriptionManagement from '@/components/dashboard/SubscriptionManagemen
 import MFASettings from '@/components/dashboard/MFASettings';
 import ConsentManagement from '@/components/dashboard/ConsentManagement';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import PflegePersonenManagement from '@/components/dashboard/PflegePersonenManagement';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import {
