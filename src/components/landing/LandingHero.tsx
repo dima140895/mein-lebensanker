@@ -274,7 +274,7 @@ const LandingHero = () => {
             </div>
 
             {/* Fade-out bottom */}
-            <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent pointer-events-none z-10" />
+            <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#2C4A3E] to-transparent pointer-events-none z-10" />
           </motion.div>
 
           {/* Panel indicators */}
