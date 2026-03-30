@@ -377,24 +377,21 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
                 <>
                   {dataLoading ? (
                     <p className="text-sm text-muted-foreground">...</p>
-                  ) : lastPflege ? (
-                    <div className="space-y-1.5">
-                      {/* Last entry info with person name */}
-                      <div className="flex items-center gap-2">
-                        <span className={`w-2.5 h-2.5 rounded-full shrink-0 ${getMoodColor(lastPflege.stimmung)}`} />
-                        <p className="text-sm font-medium text-foreground">
-                          {lastPflege.person_name} · {getMoodLabel(lastPflege.stimmung, language)}
-                        </p>
-                      </div>
-                      <p className="text-xs text-muted-foreground">
-                        {relativesDatum(lastPflege.eintrags_datum)}
-                      </p>
-                      {/* Person count */}
-                      {pflegePersonenNames.length > 1 && (
-                        <p className="text-xs text-muted-foreground">
-                          {pflegePersonenNames.join(' · ')}
-                        </p>
-                      )}
+                  ) : lastPflegePerPerson.length > 0 ? (
+                    <div className="space-y-2">
+                      {lastPflegePerPerson.map((entry: any) => (
+                        <div key={entry.person_name} className="flex items-center gap-2">
+                          <span className={`w-2.5 h-2.5 rounded-full shrink-0 ${getMoodColor(entry.stimmung)}`} />
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium text-foreground truncate">
+                              {entry.person_name} · {getMoodLabel(entry.stimmung, language)}
+                            </p>
+                            <p className="text-xs text-muted-foreground">
+                              {relativesDatum(entry.eintrags_datum)}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
                     </div>
                   ) : (
                     <p className="text-sm text-muted-foreground">
