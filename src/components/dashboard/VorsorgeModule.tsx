@@ -53,6 +53,7 @@ const VorsorgeModule = () => {
   const [showCelebration, setShowCelebration] = useState(false);
   const [showShareManager, setShowShareManager] = useState(false);
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
+  const [wasIstDasOpen, setWasIstDasOpen] = useState(false);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [upgradeLoading, setUpgradeLoading] = useState(false);
   const [showIntro, setShowIntro] = useState(() =>
