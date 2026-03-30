@@ -484,7 +484,7 @@ const DashboardHome = ({ onNavigate, userPlan, onLockedClick }: DashboardHomePro
                     </p>
                   )}
                   <span className="text-sm text-[#437059] font-medium mt-2 inline-block cursor-pointer">
-                    {language === 'de' ? 'Check-in starten →' : 'Start check-in →'}
+                    {language === 'de' ? 'Check-in starten' : 'Start check-in'} <ChevronRight className="inline h-3.5 w-3.5 ml-0.5" />
                   </span>
                 </>
               ) : (
