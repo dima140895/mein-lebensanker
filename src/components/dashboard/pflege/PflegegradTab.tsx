@@ -48,7 +48,8 @@ interface SavedPflegegrad {
   grad: number;
   datum: string;
   punkte?: number;
-  quelle: 'manuell' | 'rechner'; // manual or calculator
+  quelle: 'manuell' | 'rechner';
+  person_name?: string;
 }
 
 const PFLEGE_SECTION_KEY = '_pflege_pflegegrad';

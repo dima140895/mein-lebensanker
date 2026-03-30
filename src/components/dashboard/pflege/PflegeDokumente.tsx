@@ -292,6 +292,9 @@ const PflegeDokumente = () => {
 
   return (
     <div className="space-y-6">
+      {/* Person selector */}
+      <PflegePersonSelector value={selectedPerson} onChange={setSelectedPerson} />
+
       {/* Header */}
       <Card className="border-primary/20 bg-primary/5">
         <CardContent className="py-5 text-center space-y-2">

@@ -268,6 +268,9 @@ const PflegeMedikamente = () => {
 
   return (
     <div className="space-y-4">
+      {/* Person selector */}
+      <PflegePersonSelector value={selectedPerson} onChange={setSelectedPerson} />
+
       {/* Top actions */}
       <div className="flex flex-wrap gap-2">
         {!showForm && (
