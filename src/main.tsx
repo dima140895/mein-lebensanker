@@ -7,16 +7,6 @@ const PREVIEW_CACHE_RESET_KEY = "mla-preview-cache-reset";
 const isPreviewHost = () =>
   window.location.hostname.startsWith("id-preview--");
 
-const isPwaEnabledHost = () => !isPreviewHost();
-
-const registerServiceWorker = async () => {
-  if (!isPwaEnabledHost() || !("serviceWorker" in navigator)) return;
-
-  await window.addEventListener("load", () => {
-    navigator.serviceWorker.register("/sw.js").catch(() => undefined);
-  });
-};
-
 const resetPreviewCaches = async () => {
   if (!isPreviewHost()) return false;
 
@@ -46,7 +36,6 @@ const bootstrap = async () => {
 
   if (didReload) return;
 
-  registerServiceWorker();
   createRoot(document.getElementById("root")!).render(<App />);
 };
 
