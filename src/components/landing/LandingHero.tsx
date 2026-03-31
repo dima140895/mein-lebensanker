@@ -225,7 +225,7 @@ Kein Notar weiß, wo Deine Vollmacht liegt.<br />
           <motion.div {...stagger(0.6)} className="mt-10 flex gap-6 justify-center lg:justify-start flex-wrap">
             {[
               'Server in Deutschland (Frankfurt)',
-              'DSGVO-konform · AVV abgeschlossen',
+              'DSGVO-konform, AVV abgeschlossen',
               'AES-256-GCM Verschlüsselung',
               'Kein Abo-Zwang beim Start',
             ].map((text) => (
