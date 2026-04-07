@@ -2,6 +2,9 @@ import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
 
+const PREVIEW_CACHE_BUSTER_VERSION = "2026-04-07-preview-v2";
+const PREVIEW_CACHE_BUSTER_KEY = "__pcb_version__";
+
 const isPreviewEnv = () => {
   const h = window.location.hostname;
   try {
@@ -11,13 +14,20 @@ const isPreviewEnv = () => {
 };
 
 (async () => {
-  if (isPreviewEnv() && !sessionStorage.getItem("__pcb__")) {
-    sessionStorage.setItem("__pcb__", "1");
+  const needsPreviewReset = isPreviewEnv() && sessionStorage.getItem(PREVIEW_CACHE_BUSTER_KEY) !== PREVIEW_CACHE_BUSTER_VERSION;
+
+  if (needsPreviewReset) {
+    sessionStorage.setItem(PREVIEW_CACHE_BUSTER_KEY, PREVIEW_CACHE_BUSTER_VERSION);
     const regs = await navigator.serviceWorker?.getRegistrations?.().catch(() => []);
     await Promise.all((regs ?? []).map(r => r.unregister()));
     const keys = await caches.keys().catch(() => []);
     await Promise.all(keys.map(k => caches.delete(k)));
-    location.replace(`${location.pathname}?v=${Date.now()}${location.hash}`);
+
+    const params = new URLSearchParams(location.search);
+    params.set("v", PREVIEW_CACHE_BUSTER_VERSION);
+    const query = params.toString();
+
+    location.replace(`${location.pathname}${query ? `?${query}` : ""}${location.hash}`);
     return;
   }
   createRoot(document.getElementById("root")!).render(<App />);
