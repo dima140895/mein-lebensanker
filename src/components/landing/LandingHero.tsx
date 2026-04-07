@@ -212,7 +212,7 @@ Kein Notar weiß, wo Deine Vollmacht liegt.<br />
               onClick={() => navigate('/dashboard?register=true')}
               className="bg-primary text-primary-foreground font-semibold px-7 py-3.5 rounded-full text-base hover:bg-primary/90 transition-all shadow-sm"
             >
-              Kostenlos starten →
+              Kostenlos starten
             </button>
             <button
               onClick={() => scrollTo('warum')}
