@@ -17,7 +17,10 @@ export type AnalyticsEvent =
   | 'Arztbericht_Erstellt'
   | 'Notfallkarte_Gedruckt'
   | 'ShareLink_Erstellt'
-  | 'Familie_Eingeladen';
+  | 'Familie_Eingeladen'
+  | 'Hero_Slide_View'
+  | 'Hero_Slide_Tab_Klick'
+  | 'Hero_Slide_CTA_Klick';
 
 export function trackEvent(event: AnalyticsEvent, props?: Record<string, string>): void {
   try {
