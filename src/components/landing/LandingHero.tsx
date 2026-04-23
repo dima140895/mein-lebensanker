@@ -183,8 +183,6 @@ const LandingHero = () => {
               </div>
             </div>
 
-            {/* Slide */}
-            <div className="px-7 py-7 min-h-[460px] flex flex-col">
             {/* Slide-Stage: feste Höhe, gestapelte Layer => kein Layout-Ruckeln */}
             <div className="px-7 py-7">
               <div className="relative h-[460px]">
