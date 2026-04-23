@@ -761,6 +761,13 @@ export type Database = {
         Args: { _code: string }
         Returns: undefined
       }
+      user_had_canceled_paid_plan: {
+        Args: { _user_id: string }
+        Returns: {
+          canceled_at: string
+          plan: string
+        }[]
+      }
       user_has_access: { Args: { _user_id: string }; Returns: boolean }
       user_owns_token_hash: {
         Args: { _token_hash: string; _user_id: string }

@@ -11,8 +11,7 @@ type CanceledPlan = 'plus' | 'familie';
 
 interface CanceledSub {
   plan: CanceledPlan;
-  status: string;
-  current_period_end: string | null;
+  canceled_at: string | null;
 }
 
 const REACTIVATION_FLAG_KEY = 'plus_reactivation_pending';
@@ -27,6 +26,7 @@ const ReactivatePlusBanner = () => {
   const [loading, setLoading] = useState(false);
 
   const tier = profile?.purchased_tier ?? null;
+  // "Currently on Anker" = explicitly anker, OR no tier set yet (legacy free users)
   const isCurrentlyOnAnker = !tier || tier === 'anker';
 
   // Detect previously cancelled Plus/Familie subscription
@@ -37,29 +37,39 @@ const ReactivatePlusBanner = () => {
     }
     let cancelled = false;
     (async () => {
-      const { data, error } = await supabase
+      // 1) Make sure there is NO currently active/trialing paid subscription
+      const { data: activeSub } = await supabase
         .from('subscriptions')
-        .select('plan,status,current_period_end')
+        .select('plan,status')
         .eq('user_id', user.id)
-        .in('status', ['canceled', 'past_due', 'unpaid'])
-        .order('updated_at', { ascending: false })
+        .in('status', ['active', 'trialing'])
+        .in('plan', ['plus', 'familie'])
         .limit(1)
         .maybeSingle();
 
       if (cancelled) return;
-      if (error || !data) {
+      if (activeSub) {
+        // User actually has an active paid plan — never show reactivation CTA
         setCanceled(null);
         return;
       }
-      if (isCanceledPlan(data.plan)) {
-        setCanceled({
-          plan: data.plan,
-          status: data.status,
-          current_period_end: data.current_period_end,
-        });
-      } else {
+
+      // 2) Look up genuine cancellation history via SECURITY DEFINER RPC
+      //    (reads from internal stripe_webhook_events log + legacy fallback)
+      const { data, error } = await supabase
+        .rpc('user_had_canceled_paid_plan', { _user_id: user.id })
+        .maybeSingle();
+
+      if (cancelled) return;
+      if (error || !data || !isCanceledPlan(data.plan)) {
         setCanceled(null);
+        return;
       }
+
+      setCanceled({
+        plan: data.plan,
+        canceled_at: data.canceled_at ?? null,
+      });
     })();
     return () => {
       cancelled = true;
