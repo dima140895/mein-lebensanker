@@ -20,6 +20,7 @@ import ContactsForm from '@/components/forms/ContactsForm';
 import AdvisorFinderSection from '@/components/sections/AdvisorFinderSection';
 import PackageManagement from '@/components/PackageManagement';
 import ShareLinkManager from '@/components/ShareLinkManager';
+import ReactivatePlusBanner from '@/components/dashboard/ReactivatePlusBanner';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
