@@ -257,7 +257,7 @@ const LandingHero = () => {
                         {/* Ein klarer CTA pro Kachel */}
                         <div className="mt-auto pt-6">
                           <button
-                            onClick={() => navigate(slide.cta.to)}
+                            onClick={() => handleSlideCta(slide, i)}
                             className="w-full bg-primary text-primary-foreground font-semibold px-6 py-3 rounded-full text-sm hover:bg-primary/90 transition-all shadow-sm font-body inline-flex items-center justify-center gap-2"
                           >
                             {slide.cta.label}
