@@ -1,21 +1,40 @@
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Activity, ArrowRight, CheckCircle2, ChevronRight, ClipboardList, HeartHandshake, Link2, ShieldCheck, Stethoscope, Users } from 'lucide-react';
+import { ArrowRight, ChevronRight, ClipboardList, HeartHandshake, Link2, ShieldCheck, Stethoscope, Users } from 'lucide-react';
 
-const heroStats = [
-  { label: 'Meine Vorsorge', value: '80%', detail: '4 von 5 Bereichen vollständig', icon: ClipboardList },
-  { label: 'Pflege-Begleiter', value: 'Heute', detail: 'Eintrag für Mutter dokumentiert', icon: HeartHandshake },
-  { label: 'Mein Verlauf', value: '30 Tage', detail: 'Symptomtrend für Arztgespräch', icon: Stethoscope },
+const workAreas = [
+  {
+    title: 'Meine Vorsorge',
+    description: 'Vollmachten, Notfallkontakte, Wünsche und Dokumente zentral hinterlegen.',
+    status: '6 Bereiche',
+    icon: ClipboardList,
+    bullets: ['Persönliche Daten & Kontakte', 'Dokumente & Verfügungen'],
+  },
+  {
+    title: 'Pflege-Begleiter',
+    description: 'Pflegetagebuch, Medikamente und Beobachtungen für Angehörige dokumentieren.',
+    status: 'für Angehörige',
+    icon: HeartHandshake,
+    bullets: ['Tagesbeobachtungen', 'Medikamente & Kalender'],
+  },
+  {
+    title: 'Mein Verlauf',
+    description: 'Symptom-Check-ins sammeln und verständlich für Arztgespräche aufbereiten.',
+    status: 'für Arzttermine',
+    icon: Stethoscope,
+    bullets: ['Check-ins im Alltag', 'Bericht als PDF'],
+  },
+  {
+    title: 'Freigaben',
+    description: 'Angehörigen gezielt Zugriff geben, ohne alles pauschal freizuschalten.',
+    status: 'steuerbar',
+    icon: Link2,
+    bullets: ['Links gezielt teilen', 'Bereiche einzeln freigeben'],
+  },
 ];
 
-const careTimeline = [
-  { title: 'Pflegeeintrag', meta: 'Mutter · heute', text: 'Ausgeglichen, Mahlzeiten vollständig, 3 Medikamente verabreicht.' },
-  { title: 'Arztbericht', meta: 'PDF Export', text: 'Verlauf der letzten 30 Tage für den nächsten Termin vorbereitet.' },
-  { title: 'Freigabe', meta: 'Angehörige', text: 'Relevante Unterlagen strukturiert und im Ernstfall schnell erreichbar.' },
-];
-
-const trendPoints = '8,52 42,44 76,46 110,32 144,26 178,18 212,14 246,10';
+const foundationItems = ['Ende-zu-Ende verschlüsselt', 'Freigaben steuerbar', 'Exporte für Gespräche und Unterlagen'];
 
 const LandingHero = () => {
   const navigate = useNavigate();
@@ -53,21 +72,21 @@ const LandingHero = () => {
             </span>
           </motion.div>
 
-          <h1 className="font-body text-5xl md:text-6xl lg:text-7xl leading-[1.05] text-balance">
+          <h1 className="font-body text-5xl md:text-6xl lg:text-[5.25rem] leading-[0.98] text-balance">
             <motion.span {...stagger(0.1)} className="text-muted-foreground font-normal block">
-              Nicht nur informieren.
+              Kein Ratgeber.
             </motion.span>
             <motion.span {...stagger(0.18)} className="text-foreground font-semibold block">
-              Im Ernstfall wirklich vorbereitet sein.
+              Ein Werkzeug für den Ernstfall.
             </motion.span>
           </h1>
 
           <motion.div {...stagger(0.28)} className="mt-8 max-w-lg text-muted-foreground text-base md:text-lg leading-relaxed mx-auto lg:mx-0 font-body">
             <p>
-              Mein Lebensanker bündelt Dokumente, Pflegeeinträge, Symptomverläufe und Freigaben in einer klaren Arbeitsoberfläche.
+              Mein Lebensanker ist für die tatsächliche Arbeit mit Vorsorge, Pflege und Krankheitsverlauf gebaut — nicht für eine schöne, aber leere Vorschau.
             </p>
             <p className="mt-4 text-foreground">
-              So sehen Du und Deine Angehörigen nicht nur eine schöne Vorschau, sondern den tatsächlichen Arbeitsalltag des Tools.
+              Du strukturierst Unterlagen, dokumentierst Beobachtungen und bereitest Informationen für Angehörige oder Arztgespräche vor.
             </p>
           </motion.div>
 
@@ -104,161 +123,57 @@ const LandingHero = () => {
           transition={{ duration: 0.55, delay: 0.2 }}
           className="hidden lg:block relative pl-10 xl:pl-16"
         >
-          <div className="rounded-[28px] border border-white/10 bg-sidebar text-sidebar-foreground overflow-hidden shadow-[0_28px_80px_-24px_hsl(var(--forest)/0.65)]">
-            <div className="grid grid-cols-[220px_minmax(0,1fr)] min-h-[520px]">
-              <aside className="border-r border-white/10 px-4 py-5 bg-sidebar">
-                <div className="flex items-center gap-2 pb-5 border-b border-white/10">
-                  <div className="w-9 h-9 rounded-full bg-sidebar-primary/15 border border-white/10 flex items-center justify-center">
-                    <ShieldCheck className="h-4 w-4 text-sidebar-primary" />
+          <div className="rounded-[28px] border border-sidebar-border bg-sidebar text-sidebar-foreground overflow-hidden shadow-elevated">
+            <div className="min-h-[520px] px-7 py-7">
+              <div className="flex items-start justify-between gap-4 border-b border-sidebar-border pb-6">
+                <div className="flex items-start gap-3">
+                  <div className="w-11 h-11 rounded-full bg-sidebar-accent flex items-center justify-center">
+                    <ShieldCheck className="h-5 w-5 text-sidebar-accent-foreground" />
                   </div>
                   <div>
-                    <div className="text-sm font-semibold font-body text-sidebar-foreground">Mein Lebensanker</div>
-                    <div className="text-[11px] text-sidebar-foreground/60 font-body">Arbeitsoberfläche</div>
+                    <div className="text-sm uppercase tracking-widest text-sidebar-foreground/60 font-body">Was Du tatsächlich nutzt</div>
+                    <div className="mt-1 text-2xl font-semibold font-body text-sidebar-foreground">Arbeitsbereiche statt Mockup</div>
                   </div>
                 </div>
-
-                <div className="mt-4 rounded-xl bg-white/10 px-3 py-2.5 border border-white/10">
-                  <div className="text-[11px] uppercase tracking-widest text-sidebar-foreground/50 font-body">Aktives Profil</div>
-                  <div className="mt-1 text-sm font-medium font-body">Mutter</div>
+                <div className="rounded-full bg-sidebar-accent px-3 py-1.5 text-xs font-medium text-sidebar-accent-foreground font-body">
+                  4 Bereiche
                 </div>
+              </div>
 
-                <nav className="mt-5 space-y-1.5">
-                  {[
-                    { label: 'Übersicht', icon: Activity, active: true },
-                    { label: 'Meine Vorsorge', icon: ClipboardList },
-                    { label: 'Pflege-Begleiter', icon: HeartHandshake },
-                    { label: 'Mein Verlauf', icon: Stethoscope },
-                    { label: 'Familie', icon: Users },
-                  ].map((item) => {
-                    const Icon = item.icon;
-                    return (
-                      <div
-                        key={item.label}
-                        className={`flex items-center gap-3 rounded-lg px-3 py-2.5 font-body text-sm ${
-                          item.active ? 'bg-white/15 text-sidebar-foreground border-l-[3px] border-accent' : 'text-sidebar-foreground/70'
-                        }`}
-                      >
-                        <Icon className="h-4 w-4 flex-shrink-0" />
-                        <span>{item.label}</span>
-                      </div>
-                    );
-                  })}
-                </nav>
-
-                <div className="mt-6 pt-4 border-t border-white/10 space-y-3">
-                  <div className="rounded-xl bg-white/5 p-3 border border-white/10">
-                    <div className="text-[11px] uppercase tracking-widest text-sidebar-foreground/50 font-body">Freigabe</div>
-                    <div className="mt-1 text-sm font-medium font-body">1 Link aktiv</div>
-                    <div className="text-xs text-sidebar-foreground/60 mt-1 font-body">für Angehörige steuerbar</div>
-                  </div>
-                  <div className="rounded-xl bg-white/5 p-3 border border-white/10">
-                    <div className="text-[11px] uppercase tracking-widest text-sidebar-foreground/50 font-body">Schutz</div>
-                    <div className="mt-1 text-sm font-medium font-body">Ende-zu-Ende</div>
-                    <div className="text-xs text-sidebar-foreground/60 mt-1 font-body">verschlüsselte Inhalte</div>
-                  </div>
-                </div>
-              </aside>
-
-              <div className="bg-card text-card-foreground px-6 py-6">
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <div className="text-sm text-muted-foreground font-body">Übersicht</div>
-                    <div className="mt-1 text-2xl font-semibold font-body text-foreground">Hier ist der aktuelle Stand.</div>
-                  </div>
-                  <div className="rounded-xl border border-border bg-background px-4 py-2">
-                    <div className="text-[11px] uppercase tracking-widest text-muted-foreground font-body">Letzte Aktivität</div>
-                    <div className="mt-1 text-sm font-medium font-body">Heute, 09:14 Uhr</div>
-                  </div>
-                </div>
-
-                <div className="mt-6 grid grid-cols-3 gap-3">
-                  {heroStats.map((item) => {
-                    const Icon = item.icon;
-                    return (
-                      <div key={item.label} className="rounded-xl border border-border bg-background px-4 py-4">
-                        <div className="flex items-center justify-between gap-3">
-                          <span className="text-xs uppercase tracking-widest text-muted-foreground font-body">{item.label}</span>
-                          <Icon className="h-4 w-4 text-primary" />
+              <div className="mt-6 grid grid-cols-2 gap-4">
+                {workAreas.map((area) => {
+                  const Icon = area.icon;
+                  return (
+                    <div key={area.title} className="rounded-xl border border-border bg-card px-4 py-4 text-card-foreground min-h-[200px] flex flex-col">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                          <Icon className="h-5 w-5 text-primary" />
                         </div>
-                        <div className="mt-3 text-2xl font-semibold text-foreground font-body">{item.value}</div>
-                        <div className="mt-2 text-xs text-muted-foreground font-body leading-relaxed">{item.detail}</div>
+                        <span className="text-[11px] uppercase tracking-widest text-muted-foreground font-body">{area.status}</span>
                       </div>
-                    );
-                  })}
-                </div>
 
-                <div className="mt-5 grid grid-cols-[1.15fr_0.85fr] gap-4">
-                  <div className="rounded-xl border border-border bg-background p-4">
-                    <div className="flex items-center justify-between gap-3">
-                      <div>
-                        <div className="text-xs uppercase tracking-widest text-muted-foreground font-body">Pflege & Dokumentation</div>
-                        <div className="mt-1 text-base font-semibold text-foreground font-body">Was heute bereits festgehalten wurde</div>
-                      </div>
-                      <CheckCircle2 className="h-4 w-4 text-primary" />
-                    </div>
+                      <div className="mt-4 text-lg font-semibold text-foreground font-body">{area.title}</div>
+                      <div className="mt-2 text-sm text-muted-foreground leading-relaxed font-body">{area.description}</div>
 
-                    <div className="mt-4 space-y-3">
-                      {careTimeline.map((entry) => (
-                        <div key={entry.title} className="rounded-lg border border-border bg-card px-3 py-3">
-                          <div className="flex items-center justify-between gap-3">
-                            <div className="text-sm font-medium text-foreground font-body">{entry.title}</div>
-                            <div className="text-[11px] text-muted-foreground font-body">{entry.meta}</div>
+                      <div className="mt-4 pt-4 border-t border-border space-y-2">
+                        {area.bullets.map((bullet) => (
+                          <div key={bullet} className="flex items-start gap-2 text-sm text-foreground font-body">
+                            <span className="mt-1 h-1.5 w-1.5 rounded-full bg-primary flex-shrink-0" />
+                            <span>{bullet}</span>
                           </div>
-                          <div className="mt-1.5 text-xs text-muted-foreground leading-relaxed font-body">{entry.text}</div>
-                        </div>
-                      ))}
+                        ))}
+                      </div>
                     </div>
-                  </div>
+                  );
+                })}
+              </div>
 
-                  <div className="space-y-4">
-                    <div className="rounded-xl border border-border bg-background p-4">
-                      <div className="text-xs uppercase tracking-widest text-muted-foreground font-body">Arztbericht</div>
-                      <div className="mt-1 text-base font-semibold text-foreground font-body">Trend für das Gespräch</div>
-                      <div className="mt-3 rounded-lg border border-border bg-card p-3">
-                        <div className="flex items-center justify-between text-xs font-body">
-                          <span className="text-muted-foreground">Energie</span>
-                          <span className="text-foreground font-medium">3,8 / 5</span>
-                        </div>
-                        <svg width="100%" height="60" viewBox="0 0 254 60" className="mt-3 overflow-visible">
-                          <defs>
-                            <linearGradient id="landingHeroTrend" x1="0" y1="0" x2="0" y2="1">
-                              <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0.18" />
-                              <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity="0.02" />
-                            </linearGradient>
-                          </defs>
-                          <polygon points={`${trendPoints} 246,60 8,60`} fill="url(#landingHeroTrend)" />
-                          <polyline
-                            points={trendPoints}
-                            fill="none"
-                            stroke="hsl(var(--primary))"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
-                      </div>
-                    </div>
-
-                    <div className="rounded-xl border border-border bg-background p-4">
-                      <div className="flex items-center gap-2">
-                        <Link2 className="h-4 w-4 text-primary" />
-                        <div className="text-base font-semibold text-foreground font-body">Angehörige einbinden</div>
-                      </div>
-                      <div className="mt-2 text-xs text-muted-foreground leading-relaxed font-body">
-                        Freigabe-Links, Dokumente und wichtige Informationen lassen sich gezielt teilen.
-                      </div>
-                      <div className="mt-4 rounded-lg bg-primary/5 border border-primary/15 px-3 py-3 flex items-center justify-between gap-3">
-                        <div>
-                          <div className="text-sm font-medium text-foreground font-body">Freigabe aktiv</div>
-                          <div className="text-xs text-muted-foreground font-body mt-0.5">relevante Bereiche auswählbar</div>
-                        </div>
-                        <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                          <ChevronRight className="h-4 w-4 text-primary" />
-                        </div>
-                      </div>
-                    </div>
+              <div className="mt-5 grid grid-cols-3 gap-3">
+                {foundationItems.map((item) => (
+                  <div key={item} className="rounded-xl border border-sidebar-border bg-sidebar-accent/40 px-4 py-3 text-sm font-body text-sidebar-foreground">
+                    {item}
                   </div>
-                </div>
+                ))}
               </div>
             </div>
           </div>
