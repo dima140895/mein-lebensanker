@@ -66,41 +66,38 @@ const ReactivatePlusBanner = () => {
     };
   }, [user, isCurrentlyOnAnker, profile?.purchased_tier]);
 
-  // Handle return from Stripe checkout (?reactivated=plus|familie)
+  // Handle return from Stripe checkout via localStorage flag set before redirect
   useEffect(() => {
-    const reactivated = searchParams.get('reactivated');
-    if (!reactivated) return;
+    if (typeof window === 'undefined') return;
+    const pending = window.localStorage.getItem(REACTIVATION_FLAG_KEY);
+    if (!pending) return;
 
-    trackEvent('Plus_Reactivated_Return' as any, { plan: reactivated });
-
-    toast.success(
-      language === 'de'
-        ? 'Willkommen zurück! Deine Pflege- & Verlaufs-Daten sind wieder freigeschaltet.'
-        : 'Welcome back! Your care & history data are unlocked again.',
-      { duration: 6000 }
-    );
-
-    // Refresh profile so purchased_tier reflects the webhook update
-    refreshProfile?.().catch(() => undefined);
-
-    // Clean URL param
-    const next = new URLSearchParams(searchParams);
-    next.delete('reactivated');
-    setSearchParams(next, { replace: true });
-  }, [searchParams, setSearchParams, language, refreshProfile]);
+    // Only trigger when the user has actually been re-upgraded (webhook ran)
+    if (tier === 'plus' || tier === 'familie') {
+      trackEvent('Plus_Reactivate_Click' as any, { plan: pending, phase: 'return' });
+      window.localStorage.removeItem(REACTIVATION_FLAG_KEY);
+      toast.success(
+        language === 'de'
+          ? 'Willkommen zurück! Deine Pflege- & Verlaufs-Daten sind wieder freigeschaltet.'
+          : 'Welcome back! Your care & history data are unlocked again.',
+        { duration: 6000 }
+      );
+      refreshProfile?.().catch(() => undefined);
+    }
+  }, [tier, language, refreshProfile]);
 
   const handleReactivate = async () => {
     if (!canceled) return;
     setLoading(true);
     try {
-      trackEvent('Plus_Reactivate_Click' as any, { plan: canceled.plan });
-      const origin = window.location.origin;
+      trackEvent('Plus_Reactivate_Click' as any, { plan: canceled.plan, phase: 'start' });
+      try {
+        window.localStorage.setItem(REACTIVATION_FLAG_KEY, canceled.plan);
+      } catch {
+        // ignore storage errors (private mode)
+      }
       const { data, error } = await supabase.functions.invoke('create-payment', {
-        body: {
-          plan: canceled.plan,
-          successUrl: `${origin}/?module=vorsorge&reactivated=${canceled.plan}`,
-          cancelUrl: `${origin}/?module=vorsorge`,
-        },
+        body: { plan: canceled.plan },
       });
       if (error) throw error;
       if (data?.url) {
@@ -109,6 +106,11 @@ const ReactivatePlusBanner = () => {
         throw new Error('No checkout URL returned');
       }
     } catch (e) {
+      try {
+        window.localStorage.removeItem(REACTIVATION_FLAG_KEY);
+      } catch {
+        // ignore
+      }
       toast.error(
         language === 'de'
           ? 'Fehler beim Starten der Reaktivierung. Bitte versuche es erneut.'
