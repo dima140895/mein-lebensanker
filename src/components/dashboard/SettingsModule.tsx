@@ -26,14 +26,15 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import { Package, Download, Link2, Bell, Heart, Shield, LogOut, Loader2, Keyboard, ShieldCheck, HeartHandshake } from 'lucide-react';
+import { Package, Download, Link2, Bell, Heart, Shield, LogOut, Loader2, Keyboard, ShieldCheck, HeartHandshake, Bug } from 'lucide-react';
+import AdminWebhookEventsPanel from '@/components/dashboard/AdminWebhookEventsPanel';
 import { toast } from 'sonner';
 import { logger } from '@/lib/logger';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 const SettingsModule = () => {
   const { language } = useLanguage();
-  const { user } = useAuth();
+  const { user, isAdmin } = useAuth();
   const { isEncryptionEnabled } = useEncryption();
   const [conversions, setConversions] = useState<number | null>(null);
   const [signingOut, setSigningOut] = useState(false);
@@ -107,7 +108,7 @@ const SettingsModule = () => {
     <div className="space-y-6">
       <SubscriptionManagement />
       <Tabs defaultValue="plan" className="w-full">
-        <TabsList className="w-full grid grid-cols-7">
+        <TabsList className={`w-full grid ${isAdmin ? 'grid-cols-8' : 'grid-cols-7'}`}>
           <TabsTrigger value="plan" className="gap-1.5 text-xs sm:text-sm">
             <Package className="h-3.5 w-3.5" />
             <span className="hidden sm:inline">{texts.plan}</span>
@@ -136,6 +137,12 @@ const SettingsModule = () => {
             <Shield className="h-3.5 w-3.5" />
             <span className="hidden sm:inline">{language === 'de' ? 'Datenschutz' : 'Privacy'}</span>
           </TabsTrigger>
+          {isAdmin && (
+            <TabsTrigger value="admin-debug" className="gap-1.5 text-xs sm:text-sm">
+              <Bug className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">Admin</span>
+            </TabsTrigger>
+          )}
         </TabsList>
         <TabsContent value="plan" className="mt-6">
           <PackageManagement />
@@ -262,6 +269,11 @@ const SettingsModule = () => {
         <TabsContent value="privacy" className="mt-6">
           <ConsentManagement />
         </TabsContent>
+        {isAdmin && (
+          <TabsContent value="admin-debug" className="mt-6">
+            <AdminWebhookEventsPanel />
+          </TabsContent>
+        )}
       </Tabs>
 
       {conversions !== null && conversions > 0 && (
