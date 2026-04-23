@@ -10,6 +10,7 @@ import {
   Stethoscope,
   type LucideIcon,
 } from 'lucide-react';
+import { trackEvent } from '@/lib/analytics';
 
 type Slide = {
   title: string;
