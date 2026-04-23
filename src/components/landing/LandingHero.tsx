@@ -185,43 +185,61 @@ const LandingHero = () => {
 
             {/* Slide */}
             <div className="px-7 py-7 min-h-[460px] flex flex-col">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={current.title}
-                  initial={{ opacity: 0, y: 16 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -12 }}
-                  transition={{ duration: 0.45, ease: 'easeOut' }}
-                  className="flex-1 flex flex-col"
-                >
-                  <div className="rounded-2xl bg-card border border-border p-7 flex-1 flex flex-col text-card-foreground">
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center">
-                        <Icon className="h-7 w-7 text-primary" />
-                      </div>
-                      <span className="text-[11px] uppercase tracking-widest text-muted-foreground font-body bg-muted/60 rounded-full px-3 py-1.5">
-                        {current.status}
-                      </span>
-                    </div>
-
-                    <div className="mt-6 text-3xl font-semibold text-foreground font-body leading-tight">
-                      {current.title}
-                    </div>
-                    <p className="mt-3 text-base text-muted-foreground leading-relaxed font-body">
-                      {current.description}
-                    </p>
-
-                    <div className="mt-6 pt-6 border-t border-border space-y-3">
-                      {current.bullets.map((b) => (
-                        <div key={b} className="flex items-start gap-3 text-sm text-foreground font-body">
-                          <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-primary flex-shrink-0" />
-                          <span>{b}</span>
+            {/* Slide-Stage: feste Höhe, gestapelte Layer => kein Layout-Ruckeln */}
+            <div className="px-7 py-7">
+              <div className="relative h-[460px]">
+                {slides.map((slide, i) => {
+                  const SlideIcon = slide.icon;
+                  const isActive = i === active;
+                  return (
+                    <div
+                      key={slide.title}
+                      aria-hidden={!isActive}
+                      className={`absolute inset-0 transition-opacity duration-500 ease-out ${
+                        isActive ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+                      }`}
+                    >
+                      <div className="rounded-2xl bg-card border border-border p-7 h-full flex flex-col text-card-foreground">
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center">
+                            <SlideIcon className="h-7 w-7 text-primary" />
+                          </div>
+                          <span className="text-[11px] uppercase tracking-widest text-muted-foreground font-body bg-muted/60 rounded-full px-3 py-1.5">
+                            {slide.status}
+                          </span>
                         </div>
-                      ))}
+
+                        <div className="mt-6 text-3xl font-semibold text-foreground font-body leading-tight">
+                          {slide.title}
+                        </div>
+                        <p className="mt-3 text-base text-muted-foreground leading-relaxed font-body">
+                          {slide.description}
+                        </p>
+
+                        <div className="mt-6 pt-6 border-t border-border space-y-3">
+                          {slide.bullets.map((b) => (
+                            <div key={b} className="flex items-start gap-3 text-sm text-foreground font-body">
+                              <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-primary flex-shrink-0" />
+                              <span>{b}</span>
+                            </div>
+                          ))}
+                        </div>
+
+                        {/* Ein klarer CTA pro Kachel */}
+                        <div className="mt-auto pt-6">
+                          <button
+                            onClick={() => navigate(slide.cta.to)}
+                            className="w-full bg-primary text-primary-foreground font-semibold px-6 py-3 rounded-full text-sm hover:bg-primary/90 transition-all shadow-sm font-body inline-flex items-center justify-center gap-2"
+                          >
+                            {slide.cta.label}
+                            <ArrowRight className="h-4 w-4" />
+                          </button>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </motion.div>
-              </AnimatePresence>
+                  );
+                })}
+              </div>
 
               {/* Indikatoren */}
               <div className="mt-6 flex items-center justify-between gap-4">
@@ -229,7 +247,7 @@ const LandingHero = () => {
                   {slides.map((s, i) => (
                     <button
                       key={s.title}
-                      onClick={() => setActive(i)}
+                      onClick={() => goTo(i)}
                       aria-label={`Zeige ${s.title}`}
                       className={`h-1.5 rounded-full transition-all ${
                         i === active
@@ -243,7 +261,7 @@ const LandingHero = () => {
                   {slides.map((s, i) => (
                     <button
                       key={s.title}
-                      onClick={() => setActive(i)}
+                      onClick={() => goTo(i)}
                       className={`px-2 py-1 rounded-full transition-colors ${
                         i === active ? 'text-sidebar-foreground' : 'hover:text-sidebar-foreground/80'
                       }`}
