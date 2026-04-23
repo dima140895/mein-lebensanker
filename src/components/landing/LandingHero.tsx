@@ -17,6 +17,7 @@ type Slide = {
   description: string;
   icon: LucideIcon;
   bullets: string[];
+  cta: { label: string; to: string };
 };
 
 const slides: Slide[] = [
@@ -31,6 +32,7 @@ const slides: Slide[] = [
       'Patientenverfügung & Vollmacht',
       'Dokumenten-Standorte',
     ],
+    cta: { label: 'Vorsorge öffnen', to: '/dashboard?register=true' },
   },
   {
     title: 'Pflege-Begleiter',
@@ -43,6 +45,7 @@ const slides: Slide[] = [
       'Medikamente & Erinnerungen',
       'Kalender für Termine',
     ],
+    cta: { label: 'Pflege-Begleiter öffnen', to: '/dashboard?register=true' },
   },
   {
     title: 'Mein Verlauf',
@@ -55,6 +58,7 @@ const slides: Slide[] = [
       'Trends auf einer Skala 1–10',
       'Arztbericht als PDF',
     ],
+    cta: { label: 'Verlauf öffnen', to: '/dashboard?register=true' },
   },
   {
     title: 'Freigaben',
@@ -67,6 +71,7 @@ const slides: Slide[] = [
       'Bereiche einzeln auswählen',
       'Jederzeit widerrufbar',
     ],
+    cta: { label: 'Freigaben öffnen', to: '/dashboard?register=true' },
   },
 ];
 
