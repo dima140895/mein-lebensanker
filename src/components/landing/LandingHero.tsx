@@ -78,13 +78,20 @@ const slides: Slide[] = [
 const LandingHero = () => {
   const navigate = useNavigate();
   const [active, setActive] = useState(0);
+  const [autoPlay, setAutoPlay] = useState(true);
 
   useEffect(() => {
+    if (!autoPlay) return;
     const id = setInterval(() => {
       setActive((prev) => (prev + 1) % slides.length);
     }, 4500);
     return () => clearInterval(id);
-  }, []);
+  }, [autoPlay]);
+
+  const goTo = (i: number) => {
+    setAutoPlay(false);
+    setActive(i);
+  };
 
   const scrollTo = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
@@ -95,9 +102,6 @@ const LandingHero = () => {
     animate: { opacity: 1, y: 0 },
     transition: { duration: 0.45, delay },
   });
-
-  const current = slides[active];
-  const Icon = current.icon;
 
   return (
     <section
