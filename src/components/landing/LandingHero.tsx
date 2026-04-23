@@ -80,6 +80,7 @@ const LandingHero = () => {
   const navigate = useNavigate();
   const [active, setActive] = useState(0);
   const [autoPlay, setAutoPlay] = useState(true);
+  const slideEnteredAt = useRef<number>(Date.now());
 
   useEffect(() => {
     if (!autoPlay) return;
@@ -89,9 +90,38 @@ const LandingHero = () => {
     return () => clearInterval(id);
   }, [autoPlay]);
 
+  // Track jeden View (auto-rotated oder manuell) inkl. Verweildauer auf vorherigem Slide
+  useEffect(() => {
+    const now = Date.now();
+    const dwellMs = now - slideEnteredAt.current;
+    slideEnteredAt.current = now;
+
+    trackEvent('Hero_Slide_View', {
+      slide: slides[active].title,
+      position: String(active + 1),
+      mode: autoPlay ? 'auto' : 'manual',
+      previous_dwell_ms: String(dwellMs),
+    });
+  }, [active, autoPlay]);
+
   const goTo = (i: number) => {
+    if (i === active) return;
+    trackEvent('Hero_Slide_Tab_Klick', {
+      slide: slides[i].title,
+      from: slides[active].title,
+      position: String(i + 1),
+    });
     setAutoPlay(false);
     setActive(i);
+  };
+
+  const handleSlideCta = (slide: Slide, position: number) => {
+    trackEvent('Hero_Slide_CTA_Klick', {
+      slide: slide.title,
+      cta: slide.cta.label,
+      position: String(position + 1),
+    });
+    navigate(slide.cta.to);
   };
 
   const scrollTo = (id: string) => {
