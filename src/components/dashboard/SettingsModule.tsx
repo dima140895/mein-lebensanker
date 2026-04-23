@@ -269,6 +269,11 @@ const SettingsModule = () => {
         <TabsContent value="privacy" className="mt-6">
           <ConsentManagement />
         </TabsContent>
+        {isAdmin && (
+          <TabsContent value="admin-debug" className="mt-6">
+            <AdminWebhookEventsPanel />
+          </TabsContent>
+        )}
       </Tabs>
 
       {conversions !== null && conversions > 0 && (
