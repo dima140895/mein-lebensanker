@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
 import { RotateCcw, Loader2, Sparkles } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -16,15 +15,14 @@ interface CanceledSub {
   current_period_end: string | null;
 }
 
+const REACTIVATION_FLAG_KEY = 'plus_reactivation_pending';
+
 const isCanceledPlan = (p: string | null | undefined): p is CanceledPlan =>
   p === 'plus' || p === 'familie';
 
 const ReactivatePlusBanner = () => {
-  const { user, profile, refreshProfile } = useAuth() as ReturnType<typeof useAuth> & {
-    refreshProfile?: () => Promise<void>;
-  };
+  const { user, profile, refreshProfile } = useAuth();
   const { language } = useLanguage();
-  const [searchParams, setSearchParams] = useSearchParams();
   const [canceled, setCanceled] = useState<CanceledSub | null>(null);
   const [loading, setLoading] = useState(false);
 
