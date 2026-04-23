@@ -20,6 +20,7 @@ import ContactsForm from '@/components/forms/ContactsForm';
 import AdvisorFinderSection from '@/components/sections/AdvisorFinderSection';
 import PackageManagement from '@/components/PackageManagement';
 import ShareLinkManager from '@/components/ShareLinkManager';
+import ReactivatePlusBanner from '@/components/dashboard/ReactivatePlusBanner';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -334,6 +335,9 @@ const VorsorgeModule = () => {
           </div>
         </div>
       </div>
+
+      {/* Reactivate Plus / Familie banner — visible only when previously cancelled */}
+      <ReactivatePlusBanner />
 
       {/* Share button row */}
       <div className="flex items-center justify-between mb-4 md:mb-6 -mt-1">
