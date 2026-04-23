@@ -239,35 +239,31 @@ const LandingHero = () => {
                 })}
               </div>
 
-              {/* Indikatoren */}
-              <div className="mt-6 flex items-center justify-between gap-4">
-                <div className="flex gap-2">
-                  {slides.map((s, i) => (
+              {/* Legende: kurze, klickbare Funktions-Titel */}
+              <div className="mt-6 grid grid-cols-4 gap-2">
+                {slides.map((s, i) => {
+                  const isActive = i === active;
+                  return (
                     <button
                       key={s.title}
                       onClick={() => goTo(i)}
                       aria-label={`Zeige ${s.title}`}
-                      className={`h-1.5 rounded-full transition-all ${
-                        i === active
-                          ? 'w-8 bg-sidebar-foreground'
-                          : 'w-4 bg-sidebar-foreground/30 hover:bg-sidebar-foreground/50'
-                      }`}
-                    />
-                  ))}
-                </div>
-                <div className="flex gap-2 text-[11px] uppercase tracking-widest font-body text-sidebar-foreground/60">
-                  {slides.map((s, i) => (
-                    <button
-                      key={s.title}
-                      onClick={() => goTo(i)}
-                      className={`px-2 py-1 rounded-full transition-colors ${
-                        i === active ? 'text-sidebar-foreground' : 'hover:text-sidebar-foreground/80'
+                      aria-current={isActive ? 'true' : undefined}
+                      className={`text-left rounded-lg px-3 py-2 border transition-all font-body ${
+                        isActive
+                          ? 'bg-sidebar-accent border-sidebar-foreground/30 text-sidebar-foreground'
+                          : 'bg-transparent border-sidebar-border text-sidebar-foreground/60 hover:text-sidebar-foreground hover:border-sidebar-foreground/20'
                       }`}
                     >
-                      {s.title}
+                      <div className="text-[10px] uppercase tracking-widest opacity-70">
+                        0{i + 1}
+                      </div>
+                      <div className="text-xs font-semibold mt-0.5 leading-tight">
+                        {s.title}
+                      </div>
                     </button>
-                  ))}
-                </div>
+                  );
+                })}
               </div>
             </div>
           </div>
