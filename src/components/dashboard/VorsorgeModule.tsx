@@ -336,6 +336,9 @@ const VorsorgeModule = () => {
         </div>
       </div>
 
+      {/* Reactivate Plus / Familie banner — visible only when previously cancelled */}
+      <ReactivatePlusBanner />
+
       {/* Share button row */}
       <div className="flex items-center justify-between mb-4 md:mb-6 -mt-1">
         <span className="text-xs text-muted-foreground">
