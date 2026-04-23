@@ -2,8 +2,7 @@ import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
 
-const PREVIEW_CACHE_BUSTER_VERSION = "2026-04-23-preview-v3";
-const PREVIEW_CACHE_BUSTER_KEY = "__pcb_version__";
+const PREVIEW_CACHE_BUSTER_VERSION = "2026-04-23-preview-v4";
 
 const isPreviewEnv = () => {
   const h = window.location.hostname;
@@ -14,16 +13,16 @@ const isPreviewEnv = () => {
 };
 
 (async () => {
-  const needsPreviewReset = isPreviewEnv() && sessionStorage.getItem(PREVIEW_CACHE_BUSTER_KEY) !== PREVIEW_CACHE_BUSTER_VERSION;
+  const params = new URLSearchParams(location.search);
+  const currentPreviewVersion = params.get("v");
+  const needsPreviewReset = isPreviewEnv() && currentPreviewVersion !== PREVIEW_CACHE_BUSTER_VERSION;
 
   if (needsPreviewReset) {
-    sessionStorage.setItem(PREVIEW_CACHE_BUSTER_KEY, PREVIEW_CACHE_BUSTER_VERSION);
     const regs = await navigator.serviceWorker?.getRegistrations?.().catch(() => []);
     await Promise.all((regs ?? []).map(r => r.unregister()));
     const keys = await caches.keys().catch(() => []);
     await Promise.all(keys.map(k => caches.delete(k)));
 
-    const params = new URLSearchParams(location.search);
     params.set("v", PREVIEW_CACHE_BUSTER_VERSION);
     const query = params.toString();
 
