@@ -202,7 +202,7 @@ const LandingHero = () => {
             {...stagger(0.44)}
             className="mt-8 sm:mt-10 flex gap-x-2 sm:gap-x-3 gap-y-2 justify-center lg:justify-start flex-wrap font-body text-[11px] sm:text-xs text-muted-foreground/80"
           >
-            <span>Server in Deutschland</span>
+            <span>DSGVO-konformes Hosting</span>
             <span aria-hidden>·</span>
             <span>DSGVO-konform</span>
             <span aria-hidden>·</span>
