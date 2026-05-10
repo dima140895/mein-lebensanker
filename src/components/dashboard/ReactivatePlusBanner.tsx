@@ -6,6 +6,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { trackEvent } from '@/lib/analytics';
+import { redirectToCheckout } from '@/lib/redirectToCheckout';
 
 type CanceledPlan = 'plus' | 'familie';
 
