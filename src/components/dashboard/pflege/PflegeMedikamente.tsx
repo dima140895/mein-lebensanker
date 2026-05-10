@@ -397,7 +397,7 @@ const PflegeMedikamente = ({ activePersonName = '', selfOnly = false }: PflegeMe
         <div className="flex flex-col items-center justify-center py-16 text-center">
           <Pill className="h-12 w-12 text-muted-foreground mb-4" />
           <h3 className="font-sans text-xl text-foreground mb-2">{language === 'de' ? 'Keine Medikamente hinterlegt' : 'No medications recorded'}</h3>
-          <p className="text-sm text-muted-foreground max-w-xs font-body">{language === 'de' ? 'Füge Medikamente hinzu um den Überblick zu behalten.' : 'Add medications to keep track.'}</p>
+          <p className="text-sm text-muted-foreground max-w-xs font-body">{language === 'de' ? 'Füge Medikamente hinzu, um den Überblick zu behalten.' : 'Add medications to keep track.'}</p>
           <Button onClick={() => setShowForm(true)} className="mt-6 rounded-lg min-h-[44px]">
             <Plus className="h-4 w-4 mr-2" />
             {language === 'de' ? 'Medikament hinzufügen' : 'Add medication'}

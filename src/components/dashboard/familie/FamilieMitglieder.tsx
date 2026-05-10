@@ -224,7 +224,7 @@ const FamilieMitglieder = () => {
         <div className="flex flex-col items-center justify-center py-16 text-center">
           <Users className="h-12 w-12 text-muted-foreground mb-4" />
           <h3 className="font-sans text-xl text-foreground mb-2">{language === 'de' ? 'Noch niemand eingeladen' : 'No one invited yet'}</h3>
-          <p className="text-sm text-muted-foreground max-w-xs font-body">{language === 'de' ? 'Lade Familienmitglieder ein um gemeinsam Pflege und Gesundheit zu dokumentieren.' : 'Invite family members to collaborate on care documentation.'}</p>
+          <p className="text-sm text-muted-foreground max-w-xs font-body">{language === 'de' ? 'Lade Familienmitglieder ein, um gemeinsam Pflege und Gesundheit zu dokumentieren.' : 'Invite family members to collaborate on care documentation.'}</p>
           <Button onClick={() => setShowForm(true)} className="mt-6 rounded-lg min-h-[44px]">
             <Plus className="h-4 w-4 mr-2" />
             {language === 'de' ? 'Erstes Mitglied einladen' : 'Invite first member'}
