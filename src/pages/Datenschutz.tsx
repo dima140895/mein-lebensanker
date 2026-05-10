@@ -287,12 +287,12 @@ Legal basis: Art. 6(1)(b) GDPR (contract performance) and Art. 32 GDPR (technica
 
 Hosting and Backend: Supabase / Lovable Cloud
 • Provider: Supabase Inc., 970 Toa Payoh North #07-04, Singapore 318992
-• Infrastructure: Amazon Web Services (AWS), servers in the EU (Frankfurt, Germany)
+• Infrastructure: Amazon Web Services (AWS), London (UK, eu-west-2) region
 • Purpose: Provision of database, authentication, file storage, and backend functions
 • Legal basis: Art. 6(1)(b) GDPR (contract performance)
 • Data protection: Supabase is GDPR-compliant and offers a Data Processing Agreement (DPA).
 
-Data transfers to third countries (USA, Singapore) are based on EU Standard Contractual Clauses pursuant to Art. 46(2)(c) GDPR.`,
+As your data is processed in the United Kingdom (a third country under the GDPR), the transfer is based on the European Commission's adequacy decision for the UK (Implementing Decision (EU) 2021/1772) and additionally on EU Standard Contractual Clauses pursuant to Art. 46(2)(c) GDPR. Transfers to further third countries (e.g. USA, Singapore via sub-processors) are likewise based on Standard Contractual Clauses.`,
         },
         {
           title: '7. Payment Processing',
