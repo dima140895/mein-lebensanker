@@ -2,7 +2,7 @@ import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
 
-const PREVIEW_CACHE_BUSTER_VERSION = "2026-04-27-preview-v5";
+const PREVIEW_CACHE_BUSTER_VERSION = "2026-04-27-preview-v6";
 
 const isPreviewEnv = () => {
   const h = window.location.hostname;
