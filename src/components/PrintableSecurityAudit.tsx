@@ -509,7 +509,7 @@ export const PrintableSecurityAudit = forwardRef<HTMLDivElement, PrintableSecuri
             </div>
             <div className="info-row">
               <span className="info-label">Hosting-Region:</span>
-              <span className="info-value">AWS Frankfurt (eu-central-1)</span>
+              <span className="info-value">AWS London (eu-west-2, UK – Drittland mit Standardvertragsklauseln)</span>
             </div>
             <div className="info-row">
               <span className="info-label">Transport-Verschlüsselung:</span>

@@ -22,7 +22,7 @@ const Security = () => {
         'Rate-Limiting und Brute-Force-Schutz',
         'Stripe-Webhook-Signaturverifikation',
         'JWT-Validierung in allen API-Endpunkten',
-        'Supabase Server in Frankfurt (EU)',
+        'Server bei AWS in London (UK) – Drittlandtransfer auf Basis der EU-Standardvertragsklauseln',
         'DSGVO-konformer Betrieb',
       ]
     : [
@@ -33,7 +33,7 @@ const Security = () => {
         'Rate limiting and brute-force protection',
         'Stripe webhook signature verification',
         'JWT validation in all API endpoints',
-        'Supabase servers in Frankfurt (EU)',
+        'Servers hosted on AWS in London (UK) – third-country transfer based on EU Standard Contractual Clauses',
         'GDPR-compliant operation',
       ];
 

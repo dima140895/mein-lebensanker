@@ -82,12 +82,12 @@ Rechtsgrundlage: Art. 6 Abs. 1 lit. b DSGVO (Vertragserfüllung) und Art. 32 DSG
 
 Hosting und Backend: Supabase / Lovable Cloud
 • Anbieter: Supabase Inc., 970 Toa Payoh North #07-04, Singapore 318992
-• Infrastruktur: Amazon Web Services (AWS), Server in der EU (Frankfurt, Deutschland)
+• Infrastruktur: Amazon Web Services (AWS), Region London (UK, eu-west-2)
 • Zweck: Bereitstellung der Datenbank, Authentifizierung, Dateispeicherung und Backend-Funktionen
 • Rechtsgrundlage: Art. 6 Abs. 1 lit. b DSGVO (Vertragserfüllung)
 • Datenschutz: Supabase ist DSGVO-konform und bietet einen Auftragsverarbeitungsvertrag (DPA) an.
 
-Die Datenübertragung in Drittländer (USA, Singapur) erfolgt auf Basis von EU-Standardvertragsklauseln gemäß Art. 46 Abs. 2 lit. c DSGVO.`,
+Da Deine Daten im Vereinigten Königreich (Drittland gemäß DSGVO) verarbeitet werden, erfolgt die Übermittlung auf Grundlage des Angemessenheitsbeschlusses der EU-Kommission für das UK (Durchführungsbeschluss (EU) 2021/1772) sowie ergänzend auf Basis von EU-Standardvertragsklauseln gemäß Art. 46 Abs. 2 lit. c DSGVO. Eine Übermittlung in weitere Drittländer (z. B. USA, Singapur durch Sub-Auftragsverarbeiter) erfolgt ebenfalls auf Basis von Standardvertragsklauseln.`,
         },
         {
           title: '7. Zahlungsabwicklung',
@@ -287,12 +287,12 @@ Legal basis: Art. 6(1)(b) GDPR (contract performance) and Art. 32 GDPR (technica
 
 Hosting and Backend: Supabase / Lovable Cloud
 • Provider: Supabase Inc., 970 Toa Payoh North #07-04, Singapore 318992
-• Infrastructure: Amazon Web Services (AWS), servers in the EU (Frankfurt, Germany)
+• Infrastructure: Amazon Web Services (AWS), London (UK, eu-west-2) region
 • Purpose: Provision of database, authentication, file storage, and backend functions
 • Legal basis: Art. 6(1)(b) GDPR (contract performance)
 • Data protection: Supabase is GDPR-compliant and offers a Data Processing Agreement (DPA).
 
-Data transfers to third countries (USA, Singapore) are based on EU Standard Contractual Clauses pursuant to Art. 46(2)(c) GDPR.`,
+As your data is processed in the United Kingdom (a third country under the GDPR), the transfer is based on the European Commission's adequacy decision for the UK (Implementing Decision (EU) 2021/1772) and additionally on EU Standard Contractual Clauses pursuant to Art. 46(2)(c) GDPR. Transfers to further third countries (e.g. USA, Singapore via sub-processors) are likewise based on Standard Contractual Clauses.`,
         },
         {
           title: '7. Payment Processing',
