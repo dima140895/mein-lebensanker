@@ -145,7 +145,7 @@ const Security = () => {
             <div className="rounded-lg border border-amber-200 bg-amber-50/50 p-5">
               <p className="text-sm text-foreground leading-relaxed">
                 {language === 'de'
-                  ? 'Wenn Sie Ihr Verschlüsselungspasswort und Ihren Recovery Key verlieren, sind Ihre verschlüsselten Daten unwiederbringlich verloren. Dies ist by design — echte Zero-Knowledge-Verschlüsselung bedeutet dass auch wir keinen Zugriff haben.'
+                  ? 'Wenn Sie Ihr Verschlüsselungspasswort und Ihren Recovery Key verlieren, sind Ihre verschlüsselten Daten unwiederbringlich verloren. Dies ist by design — echte Zero-Knowledge-Verschlüsselung bedeutet, dass auch wir keinen Zugriff haben.'
                   : 'If you lose your encryption password and your recovery key, your encrypted data is irretrievably lost. This is by design — true zero-knowledge encryption means that even we have no access.'}
               </p>
             </div>
