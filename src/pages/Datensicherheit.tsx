@@ -314,8 +314,8 @@ Without password and without recovery key, your encrypted data is not recoverabl
                 <p>
                   <strong className="text-foreground">{language === 'de' ? 'Datenbankebene:' : 'Database Level:'}</strong>{' '}
                   {language === 'de'
-                    ? 'Die Datenbank verschlüsselt alle gespeicherten Daten automatisch (Encryption at Rest). Die Server befinden sich in Frankfurt, Deutschland.'
-                    : 'The database automatically encrypts all stored data (Encryption at Rest). Servers are located in Frankfurt, Germany.'}
+                    ? 'Die Datenbank verschlüsselt alle gespeicherten Daten automatisch (Encryption at Rest). Die Server werden bei AWS in der Region London (UK) betrieben. Die Übermittlung in das Drittland UK erfolgt auf Grundlage der EU-Standardvertragsklauseln.'
+                    : 'The database automatically encrypts all stored data (Encryption at Rest). Servers are operated by AWS in the London (UK) region. Transfers to the third country UK are based on the EU Standard Contractual Clauses.'}
                 </p>
                 <p>
                   <strong className="text-foreground">{language === 'de' ? 'Ende-zu-Ende-Verschlüsselung:' : 'End-to-End Encryption:'}</strong>{' '}
