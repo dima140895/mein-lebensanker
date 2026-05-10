@@ -34,7 +34,7 @@ const LandingCTA = () => {
       </button>
 
       <p className="mt-4 text-white/30 text-xs">
-        Kein Abo-Zwang · Jederzeit kündbar · Daten in Deutschland
+        Kein Abo-Zwang · Jederzeit kündbar · DSGVO-konformes Hosting (EU/UK)
       </p>
     </section>
   );

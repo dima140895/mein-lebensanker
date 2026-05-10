@@ -79,7 +79,7 @@ const TrustBadges = () => (
     <span className="text-border">·</span>
     <span className="flex items-center gap-1">
       <MapPin className="h-3.5 w-3.5" />
-      Deutschland
+      EU/UK Hosting
     </span>
     <span className="text-border">·</span>
     <span className="flex items-center gap-1">
