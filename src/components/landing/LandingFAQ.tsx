@@ -19,7 +19,7 @@ const faqs = [
     a: 'Auf Servern in Deutschland (Frankfurt), DSGVO-konform und optional Ende-zu-Ende-verschlüsselt.',
   },
   {
-    q: 'Was passiert wenn ich das Abo kündige?',
+    q: 'Was passiert, wenn ich das Abo kündige?',
     a: 'Du behältst dauerhaft Zugang zur Vorsorge-Dokumentation. Deine Daten bleiben 90 Tage exportierbar.',
   },
   {

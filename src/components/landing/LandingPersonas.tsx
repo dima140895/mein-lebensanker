@@ -30,10 +30,10 @@ const LandingPersonas = () => {
         <div className="text-center mb-16">
           <span className="text-xs font-semibold text-accent tracking-widest uppercase">Für wen</span>
           <h2 className="font-sans text-3xl sm:text-4xl lg:text-5xl font-bold text-white mt-3 mb-4">
-            Lebensanker ist für dich wenn...
+            Lebensanker ist für dich, wenn …
           </h2>
           <p className="text-white/50 max-w-lg mx-auto text-lg">
-            Egal wo du im Leben stehst — dein Lebensanker passt sich an.
+            Egal, wo du im Leben stehst — dein Lebensanker passt sich an.
           </p>
         </div>
 

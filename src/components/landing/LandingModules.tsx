@@ -41,7 +41,7 @@ const LandingModules = () => {
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
         <div className="text-center mb-16">
           <span className="text-xs uppercase tracking-widest font-medium text-primary mb-3 block">
-            Alles was du brauchst. Nichts was du nicht brauchst.
+            Alles, was du brauchst. Nichts, was du nicht brauchst.
           </span>
           <h2 className="font-bold text-3xl md:text-4xl text-foreground tracking-[-0.025em]">
             Ein System für alle Lebensphasen.
