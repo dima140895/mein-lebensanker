@@ -282,7 +282,7 @@ Without password and without recovery key, your encrypted data is not recoverabl
                     <tr>
                       <td className="px-4 py-2.5 text-foreground">Supabase Inc.</td>
                       <td className="px-4 py-2.5 text-muted-foreground">{language === 'de' ? 'Datenbank, Authentifizierung, Dateispeicher' : 'Database, Authentication, File Storage'}</td>
-                      <td className="px-4 py-2.5 text-muted-foreground">EU (Frankfurt)</td>
+                      <td className="px-4 py-2.5 text-muted-foreground">{language === 'de' ? 'AWS, Region London (UK) – Drittland mit Standardvertragsklauseln' : 'AWS, London (UK) region – third country with Standard Contractual Clauses'}</td>
                     </tr>
                     <tr>
                       <td className="px-4 py-2.5 text-foreground">Stripe Inc.</td>
