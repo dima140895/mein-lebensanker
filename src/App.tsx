@@ -40,6 +40,7 @@ const ResetPassword = lazy(() => import("./pages/ResetPassword"));
 const VerifyEmail = lazy(() => import("./pages/VerifyEmail"));
 const Datenschutz = lazy(() => import("./pages/Datenschutz"));
 const Impressum = lazy(() => import("./pages/Impressum"));
+const Nutzungsbedingungen = lazy(() => import("./pages/Nutzungsbedingungen"));
 const Datensicherheit = lazy(() => import("./pages/Datensicherheit"));
 const Sicherheitsgrenzen = lazy(() => import("./pages/Sicherheitsgrenzen"));
 const PromoVideo = lazy(() => import("./pages/PromoVideo"));
