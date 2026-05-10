@@ -93,6 +93,7 @@ const App = () => (
                       <Route path="/verify-email" element={<VerifyEmail />} />
                       <Route path="/datenschutz" element={<Datenschutz />} />
                       <Route path="/impressum" element={<Impressum />} />
+                      <Route path="/nutzungsbedingungen" element={<Nutzungsbedingungen />} />
                       <Route path="/datensicherheit" element={<Datensicherheit />} />
                       <Route path="/sicherheitsgrenzen" element={<Sicherheitsgrenzen />} />
                       <Route path="/promo" element={<PromoVideo />} />
