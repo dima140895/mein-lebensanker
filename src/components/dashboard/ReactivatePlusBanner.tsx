@@ -6,6 +6,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { trackEvent } from '@/lib/analytics';
+import { redirectToCheckout } from '@/lib/redirectToCheckout';
 
 type CanceledPlan = 'plus' | 'familie';
 
@@ -111,7 +112,7 @@ const ReactivatePlusBanner = () => {
       });
       if (error) throw error;
       if (data?.url) {
-        window.location.href = data.url;
+        redirectToCheckout(data.url);
       } else {
         throw new Error('No checkout URL returned');
       }

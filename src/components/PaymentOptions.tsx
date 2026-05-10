@@ -7,6 +7,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { supabase } from '@/integrations/supabase/browserClient';
 import { toast } from 'sonner';
 import { logger } from '@/lib/logger';
+import { redirectToCheckout } from '@/lib/redirectToCheckout';
 import { type PlanType } from '@/lib/pricing';
 
 const PaymentOptions = () => {
@@ -40,7 +41,7 @@ const PaymentOptions = () => {
       }
 
       if (data?.url) {
-        window.location.href = data.url;
+        redirectToCheckout(data.url);
       } else {
         throw new Error('No checkout URL returned');
       }
