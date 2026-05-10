@@ -816,8 +816,8 @@ const AuthForm = ({ onSuccess, defaultMode = 'login', onVerifyModeChange, embedd
                   <div className="flex-1">
                     <label htmlFor="terms" className="font-body text-sm text-foreground leading-snug cursor-pointer">
                       {language === 'de'
-                        ? <>Ich habe die <a href="/datenschutz" target="_blank" rel="noopener noreferrer" className="text-primary underline">Datenschutzerklärung</a> und <a href="/impressum" target="_blank" rel="noopener noreferrer" className="text-primary underline">Nutzungsbedingungen</a> gelesen und akzeptiere sie.</>
-                        : <>I have read and accept the <a href="/datenschutz" target="_blank" rel="noopener noreferrer" className="text-primary underline">Privacy Policy</a> and <a href="/impressum" target="_blank" rel="noopener noreferrer" className="text-primary underline">Terms of Service</a>.</>
+                        ? <>Ich habe die <a href="/datenschutz" target="_blank" rel="noopener noreferrer" className="text-primary underline">Datenschutzerklärung</a> und <a href="/nutzungsbedingungen" target="_blank" rel="noopener noreferrer" className="text-primary underline">Nutzungsbedingungen</a> gelesen und akzeptiere sie.</>
+                        : <>I have read and accept the <a href="/datenschutz" target="_blank" rel="noopener noreferrer" className="text-primary underline">Privacy Policy</a> and <a href="/nutzungsbedingungen" target="_blank" rel="noopener noreferrer" className="text-primary underline">Terms of Service</a>.</>
                       }
                     </label>
                     {consentErrors.terms && (
