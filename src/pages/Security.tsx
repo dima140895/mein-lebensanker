@@ -33,7 +33,7 @@ const Security = () => {
         'Rate limiting and brute-force protection',
         'Stripe webhook signature verification',
         'JWT validation in all API endpoints',
-        'Supabase servers in Frankfurt (EU)',
+        'Servers hosted on AWS in London (UK) – third-country transfer based on EU Standard Contractual Clauses',
         'GDPR-compliant operation',
       ];
 
