@@ -16,7 +16,7 @@ const faqs = [
   },
   {
     q: 'Wo werden meine Daten gespeichert?',
-    a: 'Auf Servern in Deutschland (Frankfurt), DSGVO-konform und optional Ende-zu-Ende-verschlüsselt.',
+    a: 'Auf AWS-Servern in der Region London (UK), DSGVO-konform betrieben über EU-Standardvertragsklauseln und optional Ende-zu-Ende-verschlüsselt mit AES-256.',
   },
   {
     q: 'Was passiert, wenn ich das Abo kündige?',
