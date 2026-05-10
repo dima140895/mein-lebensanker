@@ -75,7 +75,7 @@ const PflegeMedikamente = ({ activePersonName = '', selfOnly = false }: PflegeMe
       error: 'Fehler',
       reminderSection: 'Erinnerungen',
       reminderToggle: 'E-Mail-Erinnerung aktivieren',
-      reminderHint: 'Du erhältst eine E-Mail wenn es Zeit für dieses Medikament ist.',
+      reminderHint: 'Du erhältst eine E-Mail, wenn es Zeit für dieses Medikament ist.',
       addTime: '+ Zeit hinzufügen',
       reminderActive: 'Erinnerung',
       upgradeNeeded: 'Anker Plus',

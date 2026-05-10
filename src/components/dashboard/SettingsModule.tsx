@@ -50,7 +50,7 @@ const SettingsModule = () => {
       security: 'Sicherheit',
       referralStats: 'Du hast {count} Menschen zu Lebensanker eingeladen.',
       sessionsTitle: 'Aktive Sitzungen',
-      sessionsDesc: 'Melde alle anderen Geräte ab wenn du denkst dass dein Konto kompromittiert sein könnte.',
+      sessionsDesc: 'Melde alle anderen Geräte ab, wenn du denkst, dass dein Konto kompromittiert sein könnte.',
       signOutOthers: 'Alle anderen Geräte abmelden',
       signOutOthersTitle: 'Alle anderen Geräte abmelden?',
       signOutOthersDesc: 'Du bleibst auf diesem Gerät angemeldet. Alle anderen Sitzungen werden beendet.',
@@ -249,7 +249,7 @@ const SettingsModule = () => {
                   </div>
                   <p className="text-xs text-muted-foreground mt-3">
                     {language === 'de'
-                      ? 'Tastenkürzel funktionieren wenn kein Textfeld aktiv ist.'
+                      ? 'Tastenkürzel funktionieren, wenn kein Textfeld aktiv ist.'
                       : 'Shortcuts work when no text field is active.'}
                   </p>
                 </div>
