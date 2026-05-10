@@ -68,7 +68,7 @@ const Security = () => {
             <ul className="space-y-2 mb-6">
               {(language === 'de'
                 ? [
-                    'Die Lücke nicht öffentlich zu machen bevor wir sie behoben haben',
+                    'Die Lücke nicht öffentlich zu machen, bevor wir sie behoben haben',
                     'Keine Nutzerdaten einzusehen oder zu verändern',
                   ]
                 : [
