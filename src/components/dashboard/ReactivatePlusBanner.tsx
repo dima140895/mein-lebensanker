@@ -111,7 +111,7 @@ const ReactivatePlusBanner = () => {
       });
       if (error) throw error;
       if (data?.url) {
-        window.location.href = data.url;
+        redirectToCheckout(data.url);
       } else {
         throw new Error('No checkout URL returned');
       }

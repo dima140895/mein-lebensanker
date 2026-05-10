@@ -8,6 +8,7 @@ import { supabase } from '@/integrations/supabase/browserClient';
 import { toast } from 'sonner';
 import { PRICING, type PlanType } from '@/lib/pricing';
 import { logger } from '@/lib/logger';
+import { redirectToCheckout } from '@/lib/redirectToCheckout';
 
 const UpgradeOptions = () => {
   const { user, profile } = useAuth();
@@ -58,7 +59,7 @@ const UpgradeOptions = () => {
       });
       if (error) throw error;
       if (data?.url) {
-        window.location.href = data.url;
+        redirectToCheckout(data.url);
       }
     } catch (error: any) {
       logger.error('Upgrade error:', error);
