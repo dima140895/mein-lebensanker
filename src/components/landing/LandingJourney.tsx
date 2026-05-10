@@ -33,7 +33,7 @@ const LandingJourney = () => {
           Die meisten warten zu lang.
         </h2>
         <p className="text-muted-foreground text-lg mt-3 max-w-md mx-auto">
-          Ein Unfall, eine Diagnose oder ein Todesfall kündigt sich nicht an. Aber du kannst vorbereitet sein wenn sie kommen.
+          Ein Unfall, eine Diagnose oder ein Todesfall kündigt sich nicht an. Aber du kannst vorbereitet sein, wenn sie kommen.
         </p>
       </div>
 

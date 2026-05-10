@@ -483,7 +483,7 @@ const VorsorgeModule = () => {
               {
                 num: '01',
                 title: { de: 'Vollmachten & Testament', en: 'Powers of attorney & will' },
-                desc: { de: 'Wer darf für dich entscheiden wenn du es nicht mehr kannst? Wer erbt was?', en: 'Who can decide for you when you can\'t? Who inherits what?' },
+                desc: { de: 'Wer darf für dich entscheiden, wenn du es nicht mehr kannst? Wer erbt was?', en: 'Who can decide for you when you can\'t? Who inherits what?' },
               },
               {
                 num: '02',
@@ -576,7 +576,7 @@ const VorsorgeModule = () => {
           <div className="border-t border-border my-2" />
           <p className="text-sm text-muted-foreground text-center">
             {language === 'de'
-              ? 'Was passiert wenn sich etwas ändert? Wenn ein Elternteil Pflege braucht oder du selbst mit einer Diagnose konfrontiert wirst — Lebensanker ist dann mehr als ein Archiv.'
+              ? 'Was passiert, wenn sich etwas ändert? Wenn ein Elternteil Pflege braucht oder du selbst mit einer Diagnose konfrontiert wirst — Lebensanker ist dann mehr als ein Archiv.'
               : 'What happens when things change? When a parent needs care or you face a diagnosis — Lebensanker becomes more than an archive.'}
           </p>
           <div className="space-y-2 mt-4">

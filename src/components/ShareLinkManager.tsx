@@ -700,7 +700,7 @@ const ShareLinkManager = () => {
         <div className="flex flex-col items-center justify-center py-16 text-center">
           <Share2 className="h-12 w-12 text-muted-foreground mb-4" />
           <h3 className="font-sans text-xl text-foreground mb-2">{language === 'de' ? 'Noch kein Freigabe-Link' : 'No share links yet'}</h3>
-          <p className="text-sm text-muted-foreground max-w-xs font-body">{language === 'de' ? 'Erstelle einen sicheren Link damit Angehörige im Ernstfall auf deine Daten zugreifen können.' : 'Create a secure link so relatives can access your data in an emergency.'}</p>
+          <p className="text-sm text-muted-foreground max-w-xs font-body">{language === 'de' ? 'Erstelle einen sicheren Link, damit Angehörige im Ernstfall auf deine Daten zugreifen können.' : 'Create a secure link so relatives can access your data in an emergency.'}</p>
           <Button onClick={() => setDialogOpen(true)} className="mt-6 rounded-lg min-h-[44px]">
             <Plus className="h-4 w-4 mr-2" />
             {language === 'de' ? 'Link erstellen' : 'Create link'}

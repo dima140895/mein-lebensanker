@@ -23,7 +23,7 @@ const LandingCTA = () => {
       </div>
 
       <p className="mt-5 text-white/50 text-lg font-light max-w-xl mx-auto">
-        Vollmachten, Pflege, Gesundheit — organisiert bevor es jemand anderes übernehmen muss.
+        Vollmachten, Pflege, Gesundheit — organisiert, bevor es jemand anderes übernehmen muss.
       </p>
 
       <button
