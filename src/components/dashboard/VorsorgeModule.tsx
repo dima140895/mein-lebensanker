@@ -281,7 +281,7 @@ const VorsorgeModule = () => {
   // Overview / tile grid
   return (
     <>
-      {showIntro && (
+      {showIntro && progressPercent === 0 && (
         <ModuleIntroScreen
           module="vorsorge"
           onStart={() => setShowIntro(false)}
